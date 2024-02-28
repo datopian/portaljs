@@ -246,6 +246,28 @@ describe("remark-wiki-link", () => {
         expect(node.data?.hName).toEqual("img");
         expect((node.data?.hProperties as any).src).toEqual("My Image.png");
         expect((node.data?.hProperties as any).alt).toEqual("My Image.png");
+        expect((node.data?.hProperties as any).width).toBeUndefined();
+        expect((node.data?.hProperties as any).height).toBeUndefined();
+      });
+    });
+
+    test("Can identify the dimensions of the image if exists", () => {
+      const processor = unified().use(markdown).use(wikiLinkPlugin);
+
+      let ast = processor.parse("![[My Image.png|132x612]]");
+      ast = processor.runSync(ast);
+
+      expect(select("wikiLink", ast)).not.toEqual(null);
+
+      visit(ast, "wikiLink", (node: Node) => {
+        expect(node.data?.isEmbed).toEqual(true);
+        expect(node.data?.target).toEqual("My Image.png");
+        expect(node.data?.permalink).toEqual("My Image.png");
+        expect(node.data?.hName).toEqual("img");
+        expect((node.data?.hProperties as any).src).toEqual("My Image.png");
+        expect((node.data?.hProperties as any).alt).toEqual("My Image.png");
+        expect((node.data?.hProperties as any).width).toBe("132");
+        expect((node.data?.hProperties as any).height).toBe("612");
       });
     });
 
@@ -365,13 +387,17 @@ describe("remark-wiki-link", () => {
     test("parses a link with special characters and symbols", () => {
       const processor = unified().use(markdown).use(wikiLinkPlugin);
 
-      let ast = processor.parse("[[li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô íã_a(n)D_UNDERLINE!:ª%@'*º$ °~./\\]]");
+      let ast = processor.parse(
+        "[[li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô íã_a(n)D_UNDERLINE!:ª%@'*º$ °~./\\]]"
+      );
       ast = processor.runSync(ast);
       expect(select("wikiLink", ast)).not.toEqual(null);
 
       visit(ast, "wikiLink", (node: Node) => {
         expect(node.data?.exists).toEqual(false);
-        expect(node.data?.permalink).toEqual("li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\");
+        expect(node.data?.permalink).toEqual(
+          "li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\"
+        );
         expect(node.data?.alias).toEqual(null);
         expect(node.data?.hName).toEqual("a");
         expect((node.data?.hProperties as any).className).toEqual(
@@ -383,9 +409,9 @@ describe("remark-wiki-link", () => {
         expect((node.data?.hChildren as any)[0].value).toEqual(
           "li nk-w(i)th-àcèô íã_a(n)d_underline!:ª%@'*º$ °~./\\#li-nk-w(i)th-àcèô íã_a(n)D_UNDERLINE!:ª%@'*º$ °~./\\"
         );
-      })
+      });
     });
-  })
+  });
 
   describe("invalid wiki links", () => {
     test("doesn't parse a wiki link with two missing closing brackets", () => {
@@ -586,4 +612,3 @@ describe("remark-wiki-link", () => {
     });
   });
 });
-

@@ -1,23 +1,24 @@
-import { isSupportedFileFormat } from "./isSupportedFileFormat";
+import { getImageSize } from './fromMarkdown';
+import { isSupportedFileFormat } from './isSupportedFileFormat';
 
 const defaultWikiLinkResolver = (target: string) => {
   // for [[#heading]] links
   if (!target) {
     return [];
   }
-  let permalink = target.replace(/\/index$/, "");
+  let permalink = target.replace(/\/index$/, '');
   // TODO what to do with [[index]] link?
   if (permalink.length === 0) {
-    permalink = "/";
+    permalink = '/';
   }
   return [permalink];
 };
 
 export interface HtmlOptions {
   pathFormat?:
-  | "raw" // default; use for regular relative or absolute paths
-  | "obsidian-absolute" // use for Obsidian-style absolute paths (with no leading slash)
-  | "obsidian-short"; // use for Obsidian-style shortened paths (shortest path possible)
+  | 'raw' // default; use for regular relative or absolute paths
+  | 'obsidian-absolute' // use for Obsidian-style absolute paths (with no leading slash)
+  | 'obsidian-short'; // use for Obsidian-style shortened paths (shortest path possible)
   permalinks?: string[]; // list of permalinks to match possible permalinks of a wiki link against
   wikiLinkResolver?: (name: string) => string[]; // function to resolve wiki links to an array of possible permalinks
   newClassName?: string; // class name to add to links that don't have a matching permalink
@@ -28,11 +29,11 @@ export interface HtmlOptions {
 // Micromark HtmlExtension
 // https://github.com/micromark/micromark#htmlextension
 function html(opts: HtmlOptions = {}) {
-  const pathFormat = opts.pathFormat || "raw";
+  const pathFormat = opts.pathFormat || 'raw';
   const permalinks = opts.permalinks || [];
   const wikiLinkResolver = opts.wikiLinkResolver || defaultWikiLinkResolver;
-  const newClassName = opts.newClassName || "new";
-  const wikiLinkClassName = opts.wikiLinkClassName || "internal";
+  const newClassName = opts.newClassName || 'new';
+  const wikiLinkClassName = opts.wikiLinkClassName || 'internal';
   const defaultHrefTemplate = (permalink: string) => permalink;
   const hrefTemplate = opts.hrefTemplate || defaultHrefTemplate;
 
@@ -41,21 +42,21 @@ function html(opts: HtmlOptions = {}) {
   }
 
   function enterWikiLink() {
-    let stack = this.getData("wikiLinkStack");
-    if (!stack) this.setData("wikiLinkStack", (stack = []));
+    let stack = this.getData('wikiLinkStack');
+    if (!stack) this.setData('wikiLinkStack', (stack = []));
 
     stack.push({});
   }
 
   function exitWikiLinkTarget(token) {
     const target = this.sliceSerialize(token);
-    const current = top(this.getData("wikiLinkStack"));
+    const current = top(this.getData('wikiLinkStack'));
     current.target = target;
   }
 
   function exitWikiLinkAlias(token) {
     const alias = this.sliceSerialize(token);
-    const current = top(this.getData("wikiLinkStack"));
+    const current = top(this.getData('wikiLinkStack'));
     current.alias = alias;
   }
 
@@ -97,7 +98,7 @@ function html(opts: HtmlOptions = {}) {
       "";
 
     // remove leading # if the target is a heading on the same page
-    const displayName = alias || target.replace(/^#/, "");
+    let displayName = alias || target.replace(/^#/, "");
     // replace spaces with dashes and lowercase headings
     const headingId = heading.replace(/\s+/g, "-").toLowerCase();
     let classNames = wikiLinkClassName;
@@ -111,7 +112,9 @@ function html(opts: HtmlOptions = {}) {
         // Temporarily render note transclusion as a regular wiki link
         if (!format) {
           this.tag(
-            `<a href="${hrefTemplate(link + headingId)}" class="${classNames} transclusion">`
+            `<a href="${hrefTemplate(
+              link + headingId
+            )}" class="${classNames} transclusion">`
           );
           this.raw(displayName);
           this.tag("</a>");
@@ -125,11 +128,24 @@ function html(opts: HtmlOptions = {}) {
           )}#toolbar=0" class="${classNames}" />`
         );
       } else {
-        this.tag(
-          `<img src="${hrefTemplate(
-            link
-          )}" alt="${displayName}" class="${classNames}" />`
-        );
+        if (!alias || !/^\d+(x\d+)?$/.test(alias)) {
+          this.tag(
+            `<img src="${hrefTemplate(
+              link
+            )}" alt="${displayName}" class="${classNames}" />`
+          );
+        } else {
+          const { width, height } = getImageSize(alias as string);
+          displayName = target;
+          this.tag(
+            `<img src="${hrefTemplate(
+              link
+            )}" alt="${displayName}" class="${classNames}" width="${width}" height="${height}" style="
+              width: ${width}px;
+              height: ${height}px;
+            "/>`
+          );
+        }
       }
     } else {
       this.tag(
