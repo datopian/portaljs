@@ -53,7 +53,7 @@ export const Nav: React.FC<Props> = ({
     <nav className="flex justify-between">
       {/* Mobile navigation  */}
       <div className="mr-2 sm:mr-4 flex lg:hidden">
-        <NavMobile links={links}>{children}</NavMobile>
+        <NavMobile {...{title, links, social, search, defaultTheme, themeToggleIcon}}>{children}</NavMobile>
       </div>
       {/* Non-mobile navigation */}
       <div className="flex flex-none items-center">

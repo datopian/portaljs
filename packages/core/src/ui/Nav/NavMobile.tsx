@@ -4,20 +4,16 @@ import { useRouter } from "next/router.js";
 import { useEffect, useState } from "react";
 import { SearchContext, SearchField } from "../Search";
 import { MenuIcon, CloseIcon } from "../Icons";
-import { NavLink, SearchProviderConfig } from "../types";
+import type { NavConfig, ThemeConfig } from "./Nav";
 
-interface Props extends React.PropsWithChildren {
-  author?: string;
-  links?: Array<NavLink>;
-  search?: SearchProviderConfig;
-}
+interface Props extends NavConfig, ThemeConfig, React.PropsWithChildren {}
 
-// TODO why mobile navigation only accepts author and regular nav accepts different things like title, logo, version
+// TODO: Search doesn't appear
 export const NavMobile: React.FC<Props> = ({
   children,
+  title,
   links,
   search,
-  author,
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -77,8 +73,8 @@ export const NavMobile: React.FC<Props> = ({
               legacyBehavior
             >
               {/* <Logomark className="h-9 w-9" /> */}
-              <div className="font-extrabold text-primary dark:text-primary-dark text-2xl ml-6">
-                {author}
+              <div className="font-extrabold text-primary dark:text-primary-dark text-lg ml-6">
+                {title}
               </div>
             </Link>
           </div>
@@ -106,9 +102,7 @@ export const NavMobile: React.FC<Props> = ({
               ))}
             </ul>
           )}
-          {/* <div className="pt-6 border border-t-2">
-                        {children}
-                    </div> */}
+          <div className="pt-6">{children}</div>
         </Dialog.Panel>
       </Dialog>
     </>
