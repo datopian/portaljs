@@ -46,8 +46,8 @@ export const SiteToc: React.FC<Props> = ({ currentPath, nav }) => {
 
   return (
     <nav data-testid="lhs-sidebar" className="flex flex-col space-y-3 text-sm">
-      {sortNavGroupChildren(nav).map((n) => (
-        <NavComponent item={n} isActive={false} />
+      {sortNavGroupChildren(nav).map((n, index) => (
+        <NavComponent key={index} item={n} isActive={false} />
       ))}
     </nav>
   );
@@ -96,8 +96,8 @@ const NavComponent: React.FC<{
             leaveTo="transform scale-95 opacity-0"
           >
             <Disclosure.Panel className="flex flex-col space-y-3 pl-5 mt-3">
-              {sortNavGroupChildren(item.children).map((subItem) => (
-                <NavComponent item={subItem} isActive={false} />
+              {sortNavGroupChildren(item.children).map((subItem, index) => (
+                <NavComponent key={index} item={subItem} isActive={false} />
               ))}
             </Disclosure.Panel>
           </Transition>
