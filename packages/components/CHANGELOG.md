@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 1.2.3
+
+### Patch Changes
+
+- [`62dbc35d`](https://github.com/datopian/portaljs/commit/62dbc35d3b39ea7409949340214ca83a448ee999) Thanks [@olayway](https://github.com/olayway)! - LineChart: break lines at invalid / missing values (don't connect if there are gaps in values).
+
 ## 1.2.2
 
 ### Patch Changes
