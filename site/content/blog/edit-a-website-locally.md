@@ -17,7 +17,7 @@ By the end of this tutorial, you will:
 
 Below is a screenshot of how the final website will look like:
 
-![[tutorial-2-result.png]]
+![[../assets/blog/tutorial-2-result.png]]
 
 Let's start by understanding why using GitHub UI as we did in tutorial 1 is not always a good choice.
 
@@ -70,29 +70,29 @@ Ok, now we have this sorted, let's dive in and start editing your Flowershow web
 
 Or click on "File" -> "Clone repository".
 
-![[gh-desktop-starting-screen.png]]
+![[../assets/blog/gh-desktop-starting-screen.png]]
 
 If this is the first time you're using GitHub Desktop, it will prompt you to log in to your GitHub account. Click "Sign In" and follow the prompts.
 
-![[gh-desktop-clone-signin.png]]
+![[../assets/blog/gh-desktop-clone-signin.png]]
 
 Once you're done and you've authorised GitHub Desktop to access your repositories, go back to GitHub Desktop. You should now see a list of all your GitHub repositories. 
 
 ### 3. Select the repository you want to clone
 
-![[gh-desktop-clone.png]]
+![[../assets/blog/gh-desktop-clone.png]]
 
 ### 4. Choose where your repository should be saved
 
 Type the path manually or click "Choose..." to find it using file explorer.
 
-![[gh-desktop-clone-path-select.png]]
+![[../assets/blog/gh-desktop-clone-path-select.png]]
 
 ### 5. Click "Clone" and wait for the process to complete
 
 You should now see the following screen:
 
-![[gh-desktop-no-local-changes.png]]
+![[../assets/blog/gh-desktop-no-local-changes.png]]
 
 Done! You've successfully cloned your website's repository on your computer! 🎉
 
@@ -104,10 +104,10 @@ Done! You've successfully cloned your website's repository on your computer! �
 
 Click on "Open" in "Open folder as vault" section and select the path to the `/content` of the cloned repository.
 
-![[obsidian-starting.png]]
+![[../assets/blog/obsidian-starting.png]]
 Now you're ready to edit your site! In the left-hand side panel you should see the two files we created in [[create-a-website-from-scratch|tutorial 1]]: `index.md` and `about.md`.
 
-![[obsidian-content-start.png]]
+![[../assets/blog/obsidian-content-start.png]]
 
 ### 3. Edit your site's content
 
@@ -121,7 +121,7 @@ Click on `index.md` to open it and replace the dummy text with "About Me" sectio
 Hey there! I'm Your Name, a passionate learner and explorer of ideas.
 ```
 
-![[obsidian-content-index-edit.png]]
+![[../assets/blog/obsidian-content-index-edit.png]]
 
 Now, let's say for more information about you and your site, you want to add link to the about page. You can do so, by creating a wiki-link to that page, like so:
 
@@ -131,34 +131,34 @@ Now, let's say for more information about you and your site, you want to add lin
 
 When you start typing, after writing empty double brackets `[[]]`, Obsidian will suggest all the available pages you can link to, and after you select one it will create the link automatically for you.
 
-![[obsidian-content-index-add-link.png]]
-![[obsidian-content-index-add-link-2.png]]
+![[../assets/blog/obsidian-content-index-add-link.png]]
+![[../assets/blog/obsidian-content-index-add-link-2.png]]
 
 Now, let's say you want to show people what books you've read and share your reviews and other information on each one. And let's say information on each book should be available at `/books/abc` path on our website. To achieve this, you need to create a folder called `books` in your vault and add all the project-related files in there.
 
 To create a new folder in Obsidian, click on the "New folder" icon, and give your folder a name:
 
-![[obsidian-content-add-folder.png]]
+![[../assets/blog/obsidian-content-add-folder.png]]
 
-![[obsidian-content-add-folder-2.png]]
+![[../assets/blog/obsidian-content-add-folder-2.png]]
 
 Now, let's write some book reviews. You can do this by right-clicking on the `/books` folder, and selecting "New note" option. Rename the newly created `Untitled.md` file and add some review in it. Then add some other reviews.
 
-![[obsidian-content-book.png]]
+![[../assets/blog/obsidian-content-book.png]]
 
 Ok, now let's make a page that will list all your books reviews - our Bookshelf! It would be nice to have it available under `/books` path on the website, since each of our books will be available under `/books/abc`. To achieve this, we have to create an index page **inside** our `/books` folder, like so:
 
-![[obsidian-content-book-index.png]]
+![[../assets/blog/obsidian-content-book-index.png]]
 
 Then, let's list our book reviews with wiki-links to their pages:
 
-![[obsidian-content-book-index-2.png]]
+![[../assets/blog/obsidian-content-book-index-2.png]]
 
-![[obsidian-content-book-index-3.png]]
+![[../assets/blog/obsidian-content-book-index-3.png]]
 
 Now, let's add a link to our Bookshelf page on our home page, so that it's easy to find.
 
-![[obsidian-content-index-bookshelf-link.png]]
+![[../assets/blog/obsidian-content-index-bookshelf-link.png]]
 
 Now, if you want to have your link say something different than the raw `books/index`, you can do this by typing `|` after the path and specifying an alternative name, .e.g:
 
@@ -172,7 +172,7 @@ Let's also do this for the about page:
 [[about|About me]]
 ```
 
-![[obsidian-content-index-link-aliases.png]]
+![[../assets/blog/obsidian-content-index-link-aliases.png]]
 
 That's better!
 
@@ -183,7 +183,7 @@ Now, let's maybe add a short info at the bottom, that this site is new and is cu
 > 🚧 This site it pretty new and I'm enhancing it every day. Stay tuned!
 ```
 
-![[obsidian-content-index-callout.png]]
+![[../assets/blog/obsidian-content-index-callout.png]]
 
 Great, our updated site is ready to be published! 🔥
 
@@ -193,7 +193,7 @@ Great, our updated site is ready to be published! 🔥
 
 In the "Changes" tab, you'll see all the changes that have been made to the repository.
 
-![[github-desktop-all-changed-files.png]]
+![[../assets/blog/github-desktop-all-changed-files.png]]
 
 All the new files will have `[+]` sign next to them, and all the edited files will have `[•]`.
 
@@ -203,17 +203,17 @@ Now, to save these changes we need to "commit" them, which is a fancy term for m
 
 Let's make this checkpoint! In the bottom left corner there is a "Summary (required)" field, which is the place for a commit message - a concise description of the changes you made. The "Description" field is optional, and it's only needed if you need to add some more information about your changes that doesn't fit in the commit message.
 
-![[github-desktop-add-commit-message.png]]
+![[../assets/blog/github-desktop-add-commit-message.png]]
 
 Now, hit the "Commit to main" button, and done! Now GitHub Desktop should say there are no local changes again. And that's correct, as all the changes we made have successfully been saved, and no other changes have been made since then.
 
 You should see the last commit message under the button:
 
-![[github-desktop-commit-message.png]]
+![[../assets/blog/github-desktop-commit-message.png]]
 
 You can also inspect the whole history of past commits in the "History tab".
 
-![[github-desktop-history.png]]
+![[../assets/blog/github-desktop-history.png]]
 
 The very fist commit on top is the commit we've just made, but you can also see all the commits to the repository we made in [[create-a-website-from-scratch|tutorial 1]], via GitHub UI.
 
@@ -223,27 +223,27 @@ The commit we've just crated has ↑ sign next to it. It means it hasn't yet bee
 
 When the "push" is complete, the arrow next to the last commit message should disappear, and there should be no `(1 )` indicator next to "Push origin" button.
 
-![[github-desktop-history-after-push.png]]
+![[../assets/blog/github-desktop-history-after-push.png]]
 
 ### 4. See updated site live!
 
 Navigate to your [vercel dashboard](https://vercel.com/dashboard).
 
-![[vercel-dashboard.png]]
+![[../assets/blog/vercel-dashboard.png]]
 
 Click on the project repository to go to its dashboard.
 
 You may have to wait a bit until the site builds, but once it's ready, you should see the preview with our latest changes.
 
-![[vercel-project-dashboard.png]]
+![[../assets/blog/vercel-project-dashboard.png]]
 
 Note, that under "SOURCE" section (next to the preview) there is also our last commit message, indicating that the latest deployment has been triggered by this commit.
 
 Click on the preview to see the updated site live!
 
-![[tutorial-2-result.png]]
-![[live-book-home-page.png]]
-![[live-book.png]]
+![[../assets/blog/tutorial-2-result.png]]
+![[../assets/blog/live-book-home-page.png]]
+![[../assets/blog/live-book.png]]
 
 Congratulations!
 
