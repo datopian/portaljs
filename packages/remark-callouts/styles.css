@@ -23,6 +23,7 @@
   align-items: center;
   padding: 10px;
   gap: 10px;
+  position: relative;
 }
 
 .callout-title > strong {
@@ -61,4 +62,41 @@ p:after {
 .blockquote > p:before,
 p:after {
   display: none;
+}
+
+blockquote.callout-foldable {
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: min-content 1fr;
+  transition: all 0.3s ease-in-out; 
+}
+
+blockquote.callout-foldable.callout-folded {
+  grid-template-rows: min-content 0fr;
+}
+
+blockquote.callout-foldable .callout-content {
+  overflow: hidden;
+  padding: 0px 10px;
+}
+
+blockquote.callout-foldable .callout-title strong::after {
+  content: "";
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  border-style: solid;
+  border-width: 0 3px 3px 0;
+  border-color: var(--tw-prose-body);
+  position: absolute;
+  top: 50%;
+  right: 1em;
+  transform: translateY(-50%) rotate(45deg);
+  transform-origin: center;
+  transition: all 0.3s ease-in-out;
+}
+
+blockquote.callout-foldable.callout-folded .callout-title strong::after {
+  transform: translateY(-50%) rotate(-45deg);
+  transform-origin: center;
 }
