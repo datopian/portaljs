@@ -1,0 +1,33 @@
+{
+  "name": "@portaljs/ckan-api-client-js",
+  "version": "1.3.3",
+  "description": "",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "npm run build && mocha -r dotenv/config",
+    "clean": "rimraf dist/*",
+    "build": "rollup -c",
+    "prepare": "npm run build"
+  },
+  "author": "Datopian (Viderum Inc. trading as)",
+  "license": "ISC",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.7",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "^20.14.2",
+    "chai": "^5.2.0",
+    "chai-as-promised": "^8.0.1",
+    "dotenv": "^16.5.0",
+    "mocha": "^11.4.0",
+    "rimraf": "^5.0.7",
+    "rollup": "^4.18.0",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.4.5"
+  },
+  "private": false
+}
