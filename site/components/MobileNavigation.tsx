@@ -3,11 +3,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 
-import { siteConfig } from "../config/siteConfig";
-import BaseLink from "./BaseLink";
-// import { SearchContext, SearchField } from "./search/index.jsx";
+import siteConfig from "@/config/siteConfig";
+import { BaseLink } from "./BaseLink";
+import { SearchContext, SearchField } from "./search/index.jsx";
 
-// const Search = SearchContext(siteConfig.search?.provider);
+const Search = SearchContext(siteConfig?.search?.provider);
 
 function MenuIcon(props) {
   return (
@@ -39,7 +39,7 @@ function CloseIcon(props) {
   );
 }
 
-export default function MobileNavigation({ navigation }) {
+export function MobileNavigation({ navigation }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -72,10 +72,10 @@ export default function MobileNavigation({ navigation }) {
       <Dialog
         open={isOpen}
         onClose={setIsOpen}
-        className="fixed inset-0 z-50 flex items-start overflow-y-auto bg-slate-900/50 pr-10 backdrop-blur lg:hidden"
+        className="fixed inset-0 z-50 flex items-start overflow-y-auto bg-background-dark/50 pr-10 backdrop-blur lg:hidden"
         aria-label="Navigation"
       >
-        <Dialog.Panel className="relative min-h-full w-full max-w-xs bg-white px-4 pt-5 pb-12 dark:bg-slate-900 sm:px-6">
+        <Dialog.Panel className="relative min-h-full w-full max-w-xs bg-background px-4 pt-5 pb-12 dark:bg-background-dark sm:px-6">
           <div className="flex items-center mb-6">
             <button
               type="button"
@@ -91,16 +91,16 @@ export default function MobileNavigation({ navigation }) {
               legacyBehavior
             >
               {/* <Logomark className="h-9 w-9" /> */}
-              <div className="font-extrabold text-slate-900 dark:text-white text-2xl ml-6">
-                PortalJS
+              <div className="font-extrabold text-2xl ml-6">
+                {siteConfig.author}
               </div>
             </Link>
           </div>
-          {/* {Search && (
+          {Search && (
             <Search>
-              {({ query }) => <SearchField mobile onOpen={query.toggle} />}
+              {({ query }: any) => <SearchField mobile onOpen={query.toggle} />}
             </Search>
-          )} */}
+          )}
           <ul className="mt-2 space-y-2 border-l-2 border-slate-100 dark:border-slate-800 lg:mt-4 lg:space-y-4 lg:border-slate-200">
             {navigation.map((link) => (
               <Menu as="div" key={link.name} className="relative">

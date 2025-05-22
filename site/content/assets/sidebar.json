@@ -1,14 +1,98 @@
 [
   {
-    "title": "Getting started",
+    "title": "Getting Started",
     "links": [
-      { "title": "Introduction", "href": "/#how-portaljs-works" },
-      { "title": "Setup", "href": "/docs" },
-      { "title": "Creating new datasets", "href": "/docs/creating-new-datasets" },
-      { "title": "Searching datasets", "href": "/docs/searching-datasets" },
-      { "title": "Showing metadata", "href": "/docs/showing-metadata" },
-      { "title": "Deploying your PortalJS app", "href": "/docs/deploying-your-portaljs-app" }
-
+      {
+        "title": "Introduction",
+        "href": "/opensource"
+      },
+      {
+        "title": "Setup",
+        "href": "/opensource/docs/setup"
+      },
+      {
+        "title": "Creating new datasets",
+        "href": "/opensource/docs/creating-new-datasets"
+      },
+      {
+        "title": "Searching datasets",
+        "href": "/opensource/docs/searching-datasets"
+      },
+      {
+        "title": "Showing metadata",
+        "href": "/opensource/docs/showing-metadata"
+      },
+      {
+        "title": "Deploying your PortalJS app",
+        "href": "/opensource/docs/deploying-your-portaljs-app"
+      }
+    ]
+  },
+  {
+    "title": "Guides",
+    "links": [
+      {
+        "title": "Build a data portal with CKAN",
+        "href": "/opensource/developers/comprehensive-guide-building-robust-data-portal-ckan"
+      },
+      {
+        "title": "Create a data catalog with GitHub datasets",
+        "href": "/opensource/developers/create-github-backed-data-catalog-portaljs"
+      },
+      {
+        "title": "Create a data catalog with PortalJS and CKAN",
+        "href": "/opensource/developers/create-data-catalog-portaljs-ckan"
+      },
+      {
+        "title": "How to automate CKAN resource creation with Cloudflare Workers",
+        "href": "/opensource/developers/automating-ckan-resource-cloudflare-r2-workers"
+      },
+      {
+        "title": "How to enable direct file uploads to Cloudflare on CKAN",
+        "href": "/opensource/developers/enabling-direct-file-uploads-api-ckan-cloudflare"
+      }
+    ]
+  },
+  {
+    "title": "How-tos",
+    "links": [
+      {
+        "title": "How to add web analytics?",
+        "href": "/opensource/howtos/analytics"
+      },
+      {
+        "title": "How to customize page metadata for SEO?",
+        "href": "/opensource/howtos/seo"
+      },
+      {
+        "title": "How to build a sitemap?",
+        "href": "/opensource/howtos/sitemap"
+      },
+      {
+        "title": "How to add markdown-based content pages?",
+        "href": "/opensource/howtos/markdown"
+      },
+      {
+        "title": "How to add a simple blog?",
+        "href": "/opensource/howtos/blog"
+      },
+      {
+        "title": "How to create data-rich documents with charts and tables?",
+        "href": "/opensource/howtos/data-rich-documents"
+      },
+      {
+        "title": "How to add user comments?",
+        "href": "/opensource/howtos/comments"
+      }
+    ]
+  },
+  {
+    "title": "Components",
+    "links": [
+      {
+        "title": "Storybook",
+        "href": "https://storybook.portaljs.org"
+      }
     ]
   }
 ]

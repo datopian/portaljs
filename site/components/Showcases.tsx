@@ -1,79 +1,154 @@
-import Container from './Container';
-import ShowcasesItem from './ShowcasesItem';
+import Container from './Container'
+import { H1, H2 } from './custom/header'
+import ShowCaseMobile from './ShowCaseMobile'
+import ShowcasesItem from './ShowcasesItem'
 
 const items = [
   {
-    title: 'Open Data Northern Ireland',
-    href: 'https://www.opendatani.gov.uk/',
-    image: '/images/showcases/odni.webp',
-    description: 'Government Open Data Portal',
-  },
-  {
-    title: 'Birmingham City Observatory',
-    href: 'https://www.cityobservatory.birmingham.gov.uk/',
-    image: '/images/showcases/birmingham.webp',
-    description: 'Government Open Data Portal',
-  },
-  {
-    title: 'UAE Open Data',
+    title: 'UAE Open Data Portal',
+    subtitle: 'Government Data Portal',
     href: 'https://opendata.fcsc.gov.ae/',
-    image: '/images/showcases/uae.webp',
-    description: 'Government Open Data Portal',
+    image: '/static/img/showcases/uae.webp',
+    description:
+      'Provides UAE national statistics and socio-economic datasets for public policy and transparency.',
     sourceUrl: 'https://github.com/FCSCOpendata/frontend',
   },
   {
-    title: 'Frictionless Data',
+    title: 'SSEN',
+    subtitle: 'Energy Open Data Portal',
+    href: 'https://data.ssen.co.uk/',
+    image: '/static/img/showcases/ssen.webp',
+    description:
+      'Shares data on electricity networks, power distribution, and infrastructure planning.',
+  },
+  {
+    title: 'MOEI',
+    subtitle: 'Government Data Portal',
+    href: 'https://opendata.moei.gov.ae/',
+    image: '/static/img/showcases/mu-dataportal.webp',
+    description:
+      'Provides data on energy, sustainability, and infrastructure in the UAE.',
+  },
+  {
+    title: 'FIND',
+    subtitle: 'Global Health and Diagnostics Data Portal',
+    href: 'https://finddx.portaljs.com/',
+    image: '/static/img/showcases/dxconnect.webp',
+    description:
+      'Provides data and insights on diagnostic solutions for infectious diseases.',
+  },
+  {
+    title: 'Open Data Northern Ireland',
+    subtitle: 'Government Data Portal',
+    href: 'https://www.opendatani.gov.uk/',
+    image: '/static/img/showcases/odni.webp',
+    description:
+      'Provides open datasets on a wide range of topics to support transparency and innovation in Northern Ireland.',
+  },
+  {
+    title: 'Marcus Institute',
+    subtitle: 'Research Data Portal',
+    href: 'https://data.hsl.harvard.edu/',
+    image: '/static/img/showcases/marcus-havard.webp',
+    description:
+      'Offers datasets and tools for global health and infectious disease research.',
+  },
+  {
+    title: 'London Borough of Hounslow',
+    subtitle: 'Government Data Portal',
+    href: 'https://data.hounslow.gov.uk/',
+    image: '/static/img/showcases/london.webp',
+    description:
+      'Offers datasets on local government services and community statistics.',
+  },
+  {
+    title: 'Open Spending',
+    subtitle: 'Public Financial Data Portal',
+    image: '/static/img/showcases/openspending.webp',
+    href: 'https://www.openspending.org',
+    repository:
+      'https://github.com/datopian/datahub/tree/main/examples/openspending',
+    description:
+      'OpenSpending is a free, open and global platform to search, visualise and analyse fiscal data in the public sphere.',
+  },
+  {
+    title: 'EITI',
+    subtitle: 'Transparency Data Portal',
+    href: 'https://eiti.portaljs.com/',
+    image: '/static/img/showcases/eiti.webp',
+    description:
+      'Shares data on revenues, payments, and governance in the extractive industries.',
+  },
+  {
+    title: 'FiveThirtyEight',
+    subtitle: 'Data Journalism Portal',
+    image: '/static/img/showcases/fivethirty.webp',
+    href: 'https://fivethirtyeight.portaljs.org/',
+    repository:
+      'https://github.com/datopian/datahub/tree/main/examples/fivethirtyeight',
+    description:
+      'This is a replica of data.fivethirtyeight.com using PortalJS.',
+  },
+  {
+    title: 'CO2 PPM',
+    subtitle: 'Frictionless Data',
     href: 'https://datahub.io/core/co2-ppm',
-    repository: 'https://github.com/datopian/datahub/tree/main/examples/dataset-frictionless',
-    image: '/images/showcases/frictionless-capture.png',
-    description: 'Progressive open-source framework for building data infrastructure - data management, data integration, data flows, etc. It includes various data standards and provides software to work with data.',
+    repository:
+      'https://github.com/datopian/datahub/tree/main/examples/dataset-frictionless',
+    image: '/static/img/showcases/co2.webp',
+    description:
+      'Progressive open-source framework for building data infrastructure - data management, data integration, data flows, etc. It includes various data standards and provides software to work with data.',
   },
   {
-    title: "OpenSpending",
-    image: "/images/showcases/openspending.png",
-    href: "https://www.openspending.org",
-    repository: 'https://github.com/datopian/datahub/tree/main/examples/openspending',
-    description: "OpenSpending is a free, open and global platform to search, visualise and analyse fiscal data in the public sphere."
+    title: 'Github Datasets',
+    subtitle: 'Data Catalog',
+    image: '/static/img/showcases/github.webp',
+    href: 'https://example.portaljs.org/',
+    repository:
+      'https://github.com/datopian/datahub/tree/main/examples/github-backed-catalog',
+    description:
+      'A simple data catalog that get its data from a list of GitHub repos that serve as datasets.',
   },
   {
-    title: "FiveThirtyEight",
-    image: "/images/showcases/fivethirtyeight.png",
-    href: "https://fivethirtyeight.portaljs.org/",
-    repository: 'https://github.com/datopian/datahub/tree/main/examples/fivethirtyeight',
-    description: "This is a replica of data.fivethirtyeight.com using PortalJS."
-  },
-  {
-    title: "Github Datasets",
-    image: "/images/showcases/github-datasets.png",
-    href: "https://example.portaljs.org/",
-    repository: 'https://github.com/datopian/datahub/tree/main/examples/github-backed-catalog',
-    description: "A simple data catalog that get its data from a list of GitHub repos that serve as datasets."
-  },
-  {
-    title: "Hatespeech Data",
-    image: "/images/showcases/turing.png",
-    href: "https://hatespeechdata.com/",
+    title: 'Hatespeech Data',
+    subtitle: 'Social Research Data Portal',
+    image: '/static/img/showcases/hatespeech.webp',
+    href: 'https://hatespeechdata.com/',
     repository: 'https://github.com/datopian/datahub/tree/main/examples/turing',
-    description: "Datasets annotated for hate speech, online abuse, and offensive language which are useful for training a natural language processing system to detect this online abuse."
+    description:
+      'Datasets annotated for hate speech, online abuse, and offensive language which are useful for training a natural language processing system to detect this online abuse.',
   },
-  
-];
+]
 
 export default function Showcases() {
   return (
-    <Container>
-      <h2
-        className="text-3xl font-bold text-primary dark:text-primary-dark"
-        id="showcases"
-      >
-        Showcases
-      </h2>
-      <p className="text-lg mt-2">Discover what's being powered by PortalJS</p>
-      <div className="not-prose my-12 grid grid-cols-1 gap-6 md:grid-cols-2">
+    <div className="max-w-8xl px-4 xl:px-12 mx-auto">
+      <div>
+        {/* <p className="text-sm font-bold text-blue-400">LONG READ</p> */}
+        <div className="flex items-center justify-start gap-2 transition blink">
+          <p className="text-start text-5xl sm:text-7xl sm:my-8 tracking-tight">
+            Discover <br />
+            data portals <br />
+            powered by PortalJS{' '}
+          </p>
+        </div>
+      </div>
+      <div className="not-prose my-12 grid grid-cols-1 gap-6 lg:gap-12 md:grid-cols-2">
         {items.map((item) => {
-          return <ShowcasesItem item={item} />;
+          return (
+            <div className="hidden sm:block" key={item.title}>
+              <ShowcasesItem item={item} />
+            </div>
+          )
+        })}
+        {items.map((item) => {
+          return (
+            <div className="sm:hidden" key={item.title}>
+              <ShowCaseMobile item={item} />
+            </div>
+          )
         })}
       </div>
-    </Container>
-  );
+    </div>
+  )
 }

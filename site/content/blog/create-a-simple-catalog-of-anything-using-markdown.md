@@ -1,6 +1,6 @@
 ---
 title: Create a catalog of anything using Markdown files in Obsidian
-date: 2023-05-30
+created: 2023-05-30
 authors: ['Ola Rubaj']
 filetype: 'blog'
 ---

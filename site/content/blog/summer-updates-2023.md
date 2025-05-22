@@ -1,7 +1,7 @@
 ---
 title: What We Shipped in Jul-Aug 2023
 authors: ['ola-rubaj']
-date: 2023-09-2
+created: 2023-09-2
 filetype: blog
 ---
 
@@ -30,12 +30,12 @@ https://github.com/datopian/markdowndb
 
 ## 📚 The Guide
 
-https://portaljs.com/opensource
+https://portaljs.org/guide
 
 I’ve sketched overviews for two upcoming tutorials:
 
-1. **Collaborating with others on your website**: Learn how to make your website projects a team effort. [See it here](https://portaljs.com/guide#tutorial-3-collaborating-with-others-on-your-website-project)
-2. **Customising your website and previewing your changes locally**: Customize and preview your site changes locally, without headaches. [See it here](https://portaljs.com/guide#tutorial-4-customising-your-website-locally-and-previewing-your-changes-locally)
+1. **Collaborating with others on your website**: Learn how to make your website projects a team effort. [See it here](https://portaljs.org/guide#tutorial-3-collaborating-with-others-on-your-website-project)
+2. **Customising your website and previewing your changes locally**: Customize and preview your site changes locally, without headaches. [See it here](https://portaljs.org/guide#tutorial-4-customising-your-website-locally-and-previewing-your-changes-locally)
 
 ## 🌐 LifeItself.org
 

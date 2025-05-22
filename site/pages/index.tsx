@@ -1,56 +1,62 @@
-import fs from 'fs';
+import Hero from '@/components/home/Hero'
+import SocialProof from '@/components/home/SocialProof'
+import { Solutions } from '@/components/home/Solutions'
+import Schedule from '@/components/home/Schedule'
+import { LogoJsonLd, NextSeo } from 'next-seo'
+import Layout from '@/components/Layout'
+import FeatureOverview from '@/components/home/FeatureOverview'
+import { KeyFeatures } from '@/components/home/KeyFeatures'
+import LaunchPortal from '@/components/home/LaunchPortal'
+import { PortalPreview } from '@/components/home/PortalPreview'
+import NoVendorLockIn from '@/components/home/NoVendorLockIn'
+import { Testimonials } from '@/components/home/Testimonials'
+import { TargetAudiences } from '@/components/home/TargetAudiences'
+import { WhatYouGet } from '@/components/home/WhatYouGet'
+import { Security } from '@/components/home/Security'
+import FAQ from '@/components/home/FAQ'
+import Community from '@/components/home/community'
+import UserJourney from '@/components/home/UserJourney'
 
-import Community from '@/components/Community';
-import Features from '@/components/Features';
-import Showcases from '@/components/Showcases';
-import Layout from '../components/Layout';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { collectHeadings } from '@portaljs/core';
-import Head from 'next/head';
-import { LogoJsonLd } from 'next-seo';
-
-export default function Home({ sidebarTree }) {
-  const router = useRouter();
-
-  const [tableOfContents, setTableOfContents] = useState([]);
-
-  useEffect(() => {
-    const headingNodes = document.querySelectorAll(
-      'h2,h3'
-    ) as NodeListOf<HTMLHeadingElement>;
-    const toc = collectHeadings(headingNodes);
-    setTableOfContents(toc ?? []);
-  }, [router.asPath]); // update table of contents on route change with next/link
-
+export default function Homepage() {
   return (
-    <>
-      <LogoJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
-      />
-      <Layout
-        isHomePage={true}
-        tableOfContents={tableOfContents}
-        sidebarTree={sidebarTree}
-      >
-        <Features />
-
-        <Community />
-      </Layout>
-    </>
-  );
-}
-
-export function getStaticProps() {
-  const tree = fs.readFileSync('content/assets/sidebar.json', {
-    encoding: 'utf-8',
-  });
-  const sidebarTree = JSON.parse(tree);
-
-  return {
-    props: {
-      sidebarTree,
-    },
-  };
+    <Layout isHomePage={true}>
+      <div className="flex justify-center">
+        <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
+          <LogoJsonLd
+            url="https://portaljs.com"
+            logo="https://portaljs.com/icon.png"
+          />
+          <NextSeo />
+          <Hero />
+          <SocialProof />
+          <KeyFeatures />
+          <LaunchPortal />
+        </div>
+      </div>
+      <UserJourney />
+      <div className="flex justify-center">
+        <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
+          <Solutions />
+          <PortalPreview />
+        </div>
+      </div>
+      <FeatureOverview />
+      <div className="flex justify-center">
+        <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
+          <NoVendorLockIn />
+          <TargetAudiences />
+          <Community homePage />
+          <Testimonials />
+          <WhatYouGet />
+          <Security />
+        </div>
+      </div>
+      <Schedule />
+      <div className="flex justify-center w-full">
+        <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
+          <FAQ />
+        </div>
+      </div>
+    </Layout>
+  )
 }

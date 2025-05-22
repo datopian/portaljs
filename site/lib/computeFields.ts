@@ -2,7 +2,7 @@
 import { remark } from "remark";
 import stripMarkdown, { Options } from "strip-markdown";
 
-import { siteConfig } from "../config/siteConfig";
+import siteConfig from "../config/siteConfig";
 import { getAuthorsDetails } from "./getAuthorsDetails";
 import sluggify from "./sluggify";
 
@@ -39,9 +39,11 @@ const computeFields = async ({
   const description =
     frontMatter.description ?? (await extractDescription(source));
   const date = frontMatter.date ?? frontMatter.created ?? null;
+  const readingTime = await extractReadingTime(source);
   const layout = (() => {
     if (frontMatter.layout) return frontMatter.layout;
     if (urlPath.startsWith("blog/")) return "blog";
+    if (urlPath.startsWith("casestudies/")) return "casestudy";
     // if (urlPath.startsWith("docs/")) return "docs";
     return "docs"; // TODO default layout from config?
   })();
@@ -71,7 +73,8 @@ const computeFields = async ({
     showLinkPreviews,
     showToc,
     showSidebar,
-    sidebarTreeFile
+    sidebarTreeFile,
+    readingTime
   };
 };
 
@@ -117,5 +120,28 @@ const extractDescription = async (source: string) => {
   }
   return null;
 };
+const extractReadingTime = async (source) => {
+  const contentWithoutFrontmatter = source.replace(/^---\s*\n([\s\S]*?)\n---\s*\n/, '');
+  const resolutionTagRegex = /<Resolution\s+([^>]+)>/;
+  const match = contentWithoutFrontmatter.match(resolutionTagRegex);
+  let attributes = {};
+  if (match) {
+    const attributeRegex = /(\w+)\s*=\s*"([^"]*)"/g;
+    const attributeMatches = Array.from(match[1].matchAll(attributeRegex));
+    attributes = attributeMatches.reduce((acc, [, key, value]) => {
+      acc[key] = value;
+      return acc;
+    }, {});
+  }
+  const mergedAttributes = Object.values(attributes).filter(Boolean).join(' ');
+  const strippedContent = contentWithoutFrontmatter.replace(/<\/?[^>]+(>|$)/g, '').replace(/\*\*/g, '');
+  const description = mergedAttributes ? `${mergedAttributes}. ${strippedContent}` : strippedContent;
+  const wordsPerMinute = 265; // Adjust as needed
+  const wordCount = description.split(/\s+/).length;
+  const readingTime = Math.ceil(wordCount / wordsPerMinute);
+
+  return readingTime;
+};
+
 
 export default computeFields;

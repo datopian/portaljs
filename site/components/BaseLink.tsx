@@ -12,4 +12,4 @@ const BaseLink = forwardRef((props: any, ref) => {
 
 BaseLink.displayName = "BaseLink";
 
-export default BaseLink;
+export { BaseLink };

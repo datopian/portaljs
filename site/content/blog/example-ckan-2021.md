@@ -1,13 +1,13 @@
 ---
 title: "Setup Guide: How to create a full-featured custom data portal frontend for CKAN with PortalJS"
 authors: ['Luccas Mateus']
-date: 2021-04-20
+created: 2021-04-20
 ---
 
 We have created a full data portal demo using DataHub PortalJS all backed by a CKAN instance storing data and metadata, you can see below a screenshot of the homepage and of an individual dataset page.
 
-![](https://i.imgur.com/ai0VLS4.png)
-![](https://i.imgur.com/3RhXOW4.png)
+![Datahub Home page](https://i.imgur.com/ai0VLS4.png)
+![individual dataset page](https://i.imgur.com/3RhXOW4.png)
 
 ## Create a Portal app for CKAN
 
@@ -205,11 +205,13 @@ export default function Org({ variables }) {
     <>
       {organization ? (
         <>
+        {}
           <img
             src={
               organization.image_url
             }
             className="h-5 w-5 mr-2 inline-block"
+            alt={`${oragnization.name} logo`}
           />
           <Link href={`/@${organization.name}`} className="font-semibold text-primary underline">
               {organization.title || organization.name}

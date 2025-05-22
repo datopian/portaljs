@@ -1,13 +1,13 @@
 import { defaultConfig } from "@portaljs/core";
-import userConfig from "../content/config";
+import config from "../content/config";
 
-export const siteConfig: any = {
+export default {
   ...defaultConfig,
-  ...userConfig,
+  ...config,
   // prevent theme object overrides for
   // values not provided in userConfig
   theme: {
     ...defaultConfig.theme,
-    ...userConfig?.theme,
+    ...config?.theme,
   },
-};
+} as any;

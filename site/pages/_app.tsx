@@ -1,56 +1,74 @@
-import '../styles/globals.css';
-import '../styles/tailwind.css';
-import '../styles/sib-form.css';
-
-import Script from 'next/script';
-
-import { DefaultSeo } from 'next-seo';
-
-import { NavGroup, NavItem, pageview, ThemeProvider } from '@portaljs/core';
-import { siteConfig } from '../config/siteConfig';
-import { useEffect } from 'react';
-import { useRouter } from 'next/dist/client/router';
+import '@/styles/global.css'
+import '@/styles/prism.css'
+import '@/styles/docsearch.css'
+import 'tailwindcss/tailwind.css'
+import Script from 'next/script'
+import { DefaultSeo } from 'next-seo'
+import { NavGroup, NavItem, pageview, ThemeProvider } from '@portaljs/core'
+import siteConfig from '../config/siteConfig'
+import { useEffect } from 'react'
+import { useRouter } from 'next/dist/client/router'
+import { Noto_Sans as Roboto_Condensed } from 'next/font/google'
 
 export interface CustomAppProps {
   meta: {
-    showToc: boolean;
-    showEditLink: boolean;
-    showSidebar: boolean;
-    showComments: boolean;
-    urlPath: string; // not sure what's this for
-    editUrl?: string;
-    [key: string]: any;
-  };
-  siteMap?: Array<NavItem | NavGroup>;
-  [key: string]: any;
+    showToc: boolean
+    showEditLink: boolean
+    showSidebar: boolean
+    showComments: boolean
+    urlPath: string // not sure what's this for
+    editUrl?: string
+    [key: string]: any
+  }
+  siteMap?: Array<NavItem | NavGroup>
+  [key: string]: any
 }
 
+const RobotoCondensed = Roboto_Condensed({
+  subsets: ['latin'],
+  weight: ['300', '400', '600', '700'], // Include all desired weights
+  variable: '--font-roco',
+})
 function MyApp({ Component, pageProps }) {
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
     if (siteConfig.analytics) {
       const handleRouteChange = (url) => {
-        pageview(url);
-      };
-      router.events.on('routeChangeComplete', handleRouteChange);
+        if (typeof window.gtag === 'function') {
+          window.gtag('config', siteConfig.analytics, {
+            page_path: url,
+          })
+        } else {
+          console.warn('gtag function is not available')
+        }
+      }
+
+      router.events.on('routeChangeComplete', handleRouteChange)
       return () => {
-        router.events.off('routeChangeComplete', handleRouteChange);
-      };
+        router.events.off('routeChangeComplete', handleRouteChange)
+      }
     }
-  }, [router.events]);
+  }, [router.events])
 
   return (
     <ThemeProvider
       disableTransitionOnChange
       attribute="class"
-      defaultTheme={siteConfig.theme.default}
-      forcedTheme={siteConfig.theme.default ? null : 'light'}
+      // defaultTheme={siteConfig.theme.default}
+      // forcedTheme={siteConfig.theme.default ? null : 'light'}
+      defaultTheme="dark"
+      forcedTheme="dark"
     >
       <DefaultSeo
         defaultTitle={siteConfig.title}
+        titleTemplate={'%s | ' + siteConfig.title}
         description={siteConfig.description}
-        titleTemplate="DataHub PortalJS - %s"
+        //titleTemplate="PortalJS - %s"
+        additionalMetaTags={[
+          { name: 'author', content: siteConfig.author },
+          { name: 'publisher', content: siteConfig.author },
+        ]}
         {...siteConfig.nextSeo}
       />
 
@@ -77,18 +95,11 @@ function MyApp({ Component, pageProps }) {
           />
         </>
       )}
-
-      {/* Umami Analytics */}
-      <Script
-        async
-        defer
-        data-website-id="061e14c1-6157-4a93-820c-777c7a937c12"
-        src="https://analytics.datopian.com/umami.js"
-      />
-
-      <Component {...pageProps} />
+      <main className={` font-sans`}>
+        <Component {...pageProps} />
+      </main>
     </ThemeProvider>
-  );
+  )
 }
 
-export default MyApp;
+export default MyApp

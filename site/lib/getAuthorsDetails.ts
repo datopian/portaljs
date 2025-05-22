@@ -1,5 +1,5 @@
-import { siteConfig } from "config/siteConfig";
-import clientPromise from "lib/mddb";
+import siteConfig from "@/config/siteConfig";
+import clientPromise from "@/lib/mddb";
 
 export const getAuthorsDetails = async (authors: string[]) => {
   const mddb = await clientPromise;

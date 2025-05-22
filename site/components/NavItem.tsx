@@ -1,10 +1,10 @@
-import { Menu, Transition } from '@headlessui/react';
-import Link from 'next/link';
-import { Fragment, useRef, useState } from 'react';
+import { Menu, Transition } from "@headlessui/react";
+import Link from "next/link";
+import { Fragment, useRef, useState } from "react";
 
-import BaseLink from './BaseLink';
+import { BaseLink } from "./BaseLink";
 
-export default function NavItem({ item }) {
+export function NavItem({ item, target }) {
   const dropdownRef = useRef(null);
   const [showDropdown, setshowDropdown] = useState(false);
 
@@ -20,27 +20,28 @@ export default function NavItem({ item }) {
   };
 
   return (
-    <Menu as="div" role="menu" className="relative">
-      <Menu.Item>
-        {Object.prototype.hasOwnProperty.call(item, 'href') ? (
+    <Menu as="div" className="relative">
+      <Menu.Button
+        onClick={() => setshowDropdown(!showDropdown)}
+        onMouseEnter={openDropdown}
+        onMouseLeave={closeDropdown}
+      >
+        {Object.prototype.hasOwnProperty.call(item, "href") ? (
           <Link
             href={item.href}
-            onMouseEnter={openDropdown}
-            onMouseLeave={closeDropdown}
-            target={item.target || '_self'}
-            onClick={() => setshowDropdown(!showDropdown)}
-            className={`${item.name.includes("Cloud") ? "text-blue-600 dark:text-blue-400" : "text-slate-600 dark:text-slate-400"} inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-slate-500`}
+            title={item.name}
+            className={`${item.name.includes("Open source") ? "text-blue-600 dark:hover:!text-slate-300 hover:text-secondary-hover dark:text-blue-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium transition duration-300" : "text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-blue-400 transition duration-300"}`}
           >
             {item.name}
           </Link>
         ) : (
-          <div className="text-slate-600 dark:text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-slate-500 fill-slate-500 hover:fill-slate-600">
+          <div className="text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-slate-300 fill-slate-500 hover:fill-slate-600  transition duration-300">
             {item.name}
           </div>
         )}
-      </Menu.Item>
+      </Menu.Button>
 
-      {Object.prototype.hasOwnProperty.call(item, 'subItems') && (
+      {Object.prototype.hasOwnProperty.call(item, "subItems") && (
         <Transition
           as={Fragment}
           show={showDropdown}
@@ -58,12 +59,15 @@ export default function NavItem({ item }) {
             onMouseLeave={closeDropdown}
           >
             {item.subItems.map((subItem) => (
-              <Menu.Item key={subItem.name}>
+              <Menu.Item
+                key={subItem.name}
+                //  @ts-ignore
+                onClick={() => setshowDropdown(false)}
+              >
                 <BaseLink
                   href={subItem.href}
-                  target={item.target || '_self'}
+                  title={subItem.name}
                   className="text-slate-500 inline-flex items-center mt-2 px-1 pt-1 text-sm font-medium hover:text-slate-600"
-                  onClick={() => setshowDropdown(false)}
                 >
                   {subItem.name}
                 </BaseLink>

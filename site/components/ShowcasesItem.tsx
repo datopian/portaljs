@@ -1,8 +1,16 @@
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 export default function ShowcasesItem({ item }) {
+  const router = useRouter();
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div className="rounded overflow-hidden group relative border-1 shadow-lg">
+    <div
+      className="rounded overflow-hidden group relative w-full h-full shadow-lg  cursor-pointer"
+      onClick={() => router.push(item.href)}
+    >
       <div
-        className="bg-cover bg-no-repeat bg-top aspect-video w-full group-hover:blur-sm group-hover:scale-105 transition-all duration-200"
+        className="bypass-filter bg-cover bg-no-repeat  !aspect-[16/9] w-full h-full group-hover:blur-sm group-hover:scale-105 transition-all duration-200"
         style={{ backgroundImage: `url(${item.image})` }}
       >
         <div className="w-full h-full bg-black opacity-0 group-hover:opacity-50 transition-all duration-200"></div>
@@ -10,28 +18,44 @@ export default function ShowcasesItem({ item }) {
       <div>
         <div className="opacity-0 group-hover:opacity-100 absolute top-0 bottom-0 right-0 left-0 transition-all duration-200 px-2 flex items-center justify-center">
           <div className="text-center text-primary-dark">
-            <span className="text-xl font-semibold">{item.title}</span>
-            <p className="text-base font-medium">{item.description}</p>
+            <span className="text-[17px] xl:text-2xl  block font-bold">
+              {item.title}
+            </span>
+            <span className="text-[15px] xl:text-xl font-semibold">
+              {item.subtitle}
+            </span>
+            <p className="text-[12.5px] xl:text-base font-medium">
+              {item.description}
+            </p>
             <div className="flex justify-center mt-2 gap-2 ">
               {item.href && (
                 <a
                   target="_blank"
-                  className=" text-white w-8 h-8 p-1 bg-primary rounded-full hover:scale-110 transition cursor-pointer z-50"
+                  className={` text-white w-8 h-8 ${
+                    isHovered ? "w-[105px]" : ""
+                  } p-1 bg-primary rounded-full hover:scale-110 transition duration-300 ease-in-out cursor-pointer z-50 `}
                   rel="noreferrer"
                   href={item.href}
+                  area-label={`visit ${item.title} portal`}
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 420 420"
-                    stroke="white"
-                    fill="none"
-                  >
-                    <path stroke-width="26" d="M209,15a195,195 0 1,0 2,0z" />
-                    <path
-                      stroke-width="18"
-                      d="m210,15v390m195-195H15M59,90a260,260 0 0,0 302,0 m0,240 a260,260 0 0,0-302,0M195,20a250,250 0 0,0 0,382 m30,0 a250,250 0 0,0 0-382"
-                    />
-                  </svg>
+                  {!isHovered ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 420 420"
+                      stroke="white"
+                      fill="none"
+                    >
+                      <path strokeWidth="26" d="M209,15a195,195 0 1,0 2,0z" />
+                      <path
+                        strokeWidth="18"
+                        d="m210,15v390m195-195H15M59,90a260,260 0 0,0 302,0 m0,240 a260,260 0 0,0-302,0M195,20a250,250 0 0,0 0,382 m30,0 a250,250 0 0,0 0-382"
+                      />
+                    </svg>
+                  ) : (
+                    <span>Go to portal</span>
+                  )}
                 </a>
               )}
               {item.repository && (
@@ -40,6 +64,7 @@ export default function ShowcasesItem({ item }) {
                   rel="noreferrer"
                   className="w-8 h-8 bg-black rounded-full p-1 hover:scale-110 transition cursor-pointer z-50"
                   href={item.repository}
+                  area-label={`visit ${item.repository} github repositry`}
                 >
                   <svg
                     aria-hidden="true"

@@ -1,3 +1,4 @@
+
 export default function DocsPagination({ prev = '', next = '' }) {
   return (
     <div className="w-full flex my-20">

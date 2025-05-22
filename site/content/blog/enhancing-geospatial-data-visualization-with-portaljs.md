@@ -1,23 +1,23 @@
 ---
 title: 'Adding Maps to PortalJS: Enhancing Geospatial Data Visualization with PortalJS'
-date: 2023-07-18
+created: 2023-07-18
 authors: ['João Demenech', 'Luccas Mateus', 'Yoana Popova']
 filetype: 'blog'
 ---
 
 This post walks you though adding maps and geospatial visualizations to PortalJS.
 
-Are you interested in building rich and interactive data portals? Do you find value in the power and flexibility of JavaScript, Nextjs, and React? If so, [PortalJS](https://portaljs.com/) is for you. It's a state-of-the-art framework leveraging these technologies to help you build rich data portals.
+Are you interested in building rich and interactive data portals? Do you find value in the power and flexibility of JavaScript, Nextjs, and React? If so, [PortalJS](https://portaljs.org/) is for you. It's a state-of-the-art framework leveraging these technologies to help you build rich data portals.
 
-Effective data visualization lies in the use  of various data components. Within [PortalJS](https://portaljs.com/), we take data visualization a step further. It's not just about displaying data - it's about telling a story through combining a variety of data components.
+Effective data visualization lies in the use  of various data components. Within [PortalJS](https://portaljs.org/), we take data visualization a step further. It's not just about displaying data - it's about telling a story through combining a variety of data components.
 
 In this post we will share our latest enhancement to PortalJS: maps, a powerful tool for visualizing geospatial data. In this post, we will to take you on a tour of our experiments and progress in enhancing map functionalities on PortalJS. The journey is still in its early stages, with new facets being unveiled and refined as we perfect our API.
 
 ## Exploring Map Formats
 
-Maps play a crucial role in geospatial data visualization. Several formats exist for storing and sharing this type of data, with GeoJSON, KML, and shapefiles being among the most popular. As a prominent figure in the field of open-source data portal platforms, [PortalJS](https://portaljs.com/) strives to support as many map formats as possible.
+Maps play a crucial role in geospatial data visualization. Several formats exist for storing and sharing this type of data, with GeoJSON, KML, and shapefiles being among the most popular. As a prominent figure in the field of open-source data portal platforms, [PortalJS](https://portaljs.org/) strives to support as many map formats as possible.
 
-Taking inspiration from the ckanext-geoview extension, we currently support KML and GeoJSON formats in [PortalJS](https://portaljs.com/). This remarkable extension is a plugin for CKAN, the world’s leading open source data management system, that enables users to visualize geospatial data in diverse formats on an interactive map. Apart from KML and GeoJSON formats support, our roadmap entails extending compatibility to encompass all other formats supported by ckanext-geoview. Rest assured, we are committed to empowering users with a wide array of map format options in the future.
+Taking inspiration from the ckanext-geoview extension, we currently support KML and GeoJSON formats in [PortalJS](https://portaljs.org/). This remarkable extension is a plugin for CKAN, the world’s leading open source data management system, that enables users to visualize geospatial data in diverse formats on an interactive map. Apart from KML and GeoJSON formats support, our roadmap entails extending compatibility to encompass all other formats supported by ckanext-geoview. Rest assured, we are committed to empowering users with a wide array of map format options in the future.
 
 So, what makes these formats special?
 
@@ -27,7 +27,7 @@ So, what makes these formats special?
 
 ## Unveiling the Power of Leaflet and OpenLayers
 
-To display maps in [PortalJS](https://portaljs.com/), we utilize two powerful JavaScript libraries for creating interactive maps based on different layers: Leaflet and OpenLayers. Each offers distinct advantages (and disadvantages), inspiring us to integrate both and give users the flexibility to choose.
+To display maps in [PortalJS](https://portaljs.org/), we utilize two powerful JavaScript libraries for creating interactive maps based on different layers: Leaflet and OpenLayers. Each offers distinct advantages (and disadvantages), inspiring us to integrate both and give users the flexibility to choose.
 
 Leaflet is the leading open-source JavaScript library known for its mobile-friendly, interactive maps. With its compact size (just 42 KB of JS), it provides all the map features most developers need. Leaflet is designed with simplicity, performance and usability in mind. It works efficiently across all major desktop and mobile platforms.
 
@@ -59,8 +59,8 @@ Users can also choose a region of focus, which will depend on the data, by setti
 
 Through our ongoing enhancements to the [PortalJS library](https://storybook.portaljs.org/), we aim to empower users to create engaging and informative data portals featuring diverse map formats and data components.
 
-Why not give [PortalJS](https://portaljs.com/) a try today and discover the possibilities for your own data portals? To get started, check out our comprehensive documentation here: [PortalJS Documentation](https://portaljs.com/opensource).
+Why not give [PortalJS](https://portaljs.org/) a try today and discover the possibilities for your own data portals? To get started, check out our comprehensive documentation here: [PortalJS Documentation](https://portaljs.org/docs).
 
-Have questions or comments about using [PortalJS](https://portaljs.com/) for your data portals? Feel free to share your thoughts on our [Discord channel](https://discord.com/invite/EeyfGrGu4U). We're here to help you make the most of your data.
+Have questions or comments about using [PortalJS](https://portaljs.org/) for your data portals? Feel free to share your thoughts on our [Discord channel](https://discord.com/invite/EeyfGrGu4U). We're here to help you make the most of your data.
 
-Stay tuned for more exciting developments as we continue to enhance [PortalJS](https://portaljs.com/)!
+Stay tuned for more exciting developments as we continue to enhance [PortalJS](https://portaljs.org/)!

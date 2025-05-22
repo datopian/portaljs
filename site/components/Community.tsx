@@ -1,17 +1,20 @@
-import Container from './Container';
-import DiscordIcon from './icons/DiscordIcon';
-import EmailIcon from './icons/EmailIcon';
-import GitHubIcon from './icons/GitHubIcon';
+import Container from "./Container";
+import { H2 } from "./custom/header";
+import DiscordIcon from "./icons/DiscordIcon";
+import EmailIcon from "./icons/EmailIcon";
+import GitHubIcon from "./icons/GitHubIcon";
 
-import { siteConfig } from '@/config/siteConfig';
-import { getContributorsCount, getRepoInfo } from '@/lib/getGitHubData';
-import { useEffect, useState } from 'react';
+import siteConfig from "@/config/siteConfig";
+import { getContributorsCount, getRepoInfo } from "@/lib/getGitHubData";
+import { useEffect, useState } from "react";
 
 const Stat = ({ title, value, ...props }) => {
   return (
     <div {...props}>
-      <span className="text-4xl sm:text-6xl font-bold text-secondary">{value}</span>
-      <p className="text-lg font-medium">{title}</p>
+      <span className="text-4xl sm:text-6xl font-bold text-secondary">
+        {value}
+      </span>
+      <p className="text-lg font-medium sm:mt-2">{title}</p>
     </div>
   );
 };
@@ -32,7 +35,7 @@ const IconButton = ({ Icon, text, href, ...props }) => {
 
 export default function Community() {
   const [repoInfo, setRepoInfo] = useState<any>();
-  const [contributorsCount, setContributorsCount] = useState('');
+  const [contributorsCount, setContributorsCount] = useState("");
 
   useEffect(() => {
     //  This runs on client side and it's unlikely that users
@@ -45,7 +48,7 @@ export default function Community() {
       } else {
         //  If the request fail e.g API usage limit, use
         //  a placeholder
-        setRepoInfo({ stargazers_count: '+2k' });
+        setRepoInfo({ stargazers_count: "+2k" });
       }
     });
 
@@ -53,31 +56,46 @@ export default function Community() {
       if (res.success) {
         setContributorsCount(res.count);
       } else {
-        setContributorsCount('+70');
+        setContributorsCount("+70");
       }
     });
   }, []);
 
   return (
     <Container>
-      <h2
-        className="text-3xl font-bold text-primary dark:text-primary-dark"
-        id="community"
+      <H2
+        className="text-primary dark:text-primary-dark text-center sm:mb-4"
+        id="Community"
       >
         Community
-      </h2>
-      <p className="text-lg mt-2">
+      </H2>
+      <p className="text-lg opacity-75">
         We are growing. Get in touch or become a contributor!
       </p>
-      <div className="flex justify-center mt-12">
+      <div className="flex justify-center mt-8 text-amber-400">
         <Stat
           title="Stars on GitHub"
-          value={repoInfo?.stargazers_count}
+          value={
+            <span className="text-5xl">
+              {" "}
+              {/* Adjust font size using Tailwind's text-sm class */}
+              {repoInfo?.stargazers_count}
+            </span>
+          }
           className="mr-10"
         />
-        <Stat title="Contributors" value={contributorsCount} />
+        <Stat
+          title="Contributors"
+          value={
+            <span className="text-5xl">
+              {" "}
+              {/* Adjust font size using Tailwind's text-sm class */}
+              {contributorsCount}
+            </span>
+          }
+        />
       </div>
-      <div className="flex flex-wrap justify-center mt-12">
+      <div className="flex flex-wrap justify-center mt-4">
         <IconButton
           Icon={GitHubIcon}
           text="Star PortalJS on GitHub"
@@ -90,12 +108,12 @@ export default function Community() {
           className="sm:mr-4 mb-4 w-full sm:w-auto"
           href={siteConfig.discord}
         />
-        <IconButton
+        {/* <IconButton
           Icon={EmailIcon}
           text="Subscribe to the PortalJS newsletter"
           className="w-full sm:w-auto"
           href="#hero"
-        />
+        /> */}
       </div>
     </Container>
   );

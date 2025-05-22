@@ -1,6 +1,6 @@
 ---
 title: 'The OpenSpending Revamp: Behind the Scenes'
-date: 2023-10-13
+created: 2023-10-13
 authors: ['Luccas Mateus', 'João Demenech']
 filetype: 'blog'
 ---
@@ -11,7 +11,7 @@ In our last article, we explored [the Open Spending revamp](https://www.datopian
 
 ## The Core: PortalJS
 
-At the core of the revamped OpenSpending website is [PortalJS](https://portaljs.com), a JavaScript library that's a game-changer in building powerful data portals with data visualizations. What makes it so special? Well, it's packed with reusable React components that make our lives - and yours - a whole lot easier. Take, for example, our sleek CSV previews; they're brought to life by PortalJS' [FlatUI Component](https://storybook.portaljs.org/?path=/story/components-flatuitable--from-url). It helps transform raw numbers into visuals that you can easily understand and use. Curious to know more? Check out the [official PortalJS website](https://portaljs.com).
+At the core of the revamped OpenSpending website is [PortalJS](https://portaljs.org), a JavaScript library that's a game-changer in building powerful data portals with data visualizations. What makes it so special? Well, it's packed with reusable React components that make our lives - and yours - a whole lot easier. Take, for example, our sleek CSV previews; they're brought to life by PortalJS' [FlatUI Component](https://storybook.portaljs.org/?path=/story/components-flatuitable--from-url). It helps transform raw numbers into visuals that you can easily understand and use. Curious to know more? Check out the [official PortalJS website](https://portaljs.org).
 
 ![Data visualization](/assets/blog/2023-10-13-the-open-spending-revamp-behind-the-scenes/data-visualization.png)
 

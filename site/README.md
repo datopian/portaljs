@@ -1,25 +1,5 @@
-This the PortalJS website.
+# Flowershow default template
 
-It is built on [Next.js](https://nextjs.org/).
+Flowershow default app template. Uses Next.js with Tailwind and MDX.
 
-## Getting Started
-
-First, index the markdown pages:
-
-```bash
-npm run mddb
-```
-
-Then, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Deployment
-
-We currently deploy on Vercel.
+To learn more how to create and customize your Flowershow website check our docs at https://flowershow.app/docs

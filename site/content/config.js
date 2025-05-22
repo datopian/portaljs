@@ -1,66 +1,74 @@
 const config = {
-  title: 'PortalJS - The JavaScript framework for data portals.',
+  title: 'Open-Source Open Data Portal in the Cloud | PortalJS',
   description:
-    'PortalJS is a JavaScript framework for rapidly building rich data portal frontends using a modern frontend approach.',
+    'PortalJS Cloud is the easiest way to get started with Open Data. Perfect for governments, non-profits, academics, and companies of all sizes.',
+  navbarTitle: {
+    text: '🌀 PortalJS',
+  },
   theme: {
     default: 'dark',
-    toggleIcon: '/images/theme-button.svg',
   },
+  contentExclude: ['data-literate-demo.md'],
   author: 'Datopian',
-  authorLogo: '/datopian-logo.webp',
+  authorLogo: '/static/img/datopian-logo-white.svg',
   authorUrl: 'https://datopian.com/',
-  navbarTitle: {
-    // logo: "/images/logo.svg",
-    text: '🌀 DataHub PortalJS',
-    // version: "Alpha",
-  },
   navLinks: [
-    { name: 'Docs', href: '/docs' },
-    // { name: "Components", href: "/docs/components" },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Howtos', href: '/howtos' },
-    { name: 'Guide', href: '/guide' },
     {
-      name: 'Showcases',
-      href: '/showcases/'
+      name: 'Showcase',
+      href: '/showcase',
+    },
+
+    {
+      name: 'Pricing',
+      href: '/pricing',
     },
     {
-      name: 'Components',
-      href: 'https://storybook.portaljs.org',
+      name: 'Docs',
+      href: '/docs',
+    },
+    {
+      name: 'Blog',
+      href: '/blog',
+    },
+    {
+      name: 'FAQ',
+      href: '/faq',
+    },
+    {
+      name: 'Open source 🌐',
+      href: '/opensource',
       target: '_blank',
+      style: 'text-blue-400 ',
     },
-    {
-      name: 'Cloud ☁️',
-      href: 'https://portaljs.com/',
-      target: '_blank',
-      style: 'text-blue-600 dark:text-blue-400'
-    },
-    // { name: "DL Demo", href: "/data-literate/demo" },
-    // { name: "Excel Viewer", href: "/excel-viewer" },
   ],
-  footerLinks: [],
+  footerLinks: [
+    {
+      name: 'LINKS',
+      subItems: [{ href: '/', name: 'Home' }],
+    },
+    {
+      name: 'Contact',
+      subItems: [
+        { href: 'mailto:contact@datopian.com', name: 'contact@datopian.com' },
+      ],
+    },
+  ],
   nextSeo: {
-    additionalLinkTags: [
-      { rel: 'icon', href: '/favicon.ico' },
-      { rel: 'apple-touch-icon', href: '/icon.png', sizes: '120x120' },
-    ],
-    canonical: 'https://portaljs.com/',
     openGraph: {
-      type: 'website',
-      title:
-        'PortalJS - rapidly build rich data portals using a modern frontend framework.',
-      description:
-        'PortalJS is a framework for rapidly building rich data portal frontends using a modern frontend approach. PortalJS can be used to present a single dataset or build a full-scale data catalog and portal.',
-      locale: 'en_US',
+      additionalLinkTags: [
+        { rel: 'icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', href: '/icon.png', sizes: '120x120' },
+      ],
       images: [
         {
-          url: '/homepage-screenshot.png', //  TODO
-          alt: 'PortalJS - rapidly build rich data portals using a modern frontend framework.',
+          url: 'https://portaljs.com/static/img/seo.webp',
+          alt: 'PortalJS Cloud',
           width: 1280,
           height: 720,
-          type: 'image/jpg',
+          type: 'image/webp',
         },
       ],
+      description: 'PortalJS Cloud is the easiest way to get started with Open Data. Perfect for governments, non-profits, academics, and companies of all sizes.',
     },
     twitter: {
       handle: '@datopian',
@@ -68,10 +76,9 @@ const config = {
       cardType: 'summary_large_image',
     },
   },
-  github: 'https://github.com/datopian/datahub',
-  discord: 'https://discord.gg/KrRzMKU',
-  tableOfContents: true,
-  analytics: 'G-96GWZHMH57',
-  // editLinkShow: true,
-};
-export default config;
+  showToc: true,
+  analytics: 'G-48FQ78FSGJ',
+  github: 'https://github.com/datopian/portaljs',
+  discord: 'https://discord.gg/nRyhvfkq',
+}
+export default config

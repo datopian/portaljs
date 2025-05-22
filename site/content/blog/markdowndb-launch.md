@@ -1,7 +1,7 @@
 ---
 title: 'Announcing MarkdownDB: an open source tool to create an SQL API to your markdown files! 🚀'
 description: MarkdownDB - an open source library to transform markdown content into sql-queryable data. Build rich markdown-powered sites easily and reliably. New dedicated website at markdowndb.com
-date: 2023-10-11
+created: 2023-10-11
 authors: ['Ola Rubaj']
 filetype: blog
 ---

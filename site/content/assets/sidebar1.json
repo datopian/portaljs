@@ -1,0 +1,31 @@
+[
+  {
+    "title": "Getting started",
+    "links": [
+      {
+        "title": "Introduction",
+        "href": "/opensource"
+      },
+      {
+        "title": "Setup",
+        "href": "/opensource/docs/setup"
+      },
+      {
+        "title": "Creating new datasets",
+        "href": "/opensource/docs/creating-new-datasets"
+      },
+      {
+        "title": "Searching datasets",
+        "href": "/opensource/docs/searching-datasets"
+      },
+      {
+        "title": "Showing metadata",
+        "href": "/opensource/docs/showing-metadata"
+      },
+      {
+        "title": "Deploying your PortalJS app",
+        "href": "/opensource/docs/deploying-your-portaljs-app"
+      }
+    ]
+  }
+]

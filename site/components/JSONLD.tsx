@@ -1,5 +1,5 @@
-import { ArticleJsonLd } from 'next-seo';
-import { useRouter } from 'next/router';
+import { ArticleJsonLd } from "next-seo";
+import { useRouter } from "next/router";
 
 export default function JSONLD({
   meta,
@@ -12,7 +12,7 @@ export default function JSONLD({
     return <></>;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://portaljs.com';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://portaljs.com";
   const pageUrl = `${baseUrl}/${meta.urlPath}`;
 
   const imageMatches = source.match(
@@ -22,16 +22,16 @@ export default function JSONLD({
   if (imageMatches) {
     images = [...imageMatches];
     images = images.map((img) =>
-      img.startsWith('http')
+      img.startsWith("http")
         ? img
-        : `${baseUrl}${img.startsWith('/') ? '' : '/'}${img}`
+        : `${baseUrl}${img.startsWith("/") ? "" : "/"}${img}`
     );
   }
 
   let Component: JSX.Element;
 
   const isBlog: boolean =
-    /^blog\/.*/.test(meta.urlPath) || meta.filetype === 'blog';
+    /^blog\/.*/.test(meta.urlPath) || meta.filetype === "blog";
   const isDoc: boolean = /^((docs)|(howtos\/)|(guide\/)).*/.test(meta.urlPath);
 
   if (isBlog) {
@@ -42,7 +42,7 @@ export default function JSONLD({
         title={meta.title}
         datePublished={meta.date}
         dateModified={meta.date}
-        authorName={meta.authors.length ? meta.authors[0].name : 'PortalJS'}
+        authorName={meta.authors.length ? meta.authors[0].name : "PortalJS Cloud"}
         description={meta.description}
         images={images}
       />
@@ -55,7 +55,7 @@ export default function JSONLD({
         images={images}
         datePublished={meta.date}
         dateModified={meta.date}
-        authorName={meta.authors.length ? meta.authors[0].name : 'PortalJS'}
+        authorName={meta.authors.length ? meta.authors[0].name : "PortalJS Cloud"}
         description={meta.description}
       />
     );

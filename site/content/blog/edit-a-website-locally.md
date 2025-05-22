@@ -1,6 +1,6 @@
 ---
 title: 'Tutorial 2: Edit your Flowershow website locally on your computer'
-date: 2023-06-22
+created: 2023-06-22
 authors: ['Ola Rubaj']
 filetype: 'blog'
 ---

@@ -1,9 +1,9 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-import { siteConfig } from "../config/siteConfig";
+import siteConfig from "../config/siteConfig";
 
-export default function ThemeSelector() {
+export function ThemeSelector() {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
@@ -20,14 +20,15 @@ export default function ThemeSelector() {
     <button
       type="button"
       className={`
-        min-w-fit transition duration-500
+        min-w-fit pl-2 transition duration-500
         ${theme === "dark" ? "grayscale opacity-70" : ""}
       `}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
       <img
         src={siteConfig.theme.toggleIcon}
-        alt="toggle theme"
+        alt="Toggle theme"
+        title="Toggle theme"
         width={24}
         height={24}
         className="max-w-24 max-h-24"

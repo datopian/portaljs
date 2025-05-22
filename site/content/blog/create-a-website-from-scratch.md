@@ -1,6 +1,6 @@
 ---
 title: 'Tutorial 1: Create a website from scratch using Markdown and Flowershow'
-date: 2023-06-20
+created: 2023-06-20
 authors: ['Ola Rubaj']
 filetype: 'blog'
 ---
