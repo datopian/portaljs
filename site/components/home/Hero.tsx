@@ -75,7 +75,7 @@ export default function Hero() {
                   style="secondary"
                   className="text-sm"
                 >
-                  Book a demo
+                  Book a demossss
                 </ButtonLink>
               </div>
             </div>
