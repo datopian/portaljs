@@ -1,0 +1,59 @@
+import fs from "fs";
+import Image from "next/image"; // Ensure Image is imported
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { collectHeadings } from "@portaljs/core";
+import Head from "next/head";
+import { LogoJsonLd } from "next-seo";
+
+import Layout from "../components/Layout";
+import Community from "@/components/Community";
+import Features from "@/components/Features";
+
+export default function Home({ sidebarTree }) {
+  const router = useRouter();
+  const [tableOfContents, setTableOfContents] = useState([]);
+
+  useEffect(() => {
+    const headingNodes = document.querySelectorAll('h2');
+    const toc = collectHeadings(headingNodes);
+    setTableOfContents(toc ?? []);
+  }, [router.asPath]);
+
+  return (
+    <>
+      <Head>
+        <title>PortalJS - Open Source Data Portal Framework</title>
+        <meta
+          name="description"
+          content="Build powerful data portals with ease using PortalJS"
+        />
+      </Head>
+      <LogoJsonLd
+        url="https://portaljs.org"
+        logo="https://portaljs.org/icon.png"
+      />
+      <Layout
+        isHomePage={true}
+        tableOfContents={tableOfContents}
+        sidebarTree={sidebarTree}
+      >
+        <Features />
+        <Community />
+      </Layout>
+    </>
+  );
+}
+
+export function getStaticProps() {
+  const tree = fs.readFileSync("content/assets/sidebar.json", {
+    encoding: "utf-8",
+  });
+  const sidebarTree = JSON.parse(tree);
+
+  return {
+    props: {
+      sidebarTree,
+    },
+  };
+}
