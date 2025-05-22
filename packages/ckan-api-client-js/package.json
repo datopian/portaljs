@@ -1,6 +1,6 @@
 {
   "name": "@portaljs/ckan-api-client-js",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

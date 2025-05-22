@@ -1,5 +1,11 @@
 # @portaljs/ckan-api-client-js
 
+## 1.4.0
+
+### Minor Changes
+
+- [#1367](https://github.com/datopian/portaljs/pull/1367) [`7fe355f3e519411b9ce0c9724232be563ec136e2`](https://github.com/datopian/portaljs/commit/7fe355f3e519411b9ce0c9724232be563ec136e2) Thanks [@demenech](https://github.com/demenech)! - Initial public release
+
 ## 1.3.3
 
 ### Patch Changes
