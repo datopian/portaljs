@@ -4,6 +4,7 @@ created: 2025-05-19
 description: "NASA’s open data portal is powered by CKAN—but what if its user experience could match its scientific depth? This post explores how a decoupled frontend using PortalJS can transform performance, design flexibility, and scalability—without changing the backend. Learn how CKAN and PortalJS can work together to deliver a faster, smarter, and more user-friendly data experience."
 authors: ['anuveyatsu', 'popovayoana']
 filetype: 'blog'
+image: /static/img/blog/2025-05-19-why-anyone-should-consider-decoupled-frontend/image2.webp
 ---
 
 ## **Imagine a Faster, Smarter NASA Data Portal**

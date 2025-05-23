@@ -38,7 +38,7 @@ export default function Page({ source, meta, sidebarTree }) {
   })
 
   // Generate the canonical URL (adjust this logic if necessary)
-  const canonicalUrl = `https://www.portaljs.com${meta.urlPath}`
+  const canonicalUrl = `https://www.portaljs.com/${meta.urlPath}`
   const title = meta.metatitle || meta.title
   const description = meta.metadescription || meta.description
   const image = meta.image ? `https://www.portaljs.com` + meta.image : siteConfig.nextSeo.openGraph.images[0].url

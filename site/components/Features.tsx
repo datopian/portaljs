@@ -1,6 +1,3 @@
-import Container from "./Container";
-import { H1 } from "./custom/header";
-
 const features: { title: string; description: string; icon: string }[] = [
   {
     title: "Unified sites",
@@ -41,11 +38,16 @@ const features: { title: string; description: string; icon: string }[] = [
 export default function Features() {
   return (
     <div className="!m-0 !p-0">
-      <H1 className=" text-primary dark:text-primary-dark ml-0">
-        {" "}
-        How PortalJS works?
-      </H1>
-      <p className="text-base mt-2  text-primary dark:text-primary-dark">
+      <p className="text-base mt-2 text-primary dark:text-primary-dark">
+        PortalJS is a composition-focused framework that provides reusable code
+        snippets and examples for developers to integrate into their projects.
+        Instead of offering a traditional component library that developers install
+        and use directly, it emphasizes the flexibility and uniqueness of data portals
+        by providing customizable, copy-pastable snippets that developers can tailor
+        to their specific needs. PortalJS still provides a minimal core library
+        with just the essentials designed for data portals.
+      </p>
+      <p className="text-base mt-2 text-primary dark:text-primary-dark">
         PortalJS is built in JavaScript and React on top of the popular Next.js
         framework, assuming a "decoupled" approach where the frontend is a
         separate service from the backend and interacts with backend(s) via an
