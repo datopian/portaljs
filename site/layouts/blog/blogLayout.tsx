@@ -32,7 +32,7 @@ export const BlogLayout: React.FC<Props> = ({ children, ...frontMatter }) => {
       <article className="docs prose prose-a:text-primary dark:prose-a:text-primary-dark prose-strong:text-primary dark:prose-strong:text-primary-dark prose-code:text-primary dark:prose-code:text-primary-dark prose-headings:text-primary dark:prose-headings:text-primary-dark prose text-primary dark:text-primary-dark prose-headings:font-headings dark:prose-invert prose-a:break-words mx-auto p-6">
         <header>
           <div className="mb-4 flex-col items-center">
-            {title && <h1 className="flex justify-center mb-0">{title} + TESTTTT</h1>}
+            {title && <h1 className="flex justify-center mb-0">{title}</h1>}
             {date && (
               <p className="mt-2 text-sm text-zinc-400 dark:text-zinc-500 flex justify-left">
                 <time dateTime={date}>{formatDate(date)}</time>
