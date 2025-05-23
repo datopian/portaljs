@@ -79,6 +79,6 @@ const config = {
   showToc: true,
   analytics: 'G-48FQ78FSGJ',
   github: 'https://github.com/datopian/portaljs',
-  discord: 'https://discord.gg/nRyhvfkq',
+  discord: 'https://discord.com/invite/KrRzMKU ',
 }
 export default config
