@@ -45,7 +45,7 @@ For programmatic access, users can create datasets via API. The API allows datas
 Endpoint:
 
 ```javascript
-POST /api/3/action/package_create`
+POST /api/3/action/package_create
 ```
 
 Request Payload:
