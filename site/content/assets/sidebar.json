@@ -29,7 +29,7 @@
     ]
   },
   {
-    "title": "Guides",
+    "title": "Develop",
     "links": [
       {
         "title": "Build a data portal with CKAN",
@@ -50,6 +50,15 @@
       {
         "title": "How to enable direct file uploads to Cloudflare on CKAN",
         "href": "/opensource/developers/enabling-direct-file-uploads-api-ckan-cloudflare"
+      }
+    ]
+  },
+  {
+    "title": "Tutorials",
+    "links": [
+      {
+        "title": "Dataset Management in PortalJS Cloud",
+        "href": "/opensource/guide"
       }
     ]
   },
