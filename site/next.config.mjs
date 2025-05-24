@@ -29,6 +29,11 @@ export default {
         destination: '/showcase',
         permanent: true,
       },
+      {
+        source: '/docs',
+        destination: '/opensource/docs',
+        permanent: true,  // 301 redirect; set to false for a 302
+      },
     ];
   },
   eslint: {

@@ -24,7 +24,7 @@ const config = {
     },
     {
       name: 'Docs',
-      href: '/docs',
+      href: '/opensource/docs',
     },
     {
       name: 'Blog',
