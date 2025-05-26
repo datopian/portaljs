@@ -81,7 +81,7 @@ export default function SocialProof() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-center items-center gap-x-4 gap-y-5 w-full mt-6">
           {logos.map((logo, index) => (
             <Link
-              className="flex items-center justify-center w-full  h-full max-h-24 p-2 opacity-100 opacity-75 hover:opacity-100 transition-all duration-300 "
+              className="flex items-center justify-center w-full h-full max-h-24 p-2 opacity-75 hover:opacity-100 transition-all duration-300"
               key={logo.srcDark + index}
               title={logo.name}
               href={logo.url}

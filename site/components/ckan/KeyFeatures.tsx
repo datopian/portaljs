@@ -77,15 +77,15 @@ export const KeyFeatures = () => {
           </H3>
         </div>
         <div className="mt-10 grid grid-cols-1 gap-4 sm:mt-16 lg:grid-cols-6 lg:grid-rows-2">
-          {features.map((solution, index) => (
-            <div key={index} className={`flex p-px ${solution.colSpan}`}>
-              <div className={`overflow-hidden rounded-lg dark:bg-slate-900 ring-1 ring-slate-200 dark:ring-slate-800 dark:hover:bg-slate-800 hover:bg-slate-100 transition-all duration-300 rounded-lg shadow-lg ${solution.style}`}>
+          {features.map((feature, index) => (
+            <div key={index} className={`flex p-px ${feature.colSpan}`}>
+              <div className={`overflow-hidden rounded-lg dark:bg-slate-900 ring-1 ring-slate-200 dark:ring-slate-800 dark:hover:bg-slate-800 hover:bg-slate-100 transition-all duration-300 shadow-lg ${feature.style}`}>
                 <div className="flex flex-col items-start p-10">
-                  <Player src={`/static/icons/${theme}/${solution.icon}.json`} autoplay loop className={`w-14 h-14 ${solution.iconStyle}`} />
+                  <Player src={`/static/icons/${theme}/${feature.icon}.json`} autoplay loop className={`w-14 h-14 ${feature.iconStyle}`} />
                   <p className="mt-2 text-xl font-semibold tracking-tight dark:text-white">
-                    {solution.title}
+                    {feature.title}
                   </p>
-                  <p className="mt-2 ">{solution.description}</p>
+                  <p className="mt-2 ">{feature.description}</p>
                 </div>
               </div>
             </div>
