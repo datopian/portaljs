@@ -33,7 +33,7 @@ export default function Schedule() {
         </div>
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 -top-16 z-10 flex transform-gpu justify-center overflow-hidden blur-3xl"
+          className="absolute inset-x-0 -top-16 z-10 flex transform-gpu justify-center overflow-hidden blur-3xl pointer-events-none"
         >
           <div
             style={{
