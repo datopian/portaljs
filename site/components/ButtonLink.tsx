@@ -4,12 +4,16 @@ type ButtonLinkProps = {
   style?: "primary" | "secondary";
   children: string;
   className?: string;
+  title?: string;
+  href?: string;
 } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "style">;
 
 export default function ButtonLink({
   style = "primary",
   children,
   className = "",
+  href = "https://cloud.portaljs.com/",
+  title = "Get started with PortalJS Cloud",
   ...rest
 }: ButtonLinkProps) {
   let _className: string =
@@ -25,8 +29,8 @@ export default function ButtonLink({
 
   return (
     <a
-      href="https://cloud.portaljs.com/"
-      title="Get started with PortalJS Cloud"
+      href={href}
+      title={title}
       className={_className}
       {...rest}
     >

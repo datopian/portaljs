@@ -26,6 +26,7 @@ export default function Hero() {
             <ButtonLink
               style="secondary"
               className="mt-8 text-sm"
+              title="Deploy on Vercel"
               href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdatopian%2Fportaljs-frontend-starter&env=NEXT_PUBLIC_DMS&envDescription=DMS%20endpoint%2C%20e.g.%2C%20a%20CKAN%20instance%20URL.%20For%20testing%20purposes%2C%20you%20can%20use%20https%3A%2F%2Fapi.cloud.portaljs.com%2F&project-name=my-portaljs-app&repository-name=my-portaljs-app"
             >
               Deploy on Vercel
