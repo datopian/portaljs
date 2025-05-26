@@ -19,7 +19,7 @@ export default function OSS() {
       <Layout>
         <Hero />
         <Container>
-          <Community />
+          <Community homePage={false} />
         </Container>
       </Layout>
     </>
