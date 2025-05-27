@@ -22,6 +22,16 @@ export default function Hero() {
               Transform OpenMetadata's technical interface into user-friendly, customized data catalogs for business users.
             </p>
 
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+              <ButtonLink
+                href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
+                title="Book a Free Consultation"
+                className="text-sm"
+              >
+                Book a Free Consultation
+              </ButtonLink>
+            </div>
+
             <div className="mt-16 mb-12 flex flex-col md:flex-row items-center justify-center gap-8">
               <div className="bg-slate-800 dark:bg-slate-900 p-6 rounded-xl shadow-xl w-full md:w-1/2 relative">
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
@@ -60,15 +70,6 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 my-8">
-              <ButtonLink
-                href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
-                title="Book a Free Consultation"
-                className="text-sm"
-              >
-                Book a Free Consultation
-              </ButtonLink>
-            </div>
           </div>
         </div>
       </div>
