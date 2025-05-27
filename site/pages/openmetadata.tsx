@@ -113,7 +113,7 @@ export default function OpenMetadata() {
           <Testimonial />
         </div>
       </div>
-      <Schedule />
+      <Schedule calendar="https://calendar.app.google/iQkon85iKURfdBtX7" />
     </Layout>
   )
 }
