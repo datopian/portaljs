@@ -5,6 +5,7 @@ import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd } from 'next-seo'
 import Layout from '@/components/Layout'
 import { CommonUseCases } from '@/components/openmetadata/CommonUseCases'
 import { FAQ } from '@/components/openmetadata/FAQ'
+import { Testimonial } from '@/components/openmetadata/Testimonial'
 import FAQStructuredData from '@/components/FAQStructuredData'
 
 export default function OpenMetadata() {
@@ -105,6 +106,11 @@ export default function OpenMetadata() {
       <div className="relative max-w-none w-full flex justify-center bg-slate-50 dark:bg-slate-900">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
           <FAQ />
+        </div>
+      </div>
+      <div className="flex justify-center">
+        <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
+          <Testimonial />
         </div>
       </div>
       <Schedule />
