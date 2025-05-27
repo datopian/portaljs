@@ -52,6 +52,16 @@ export default function OpenMetadata() {
           <Hero />
         </div>
       </div>
+      <div className="flex justify-center bg-slate-50 dark:bg-slate-900 py-16">
+        <div className="max-w-4xl px-4 sm:px-8 xl:px-12 text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-6">
+            Why Pair PortalJS with OpenMetadata?
+          </h2>
+          <p className="text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
+            OpenMetadata helps you organize metadata. But for many teams, its interface becomes a barrier — not a bridge. PortalJS unlocks OpenMetadata's full value by letting you build tailored, branded portals for different user groups. You get clean layouts, intuitive navigation, and embedded context — all without modifying the backend.
+          </p>
+        </div>
+      </div>
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           <KeyFeatures />
