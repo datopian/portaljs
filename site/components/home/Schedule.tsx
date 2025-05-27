@@ -47,9 +47,6 @@ export default function Schedule({ calendar = "https://calendar.app.google/sn2PU
             className="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-[#80caff] to-[#4f46e5] opacity-25 rotate-180"
           />
         </div>
-        <p className="text-center">
-          No credit card required. 14-day free trial.
-        </p>
       </div>
     </div>
   )
