@@ -8,7 +8,7 @@ filetype: 'blog'
 
 We've just released our first tutorial that covers the fundamentals of [MarkdownDB](https://github.com/datopian/markdowndb) - our new package for treating markdown files as a database. If you've been curious about how to manage your markdown files more effectively, this tutorial is an excellent starting point!
 
-![Gif](/assets/blog/markdowndb.gif)
+![Gif](/static/img/blog/2023-05-26-lean-how-to-use-markdown/markdowndb.gif)
 
 ## What is MarkdownDB?
 
@@ -72,7 +72,7 @@ Now, let's explore the database. We can do it with any SQLite viewer, e.g. https
 
 In our case, the `files` table will look like this:
 
-![[/assets/blog/sqlite-viewer.png]]
+![[/static/img/blog/2023-05-26-lean-how-to-use-markdown/sqlite-viewer.png]]
 
 You can also explore the database from the command line, e.g.:
 
@@ -260,7 +260,7 @@ process.exit(0);
 
 The above script will output the following to the terminal:
 
-![[/assets/blog/output.png]]
+![[/static/img/blog/2023-05-26-lean-how-to-use-markdown/output.png]]
 
 ## Done!
 
