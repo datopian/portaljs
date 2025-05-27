@@ -39,19 +39,19 @@ Both components have some similar features and props, such as:
 
 ### Polygons and points
 
-![Map with polygons and points](/assets/blog/2023-07-18-map-polygons-and-points.png)
+![Map with polygons and points](/static/img/blog/2023-07-18-Adding-maps-to-portaljs/2023-07-18-map-polygons-and-points.png)
 
 Our initial version enables the use of both vectors and points to display information. Points are simpler and faster to render than vectors, but they have less detail and interactivity. For example, if you have data that is represented by coordinates or addresses, you can use points to show them on the map. This way, you can avoid time-consuming loading and rendering complex vector shapes that may slow down your map.
 
 ### Tooltips
 
-![Map with tooltips](/assets/blog/2023-07-18-map-tooltips.png)
+![Map with tooltips](/static/img/blog/2023-07-18-Adding-maps-to-portaljs/2023-07-18-map-tooltips.png)
 
 We have implemented an exciting feature that enhances the usability of our map component: tooltips. When you hover over a polygon or point on the map, a small pop-up window, known as a tooltip, appears. This tooltip provides relevant details about the feature under your cursor, according to what features the map creator wants to highlight. For example, when exploring countries, you can effortlessly discover their name, population, and area by hovering over them. Similarly, hovering over cities reveals useful information like their name, temperature, and elevation. To enable this handy tooltip functionality on our map, simply include a tooltip prop when using the map component.
 
 ### Focus
 
-![Map with polygons over a region](/assets/blog/2023-07-18-map-polygons-on-region.png)
+![Map with polygons over a region](/static/img/blog/2023-07-18-Adding-maps-to-portaljs/2023-07-18-map-polygons-on-region.png)
 
 Users can also choose a region of focus, which will depend on the data, by setting initial center coordinates and zoom level. This is especially helpful for maps that are not global, such as the ones that use data from a specific country, city or region.
 

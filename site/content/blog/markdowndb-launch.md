@@ -136,7 +136,7 @@ export default clientPromise;
 
 And share it with the world!
 
-![[markdowbdb-launch-site-example.png]]
+![[/static/img/blog/markdowbdb-launch-site-example.png]]
 
 👉 [Read the full tutorial](https://markdowndb.com/blog/basic-tutorial)
 

@@ -13,7 +13,7 @@ By the end of this tutorial you will:
 - be able to edit the text and add pages, all from an online interface without installing anything.
 
 Below is a screenshot of how the final website will look like:
-![[tutorial-1-result.png]]
+![[/static/img/blog/tutorial-1-result.png]]
 
 ## Prerequisites
 

@@ -47,21 +47,21 @@ LifeItself.org is our website built on the Flowershow template, and it's been ge
 
 - **Team Top Selection**
 
-![[life-itself-top-picks.png]]
+![[/static/img/blog/2023-09-02-what-we-shipped-in-june-aug/life-itself-top-picks.png]]
 
 - **Latest Blog Posts**
 
-![[life-itself-latest-blogs.png]]
+![[/static/img/blog/2023-09-02-what-we-shipped-in-june-aug/life-itself-latest-blogs.png]]
 
 - And the long awaited filtering by category 🎉
 
-![[life-itself-categories.png]]
+![[/static/img/blog/2023-09-02-what-we-shipped-in-june-aug/life-itself-categories.png]]
 
 [👉 Check out the changes!](https://lifeitself.org/blog)
 
 2. **Blog posts layout revamp**: Refreshed design with share options, reading time estimates, and more.
 
-![[life-itself-blog-post.png]]
+![[/static/img/blog/2023-09-02-what-we-shipped-in-june-aug/life-itself-blog-post.png]]
 
 ---
 
