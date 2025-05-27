@@ -33,7 +33,7 @@ export const CommonUseCases = () => {
       <div className="">
         <H2 className="text-center mb-4">Common Use Cases</H2>
         <H3 className="text-center opacity-75">
-          Solving OpenMetadata's user experience challenges with PortalJS custom frontends.
+          Still wondering how PortalJS would fit into your org? These are the most popular ways teams use it.
         </H3>
         <div className="mt-16 grid grid-cols-1 gap-y-12 sm:gap-x-12 lg:grid-cols-3 lg:gap-x-6">
           {features.map((feature) => (
