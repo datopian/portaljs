@@ -17,12 +17,12 @@ export default function OpenMetadata() {
           />
           {/* 2. Base SEO tags */}
           <NextSeo
-            title="Make OpenMetadata User-Friendly | Business-Ready Data Catalog Frontend"
+            title="Turn OpenMetadata into a Business-Friendly Data Catalog"
             description="Transform OpenMetadata's technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single OpenMetadata instance."
             canonical="https://portaljs.com/openmetadata"
             openGraph={{
               url: 'https://portaljs.com/openmetadata',
-              title: 'Make OpenMetadata User-Friendly | Business-Ready Data Catalog Frontend',
+              title: 'Turn OpenMetadata into a Business-Friendly Data Catalog',
               description: 'Transform OpenMetadata\'s technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single OpenMetadata instance.',
               site_name: 'PortalJS',
             }}
@@ -31,7 +31,7 @@ export default function OpenMetadata() {
           <WebPageJsonLd
             id="https://portaljs.com/openmetadata#webpage"
             url="https://portaljs.com/openmetadata"
-            title="Make OpenMetadata User-Friendly | Business-Ready Data Catalog Frontend"
+            title="Turn OpenMetadata into a Business-Friendly Data Catalog"
             description="Transform OpenMetadata's technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single OpenMetadata instance."
           />
           {/* 4. Breadcrumb schema */}
