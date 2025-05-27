@@ -37,36 +37,42 @@ export default function Hero() {
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                   Without PortalJS
                 </div>
-                <h3 className="text-white text-lg mb-2">Technical OpenMetadata UI</h3>
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <Player
-                    src={`/static/icons/${theme}/api.json`}
-                    autoplay
-                    loop
-                    className="w-16 h-16"
-                  />
-                </div>
-                <div className="text-slate-300 text-sm mb-2">
-                  Complex technical interfaces overwhelming for business users
-                </div>
+                <h3 className="text-white text-lg mb-4">Technical OpenMetadata UI</h3>
+                <ul className="text-left text-slate-300 text-sm space-y-2">
+                  <li className="flex items-start">
+                    <span className="mr-2">❌</span>
+                    <span>Complex, developer-oriented UI</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">❌</span>
+                    <span>Hard for business users to explore metadata</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">❌</span>
+                    <span>Limited frontend customization</span>
+                  </li>
+                </ul>
               </div>
 
               <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-xl shadow-xl w-full md:w-1/2 relative">
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                   With PortalJS
                 </div>
-                <h3 className="text-slate-800 dark:text-white text-lg mb-2">Business-Friendly UI</h3>
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <Player
-                    src={`/static/icons/${theme}/data-catalog.json`}
-                    autoplay
-                    loop
-                    className="w-16 h-16"
-                  />
-                </div>
-                <div className="text-slate-700 dark:text-slate-300 text-sm mb-2">
-                  Intuitive interfaces tailored for different user groups
-                </div>
+                <h3 className="text-slate-800 dark:text-white text-lg mb-4">Business-Friendly UI</h3>
+                <ul className="text-left text-slate-700 dark:text-slate-300 text-sm space-y-2">
+                  <li className="flex items-start">
+                    <span className="mr-2">✅</span>
+                    <span>Clean, user-friendly experience</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">✅</span>
+                    <span>Tailored portals for every department</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="mr-2">✅</span>
+                    <span>Fully customizable interface & workflows</span>
+                  </li>
+                </ul>
               </div>
             </div>
 
