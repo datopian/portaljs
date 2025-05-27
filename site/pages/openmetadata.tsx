@@ -4,10 +4,40 @@ import Schedule from '@/components/home/Schedule'
 import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd } from 'next-seo'
 import Layout from '@/components/Layout'
 import { CommonUseCases } from '@/components/openmetadata/CommonUseCases'
+import { FAQ } from '@/components/openmetadata/FAQ'
+import FAQStructuredData from '@/components/FAQStructuredData'
 
 export default function OpenMetadata() {
+  const faqItems = [
+    {
+      question: 'What is PortalJS?',
+      answer: 'PortalJS is a modern frontend framework (Next.js-based) for building fast, customizable data portals — compatible with OpenMetadata, CKAN, and other backends.'
+    },
+    {
+      question: 'Does PortalJS replace OpenMetadata?',
+      answer: 'No. It works with your OpenMetadata backend — just replaces the frontend for better UX.'
+    },
+    {
+      question: 'Can I use PortalJS without modifying OpenMetadata\'s backend?',
+      answer: 'Yes. PortalJS works as a decoupled frontend — no need to touch your metadata engine.'
+    },
+    {
+      question: 'Is this open source or commercial?',
+      answer: 'PortalJS is open source. PortalJS Cloud offers a fully managed SaaS version with support and custom features.'
+    },
+    {
+      question: 'How long does setup take?',
+      answer: 'You can launch a basic branded portal in under 5 minutes using PortalJS Cloud.'
+    },
+    {
+      question: 'Can I launch without engineering resources?',
+      answer: 'Yes. Use PortalJS Cloud\'s no-code builder and components to get started in under 5 minutes.'
+    }
+  ];
+
   return (
     <Layout isHomePage={true}>
+      <FAQStructuredData questions={faqItems} />
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           {/* 1. Your logo structured data */}
@@ -70,6 +100,11 @@ export default function OpenMetadata() {
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           <CommonUseCases />
+        </div>
+      </div>
+      <div className="relative max-w-none w-full flex justify-center bg-slate-50 dark:bg-slate-900">
+        <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
+          <FAQ />
         </div>
       </div>
       <Schedule />
