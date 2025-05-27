@@ -7,7 +7,7 @@ import { CommonUseCases } from '@/components/openmetadata/CommonUseCases'
 
 export default function OpenMetadata() {
   return (
-    <Layout>
+    <Layout isHomePage={true}>
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           {/* 1. Your logo structured data */}
@@ -52,7 +52,7 @@ export default function OpenMetadata() {
           <Hero />
         </div>
       </div>
-      <div className="flex justify-center bg-slate-50 dark:bg-slate-900 py-16">
+      <div className="relative max-w-none w-full flex justify-center py-16 bg-slate-50 dark:bg-slate-900">
         <div className="max-w-4xl px-4 sm:px-8 xl:px-12 text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-6">
             Why Pair PortalJS with OpenMetadata?

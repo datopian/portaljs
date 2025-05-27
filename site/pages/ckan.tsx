@@ -9,7 +9,7 @@ import { CommonUseCases } from '@/components/ckan/CommonUseCases'
 
 export default function CKAN() {
   return (
-    <Layout>
+    <Layout isHomePage={true}>
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           {/* 1. Your logo structured data */}
