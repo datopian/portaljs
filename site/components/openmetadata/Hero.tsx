@@ -1,7 +1,5 @@
 import React from 'react';
 import ButtonLink from '../ButtonLink';
-import Image from 'next/image';
-import { Player } from '@lottiefiles/react-lottie-player';
 import { useTheme } from 'next-themes';
 
 export default function Hero() {
