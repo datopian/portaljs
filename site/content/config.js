@@ -17,7 +17,25 @@ const config = {
       name: 'Showcase',
       href: '/showcase',
     },
-
+    {
+      name: 'Integrations',
+      subItems: [
+        {
+          name: 'CKAN',
+          href: '/ckan',
+        },
+        {
+          name: 'OpenMetadata',
+          href: '/openmetadata',
+        },
+        {
+          name: 'Git (coming soon)',
+          href: '#',
+          disabled: true,
+          style: 'whitespace-nowrap',
+        },
+      ],
+    },
     {
       name: 'Pricing',
       href: '/pricing',

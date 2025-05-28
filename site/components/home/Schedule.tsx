@@ -1,7 +1,11 @@
 import ButtonLink from '../ButtonLink'
 import { H2, H3 } from '../custom/header'
 
-export default function Schedule() {
+interface ScheduleProps {
+  calendar?: string;
+}
+
+export default function Schedule({ calendar = "https://calendar.app.google/sn2PU7ZvzjCPo1ok6" }: ScheduleProps) {
   return (
     <div className="!max-w-none ring-1 ring-slate-200 dark:ring-slate-800 py-24 bg-zinc-50 dark:bg-slate-800/75 mt-24 relative overflow-hidden ">
       <div className="relative max-w-8xl mx-auto">
@@ -14,7 +18,7 @@ export default function Schedule() {
         </div>
         <div className="flex justify-center py-8 max-w-lg mx-auto gap-6">
           <ButtonLink
-            href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
+            href={calendar}
             title="Get started with PortalJS Cloud"
             className="text-sm"
             target="_blank"
@@ -22,7 +26,7 @@ export default function Schedule() {
             Schedule a free call
           </ButtonLink>
           <ButtonLink
-            href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
+            href={calendar}
             title="Book a demo"
             style="secondary"
             className="text-sm"
@@ -43,9 +47,6 @@ export default function Schedule() {
             className="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-[#80caff] to-[#4f46e5] opacity-25 rotate-180"
           />
         </div>
-        <p className="text-center">
-          No credit card required. 14-day free trial.
-        </p>
       </div>
     </div>
   )
