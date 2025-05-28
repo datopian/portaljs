@@ -2,19 +2,19 @@ import { HeartIcon } from '@heroicons/react/24/solid'
 import { NavbarTitle } from '../Nav'
 
 const navigation = {
-  support: [
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'Contact', href: 'https://www.datopian.com/contact' },
+  resources: [
+    { name: 'Showcase', href: '/showcase' },
+    { name: 'CKAN', href: '/ckan' },
+    { name: 'OpenMetadata', href: '/openmetadata' },
+    { name: 'Documentation', href: '/docs' },
+    { name: 'Blog', href: '/blog' },
     { name: 'FAQ', href: '/faq' },
-    {
-      name: 'Documentation',
-      href: '/docs',
-      target: '_self',
-    },
+    { name: 'Open Source', href: '/opensource' },
   ],
   company: [
     { name: 'About Us', href: 'https://www.datopian.com/about' },
-    { name: 'Blog', href: '/blog' },
+    { name: 'Contact', href: 'https://www.datopian.com/contact' },
+    { name: 'Pricing', href: '/pricing' },
   ],
   legal: [
     { name: 'Privacy Policy', href: 'https://www.datopian.com/privacy' },
@@ -120,9 +120,9 @@ export default function Footer() {
           </div>
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 xl:col-span-2 xl:mt-0">
             <div className="mt-10 md:mt-0">
-              <h3 className="text-sm font-semibold leading-6">Support</h3>
+              <h3 className="text-sm font-semibold leading-6">Resources</h3>
               <ul role="list" className="mt-6 space-y-4">
-                {navigation.support.map((item) => (
+                {navigation.resources.map((item) => (
                   <li key={item.name}>
                     <a
                       href={item.href}
