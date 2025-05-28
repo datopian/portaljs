@@ -126,7 +126,6 @@ export default function Footer() {
                   <li key={item.name}>
                     <a
                       href={item.href}
-                      target={item.target || '_self'}
                       className="text-sm leading-6 opacity-75 hover:opacity-100"
                       aria-label={`link to ${item.name}`}
                     >
