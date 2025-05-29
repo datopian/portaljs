@@ -1,7 +1,9 @@
 ---
 title: 'Why We Decoupled CKAN’s Frontend — And What We Gained with PortalJS'
+metatitle: 'Decoupling CKAN’s Frontend with PortalJS: Performance, UX, Dev Speed.'
 created: 2025-05-28
 description: "We explain why we chose to decouple CKAN’s frontend and how PortalJS made our data portal faster, more flexible, and easier to maintain. A practical look at SSG, serverless scaling, and modern dev workflows with CKAN."
+metadescription: 'Discover how decoupling CKAN’s frontend with PortalJS unlocks faster load times, better UX, easier dev workflows, and scalable data portals.'
 authors: ['popovayoana','anuveyatsu']
 filetype: 'blog'
 image: /static/img/blog/2025-05-28-Why-we-decoupled-CKAN’s-frontend/image1.png
@@ -9,7 +11,7 @@ image: /static/img/blog/2025-05-28-Why-we-decoupled-CKAN’s-frontend/image1.png
 
 ![CKAN](/static/img/blog/2025-05-28-Why-we-decoupled-CKAN’s-frontend/image1.png)  
 
-> [!info] In simple terms
+> [!info] The short version?
 > [CKAN](https://www.datopian.com/solutions/ckan) is a rock-solid backend for open data portals. 
 But what happens when you want to modernize the user experience?
 For us, the answer was simple: decouple the frontend.
