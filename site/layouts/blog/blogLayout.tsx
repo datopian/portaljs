@@ -6,16 +6,16 @@ import siteConfig from '../../config/siteConfig'
 type Props = any
 
 export const BlogLayout: React.FC<Props> = ({ children, ...frontMatter }) => {
-  const { title, date, authors, description, image } = frontMatter
+  const { title, metatitle, date, authors, description, metadescription, image } = frontMatter
 
   return (
     <>
       <NextSeo
-        title={title}
-        description={description}
+        title={ metatitle || title }
+        description={ metadescription || description }
         openGraph={{
-          title,
-          description,
+          title: metatitle || title,
+          description: metadescription || description,
           images: [
             {
               url: image ? `https://www.portaljs.com` + image : siteConfig.nextSeo.openGraph.images[0].url,
