@@ -100,7 +100,6 @@ export default function Layout({
   }
   return (
     <>
-      {title && <NextSeo title={title} description={description} />}
       <Nav />
       <div className=" bg-background dark:bg-background-dark text-primary dark:text-primary-dark pt-32">
         <div className="h-full">

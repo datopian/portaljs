@@ -1,5 +1,4 @@
 import { MDXRemote } from 'next-mdx-remote'
-import { NextSeo } from 'next-seo'
 import layouts from '@/layouts'
 import DocsPagination from './DocsPagination'
 import { Hero } from '@portaljs/core'
@@ -13,21 +12,6 @@ export default function MDXPage({ source, frontMatter }) {
 
     return (
       <LayoutComponent {...frontMatter}>
-        <NextSeo
-          title={frontMatter?.title}
-          description={frontMatter?.description}
-          openGraph={{
-            title: frontMatter?.title,
-            description: frontMatter?.description,
-            url: frontMatter?.urlPath,
-            images: [
-              {
-                url: frontMatter?.image,
-                alt: frontMatter?.title,
-              },
-            ],
-          }}
-        />
         {children}
       </LayoutComponent>
     )
@@ -37,7 +21,7 @@ export default function MDXPage({ source, frontMatter }) {
     <Layout>
       <MDXRemote
         {...source}
-        components={{ DocsPagination, NextSeo, Features, Community, Hero }}
+        components={{ DocsPagination, Features, Community, Hero }}
       />
     </Layout>
   )
