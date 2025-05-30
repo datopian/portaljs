@@ -4,8 +4,9 @@ import { H1 } from 'components/custom/header'
 import Layout from '@/components/Layout'
 import React from 'react'
 import { NextSeo } from 'next-seo'
+import { FaqStructuredData } from '@/components/schema/FaqStructuredData'
 
-const questions = [
+export const questions = [
   {
     category: 'General Questions',
     items: [
@@ -241,6 +242,7 @@ export default function FAQ() {
         title="FAQ"
         description="Frequently Asked Questions about PortalJS Cloud."
       />
+      <FaqStructuredData />
       <Tab.Group>
         <div className="mx-auto lg:my-20">
           <section className="flex flex-col lg:flex-row gap-10 items-center lg:items-start w-full">
@@ -253,9 +255,8 @@ export default function FAQ() {
                   <Tab as={React.Fragment} key={categoryIndex}>
                     {({ selected }) => (
                       <button
-                        className={`${
-                          selected ? 'text-blue-400' : 'text-gray-500'
-                        } transition lg:text-xl font-semibold focus:outline-none`}
+                        className={`${selected ? 'text-blue-400' : 'text-gray-500'
+                          } transition lg:text-xl font-semibold focus:outline-none`}
                       >
                         {category.category}
                       </button>
@@ -280,9 +281,8 @@ export default function FAQ() {
                               {question.question}
                             </span>
                             <svg
-                              className={`${
-                                open ? 'transform rotate-180' : ''
-                              } w-5 h-5 dark:text-white`}
+                              className={`${open ? 'transform rotate-180' : ''
+                                } w-5 h-5 dark:text-white`}
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 20 20"
                               fill="currentColor"
