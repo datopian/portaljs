@@ -2,7 +2,8 @@
 title: "Basics of Metadata: How It Helps Understand Your Data"
 created: 2025-06-02
 description: "Learn the basics of metadata—from built-in CSV attributes like filename and media type to simple external files—and see how it makes your data discoverable."
-authors: ['anuveyatsu']
+authors: ['anuveyatsu', 'popovayoana']
+image: /static/img/blog/basics-of-metadata-how-it-helps-to-understand-your-data/metadata-iceberg-illustration-vector.png
 filetype: 'blog'
 faqs:
   - question: What's the difference between data and metadata?
@@ -36,6 +37,8 @@ Metadata is information that describes the characteristics and context of a data
 * **Who**, **when**, and **where** the data was created or modified (administrative metadata)
 
 At the simplest level, metadata can be built into your storage layer (e.g., file name, format, timestamps). For richer context, you can supply external metadata files (JSON, YAML, XML, or simple text) that complement and enhance built-in attributes.
+
+!["An iceberg showing a small tip labeled 'CSV File' above water and a large submerged base labeled with metadata attributes like title, description, license, timestamps, and keywords."](/static/img/blog/basics-of-metadata-how-it-helps-to-understand-your-data/metadata-iceberg-illustration-vector.png)
 
 ## 2. From Built-In to External Metadata: A Step-by-Step Example
 
@@ -147,6 +150,8 @@ Many systems would automatically pick these up—no custom code required.
 5. **Indexing**
    * Store both built-in and external metadata in a search or catalog index, mapping specific fields to facets, full-text search, and structured exports (JSON‑LD, DCAT).
    * This index powers discovery features like faceted filters, semantic ranking, and metadata exports.
+
+!["Five-step metadata ingestion diagram showing Discovery, Parsing, Validation, Transformation, and Indexing stages with simple icons for each."](/static/img/blog/basics-of-metadata-how-it-helps-to-understand-your-data/metadata-ingestion-pipeline-steps-diagram.png)
 
 ### 2.5. Why This Matters
 
