@@ -4,6 +4,17 @@ created: 2025-05-30
 description: "Learn the basics of metadata—from built-in CSV attributes like filename and media type to simple external files—and see how it makes your data discoverable."
 authors: ['anuveyatsu']
 filetype: 'blog'
+faqs:
+  - question: What's the difference between data and metadata?
+    answer: Data is the actual content (the temperature readings in our example), while metadata is information about that content (title, description, license, etc.). Think of data as the story and metadata as the book cover, table of contents, and publication information.
+  - question: Do I need to create metadata for every data file?
+    answer: For optimal discoverability and usability, yes. Even minimal metadata (title, description) significantly improves how users and systems interact with your data. The more critical or widely used the dataset, the more metadata you should provide.
+  - question: What format should I use for metadata files?
+    answer: Simple formats like YAML or JSON are excellent for most use cases. Choose YAML when human readability is important, and JSON when machine-to-machine interoperability is the priority. For standardized data catalogs, consider using schemas like DCAT, Schema.org, or Frictionless Data descriptors.
+  - question: Where should metadata files be stored?
+    answer: Ideally, keep metadata files alongside your data files with a clear naming convention (e.g., `data.csv` and `data.csv.meta.yaml`). This makes it easier to maintain the connection between data and its metadata as both evolve.
+  - question: How detailed should my metadata be?
+    answer: Start with the essentials, title, description, and licensing information. Then add more detail based on your users' needs—technical users might need schema information, while researchers might need methodology details and citations.
 ---
 
 ## Introduction
@@ -149,20 +160,3 @@ By starting with two built-in attributes and a tiny external text file, you can 
 ## Conclusion
 
 Implementing metadata is not just a best practice—it's essential for unlocking the value of your data. By combining built-in attributes (file name, media type, timestamps) with external metadata files, you provide the context users need to discover, understand, and trust your datasets. A clear metadata strategy powers faceted search, semantic ranking, and linked-data features that scale from a simple CSV repository to enterprise-grade data catalogs. Start small with human-readable titles and descriptions, then grow your metadata alongside your data products to build truly data-driven experiences.
-
-## FAQs
-
-**What's the difference between data and metadata?**  
-Data is the actual content (the temperature readings in our example), while metadata is information about that content (title, description, license, etc.). Think of data as the story and metadata as the book cover, table of contents, and publication information.
-
-**Do I need to create metadata for every data file?**  
-For optimal discoverability and usability, yes. Even minimal metadata (title, description) significantly improves how users and systems interact with your data. The more critical or widely used the dataset, the more metadata you should provide.
-
-**What format should I use for metadata files?**  
-Simple formats like YAML or JSON are excellent for most use cases. Choose YAML when human readability is important, and JSON when machine-to-machine interoperability is the priority. For standardized data catalogs, consider using schemas like DCAT, Schema.org, or Frictionless Data descriptors.
-
-**Where should metadata files be stored?**  
-Ideally, keep metadata files alongside your data files with a clear naming convention (e.g., `data.csv` and `data.csv.meta.yaml`). This makes it easier to maintain the connection between data and its metadata as both evolve.
-
-**How detailed should my metadata be?**  
-Start with the essentials: title, description, and licensing information. Then add more detail based on your users' needs—technical users might need schema information, while researchers might need methodology details and citations.
