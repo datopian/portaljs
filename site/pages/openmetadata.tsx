@@ -4,7 +4,7 @@ import Schedule from '@/components/home/Schedule'
 import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd, FAQPageJsonLd } from 'next-seo'
 import Layout from '@/components/Layout'
 import { CommonUseCases } from '@/components/openmetadata/CommonUseCases'
-import { FAQ } from '@/components/openmetadata/FAQ'
+import { FAQ } from '@/components/FAQ'
 import { Testimonial } from '@/components/openmetadata/Testimonial'
 
 export default function OpenMetadata() {
