@@ -1,29 +1,16 @@
 import { Disclosure } from '@headlessui/react'
 import ReactMarkdown from 'react-markdown'
 
-const questions = [
-  {
-    question: 'What is PortalJS?',
-    answer:
-      'PortalJS is a modern frontend framework (Next.js-based) for building fast, customizable data portals — compatible with OpenMetadata, CKAN, and other backends.'
-  },
-  {
-    question: 'Does PortalJS replace OpenMetadata?',
-    answer:
-      'No. It works with your OpenMetadata backend — just replaces the frontend for better UX.'
-  },
-  {
-    question: 'Can I use PortalJS without modifying OpenMetadata\'s backend?',
-    answer: 'Yes. PortalJS works as a decoupled frontend — no need to touch your metadata engine.'
-  },
-  {
-    question: 'Is this open source or commercial?',
-    answer:
-      'PortalJS is open source. PortalJS Cloud offers a fully managed SaaS version with support and custom features.'
-  }
-]
+export type FAQItem = {
+  question: string;
+  answer: string;
+}
 
-export function FAQ() {
+interface FAQProps {
+  faqItems: FAQItem[];
+}
+
+export function FAQ({ faqItems }: FAQProps) {
   return (
     <div className="py-16 w-full">
       <section className="flex flex-col items-center w-full">
@@ -31,7 +18,7 @@ export function FAQ() {
           Quick FAQs
         </h2>
         <div className="flex flex-col space-y-6 w-full max-w-3xl mx-auto">
-          {questions.map((question, index) => (
+          {faqItems.map((question, index) => (
             <Disclosure key={question.question} as="div">
               {({ open }) => (
                 <>
@@ -58,7 +45,7 @@ export function FAQ() {
                   <Disclosure.Panel className="px-4 pt-3 pb-5 text-base dark:text-gray-300 prose dark:prose-dark dark:prose-invert max-w-none">
                     <ReactMarkdown>{question.answer}</ReactMarkdown>
                   </Disclosure.Panel>
-                  {index < questions.length - 1 && (
+                  {index < faqItems.length - 1 && (
                     <hr className="mt-5 border-t border-gray-200 dark:border-gray-700" />
                   )}
                 </>
