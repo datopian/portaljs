@@ -26,14 +26,6 @@ export default function OpenMetadata() {
       question: 'Is this open source or commercial?',
       answer: 'PortalJS is open source. PortalJS Cloud offers a fully managed SaaS version with support and custom features.'
     },
-    {
-      question: 'How long does setup take?',
-      answer: 'You can launch a basic branded portal in under 5 minutes using PortalJS Cloud.'
-    },
-    {
-      question: 'Can I launch without engineering resources?',
-      answer: 'Yes. Use PortalJS Cloud\'s no-code builder and components to get started in under 5 minutes.'
-    }
   ];
 
   return (
@@ -105,7 +97,7 @@ export default function OpenMetadata() {
       </div>
       <div className="relative max-w-none w-full flex justify-center bg-slate-50 dark:bg-slate-900">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
-          <FAQ />
+          <FAQ faqItems={faqItems} />
         </div>
       </div>
       <div className="flex justify-center">
