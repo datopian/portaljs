@@ -1,12 +1,11 @@
 import Hero from '@/components/openmetadata/Hero'
 import { KeyFeatures } from '@/components/openmetadata/KeyFeatures'
 import Schedule from '@/components/home/Schedule'
-import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd } from 'next-seo'
+import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd, FAQPageJsonLd } from 'next-seo'
 import Layout from '@/components/Layout'
 import { CommonUseCases } from '@/components/openmetadata/CommonUseCases'
 import { FAQ } from '@/components/openmetadata/FAQ'
 import { Testimonial } from '@/components/openmetadata/Testimonial'
-import FAQStructuredData from '@/components/FAQStructuredData'
 
 export default function OpenMetadata() {
   const faqItems = [
@@ -30,7 +29,12 @@ export default function OpenMetadata() {
 
   return (
     <Layout isHomePage={true}>
-      <FAQStructuredData questions={faqItems} />
+      <FAQPageJsonLd
+        mainEntity={faqItems.map(item => ({
+          questionName: item.question,
+          acceptedAnswerText: item.answer
+        }))}
+      />
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           {/* 1. Your logo structured data */}
