@@ -2,7 +2,7 @@
 title: "Basics of Metadata: How It Helps Understand Your Data"
 created: 2025-06-02
 description: "Learn the basics of metadata—from built-in CSV attributes like filename and media type to simple external files—and see how it makes your data discoverable."
-authors: ['anuveyatsu', 'popovayoana']
+authors: ['anuveyatsu']
 image: /static/img/blog/basics-of-metadata-how-it-helps-to-understand-your-data/metadata-iceberg-illustration-vector.png
 filetype: 'blog'
 faqs:
