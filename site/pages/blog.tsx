@@ -5,13 +5,11 @@ import { BlogsList, SimpleLayout } from "@portaljs/core";
 import * as fs from "fs";
 import { NextSeo } from "next-seo";
 import { H1, H2 } from "@/components/custom/header";
+import { BlogStructuredData } from "@/components/schema/BlogStructuredData";
 export default function Blog({ blogs }) {
   return (
     <>
-      <NextSeo
-        title="Blog"
-        description="Explore the latest updates, tutorials, and insights about PortalJS. Stay informed and enhance your skills."
-      />
+      <BlogStructuredData blogs={blogs} />
       <Layout>
         <H1 className="mx-auto text-center">
           Blog Posts

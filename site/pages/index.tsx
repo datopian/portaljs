@@ -16,10 +16,12 @@ import { Security } from '@/components/home/Security'
 import FAQ from '@/components/home/FAQ'
 import Community from '@/components/home/community'
 import UserJourney from '@/components/home/UserJourney'
+import { HomePageStructuredData } from '@/components/schema/HomePageStructuredData'
 
 export default function Homepage() {
   return (
     <Layout isHomePage={true}>
+      <HomePageStructuredData />
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           <LogoJsonLd

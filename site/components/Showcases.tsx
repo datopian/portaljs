@@ -1,9 +1,7 @@
-import Container from './Container'
-import { H1, H2 } from './custom/header'
 import ShowCaseMobile from './ShowCaseMobile'
 import ShowcasesItem from './ShowcasesItem'
 
-const items = [
+export const dataPortals = [
   {
     title: 'UAE Open Data Portal',
     subtitle: 'Government Data Portal',
@@ -134,14 +132,14 @@ export default function Showcases() {
         </div>
       </div>
       <div className="not-prose my-12 grid grid-cols-1 gap-6 lg:gap-12 md:grid-cols-2">
-        {items.map((item) => {
+        {dataPortals.map((item) => {
           return (
             <div className="hidden sm:block" key={item.title}>
               <ShowcasesItem item={item} />
             </div>
           )
         })}
-        {items.map((item) => {
+        {dataPortals.map((item) => {
           return (
             <div className="sm:hidden" key={item.title}>
               <ShowCaseMobile item={item} />
