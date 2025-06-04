@@ -17,7 +17,6 @@ import { NextSeo, BreadcrumbJsonLd } from 'next-seo'
 export default function Page({ source, meta, sidebarTree }) {
   source = JSON.parse(source)
   const router = useRouter()
-
   const [tableOfContents, setTableOfContents] = useState([])
 
   useEffect(() => {
@@ -45,31 +44,42 @@ export default function Page({ source, meta, sidebarTree }) {
 
   return (
     <>
-      <NextSeo
-        title={title}
-        description={description}
-        canonical={canonicalUrl}
-        openGraph={{
-          url: canonicalUrl,
-          title,
-          description,
-          type: meta.layout === 'blog' ? 'article' : 'website',
-          article: meta.layout === 'blog' && {
-            publishedTime: meta.date,
-            authors: meta.authorsDetails?.map(a => a.url) || [],
-          },
-          images: [
-            {
-              url: image,
-              alt: title,
+      {meta.layout === 'docs' ?
+        <NextSeo
+          title={title}
+          description={description}
+          canonical={canonicalUrl}
+          openGraph={{
+            url: canonicalUrl,
+            title,
+            description,
+            type: meta.layout === 'blog' ? 'article' : 'website',
+            article: meta.layout === 'blog' && {
+              publishedTime: meta.date,
+              authors: meta.authorsDetails?.map(a => a.url) || [],
             },
-          ],
-        }}
-        twitter={{
-          cardType: 'summary_large_image',
-          site: '@PortalJS_',
-        }}
-      />
+            images: [
+              {
+                url: image,
+                alt: title,
+              },
+            ],
+          }}
+          twitter={{
+            cardType: 'summary_large_image',
+            site: '@PortalJS_',
+          }}
+        /> :
+        <NextSeo
+          title={title}
+          description={description}
+          canonical={canonicalUrl}
+          twitter={{
+            cardType: 'summary_large_image',
+            site: '@PortalJS_',
+          }}
+        />}
+
       <BreadcrumbJsonLd itemListElements={breadcrumbs} />
       <JSONLD meta={meta} source={source.compiledSource} />
 
