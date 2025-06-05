@@ -2,8 +2,6 @@
 filetype: 'casestudy'
 created: 2025-02-10
 title: Empowering EITI / Through a Fully Customizable Open Data Portal in Minutes
-metatitle: PortalJS for OpenMetadata | Simple, Secure Frontend for Healthcare Data
-metaDescription: A UK public health agency used PortalJS to build a clean, searchable frontend over OpenMetadata—enabling non-technical researchers to securely discover and request 300+ datasets via Azure.
 description: Discover how the [The Extractive Industries Transparency Initiative (EITI)](https://eiti.org/) partnered with the [Civic Literacy Initiative](https://civicliteraci.es/) and PortalJS Cloud to create a fully customizable open data portal. Access in-depth, reliable datasets on extractive industries worldwide, explore intuitive data visualizations, and enjoy a responsive, user-friendly experience.
 image: /images/case3.webp
 images:
