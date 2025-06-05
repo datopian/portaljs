@@ -1,6 +1,7 @@
 import { Disclosure } from '@headlessui/react'
 import ReactMarkdown from 'react-markdown'
 import { H2 } from '../custom/header'
+import { CASE_STUDY_QUESTIONS } from '@/constants'
 
 const questions = [
   {
@@ -77,23 +78,24 @@ const questions2 = [
   },
 ]
 
-export default function FAQ() {
+export default function FAQ({ faq }) {
+  const _questions = !!CASE_STUDY_QUESTIONS[faq] ? CASE_STUDY_QUESTIONS[faq] : Math.random() > 0.5 ? questions : questions2
+
   return (
     <section>
       <H2 className="py-16  text-4xl font-bold text-center dark:text-white">
         Frequently Asked Questions
       </H2>
       <div className=" mx-auto max-w-8xl px-4 sm:px-8 xl:px-12 flex flex-col space-y-6">
-        {(Math.random() > 0.5 ? questions : questions2).map((question) => (
+        {_questions.map((question) => (
           <Disclosure key={question.question} as="div" className="">
             {({ open }) => (
               <>
                 <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-lg font-medium text-left dark:text-white bg-primary-600 rounded-lg focus:outline-none focus-visible:ring focus-visible:ring-primary-500 focus-visible:ring-opacity-75 text-2xl ring-1 ring-slate-200 dark:ring-slate-800 rounded-xl p-10 bg-zinc-50 dark:bg-slate-800/75 ">
                   <span>{question.question}</span>
                   <svg
-                    className={`${
-                      open ? 'transform rotate-180' : ''
-                    } w-5 h-5 dark:text-white`}
+                    className={`${open ? 'transform rotate-180' : ''
+                      } w-5 h-5 dark:text-white`}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"

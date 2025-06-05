@@ -129,5 +129,90 @@ export const CASE_STUDY_TABLES = [
         'Active public interaction via forms, charts, and dataset discovery',
       ],
     ],
-  }
+  },
+  {
+    table: 'healthcare',
+    title: 'Comparing What Was vs. What Is',
+    description: 'By combining OpenMetadata with PortalJS, we preserved robust data governance and observability while layering on a fast, intuitive frontend. OpenMetadata handles the metadata, access control, and backend integration. PortalJS transforms that into a clean, searchable interface designed for real human use.',
+    headers: ['Feature', 'Before PortalJS', 'With PortalJS'],
+    rows: [
+      [
+        'Dataset Discovery',
+        'Fragmented, invisible across workspaces',
+        'Unified catalog, searchable and filterable',
+      ],
+      [
+        'Non-tech User Experience',
+        'Complex, engineer-focused',
+        'Simple, human-first UI',
+      ],
+      [
+        'Dataset Q&A',
+        'Manual via email or ticketing',
+        'Built-in threaded discussions',
+      ],
+      [
+        'Dataset Updates',
+        'Hard to communicate changes',
+        'Inline publication notes from stewards',
+      ],
+      [
+        'Workspace Provisioning',
+        'Manual coordination',
+        'One-click “Add to Workspace” action',
+      ],
+    ],
+  },
 ]
+
+export const CASE_STUDY_QUESTIONS = {
+  healthcare: [
+    {
+      question: 'Does this replace OpenMetadata?',
+      answer:
+        'No — it extends it.PortalJS acts as a frontend layer while OpenMetadata remains the backend.',
+    },
+    {
+      question: 'Is this secure enough for healthcare data?',
+      answer:
+        'Yes.All access is governed via Microsoft Entra ID.No data is exposed unless authorized.',
+    },
+    {
+      question: 'Can I deploy this on my own infrastructure?',
+      answer:
+        'Absolutely.The solution is delivered as a Docker container and works seamlessly with Azure-based environments.',
+    },
+    {
+      question: 'What if I’m not in healthcare?',
+      answer:
+        'No problem — PortalJS works across sectors: government, energy, finance, climate, and more.',
+    },
+  ],
+  tdc: [
+    {
+      question: 'Is PortalJS only for CKAN?',
+      answer:
+        'No — PortalJS is backend - agnostic.It works equally well with CKAN, OpenMetadata, or custom APIs.',
+    },
+    {
+      question: 'Do I need a developer to manage the portal?',
+      answer:
+        'Not for everyday content.Editors can manage FAQs, About pages, and more via GitHub or your preferred CMS.',
+    },
+    {
+      question: 'How long does a PortalJS portal take to launch?',
+      answer:
+        'Most deployments go live in 1–2 weeks, depending on the features needed.',
+    },
+    {
+      question: 'Can we manage our own hosting later?',
+      answer:
+        'Yes. Many clients start with Datopian - hosted and then move to internal infrastructure.We help with migration.',
+    },
+    {
+      question: 'What makes this better than just CKAN?',
+      answer:
+        'CKAN is great for metadata and APIs.PortalJS adds the human layer — modern search, visualizations, dashboards, and guided user experiences.',
+    },
+  ]
+}
