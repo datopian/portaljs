@@ -2,6 +2,8 @@
 filetype: 'casestudy'
 created: 2025-06-06
 title: A Global Transport Hub
+metatitle: TDC Open Data Portal Built with CKAN and PortalJS | Datopian
+metaDescription: See how TDC used CKAN and PortalJS to launch a global open data portal—automating ingestion, standardizing SDMX metadata, and improving data access.
 description: We helped the Transport Data Commons (TDC) transform fragmented transport and sustainability data into a unified, public-facing portal. Using CKAN and PortalJS, we built a user-friendly platform that standardizes metadata, automates data ingestion, and enables seamless access and collaboration across 30+ global organizations.
 image: /static/img/showcases/2025-06-06-TDC/featured-image.jpg
 images:

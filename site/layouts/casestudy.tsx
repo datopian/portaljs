@@ -15,7 +15,8 @@ import { useTheme } from 'next-themes'
 export default function CaseStudyLayout({ children, ...frontMatter }) {
   const {
     title,
-    subtitle,
+    metatitle,
+    metaDescription,
     description,
     image,
     readingTime,
@@ -143,7 +144,8 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
       <section className="max-w-2xl px-4 sm:max-w-8xl justify-center mx-auto sm:px-8 xl:px-12">
         <Head>
           <title>{title}</title>
-          <meta name="description" content={subtitle} />
+          <meta name="title" content={metatitle} />
+          <meta name="description" content={metaDescription} />
         </Head>
 
         <div className="flex flex-col md:flex-row w-full object-cover relative overflow-hidden gap-10">
