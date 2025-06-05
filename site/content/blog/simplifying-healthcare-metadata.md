@@ -9,7 +9,6 @@ filetype: 'blog'
 image: /static/img/blog/2025-06-05-simplifying-healthcare-metadata/featured-image.jpg
 ---
 
-# Simplifying Healthcare Metadata
 **A Simple Frontend for Sensitive Healthcare Datasets**
 Discover how we helped a UK public health data provider build a user-friendly interface over OpenMetadata. Researchers got a fast, searchable portal for discovering datasets — without needing to learn a new system. A lightweight PortalJS frontend, fully integrated with Azure and OpenMetadata, transformed usability while keeping backend infrastructure intact.
 
