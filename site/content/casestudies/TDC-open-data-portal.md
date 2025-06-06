@@ -46,6 +46,7 @@ portal:
   [
     'The Transport Data Commons Portal',
     'A clean, intuitive frontend built for contributors and analysts.',
+    'https://portal.transport-data.org/'
   ]
 table: false
 longRead: false
