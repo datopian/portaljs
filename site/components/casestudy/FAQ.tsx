@@ -55,31 +55,8 @@ Please see our [Pricing Page](https://www.portaljs.com/pricing) for more details
   },
 ]
 
-const questions2 = [
-  {
-    question: 'Can PortalJS handle large datasets?',
-    answer:
-      'Absolutely. With BigQuery and Prefect integrated, PortalJS can process terabytes of data daily, ensuring swift queries and analysis.',
-  },
-  {
-    question: 'How does the portal support secure data sharing?',
-    answer:
-      'CKAN extensions like ckanext-noanonaccess enforce secure, authenticated access while keeping sensitive data protected.',
-  },
-  {
-    question: 'Is customization an option?',
-    answer:
-      '100%. From layout tweaks to advanced data visualizations, we’ll make your portal match your unique needs.',
-  },
-  {
-    question: 'What makes PortalJS + CKAN better than other solutions?',
-    answer:
-      'Together, they combine speed, reliability, scalability, and customization, giving you a powerful, future-ready platform for data management.',
-  },
-]
-
 export default function FAQ({ faq }) {
-  const _questions = !!CASE_STUDY_QUESTIONS[faq] ? CASE_STUDY_QUESTIONS[faq] : Math.random() > 0.5 ? questions : questions2
+  const _questions = CASE_STUDY_QUESTIONS[faq] || questions
 
   return (
     <section>
