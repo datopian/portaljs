@@ -8,7 +8,7 @@ description: We helped the Transport Data Commons (TDC) transform fragmented tra
 image: /static/img/showcases/2025-06-06-TDC/featured-image.jpg
 images:
   ["/static/img/showcases/2025-06-06-TDC/image1.png","/static/img/showcases/2025-06-06-TDC/image2.png","/static/img/showcases/2025-06-06-TDC/image3.png","/static/img/showcases/2025-06-06-TDC/image4.png","/static/img/showcases/2025-06-06-TDC/image5.png"]
-authors: ['popovayoana']
+authors: ['williamlima']
 keystats:
   [
     '30+ organizations/n sharing one shared portal',
