@@ -1,8 +1,7 @@
 import ButtonLink from '@/components/ButtonLink'
-import { H1, H2, H3 } from '@/components/custom/header'
+import { H1, H2 } from '@/components/custom/header'
 import ReactMarkdown from 'react-markdown'
 import { Disclosure } from '@headlessui/react'
-import Head from 'next/head'
 import { Avatar } from '@/components/Avatar'
 import * as FaIcons from 'react-icons/fa'
 import FAQ from '@/components/casestudy/FAQ'
@@ -15,8 +14,6 @@ import { useTheme } from 'next-themes'
 export default function CaseStudyLayout({ children, ...frontMatter }) {
   const {
     title,
-    metatitle,
-    metaDescription,
     description,
     image,
     readingTime,
@@ -142,12 +139,6 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
   const Header = () => {
     return (
       <section className="max-w-2xl px-4 sm:max-w-8xl justify-center mx-auto sm:px-8 xl:px-12">
-        <Head>
-          <title>{title}</title>
-          <meta name="title" content={metatitle} />
-          <meta name="description" content={metaDescription} />
-        </Head>
-
         <div className="flex flex-col md:flex-row w-full object-cover relative overflow-hidden gap-10">
           <div className="   ">
             <span className="text-sm font-bold text-blue-400">CASE STUDY</span>
