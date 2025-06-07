@@ -1,6 +1,6 @@
 ---
 filetype: 'casestudy'
-created: 2025-06-06
+created: 2025-06-07
 title: Simplifying Healthcare Metadata / Making Sensitive Data Usable — Without Changing the Backend
 metatitle: PortalJS for OpenMetadata | Simple, Secure Frontend for Healthcare Data
 metaDescription: A UK public health agency used PortalJS to build a clean, searchable frontend over OpenMetadata—enabling non-technical researchers to securely discover and request 300+ datasets via Azure.
