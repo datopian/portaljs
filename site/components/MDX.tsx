@@ -26,7 +26,8 @@ export function MdxPage({ mdxComponent, frontMatter, ...rest }) {
   // Handle SEO Image urls in frontmatter
   const websiteUrl = siteConfig.authorUrl.replace(/\/+$/, "");
   const frontMatterImage =
-    typeof frontMatter?.image === "string" && frontMatter.image;
+    (typeof frontMatter?.image === "string" && frontMatter.image) ||
+    (Array.isArray(frontMatter?.images) && frontMatter.images[0]);
   const seoImageUrl =
     frontMatterImage && frontMatterImage.startsWith("http")
       ? frontMatterImage
@@ -39,7 +40,7 @@ export function MdxPage({ mdxComponent, frontMatter, ...rest }) {
         openGraph={{
           title: frontMatter.title,
           description: frontMatter.description || siteConfig.description,
-          images: frontMatter.image
+          images: frontMatterImage
             ? [
                 {
                   url: seoImageUrl,

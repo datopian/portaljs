@@ -41,7 +41,8 @@ export default function Page({ source, meta, sidebarTree }) {
   const canonicalUrl = `https://www.portaljs.com/${meta.urlPath}`
   const title = meta.metatitle || meta.title
   const description = meta.metadescription || meta.description
-  const image = meta.image ? `https://www.portaljs.com` + meta.image : siteConfig.nextSeo.openGraph.images[0].url
+  const ogImage = meta.image || (Array.isArray(meta.images) && meta.images[0])
+  const image = ogImage ? `https://www.portaljs.com${ogImage}` : siteConfig.nextSeo.openGraph.images[0].url
 
   return (
     <>

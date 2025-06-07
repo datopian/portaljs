@@ -15,7 +15,8 @@ import { useTheme } from 'next-themes'
 export default function CaseStudyLayout({ children, ...frontMatter }) {
   const {
     title,
-    subtitle,
+    metatitle,
+    metaDescription,
     description,
     image,
     readingTime,
@@ -30,10 +31,11 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
     images,
     table,
     highlight,
+    longRead = true,
+    faq
   } = frontMatter
 
   const { theme } = useTheme()
-
   const _keystats = [
     ['50% reduction', 'in cloud costs'],
     ['Zero maintenance', 'overhead'],
@@ -94,6 +96,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
         {tableData.map((table, index) => (
           <div className="flex flex-col items-center mt-16" key={index}>
             <div className="text-2xl font-bold">{table.title}</div>
+            <div className="text-lg text-center mt-4">{table.description}</div>
             <table className="mt-12 prose prose-headings:font-headings dark:prose-invert prose-a:break-word text-xs sm:text-base max-w-none w-full text-slate-400">
               <thead>
                 <tr className="bg-slate-100 dark:bg-[#1d283a]">
@@ -111,9 +114,8 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                 {table.rows.map((row, idx) => (
                   <tr
                     key={idx}
-                    className={`${
-                      idx % 2 === 0 ? 'bg-[#fafafa] dark:bg-[#070e19]' : ''
-                    } `}
+                    className={`${idx % 2 === 0 ? 'bg-[#fafafa] dark:bg-[#070e19]' : ''
+                      } `}
                   >
                     {row.map((cell, cellIdx) => (
                       <td key={cellIdx} className="px-6 py-4 text-sm">
@@ -142,7 +144,8 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
       <section className="max-w-2xl px-4 sm:max-w-8xl justify-center mx-auto sm:px-8 xl:px-12">
         <Head>
           <title>{title}</title>
-          <meta name="description" content={subtitle} />
+          <meta name="title" content={metatitle} />
+          <meta name="description" content={metaDescription} />
         </Head>
 
         <div className="flex flex-col md:flex-row w-full object-cover relative overflow-hidden gap-10">
@@ -221,7 +224,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
             {keystats.map((stat, index) => (
               <li
                 key={index}
-                className="text-center ring-1 ring-slate-200 dark:ring-slate-800 hover:bg-slate-100 rounded-xl p-8 shadow-lg"
+                className="text-center ring-1 ring-slate-200 dark:ring-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl p-8 shadow-lg"
               >
                 <span className="text-xl lg:text-3xl block w-full font-semibold text-blue-400">
                   {stat.split('/n')[0]}
@@ -258,11 +261,11 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
               {quote[0]}
             </p>
             <div className="w-full max-w-4xl flex items-center justify-center sm:justify-end mt-6 gap-4 ">
-              <img
+              {quote[1] != '' && <img
                 src={quote[1]}
                 alt="quote"
                 className="w-12 h-12 object-contain bg-white rounded-full ring-1 ring-slate-200 dark:ring-slate-800"
-              />
+              />}
               <p className="max-4w-xl text-base font-semibold">{quote[2]}</p>
               <div className="absolute w-16 h-16 sm:w-32 sm:h-32 text-[96px] left-0 sm:-left-16 -top-24 opacity-15 z-10 text-blue-300 rotate-180">
                 <svg
@@ -299,14 +302,14 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
             <div className="flex flex-col items-center mt-16 max-w-2xl">
               <h2 className="text-3xl font-bold text-center">{portal[0]}</h2>
               <p className="text-lg text-center mt-4">{portal[1]}</p>
-              <ButtonLink
+              {portal[2] && <ButtonLink
                 href={portal[2]}
                 title="Explore"
                 className="mt-6 text-sm"
                 style="secondary"
               >
                 Explore
-              </ButtonLink>
+              </ButtonLink>}
             </div>
           )}
           {images && (
@@ -473,7 +476,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
     <article>
       <Header />
       <Cta />
-      <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
+      {longRead && <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
         <Disclosure>
           {({ open }) => (
             <>
@@ -512,9 +515,9 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
             </>
           )}
         </Disclosure>
-      </main>
+      </main>}
       <Stats />
-      <FAQ />
+      <FAQ faq={faq} />
     </article>
   )
 }
