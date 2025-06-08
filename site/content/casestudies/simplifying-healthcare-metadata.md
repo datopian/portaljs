@@ -15,6 +15,15 @@ keystats:
     '300+ Datasets/n searchable via PortalJS',
     '60% Fewer Tickets/n metadata-related support requests down',
   ]
+faqs:
+  - question: 'Does this replace OpenMetadata?'
+    answer: 'No — it extends it. PortalJS acts as a frontend layer while OpenMetadata remains the backend.'
+  - question: 'Is this secure enough for healthcare data?'
+    answer: 'Yes. All access is governed via Microsoft Entra ID. No data is exposed unless authorized.'
+  - question: 'Can I deploy this on my own infrastructure?'
+    answer: 'Absolutely. The solution is delivered as a Docker container and works seamlessly with Azure-based environments.'
+  - question: "What if I'm not in healthcare?"
+    answer: 'No problem — PortalJS works across sectors: government, energy, finance, climate, and more.'
 problem:
   '### Sensitive healthcare data was locked behind technical barriers
 
@@ -68,5 +77,4 @@ portal:
   ]
 table: healthcare
 longRead: false
-faq: healthcare
 ---

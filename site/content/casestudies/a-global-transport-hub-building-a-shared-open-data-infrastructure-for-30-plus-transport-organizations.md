@@ -15,6 +15,17 @@ keystats:
     '100% custom frontend/n built entirely with PortalJS',
     '80% less manual work/n through automation and workflows',
   ]
+faqs:
+  - question: 'Is PortalJS only for CKAN?'
+    answer: 'No — PortalJS is backend-agnostic. It works equally well with CKAN, OpenMetadata, or custom APIs.'
+  - question: 'Do I need a developer to manage the portal?'
+    answer: 'Not for everyday content. Editors can manage FAQs, About pages, and more via GitHub or your preferred CMS.'
+  - question: 'How long does a PortalJS portal take to launch?'
+    answer: 'Most deployments go live in 1–2 weeks, depending on the features needed.'
+  - question: 'Can we manage our own hosting later?'
+    answer: 'Yes. Many clients start with Datopian-hosted and then move to internal infrastructure. We help with migration.'
+  - question: 'What makes this better than just CKAN?'
+    answer: 'CKAN is great for metadata and APIs. PortalJS adds the human layer — modern search, visualizations, dashboards, and guided user experiences.'
 problem:
   'Transport and sustainability data was scattered across disconnected systems—PDFs, spreadsheets, and portals with limited structure. There was no unified place to find consistent, high-quality datasets. Without shared metadata standards or clear contribution processes, organizations struggled to collaborate, often duplicating work. Analysts spent more time cleaning data than analyzing it.'
 solution:
@@ -50,5 +61,4 @@ portal:
   ]
 table: false
 longRead: false
-faq: tdc
 ---
