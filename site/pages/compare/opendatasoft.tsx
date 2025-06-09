@@ -4,23 +4,21 @@ import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd, FAQPageJsonLd } f
 import ButtonLink from '@/components/ButtonLink'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useTheme } from 'next-themes'
 
 export default function PortalJSvsOpenDataSoft() {
-  const { theme } = useTheme()
 
   const testimonials = [
     {
-      quote: "After evaluating multiple options including OpenDataSoft, we chose PortalJS for our data portal. The flexibility and developer-friendly approach let us deliver a custom solution in half the time at a fraction of the cost.",
-      author: "Data Director",
-      organization: "UK Government Agency",
-      image: "/static/img/social-proof/gov-uk.webp"
+      quote: "As a public sector CDO, I need to cut costs while maintaining performance. After switching to PortalJS, we reduced our annual data portal expenditure by 65% while gaining more customization options and better performance.",
+      author: "Chief Data Officer",
+      organization: "City Government, US",
+      image: null
     },
     {
-      quote: "We migrated from OpenDataSoft to PortalJS and immediately saw improvements in performance, customization options, and total cost of ownership. The open architecture means we're never locked into proprietary systems again.",
-      author: "IT Manager",
-      organization: "European Research Institution",
-      image: "/static/img/social-proof/OECD-light.png"
+      quote: "PortalJS gave us the freedom we needed. We deployed on our own infrastructure, integrated with internal systems, and built custom features that would have been impossible before. The flexibility to run on-prem while maintaining compliance with our security protocols was a game-changer.",
+      author: "Director of Information Systems",
+      organization: "National Research Institute",
+      image: null
     }
   ]
 
@@ -162,7 +160,7 @@ export default function PortalJSvsOpenDataSoft() {
   ]
 
   return (
-    <Layout>
+    <Layout isHomePage={true}>
       {/* SEO */}
       <LogoJsonLd
         url="https://portaljs.com"
@@ -223,14 +221,14 @@ export default function PortalJSvsOpenDataSoft() {
                 PortalJS vs OpenDataSoft
               </h1>
               <p className="mt-4 text-xl tracking-tight text-slate-400">
-                Looking for an alternative to OpenDataSoft? See how PortalJS delivers greater flexibility, modern technology, and no vendor lock-in.
+                See how PortalJS delivers greater flexibility, modern technology, and no vendor lock-in.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
                 <ButtonLink href="https://calendar.app.google/iQkon85iKURfdBtX7" title="Book a demo">
                   Book a demo
                 </ButtonLink>
-                <ButtonLink href="/opensource/docs" title="Read the docs" style="secondary">
-                  Read the docs
+                <ButtonLink href="https://cloud.portaljs.com/auth/signup" title="Sign up for free" style="secondary">
+                  Sign up for free
                 </ButtonLink>
               </div>
             </div>
@@ -253,7 +251,7 @@ export default function PortalJSvsOpenDataSoft() {
                 href={logo.url}
               >
                 <Image
-                  className={`h-auto ${theme === 'dark' ? 'grayscale' : ''}`}
+                  className={`h-auto grayscale`}
                   src={logo.src}
                   alt={`${logo.name} Logo`}
                   title={logo.name}
@@ -267,51 +265,52 @@ export default function PortalJSvsOpenDataSoft() {
       </div>
 
       {/* Testimonials Section */}
-      <div className="relative max-w-none w-full flex justify-center py-16 bg-slate-50 dark:bg-slate-900">
-        <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
-          <div className="mx-auto max-w-2xl text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Hear from users who deployed PortalJS
-            </h2>
-            <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
-              Organizations share their experiences about PortalJS.
-            </p>
-          </div>
-          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+      <div className="w-full bg-slate-50 dark:bg-slate-900">
+        <div className="py-24">
+          <div className="mx-auto">
+            <div className="flex flex-col items-center">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-transparent">
+                Hear from PortalJS users
+              </h2>
+              <p className="mt-4 text-lg text-slate-500 dark:text-slate-400 text-center max-w-2xl">
+                See what organizations achieved after switching from a proprietary platform to PortalJS.
+              </p>
+            </div>
+            <div className="mt-12 px-4 sm:px-8 xl:px-12 mx-auto grid max-w-8xl grid-cols-1 gap-8 lg:grid-cols-2">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="flex flex-col justify-between bg-white dark:bg-slate-800/70 p-10 shadow-lg rounded-xl border border-slate-200 dark:border-slate-700/50">
+              <div key={index} className="flex flex-col justify-between bg-white dark:bg-slate-800 p-10 shadow-lg rounded-xl ring-1 ring-slate-200 dark:ring-slate-700 hover:shadow-xl transition-all duration-300">
                 <div>
-                  <div className="text-xl font-medium text-slate-900 dark:text-white mb-6">
-                    "{testimonial.quote}"
-                  </div>
+                  <svg className="w-10 h-10 text-blue-400/30 dark:text-blue-300/30 mb-4" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true">
+                    <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
+                  </svg>
+                  <p className="text-xl italic font-medium text-slate-800 dark:text-slate-200 mb-6 leading-relaxed">
+                    {testimonial.quote}
+                  </p>
                 </div>
-                <div className="mt-8 flex items-center gap-x-4">
-                  {testimonial.image && (
-                    <Image
-                      src={testimonial.image}
-                      alt={testimonial.organization}
-                      width={48}
-                      height={48}
-                      className="h-10 w-auto"
-                    />
-                  )}
-                  <div>
-                    <div className="font-semibold">{testimonial.author}</div>
-                    <div className="text-slate-600 dark:text-slate-400">{testimonial.organization}</div>
+                <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center gap-x-4">
+                    <div className="flex-shrink-0 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white w-12 h-12 flex items-center justify-center font-semibold">
+                      {testimonial.author.split(' ').map(word => word[0]).join('')}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-slate-900 dark:text-white">{testimonial.author}</div>
+                      <div className="text-slate-600 dark:text-slate-400">{testimonial.organization}</div>
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
+          </div>
         </div>
       </div>
 
       {/* Comparison Table */}
-      <div className="flex justify-center">
-        <div className="max-w-8xl px-4 sm:px-8 xl:px-12 py-24">
-          <div className="mx-auto max-w-2xl lg:max-w-none">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+      <div className="w-full">
+        <div className="py-24">
+          <div className="mx-auto px-4 sm:px-8 xl:px-12 max-w-8xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-transparent">
                 Feature Comparison
               </h2>
               <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
@@ -321,40 +320,40 @@ export default function PortalJSvsOpenDataSoft() {
 
             <div className="mt-16 space-y-16">
               {comparisonTable.map((category, idx) => (
-                <div key={category.category} className={idx % 2 === 0 ? "bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm" : "bg-slate-50 dark:bg-slate-900/70 p-8 rounded-xl shadow-sm"}>
-                  <h3 className="text-xl font-semibold mb-6 bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">
+                <div key={category.category} className={idx % 2 === 0 ? "bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm ring-1 ring-slate-200 dark:ring-slate-700" : "bg-slate-50 dark:bg-slate-800 p-8 rounded-xl shadow-sm ring-1 ring-slate-200 dark:ring-slate-700"}>
+                  <h3 className="text-xl font-semibold mb-6 bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-transparent">
                     {category.category}
                   </h3>
-                  <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700/70 shadow-sm">
-                    <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                  <div className="overflow-hidden rounded-xl ring-1 ring-slate-200 dark:ring-slate-700 shadow-sm">
+                    <table className="w-full divide-y divide-slate-200 dark:divide-slate-700">
                       <thead>
-                        <tr className="bg-slate-50 dark:bg-slate-900/50">
-                          <th scope="col" className="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-slate-900 dark:text-white sm:pl-6">
+                        <tr className="bg-slate-100 dark:bg-slate-900/60">
+                          <th scope="col" className="py-4 pl-8 pr-3 text-left text-base font-semibold text-slate-900 dark:text-white w-1/3">
                             Feature
                           </th>
-                          <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900 dark:text-white">
+                          <th scope="col" className="px-4 py-4 text-left text-base font-semibold text-slate-900 dark:text-white w-1/3">
                             PortalJS
                           </th>
-                          <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900 dark:text-white">
+                          <th scope="col" className="px-4 py-4 text-left text-base font-semibold text-slate-900 dark:text-white w-1/3">
                             OpenDataSoft
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-200 dark:divide-slate-700 bg-white dark:bg-slate-800/50">
+                      <tbody className="divide-y divide-slate-200 dark:divide-slate-700 bg-white dark:bg-slate-800/70">
                         {category.items.map((item) => (
-                          <tr key={item.feature} className="hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors">
-                            <td className="py-4 pl-6 pr-3 text-sm font-medium text-slate-900 dark:text-white">
+                          <tr key={item.feature} className="hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-colors">
+                            <td className="py-5 pl-8 pr-3 text-base font-medium text-slate-900 dark:text-white">
                               {item.feature}
                             </td>
-                            <td className="px-3 py-4 text-sm text-slate-700 dark:text-slate-300">
+                            <td className="px-4 py-5 text-base text-slate-700 dark:text-slate-300">
                               <div className="flex items-center">
-                                <svg className="w-5 h-5 mr-2 text-green-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <svg className="w-5 h-5 mr-3 text-green-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                 </svg>
                                 <span>{item.portaljs}</span>
                               </div>
                             </td>
-                            <td className="px-3 py-4 text-sm text-slate-700 dark:text-slate-300">
+                            <td className="px-4 py-5 text-base text-slate-700 dark:text-slate-300">
                               {item.competitor}
                             </td>
                           </tr>
@@ -369,8 +368,48 @@ export default function PortalJSvsOpenDataSoft() {
         </div>
       </div>
 
-      {/* CTA Section */}
-      <Schedule />
+      {/* CTA Section - Full width */}
+      <div className="!max-w-none ring-1 ring-slate-200 dark:ring-slate-700 py-24 bg-zinc-50 dark:bg-slate-900 mt-24 relative overflow-hidden">
+        <div className="relative max-w-8xl mx-auto">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-transparent mb-4">
+              Ready to Launch Your Data Portal?
+            </h2>
+            <p className="text-xl text-slate-600 dark:text-slate-300">
+              Join hundreds of organizations worldwide that trust PortalJS Cloud for their data publishing needs.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row justify-center py-8 max-w-lg mx-auto gap-6">
+            <ButtonLink
+              href="https://calendar.app.google/iQkon85iKURfdBtX7"
+              title="Schedule a free call"
+              className="text-sm"
+            >
+              Schedule a free call
+            </ButtonLink>
+            <ButtonLink
+              href="https://calendar.app.google/iQkon85iKURfdBtX7"
+              title="Book a demo"
+              style="secondary"
+              className="text-sm"
+            >
+              Book a demo
+            </ButtonLink>
+          </div>
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 -top-16 z-10 flex transform-gpu justify-center overflow-hidden blur-3xl pointer-events-none"
+          >
+            <div
+              style={{
+                clipPath:
+                  'polygon(73.6% 51.7%, 91.7% 11.8%, 100% 46.4%, 97.4% 82.2%, 92.5% 84.9%, 75.7% 64%, 55.3% 47.5%, 46.5% 49.4%, 45% 62.9%, 50.3% 87.2%, 21.3% 64.1%, 0.1% 100%, 5.4% 51.1%, 21.4% 63.9%, 58.9% 0.2%, 73.6% 51.7%)',
+              }}
+              className="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-[#80caff] to-[#4f46e5] opacity-25 rotate-180"
+            />
+          </div>
+        </div>
+      </div>
     </Layout>
   )
 }
