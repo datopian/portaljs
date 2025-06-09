@@ -5,6 +5,9 @@ import Link from 'next/link'
 import Schedule from '@/components/home/Schedule'
 
 export default function CompareIndex() {
+  // Calendar link for all CTAs
+  const calendarLink = "https://calendar.app.google/sn2PU7ZvzjCPo1ok6";
+  
   const comparisons = [
     {
       id: 'opendatasoft',
@@ -108,7 +111,7 @@ export default function CompareIndex() {
                 See how open source PortalJS approach delivers more flexibility, better performance, and lower total cost of ownership.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <ButtonLink href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6" title="Book a demo">
+                <ButtonLink href={calendarLink} title="Book a demo">
                   Book a demo
                 </ButtonLink>
                 <ButtonLink href="https://cloud.portaljs.com/auth/signup" title="Sign up for free" style="secondary">
@@ -262,7 +265,7 @@ export default function CompareIndex() {
       </div>
       </div>
 
-      <Schedule />
+      <Schedule calendar={calendarLink} />
     </Layout>
   )
 }

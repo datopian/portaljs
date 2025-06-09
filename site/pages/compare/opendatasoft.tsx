@@ -6,6 +6,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 export default function PortalJSvsOpenDataSoft() {
+  // Calendar link for all CTAs
+  const calendarLink = "https://calendar.app.google/sn2PU7ZvzjCPo1ok6";
 
   const testimonials = [
     {
@@ -224,7 +226,7 @@ export default function PortalJSvsOpenDataSoft() {
                 See how PortalJS delivers greater flexibility, modern technology, and no vendor lock-in.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <ButtonLink href="https://calendar.app.google/iQkon85iKURfdBtX7" title="Book a demo">
+                <ButtonLink href={calendarLink} title="Book a demo">
                   Book a demo
                 </ButtonLink>
                 <ButtonLink href="https://cloud.portaljs.com/auth/signup" title="Sign up for free" style="secondary">
@@ -368,48 +370,8 @@ export default function PortalJSvsOpenDataSoft() {
         </div>
       </div>
 
-      {/* CTA Section - Full width */}
-      <div className="!max-w-none ring-1 ring-slate-200 dark:ring-slate-700 py-24 bg-zinc-50 dark:bg-slate-900 mt-24 relative overflow-hidden">
-        <div className="relative max-w-8xl mx-auto">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-transparent mb-4">
-              Ready to Launch Your Data Portal?
-            </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-300">
-              Join hundreds of organizations worldwide that trust PortalJS Cloud for their data publishing needs.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row justify-center py-8 max-w-lg mx-auto gap-6">
-            <ButtonLink
-              href="https://calendar.app.google/iQkon85iKURfdBtX7"
-              title="Schedule a free call"
-              className="text-sm"
-            >
-              Schedule a free call
-            </ButtonLink>
-            <ButtonLink
-              href="https://calendar.app.google/iQkon85iKURfdBtX7"
-              title="Book a demo"
-              style="secondary"
-              className="text-sm"
-            >
-              Book a demo
-            </ButtonLink>
-          </div>
-          <div
-            aria-hidden="true"
-            className="absolute inset-x-0 -top-16 z-10 flex transform-gpu justify-center overflow-hidden blur-3xl pointer-events-none"
-          >
-            <div
-              style={{
-                clipPath:
-                  'polygon(73.6% 51.7%, 91.7% 11.8%, 100% 46.4%, 97.4% 82.2%, 92.5% 84.9%, 75.7% 64%, 55.3% 47.5%, 46.5% 49.4%, 45% 62.9%, 50.3% 87.2%, 21.3% 64.1%, 0.1% 100%, 5.4% 51.1%, 21.4% 63.9%, 58.9% 0.2%, 73.6% 51.7%)',
-              }}
-              className="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-[#80caff] to-[#4f46e5] opacity-25 rotate-180"
-            />
-          </div>
-        </div>
-      </div>
+      {/* CTA Section */}
+      <Schedule calendar={calendarLink} />
     </Layout>
   )
 }
