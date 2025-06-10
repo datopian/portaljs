@@ -6,6 +6,8 @@ const navigation = {
     { name: 'Showcase', href: '/showcase' },
     { name: 'CKAN', href: '/ckan' },
     { name: 'OpenMetadata', href: '/openmetadata' },
+    { name: 'Compare', href: '/compare' },
+    { name: 'Compare OpenDataSoft', href: '/compare/opendatasoft' },
     { name: 'Documentation', href: '/docs' },
     { name: 'Blog', href: '/blog' },
     { name: 'FAQ', href: '/faq' },
