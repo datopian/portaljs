@@ -36,6 +36,27 @@ export default function CompareIndex() {
       description: 'Compare PortalJS to Esri\'s ArcGIS Hub for data portals.',
       href: '/compare/arcgis-hub',
       status: 'coming-soon'
+    },
+    {
+      id: 'dkan',
+      title: 'PortalJS vs DKAN',
+      description: 'Compare PortalJS with DKAN, the Drupal-based open data platform.',
+      href: '/compare/dkan',
+      status: 'coming-soon'
+    },
+    {
+      id: 'dataverse',
+      title: 'PortalJS vs Dataverse',
+      description: 'See how PortalJS compares to Harvard\'s Dataverse for research data repositories.',
+      href: '/compare/dataverse',
+      status: 'coming-soon'
+    },
+    {
+      id: 'custom',
+      title: 'PortalJS vs Custom Solution',
+      description: 'Compare PortalJS with building a bespoke custom data portal solution from scratch.',
+      href: '/compare/custom-solution',
+      status: 'coming-soon'
     }
   ]
 
