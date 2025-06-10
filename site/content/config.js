@@ -68,7 +68,12 @@ const config = {
           disabled: true,
         },
         {
-          name: 'Dataverse',
+          name: 'Dataverse (Harvard)',
+          href: '#',
+          disabled: true,
+        },
+        {
+          name: 'Custom Solution',
           href: '#',
           disabled: true,
         },
