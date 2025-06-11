@@ -16,9 +16,6 @@ export function CaseStudiesStructuredData({ casestudies }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "url": "https://www.portaljs.com/showcase",
-    "name": "Showcase of Case Studies",
-    "description": "See our client stories.",
     "mainEntity": [
       {
         "@type": "ItemList",
@@ -75,7 +72,7 @@ export function CaseStudiesStructuredData({ casestudies }) {
       <WebPageJsonLd
         id="https://www.portaljs.com/showcase#webpage"
         url="https://www.portaljs.com/showcase"
-        title="Showcase of Case Studies"
+        name="Case Studies"
         description="See our client stories."
         {...jsonLd}
       />

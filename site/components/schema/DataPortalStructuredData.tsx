@@ -20,9 +20,6 @@ export function DataPortalsStructuredData() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "url": "https://www.portaljs.com/showcase",
-    "name": "Showcase of Data Portals",
-    "description": "Discover data portals powered by PortalJS.",
     "mainEntity": [
       {
         "@type": "ItemList",
@@ -79,7 +76,7 @@ export function DataPortalsStructuredData() {
       <WebPageJsonLd
         id="https://www.portaljs.com/showcase#webpage"
         url="https://www.portaljs.com/showcase"
-        title="Showcase of Data Portals"
+        name="Data Portals"
         description="Discover data portals powered by PortalJS."
         {...jsonLd}
       />

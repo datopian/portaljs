@@ -238,6 +238,7 @@ See more details on our [pricing page](https://portaljs.com/pricing).`,
 export default function FAQ() {
   return (
     <Layout>
+      <script type="application/ld+json"></script>
       <NextSeo
         title="FAQ"
         description="Frequently Asked Questions about PortalJS Cloud."

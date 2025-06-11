@@ -1,27 +1,29 @@
 import { BreadcrumbJsonLd, LogoJsonLd, NextSeo, WebPageJsonLd } from "next-seo";
 
 export function BlogStructuredData({ blogs }) {
-  const blogStructuredData = blogs.map((blog) => ({
-    "@type": "BlogPosting",
-    headline: blog.title,
-    description: blog.description || "",
-    url: `https://www.portaljs.com${blog.urlPath}`,
-    datePublished: blog.date,
-    author: (Array.isArray(blog.author) ? blog.author : [blog.author ?? "PortalJS Team"]).map((name) => ({
-      "@type": "Person",
-      name,
-    })),
+  const blogStructuredData = blogs.map((blog, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "url": `https://www.portaljs.com${blog.urlPath}`,
+    "item": {
+      "@type": "BlogPosting",
+      "name": blog.title.replace('/', '-'),
+      "description": blog.description || "",
+      "author": blog.authors?.map(a => a.name) || "PortalJS Cloud",
+    }
   }));
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "PortalJS Blog",
-    url: "https://www.portaljs.com/blog",
-    description:
-      "Discover insights, updates and stories about PortalJS. Stay informed and enhance your skills.",
-    blogPost: blogStructuredData,
-  };
+    "mainEntity": [
+      {
+        "@type": "ItemList",
+        "name": "PortalJS Blog",
+        "itemListElement": blogStructuredData,
+      }
+    ]
+  }
 
   return (
     <>
@@ -50,9 +52,8 @@ export function BlogStructuredData({ blogs }) {
       <WebPageJsonLd
         id="https://www.portaljs.com/blog#webpage"
         url="https://www.portaljs.com/blog"
-        title="Blog"
+        name="Blog"
         description="Discover insights, updates and stories about PortalJS. Stay informed and enhance your skills."
-        canonical="https://www.portaljs.com/blog"
         {...jsonLd}
       />
     </>

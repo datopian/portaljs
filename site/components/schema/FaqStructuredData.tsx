@@ -1,5 +1,5 @@
 import { questions } from "@/pages/faq";
-import { BreadcrumbJsonLd, LogoJsonLd, NextSeo, QAPageJsonLd } from "next-seo";
+import { BreadcrumbJsonLd, FAQPageJsonLd, LogoJsonLd, NextSeo } from "next-seo";
 
 export function FaqStructuredData() {
   function markdownToPlainText(md: string) {
@@ -37,16 +37,16 @@ export function FaqStructuredData() {
           },
         ]}
       />
-      <QAPageJsonLd
+      <FAQPageJsonLd
         title="FAQ"
         description="Frequently Asked Questions about PortalJS Cloud."
         mainEntity={questions.flatMap(category =>
           category.items.map(({ question, answer }) => ({
             "@type": "Question",
-            "name": question,
+            name: question,
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": markdownToPlainText(answer),
+              text: markdownToPlainText(answer),
             }
           }))
         )}
