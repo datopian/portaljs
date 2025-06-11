@@ -1,5 +1,5 @@
 import { questions } from "@/pages/faq";
-import { NextSeo } from "next-seo";
+import { BreadcrumbJsonLd, LogoJsonLd, NextSeo, QAPageJsonLd } from "next-seo";
 
 export function FaqStructuredData() {
   function markdownToPlainText(md: string) {
@@ -13,31 +13,46 @@ export function FaqStructuredData() {
       .trim();
   }
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": questions.flatMap(category =>
-      category.items.map(({ question, answer }) => ({
-        "@type": "Question",
-        "name": question,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": markdownToPlainText(answer),
-        }
-      }))
-    )
-  };
-
   return (
-    <NextSeo
-      title="FAQ"
-      description="Frequently Asked Questions about PortalJS Cloud."
-      additionalMetaTags={[
-        {
-          name: 'application/ld+json',
-          content: JSON.stringify(jsonLd)
-        }
-      ]}
-    />
+    <>
+      <LogoJsonLd
+        url="https://portaljs.com"
+        logo="https://portaljs.com/icon.png"
+      />
+      <NextSeo
+        title="FAQ"
+        description="Frequently Asked Questions about PortalJS Cloud."
+      />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          {
+            position: 1,
+            name: 'Home',
+            item: 'https://portaljs.com',
+          },
+          {
+            position: 2,
+            name: 'FAQ',
+            item: 'https://portaljs.com/faq',
+          },
+        ]}
+      />
+      <QAPageJsonLd
+        title="FAQ"
+        description="Frequently Asked Questions about PortalJS Cloud."
+        mainEntity={questions.flatMap(category =>
+          category.items.map(({ question, answer }) => ({
+            "@type": "Question",
+            "name": question,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": markdownToPlainText(answer),
+            }
+          }))
+        )}
+        type="FAQPage"
+        context="https://schema.org"
+      />
+    </>
   );
 }

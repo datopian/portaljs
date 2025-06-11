@@ -24,11 +24,6 @@ export default function Homepage() {
       <HomePageStructuredData />
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
-          <LogoJsonLd
-            url="https://portaljs.com"
-            logo="https://portaljs.com/icon.png"
-          />
-          <NextSeo />
           <Hero />
           <SocialProof />
           <KeyFeatures />

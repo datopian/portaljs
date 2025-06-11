@@ -31,19 +31,20 @@ export default function JSONLD({
   let Component: JSX.Element;
 
   const isBlog: boolean =
-    /^blog\/.*/.test(meta.urlPath) || meta.filetype === "blog";
-  const isDoc: boolean = /^((docs)|(howtos\/)|(guide\/)).*/.test(meta.urlPath);
+    /^blog\/.*/.test(meta.urlPath) || meta.filetype === "blog" || meta.layout === "blog";
+  const isDoc: boolean = /^((docs)|(howtos\/)|(guide\/)).*/.test(meta.urlPath) || meta.layout === "docs";
+  const isCaseStudy: boolean =
+    /^casestudies\/.*/.test(meta.urlPath) || meta.filetype === "casestudy" || meta.layout === "casestudy";
 
   if (isBlog) {
     Component = (
       <ArticleJsonLd
+        title={meta.metatitle || meta.title}
+        description={meta.metadescription || meta.description}
         type="BlogPosting"
         url={pageUrl}
-        title={meta.title}
         datePublished={meta.date}
-        dateModified={meta.date}
-        authorName={meta.authors.length ? meta.authors[0].name : "PortalJS Cloud"}
-        description={meta.description}
+        authorName={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
         images={images}
       />
     );
@@ -55,10 +56,21 @@ export default function JSONLD({
         images={images}
         datePublished={meta.date}
         dateModified={meta.date}
-        authorName={meta.authors.length ? meta.authors[0].name : "PortalJS Cloud"}
+        authorName={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
         description={meta.description}
       />
     );
+  }
+  else if (isCaseStudy) {
+    <ArticleJsonLd
+      title={meta.metatitle || meta.title}
+      description={meta.metadescription || meta.description}
+      url={pageUrl}
+      datePublished={meta.date}
+      authorName={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
+      images={meta.images}
+      type="Article"
+    />
   }
 
   return Component;

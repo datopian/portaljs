@@ -8,7 +8,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import { Tab } from '@headlessui/react'
-import { ShowcaseStructuredData } from '@/components/schema/ShowcaseStructuredData'
+import { CaseStudiesStructuredData } from '@/components/schema/CaseStudiesStructuredData'
+import { DataPortalsStructuredData } from '@/components/schema/DataPortalStructuredData'
 
 export default function ShowcasesList(casestudies) {
   function CaseStudiesList() {
@@ -69,7 +70,6 @@ export default function ShowcasesList(casestudies) {
 
   return (
     <Layout>
-      <ShowcaseStructuredData casestudies={casestudies.casestudies} />
       <Tab.Group>
         <Tab.List className="mb-12 flex max-w-sm mx-auto p-1 space-x-1 bg-slate-100 dark:bg-slate-900 rounded-lg ring-1 ring-slate-200 dark:ring-slate-800">
           <Tab
@@ -94,9 +94,11 @@ export default function ShowcasesList(casestudies) {
         </Tab.List>
         <Tab.Panels className="mt-2">
           <Tab.Panel>
+            <CaseStudiesStructuredData casestudies={casestudies.casestudies} />
             <CaseStudiesList />
           </Tab.Panel>
           <Tab.Panel>
+            <DataPortalsStructuredData />
             <Showcases />
           </Tab.Panel>
         </Tab.Panels>

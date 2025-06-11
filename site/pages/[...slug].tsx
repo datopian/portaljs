@@ -1,7 +1,6 @@
 import fs from 'fs'
 import parse from '../lib/markdown.mjs'
 import MDXPage from '../components/MDXPage'
-import siteConfig from '../config/siteConfig'
 import clientPromise from '@/lib/mddb'
 import Layout from 'components/Layout'
 import { useEffect, useState } from 'react'
@@ -12,7 +11,7 @@ import { CustomAppProps } from './_app.jsx'
 import computeFields from '@/lib/computeFields'
 import { getAuthorsDetails } from '@/lib/getAuthorsDetails'
 import JSONLD from '@/components/JSONLD'
-import { NextSeo, BreadcrumbJsonLd } from 'next-seo'
+import { BreadcrumbJsonLd } from 'next-seo'
 
 export default function Page({ source, meta, sidebarTree }) {
   source = JSON.parse(source)
@@ -36,49 +35,8 @@ export default function Page({ source, meta, sidebarTree }) {
     }
   })
 
-  // Generate the canonical URL (adjust this logic if necessary)
-  const canonicalUrl = `https://www.portaljs.com/${meta.urlPath}`
-  const title = meta.metatitle || meta.title
-  const description = meta.metadescription || meta.description
-  const image = meta.image ? `https://www.portaljs.com` + meta.image : siteConfig.nextSeo.openGraph.images[0].url
-
   return (
     <>
-      {meta.layout === 'docs' ?
-        <NextSeo
-          title={title}
-          description={description}
-          canonical={canonicalUrl}
-          openGraph={{
-            url: canonicalUrl,
-            title,
-            description,
-            type: meta.layout === 'blog' ? 'article' : 'website',
-            article: meta.layout === 'blog' && {
-              publishedTime: meta.date,
-              authors: meta.authorsDetails?.map(a => a.url) || [],
-            },
-            images: [
-              {
-                url: image,
-                alt: title,
-              },
-            ],
-          }}
-          twitter={{
-            cardType: 'summary_large_image',
-            site: '@PortalJS_',
-          }}
-        /> :
-        <NextSeo
-          title={title}
-          description={description}
-          canonical={canonicalUrl}
-          twitter={{
-            cardType: 'summary_large_image',
-            site: '@PortalJS_',
-          }}
-        />}
 
       <BreadcrumbJsonLd itemListElements={breadcrumbs} />
       <JSONLD meta={meta} source={source.compiledSource} />

@@ -5,7 +5,6 @@ type Props = any
 
 export const BlogLayout: React.FC<Props> = ({ children, ...frontMatter }) => {
   const { title, date, authors } = frontMatter
-  console.log('xxxxx')
   return (
     <article className="docs prose prose-a:text-primary dark:prose-a:text-primary-dark prose-strong:text-primary dark:prose-strong:text-primary-dark prose-code:text-primary dark:prose-code:text-primary-dark prose-headings:text-primary dark:prose-headings:text-primary-dark prose text-primary dark:text-primary-dark prose-headings:font-headings dark:prose-invert prose-a:break-words mx-auto p-6">
       <header>
