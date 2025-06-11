@@ -15,7 +15,7 @@ export function BlogStructuredData({ blogs }) {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Blog",
+    "@type": "WebPage",
     name: "PortalJS Blog",
     url: "https://portaljs.com/blog",
     description:
