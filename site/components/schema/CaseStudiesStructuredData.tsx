@@ -4,11 +4,11 @@ export function CaseStudiesStructuredData({ casestudies }) {
   const caseStudiesListItems = casestudies?.map((study, index) => ({
     "@type": "ListItem",
     "position": index + 1,
-    "url": `https://portaljs.com${study.urlPath}`,
+    "url": `https://www.portaljs.com${study.urlPath}`,
     "item": {
       "@type": "CreativeWork",
       "name": study.title.replace('/', '-'),
-      "image": `https://portaljs.com${study.image}`,
+      "image": `https://www.portaljs.com${study.image}`,
       "description": study.description
     }
   }))
@@ -16,7 +16,7 @@ export function CaseStudiesStructuredData({ casestudies }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "url": "https://portaljs.com/showcase",
+    "url": "https://www.portaljs.com/showcase",
     "name": "Showcase of Case Studies",
     "description": "See our client stories.",
     "mainEntity": [
@@ -31,8 +31,8 @@ export function CaseStudiesStructuredData({ casestudies }) {
   return (
     <>
       <LogoJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
       <NextSeo
         title="Showcase of Case Studies"
@@ -63,18 +63,18 @@ export function CaseStudiesStructuredData({ casestudies }) {
           {
             position: 1,
             name: 'Home',
-            item: 'https://portaljs.com',
+            item: 'https://www.portaljs.com',
           },
           {
             position: 2,
             name: 'Showcase',
-            item: 'https://portaljs.com/showcase',
+            item: 'https://www.portaljs.com/showcase',
           },
         ]}
       />
       <WebPageJsonLd
-        id="https://portaljs.com/showcase#webpage"
-        url="https://portaljs.com/showcase"
+        id="https://www.portaljs.com/showcase#webpage"
+        url="https://www.portaljs.com/showcase"
         title="Showcase of Case Studies"
         description="See our client stories."
         {...jsonLd}

@@ -12,7 +12,7 @@ export default function JSONLD({
     return <></>;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://portaljs.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.portaljs.com";
   const pageUrl = `${baseUrl}/${meta.urlPath}`;
 
   const imageMatches = source.match(

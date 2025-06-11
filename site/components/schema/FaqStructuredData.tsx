@@ -16,8 +16,8 @@ export function FaqStructuredData() {
   return (
     <>
       <LogoJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
       <NextSeo
         title="FAQ"
@@ -28,12 +28,12 @@ export function FaqStructuredData() {
           {
             position: 1,
             name: 'Home',
-            item: 'https://portaljs.com',
+            item: 'https://www.portaljs.com',
           },
           {
             position: 2,
             name: 'FAQ',
-            item: 'https://portaljs.com/faq',
+            item: 'https://www.portaljs.com/faq',
           },
         ]}
       />

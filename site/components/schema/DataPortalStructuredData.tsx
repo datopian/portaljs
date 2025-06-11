@@ -13,14 +13,14 @@ export function DataPortalsStructuredData() {
       "name": portal.title,
       "description": portal.description,
       "url": portal.href,
-      "image": `https://portaljs.com${portal.image}`
+      "image": `https://www.portaljs.com${portal.image}`
     }
   }))
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "url": "https://portaljs.com/showcase",
+    "url": "https://www.portaljs.com/showcase",
     "name": "Showcase of Data Portals",
     "description": "Discover data portals powered by PortalJS.",
     "mainEntity": [
@@ -35,8 +35,8 @@ export function DataPortalsStructuredData() {
   return (
     <>
       <LogoJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
       <NextSeo
         title="Showcase of Data Portals"
@@ -67,18 +67,18 @@ export function DataPortalsStructuredData() {
           {
             position: 1,
             name: 'Home',
-            item: 'https://portaljs.com',
+            item: 'https://www.portaljs.com',
           },
           {
             position: 2,
             name: 'Showcase',
-            item: 'https://portaljs.com/showcase',
+            item: 'https://www.portaljs.com/showcase',
           },
         ]}
       />
       <WebPageJsonLd
-        id="https://portaljs.com/showcase#webpage"
-        url="https://portaljs.com/showcase"
+        id="https://www.portaljs.com/showcase#webpage"
+        url="https://www.portaljs.com/showcase"
         title="Showcase of Data Portals"
         description="Discover data portals powered by PortalJS."
         {...jsonLd}

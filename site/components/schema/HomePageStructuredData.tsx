@@ -6,16 +6,16 @@ export function HomePageStructuredData() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "PortalJS Cloud",
-    "url": "https://portaljs.com",
+    "url": "https://www.portaljs.com",
     "description":
       "PortalJS Cloud is the simplest way to get started with open data. Designed for governments, nonprofits, and academic institutions, it lets you launch a modern, compliant portal in minutes.",
     "publisher": {
       "@type": "Organization",
       "name": "PortalJS Cloud",
-      "url": "https://portaljs.com",
+      "url": "https://www.portaljs.com",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://portaljs.com/icon.png"
+        "url": "https://www.portaljs.com/icon.png"
       },
       "sameAs": [
         "https://www.linkedin.com/company/datopian/posts/?feedView=all",
@@ -29,8 +29,8 @@ export function HomePageStructuredData() {
   return (
     <>
       <LogoJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
       <NextSeo
         title="PortalJS — Modern Open Data Portals & Headless Data Platform"
@@ -59,16 +59,16 @@ export function HomePageStructuredData() {
           {
             position: 1,
             name: 'Home',
-            item: 'https://portaljs.com',
+            item: 'https://www.portaljs.com',
           },
         ]}
       />
       <WebPageJsonLd
-        id="https://portaljs.com/ckan#webpage"
-        url="https://portaljs.com/ckan"
+        id="https://www.portaljs.com#webpage"
+        url="https://www.portaljs.com"
         title="Managed Data Portal In the Cloud"
         description="PortalJS Cloud is the simplest way to get started with open data. Designed for governments, nonprofits, and academic institutions, it lets you launch a modern, compliant portal in minutes."
-        canonical="https://portaljs.com/ckan"
+        canonical="https://www.portaljs.com"
         jsonLd={jsonLd}
       />
     </>

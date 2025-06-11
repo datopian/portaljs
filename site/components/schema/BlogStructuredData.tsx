@@ -5,7 +5,7 @@ export function BlogStructuredData({ blogs }) {
     "@type": "BlogPosting",
     headline: blog.title,
     description: blog.description || "",
-    url: `https://portaljs.com${blog.urlPath}`,
+    url: `https://www.portaljs.com${blog.urlPath}`,
     datePublished: blog.date,
     author: (Array.isArray(blog.author) ? blog.author : [blog.author ?? "PortalJS Team"]).map((name) => ({
       "@type": "Person",
@@ -17,7 +17,7 @@ export function BlogStructuredData({ blogs }) {
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: "PortalJS Blog",
-    url: "https://portaljs.com/blog",
+    url: "https://www.portaljs.com/blog",
     description:
       "Discover insights, updates and stories about PortalJS. Stay informed and enhance your skills.",
     blogPost: blogStructuredData,
@@ -26,8 +26,8 @@ export function BlogStructuredData({ blogs }) {
   return (
     <>
       <LogoJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
       <NextSeo
         title="Blog"
@@ -38,21 +38,21 @@ export function BlogStructuredData({ blogs }) {
           {
             position: 1,
             name: 'Home',
-            item: 'https://portaljs.com',
+            item: 'https://www.portaljs.com',
           },
           {
             position: 2,
             name: 'Blog',
-            item: 'https://portaljs.com/blog',
+            item: 'https://www.portaljs.com/blog',
           },
         ]}
       />
       <WebPageJsonLd
-        id="https://portaljs.com/blog#webpage"
-        url="https://portaljs.com/blog"
+        id="https://www.portaljs.com/blog#webpage"
+        url="https://www.portaljs.com/blog"
         title="Blog"
         description="Discover insights, updates and stories about PortalJS. Stay informed and enhance your skills."
-        canonical="https://portaljs.com/blog"
+        canonical="https://www.portaljs.com/blog"
         {...jsonLd}
       />
     </>
