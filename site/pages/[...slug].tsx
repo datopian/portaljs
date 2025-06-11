@@ -11,7 +11,8 @@ import { CustomAppProps } from './_app.jsx'
 import computeFields from '@/lib/computeFields'
 import { getAuthorsDetails } from '@/lib/getAuthorsDetails'
 import JSONLD from '@/components/JSONLD'
-import { BreadcrumbJsonLd, FAQPageJsonLd } from 'next-seo'
+import { BreadcrumbJsonLd, FAQPageJsonLd, NextSeo } from 'next-seo'
+import siteConfig from '@/config/siteConfig'
 
 export default function Page({ source, meta, sidebarTree }) {
   source = JSON.parse(source)
@@ -34,10 +35,44 @@ export default function Page({ source, meta, sidebarTree }) {
       item: '/' + urlSegments.slice(0, i + 1).join('/'),
     }
   })
+  const canonicalUrl = `https://www.portaljs.com/${meta.urlPath}`
+  const title = meta.metatitle || meta.title
+  const description = meta.metadescription || meta.description
+  const ogImage = meta.image || (Array.isArray(meta.images) && meta.images[0])
+  const image = ogImage ? `https://www.portaljs.com${ogImage}` : siteConfig.nextSeo.openGraph.images[0].url
+  const isBlog: boolean =
+    /^blog\/.*/.test(meta.urlPath) || meta.filetype === "blog" || meta.layout === "blog";
+  const isDoc: boolean = /^((docs)|(howtos\/)|(guide\/)).*/.test(meta.urlPath) || meta.layout === "docs";
+  const isCaseStudy: boolean =
+    /^casestudies\/.*/.test(meta.urlPath) || meta.filetype === "casestudy" || meta.layout === "casestudy";
 
   return (
     <>
-
+      <NextSeo
+        title={title}
+        description={description}
+        canonical={canonicalUrl}
+        openGraph={{
+          url: canonicalUrl,
+          title,
+          description,
+          type: isDoc ? 'website' : 'article',
+          article: (isCaseStudy || isBlog) && {
+            publishedTime: meta.date,
+            authors: meta.authors?.map(a => a.name) || "PortalJS Cloud"
+          },
+          images: [
+            {
+              url: image,
+              alt: title,
+            },
+          ],
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+          site: '@PortalJS_',
+        }}
+      />
       <BreadcrumbJsonLd itemListElements={breadcrumbs} />
       <JSONLD meta={meta} source={source.compiledSource} />
       {meta.faqs && meta.faqs.length > 0 && (
