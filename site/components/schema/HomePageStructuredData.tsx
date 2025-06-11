@@ -65,7 +65,6 @@ export function HomePageStructuredData() {
         url="https://www.portaljs.com"
         name="PortalJS Cloud"
         description="PortalJS Cloud is the simplest way to get started with open data. Designed for governments, nonprofits, and academic institutions, it lets you launch a modern, compliant portal in minutes."
-        canonical="https://www.portaljs.com"
         {...jsonLd}
       />
     </>

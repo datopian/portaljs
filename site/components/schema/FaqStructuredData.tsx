@@ -38,7 +38,7 @@ export function FaqStructuredData() {
         ]}
       />
       <FAQPageJsonLd
-        title="FAQ"
+        name="FAQ"
         description="Frequently Asked Questions about PortalJS Cloud."
         mainEntity={questions.flatMap(category =>
           category.items.map(({ question, answer }) => ({
@@ -51,7 +51,6 @@ export function FaqStructuredData() {
           }))
         )}
         type="FAQPage"
-        context="https://schema.org"
       />
     </>
   );
