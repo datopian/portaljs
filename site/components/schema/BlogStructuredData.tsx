@@ -7,7 +7,7 @@ export function BlogStructuredData({ blogs }) {
     description: blog.description || "",
     url: `https://portaljs.com${blog.urlPath}`,
     datePublished: blog.date,
-    author: (blog.author?.length ? blog.author : ["PortalJS Team"]).map((name) => ({
+    author: (Array.isArray(blog.author) ? blog.author : [blog.author ?? "PortalJS Team"]).map((name) => ({
       "@type": "Person",
       name,
     })),

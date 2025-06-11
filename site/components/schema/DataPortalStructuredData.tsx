@@ -81,7 +81,7 @@ export function DataPortalsStructuredData() {
         url="https://portaljs.com/showcase"
         title="Showcase of Data Portals"
         description="Discover data portals powered by PortalJS."
-        jsonLd={jsonLd}
+        {...jsonLd}
       />
     </>
   )

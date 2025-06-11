@@ -77,7 +77,7 @@ export function CaseStudiesStructuredData({ casestudies }) {
         url="https://portaljs.com/showcase"
         title="Showcase of Case Studies"
         description="See our client stories."
-        jsonLd={jsonLd}
+        {...jsonLd}
       />
     </>
   )

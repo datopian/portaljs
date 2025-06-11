@@ -62,15 +62,17 @@ export default function JSONLD({
     );
   }
   else if (isCaseStudy) {
-    <ArticleJsonLd
-      title={meta.metatitle || meta.title}
-      description={meta.metadescription || meta.description}
-      url={pageUrl}
-      datePublished={meta.date}
-      authorName={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
-      images={meta.images}
-      type="Article"
-    />
+    Component = (
+      <ArticleJsonLd
+        title={meta.metatitle || meta.title}
+        description={meta.metadescription || meta.description}
+        url={pageUrl}
+        datePublished={meta.date}
+        authorName={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
+        images={meta.images}
+        type="Article"
+      />
+    )
   }
 
   return Component;
