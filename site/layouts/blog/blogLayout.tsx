@@ -1,10 +1,11 @@
 import { formatDate } from '@/lib/common'
 import { Avatar } from '@/components/Avatar'
+import { FAQ } from '@/components/FAQ'
 
 type Props = any
 
 export const BlogLayout: React.FC<Props> = ({ children, ...frontMatter }) => {
-  const { title, date, authors } = frontMatter
+  const { title, date, authors, faqs } = frontMatter
   return (
     <article className="docs prose prose-a:text-primary dark:prose-a:text-primary-dark prose-strong:text-primary dark:prose-strong:text-primary-dark prose-code:text-primary dark:prose-code:text-primary-dark prose-headings:text-primary dark:prose-headings:text-primary-dark prose text-primary dark:text-primary-dark prose-headings:font-headings dark:prose-invert prose-a:break-words mx-auto p-6">
       <header>
@@ -30,6 +31,12 @@ export const BlogLayout: React.FC<Props> = ({ children, ...frontMatter }) => {
         </div>
       </header>
       <section>{children}</section>
+
+      {faqs && faqs.length > 0 && (
+        <div className="not-prose mt-16">
+          <FAQ faqItems={faqs} />
+        </div>
+      )}
     </article>
   )
 }

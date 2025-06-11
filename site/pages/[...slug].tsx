@@ -11,7 +11,7 @@ import { CustomAppProps } from './_app.jsx'
 import computeFields from '@/lib/computeFields'
 import { getAuthorsDetails } from '@/lib/getAuthorsDetails'
 import JSONLD from '@/components/JSONLD'
-import { BreadcrumbJsonLd } from 'next-seo'
+import { BreadcrumbJsonLd, FAQPageJsonLd } from 'next-seo'
 
 export default function Page({ source, meta, sidebarTree }) {
   source = JSON.parse(source)
@@ -40,6 +40,14 @@ export default function Page({ source, meta, sidebarTree }) {
 
       <BreadcrumbJsonLd itemListElements={breadcrumbs} />
       <JSONLD meta={meta} source={source.compiledSource} />
+      {meta.faqs && meta.faqs.length > 0 && (
+        <FAQPageJsonLd
+          mainEntity={meta.faqs.map(faq => ({
+            questionName: faq.question,
+            acceptedAnswerText: faq.answer
+          }))}
+        />
+      )}
 
       <Layout
         tableOfContents={tableOfContents}

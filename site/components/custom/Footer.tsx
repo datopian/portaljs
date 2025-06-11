@@ -4,19 +4,21 @@ import { NavbarTitle } from '../Nav'
 const navigation = {
   resources: [
     { name: 'Showcase', href: '/showcase' },
-    { name: 'CKAN', href: '/ckan' },
-    { name: 'OpenMetadata', href: '/openmetadata' },
     { name: 'Documentation', href: '/docs' },
     { name: 'Blog', href: '/blog' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Open Source', href: '/opensource' },
   ],
-  company: [
+  integrations: [
+    { name: 'CKAN Integration', href: '/ckan' },
+    { name: 'OpenMetadata Integration', href: '/openmetadata' },
+    { name: 'Comparison Overview', href: '/compare' },
+    { name: 'PortalJS vs OpenDataSoft', href: '/compare/opendatasoft' },
+  ],
+  companyLegal: [
     { name: 'About Us', href: 'https://www.datopian.com/about' },
     { name: 'Contact', href: 'https://www.datopian.com/contact' },
     { name: 'Pricing', href: '/pricing' },
-  ],
-  legal: [
     { name: 'Privacy Policy', href: 'https://www.datopian.com/privacy' },
     { name: 'Terms of Use', href: 'https://www.datopian.com/terms' },
   ],
@@ -136,9 +138,9 @@ export default function Footer() {
               </ul>
             </div>
             <div className="mt-10 md:mt-0">
-              <h3 className="text-sm font-semibold leading-6">Company</h3>
+              <h3 className="text-sm font-semibold leading-6">Integrations & Comparisons</h3>
               <ul role="list" className="mt-6 space-y-4">
-                {navigation.company.map((item: any) => (
+                {navigation.integrations.map((item: any) => (
                   <li key={item.name}>
                     <a
                       href={item.href}
@@ -152,9 +154,9 @@ export default function Footer() {
               </ul>
             </div>
             <div className="mt-10 md:mt-0">
-              <h3 className="text-sm font-semibold leading-6">Legal</h3>
+              <h3 className="text-sm font-semibold leading-6">Company & Legal</h3>
               <ul role="list" className="mt-6 space-y-4">
-                {navigation.legal.map((item: any) => (
+                {navigation.companyLegal.map((item: any) => (
                   <li key={item.name}>
                     <a
                       href={item.href}

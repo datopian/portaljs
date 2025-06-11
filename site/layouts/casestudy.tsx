@@ -1,21 +1,71 @@
 import ButtonLink from '@/components/ButtonLink'
-import { H1, H2, H3 } from '@/components/custom/header'
+import { H1, H2 } from '@/components/custom/header'
 import ReactMarkdown from 'react-markdown'
 import { Disclosure } from '@headlessui/react'
-import Head from 'next/head'
 import { Avatar } from '@/components/Avatar'
 import * as FaIcons from 'react-icons/fa'
-import FAQ from '@/components/casestudy/FAQ'
+import {FAQ } from '@/components/FAQ'
 import { CASE_STUDY_TABLES } from '@/constants'
 import React, { useEffect } from 'react'
 import { Player } from '@lottiefiles/react-lottie-player'
 import { XCircleIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'
 
+const questions = [
+  {
+    question: 'How does the migration process work?',
+    answer:
+      'Our streamlined CKAN migration ensures a secure and smooth transition from your self-hosted setup to a fully managed PortalJS Cloud platform. We start with a brief consultation to assess your current environment, then develop a customized migration plan that includes data transfer, validation, and testing—all designed to minimize downtime and disruption. Whether you’re moving from AWS or another hosting solution, our process ensures a seamless switch to a scalable, hassle-free open data portal.',
+  },
+  {
+    question: 'What’s included in the managed service?',
+    answer:
+      'Our fully managed open data platform takes care of everything so you don’t have to. This includes secure hosting, routine maintenance, performance monitoring, and regular security updates. Whether you’re on the Foundation, Institution, or Enterprise plan, your team can focus on data transparency and engagement without worrying about the tech. For detailed features and options, visit our Pricing Page.',
+  },
+  {
+    question: 'What level of customization is possible?',
+    answer:
+      'With PortalJS Cloud, the customization possibilities are endless! On the Foundation Plan, you can tweak the basics—logos, fonts, and colors—so it feels like your own. Need something more personalized? The Institution Plan gives you advanced branding and custom dashboard options. And if you are looking for something truly unique, our Enterprise Plan offers fully bespoke development—basically, if you can imagine it, we can build it! Your portal will be 100% tailored to your needs and vision.',
+  },
+  {
+    question: 'How quickly can I launch my open data portal?',
+    answer:
+      'With PortalJS Cloud, you can launch a fully functional, scalable open data portal in just 5 minutes—faster than any other platform. This rapid open data portal setup means you can immediately start sharing your datasets and engaging your community without delays.',
+  },
+  {
+    question: 'How does PortalJS Cloud compare to a self-hosted CKAN solution?',
+    answer:
+      'Unlike self-hosted CKAN, PortalJS Cloud is a fully managed solution that reduces operational complexity, slashes AWS costs, and improves security and performance. It lets your team focus on data curation and civic engagement rather than technical maintenance.',
+  },
+  {
+    question: 'What support options are available?',
+    answer:
+      'We offer comprehensive support tailored to your chosen plan—from standard support with a 48-hour response time on the Foundation plan to priority assistance with a 24-hour response time on the Institution plan. Enterprise clients also benefit from dedicated account management and bespoke support options.',
+  },
+  {
+    question: 'What pricing tiers are available for PortalJS Cloud?',
+    answer: `PortalJS Cloud offers a range of pricing tiers to suit different needs and budgets.
+
+- Forever Free (Open Source): Self-hosted, community-supported version for those who want to build it their way.
+
+- Foundation Plan: A fully managed solution at $99/month with essential features and basic branding.
+
+- Institution Plan: At $299/month, it adds advanced branding, increased storage, and priority support for growing organizations.
+
+- Enterprise Plan: Custom-priced for organizations needing dedicated instances, bespoke development, advanced security, and comprehensive SLAs.
+
+Please see our [Pricing Page](https://www.portaljs.com/pricing) for more details or contact us at [portaljs@datopian.com](mailto:portaljs@datopian.com). `,
+  },
+  {
+    question: 'Are there any discounts for annual billing?',
+    answer:
+      'Yes, if you choose annual billing, you can save 16%—effectively getting 2 months free compared to monthly payments.',
+  },
+]
+
 export default function CaseStudyLayout({ children, ...frontMatter }) {
   const {
     title,
-    subtitle,
     description,
     image,
     readingTime,
@@ -30,10 +80,11 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
     images,
     table,
     highlight,
+    longRead = true,
+    faqs
   } = frontMatter
 
   const { theme } = useTheme()
-
   const _keystats = [
     ['50% reduction', 'in cloud costs'],
     ['Zero maintenance', 'overhead'],
@@ -94,6 +145,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
         {tableData.map((table, index) => (
           <div className="flex flex-col items-center mt-16" key={index}>
             <div className="text-2xl font-bold">{table.title}</div>
+            <div className="text-lg text-center mt-4">{table.description}</div>
             <table className="mt-12 prose prose-headings:font-headings dark:prose-invert prose-a:break-word text-xs sm:text-base max-w-none w-full text-slate-400">
               <thead>
                 <tr className="bg-slate-100 dark:bg-[#1d283a]">
@@ -111,9 +163,8 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                 {table.rows.map((row, idx) => (
                   <tr
                     key={idx}
-                    className={`${
-                      idx % 2 === 0 ? 'bg-[#fafafa] dark:bg-[#070e19]' : ''
-                    } `}
+                    className={`${idx % 2 === 0 ? 'bg-[#fafafa] dark:bg-[#070e19]' : ''
+                      } `}
                   >
                     {row.map((cell, cellIdx) => (
                       <td key={cellIdx} className="px-6 py-4 text-sm">
@@ -140,11 +191,6 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
   const Header = () => {
     return (
       <section className="max-w-2xl px-4 sm:max-w-8xl justify-center mx-auto sm:px-8 xl:px-12">
-        <Head>
-          <title>{title}</title>
-          <meta name="description" content={subtitle} />
-        </Head>
-
         <div className="flex flex-col md:flex-row w-full object-cover relative overflow-hidden gap-10">
           <div className="   ">
             <span className="text-sm font-bold text-blue-400">CASE STUDY</span>
@@ -221,7 +267,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
             {keystats.map((stat, index) => (
               <li
                 key={index}
-                className="text-center ring-1 ring-slate-200 dark:ring-slate-800 hover:bg-slate-100 rounded-xl p-8 shadow-lg"
+                className="text-center ring-1 ring-slate-200 dark:ring-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl p-8 shadow-lg"
               >
                 <span className="text-xl lg:text-3xl block w-full font-semibold text-blue-400">
                   {stat.split('/n')[0]}
@@ -258,11 +304,11 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
               {quote[0]}
             </p>
             <div className="w-full max-w-4xl flex items-center justify-center sm:justify-end mt-6 gap-4 ">
-              <img
+              {quote[1] != '' && <img
                 src={quote[1]}
                 alt="quote"
                 className="w-12 h-12 object-contain bg-white rounded-full ring-1 ring-slate-200 dark:ring-slate-800"
-              />
+              />}
               <p className="max-4w-xl text-base font-semibold">{quote[2]}</p>
               <div className="absolute w-16 h-16 sm:w-32 sm:h-32 text-[96px] left-0 sm:-left-16 -top-24 opacity-15 z-10 text-blue-300 rotate-180">
                 <svg
@@ -299,14 +345,14 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
             <div className="flex flex-col items-center mt-16 max-w-2xl">
               <h2 className="text-3xl font-bold text-center">{portal[0]}</h2>
               <p className="text-lg text-center mt-4">{portal[1]}</p>
-              <ButtonLink
+              {portal[2] && <ButtonLink
                 href={portal[2]}
                 title="Explore"
                 className="mt-6 text-sm"
                 style="secondary"
               >
                 Explore
-              </ButtonLink>
+              </ButtonLink>}
             </div>
           )}
           {images && (
@@ -473,7 +519,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
     <article>
       <Header />
       <Cta />
-      <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
+      {longRead && <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
         <Disclosure>
           {({ open }) => (
             <>
@@ -512,9 +558,9 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
             </>
           )}
         </Disclosure>
-      </main>
+      </main>}
       <Stats />
-      <FAQ />
+      <FAQ faqItems={faqs || questions} />
     </article>
   )
 }

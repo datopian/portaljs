@@ -37,6 +37,49 @@ const config = {
       ],
     },
     {
+      name: 'Compare',
+      subItems: [
+        {
+          name: 'Overview',
+          href: '/compare',
+        },
+        {
+          name: 'OpenDataSoft',
+          href: '/compare/opendatasoft',
+        },
+        {
+          name: 'CKAN',
+          href: '#',
+          disabled: true,
+        },
+        {
+          name: 'Socrata',
+          href: '#',
+          disabled: true,
+        },
+        {
+          name: 'ArcGIS',
+          href: '#',
+          disabled: true,
+        },
+        {
+          name: 'DKAN',
+          href: '#',
+          disabled: true,
+        },
+        {
+          name: 'Dataverse (Harvard)',
+          href: '#',
+          disabled: true,
+        },
+        {
+          name: 'Custom Solution',
+          href: '#',
+          disabled: true,
+        },
+      ],
+    },
+    {
       name: 'Pricing',
       href: '/pricing',
     },

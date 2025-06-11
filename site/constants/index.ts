@@ -129,5 +129,38 @@ export const CASE_STUDY_TABLES = [
         'Active public interaction via forms, charts, and dataset discovery',
       ],
     ],
-  }
+  },
+  {
+    table: 'healthcare',
+    title: 'Comparing What Was vs. What Is',
+    description: 'By combining OpenMetadata with PortalJS, we preserved robust data governance and observability while layering on a fast, intuitive frontend. OpenMetadata handles the metadata, access control, and backend integration. PortalJS transforms that into a clean, searchable interface designed for real human use.',
+    headers: ['Feature', 'Before PortalJS', 'With PortalJS'],
+    rows: [
+      [
+        'Dataset Discovery',
+        'Fragmented, invisible across workspaces',
+        'Unified catalog, searchable and filterable',
+      ],
+      [
+        'Non-tech User Experience',
+        'Complex, engineer-focused',
+        'Simple, human-first UI',
+      ],
+      [
+        'Dataset Q&A',
+        'Manual via email or ticketing',
+        'Built-in threaded discussions',
+      ],
+      [
+        'Dataset Updates',
+        'Hard to communicate changes',
+        'Inline publication notes from stewards',
+      ],
+      [
+        'Workspace Provisioning',
+        'Manual coordination',
+        'One-click “Add to Workspace” action',
+      ],
+    ],
+  },
 ]
