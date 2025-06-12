@@ -96,6 +96,10 @@ const config = {
       href: '/faq',
     },
     {
+      name: 'Partners',
+      href: '/partners',
+    },
+    {
       name: 'Open source 🌐',
       href: '/opensource',
       target: '_blank',
@@ -105,7 +109,10 @@ const config = {
   footerLinks: [
     {
       name: 'LINKS',
-      subItems: [{ href: '/', name: 'Home' }],
+      subItems: [
+        { href: '/', name: 'Home' },
+        { href: '/partners', name: 'Partners' },
+      ],
     },
     {
       name: 'Contact',
@@ -129,7 +136,8 @@ const config = {
           type: 'image/webp',
         },
       ],
-      description: 'PortalJS Cloud is the easiest way to get started with Open Data. Perfect for governments, non-profits, academics, and companies of all sizes.',
+      description:
+        'PortalJS Cloud is the easiest way to get started with Open Data. Perfect for governments, non-profits, academics, and companies of all sizes.',
     },
     twitter: {
       handle: '@datopian',
@@ -141,5 +149,5 @@ const config = {
   analytics: 'G-48FQ78FSGJ',
   github: 'https://github.com/datopian/portaljs',
   discord: 'https://discord.com/invite/KrRzMKU ',
-}
-export default config
+};
+export default config;
