@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import { Disclosure } from '@headlessui/react'
 import { Avatar } from '@/components/Avatar'
 import * as FaIcons from 'react-icons/fa'
-import {FAQ } from '@/components/FAQ'
+import { FAQ } from '@/components/FAQ'
 import { CASE_STUDY_TABLES } from '@/constants'
 import React, { useEffect } from 'react'
 import { Player } from '@lottiefiles/react-lottie-player'
@@ -81,6 +81,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
     table,
     highlight,
     longRead = true,
+    fullCaseStudy = false,
     faqs
   } = frontMatter
 
@@ -228,6 +229,15 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                   >
                     Book a demo
                   </ButtonLink>
+                  {fullCaseStudy && <ButtonLink
+                    href={fullCaseStudy}
+                    title="Full case study"
+                    style="tertiary"
+                    className="text-sm z-20"
+                    target='_blank'
+                  >
+                    Read full case study
+                  </ButtonLink>}
                 </div>
               </div>
               <div className="flex gap-2.5 items-center mt-8">
@@ -511,6 +521,11 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
             </p>
           </div>
         </div>
+        {fullCaseStudy && <div className='mt-8 text-blue-400 justify-self-end text-[16px]'>
+          <a href={fullCaseStudy}>
+            Read the full story →
+          </a>
+        </div>}
       </div>
     )
   }
@@ -519,7 +534,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
     <article>
       <Header />
       <Cta />
-      {longRead && <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
+      {longRead && !fullCaseStudy && <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
         <Disclosure>
           {({ open }) => (
             <>

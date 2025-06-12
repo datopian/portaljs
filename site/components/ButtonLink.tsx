@@ -1,7 +1,7 @@
 import { AnchorHTMLAttributes } from "react";
 
 type ButtonLinkProps = {
-  style?: "primary" | "secondary";
+  style?: "primary" | "secondary" | "tertiary";
   children: string;
   className?: string;
   title?: string;
@@ -23,7 +23,10 @@ export default function ButtonLink({
     _className += `border-transparent bg-secondary hover:bg-secondary-hover text-black`;
   } else if (style == "secondary") {
     _className += `border-secondary hover:bg-secondary-hover hover:text-black text-secondary`;
+  } else if (style == "tertiary") {
+    _className += `border-none hover:bg-slate-700 text-slate-300 bg-slate-800 `;
   }
+
 
   _className += ` ${className}`;
 
