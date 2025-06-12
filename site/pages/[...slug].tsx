@@ -1,7 +1,6 @@
 import fs from 'fs'
 import parse from '../lib/markdown.mjs'
 import MDXPage from '../components/MDXPage'
-import siteConfig from '../config/siteConfig'
 import clientPromise from '@/lib/mddb'
 import Layout from 'components/Layout'
 import { useEffect, useState } from 'react'
@@ -12,12 +11,12 @@ import { CustomAppProps } from './_app.jsx'
 import computeFields from '@/lib/computeFields'
 import { getAuthorsDetails } from '@/lib/getAuthorsDetails'
 import JSONLD from '@/components/JSONLD'
-import { NextSeo, BreadcrumbJsonLd, FAQPageJsonLd } from 'next-seo'
+import { BreadcrumbJsonLd, FAQPageJsonLd, NextSeo } from 'next-seo'
+import siteConfig from '@/config/siteConfig'
 
 export default function Page({ source, meta, sidebarTree }) {
   source = JSON.parse(source)
   const router = useRouter()
-
   const [tableOfContents, setTableOfContents] = useState([])
 
   useEffect(() => {
@@ -36,8 +35,6 @@ export default function Page({ source, meta, sidebarTree }) {
       item: '/' + urlSegments.slice(0, i + 1).join('/'),
     }
   })
-
-  // Generate the canonical URL (adjust this logic if necessary)
   const canonicalUrl = `https://www.portaljs.com/${meta.urlPath}`
   const title = meta.metatitle || meta.title
   const description = meta.metadescription || meta.description
@@ -54,10 +51,10 @@ export default function Page({ source, meta, sidebarTree }) {
           url: canonicalUrl,
           title,
           description,
-          type: meta.layout === 'blog' ? 'article' : 'website',
-          article: meta.layout === 'blog' && {
+          type: 'article',
+          article: {
             publishedTime: meta.date,
-            authors: meta.authorsDetails?.map(a => a.url) || [],
+            authors: meta.authors?.map(a => a.name) || "PortalJS Cloud"
           },
           images: [
             {
