@@ -38,6 +38,7 @@ portal:
     'https://data.hounslow.gov.uk',
   ]
 table: default
+fullCaseStudy: ""
 ---
 
 ### Introduction

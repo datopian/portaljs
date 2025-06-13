@@ -77,4 +77,5 @@ portal:
   ]
 table: healthcare
 longRead: false
+fullCaseStudy: "https://www.datopian.com/showcase/case-studies/simple-frontend-for-openmetadata-with-portaljs"
 ---

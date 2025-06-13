@@ -37,6 +37,7 @@ portal:
    'SSEN Open Data Portal', 'Designed for flexibility and scalability, PortalJS allows the frontend to evolve independently from the backend, ensuring seamless updates and a user-centric experience.','https://data.ssen.co.uk'
   ]
 table: ssen
+fullCaseStudy: "https://www.datopian.com/showcase/case-studies/empowering-energy-sector-ckan-portaljs-scottish-southern-electricity-networks"
 ---
 
 ### Introduction

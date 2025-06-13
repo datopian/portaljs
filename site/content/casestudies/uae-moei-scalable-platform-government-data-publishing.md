@@ -30,6 +30,7 @@ portal:
     'https://opendata.moei.gov.ae',
   ]
 table: moei
+fullCaseStudy: "https://www.datopian.com/showcase/case-studies/making-government-data-usable-moei-ckan-open-data-portal"
 ---
 
 ## Context
