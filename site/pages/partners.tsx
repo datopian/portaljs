@@ -164,7 +164,7 @@ export default function Partners() {
           <div className="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-12 lg:grid-cols-4 lg:gap-x-6">
             {benefits.map((benefit, index) => (
               <div
-                key={index}
+                key={benefit.title}
                 className="relative flex flex-col rounded-xl dark:bg-slate-900 dark:hover:bg-slate-800 hover:bg-slate-100 transition-all duration-300 ring-1 ring-slate-200 dark:ring-slate-800 p-7 rounded-lg shadow-lg overflow-hidden"
               >
                 <div className="flex-shrink-0 w-full flex items-start -ml-2">
@@ -198,7 +198,7 @@ export default function Partners() {
           <div className="mt-12 max-w-6xl mx-auto px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               {steps.map((step, index) => (
-                <div key={index} className="flex items-start">
+                <div key={step.number} className="flex items-start">
                   <div className={`flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r flex items-center justify-center text-white font-bold mr-4`}>
                     <Player src={`/static/icons/${theme}/${step.icon}.json`} autoplay loop className={`w-14 h-14 ${step.iconStyle}`} />
                   </div>
@@ -244,7 +244,7 @@ export default function Partners() {
           </div>
           <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
             {partners.map((partner, index) => (
-              <div key={index} className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-8 ring-1 ring-slate-200 dark:ring-slate-700 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center">
+              <div key={partner.name} className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-8 ring-1 ring-slate-200 dark:ring-slate-700 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white text-2xl font-bold mb-6">
                   {partner.logoPlaceholder}
                 </div>
@@ -274,6 +274,7 @@ export default function Partners() {
               title="Book a Partnership Meeting"
               className="text-sm"
               target="_blank"
+              rel="noopener noreferrer"
             >
               Schedule a free call
             </ButtonLink>
