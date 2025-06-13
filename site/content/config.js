@@ -80,24 +80,29 @@ const config = {
       ],
     },
     {
+      name: 'Resources',
+      subItems: [
+        {
+          name: 'Blog',
+          href: '/blog',
+        },
+        {
+          name: 'FAQ',
+          href: '/faq',
+        },
+        {
+          name: 'Partners',
+          href: '/partners',
+        },
+      ],
+    },
+    {
       name: 'Pricing',
       href: '/pricing',
     },
     {
       name: 'Docs',
       href: '/opensource/docs',
-    },
-    {
-      name: 'Blog',
-      href: '/blog',
-    },
-    {
-      name: 'FAQ',
-      href: '/faq',
-    },
-    {
-      name: 'Partners',
-      href: '/partners',
     },
     {
       name: 'Open source 🌐',
