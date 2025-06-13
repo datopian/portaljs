@@ -232,7 +232,7 @@ export default function Partners() {
       </div>
 
       {/* Our Partners Section */}
-      <div className="bg-slate-50 dark:bg-slate-900">
+      {/* <div className="bg-slate-50 dark:bg-slate-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-transparent">
@@ -255,7 +255,7 @@ export default function Partners() {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* CTA Section - Styled like Schedule from /ckan page */}
       <div className="!max-w-none ring-1 ring-slate-200 dark:ring-slate-800 py-24 bg-zinc-50 dark:bg-slate-800/75 mt-24 relative overflow-hidden ">
