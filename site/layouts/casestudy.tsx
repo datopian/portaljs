@@ -234,7 +234,8 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                     title="Full case study"
                     style="tertiary"
                     className="text-sm z-20"
-                    target='_blank'
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Read full case study
                   </ButtonLink>}
@@ -522,7 +523,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
           </div>
         </div>
         {fullCaseStudy && <div className='mt-8 text-blue-400 justify-self-end text-[16px]'>
-          <a href={fullCaseStudy}>
+          <a href={fullCaseStudy} target="_blank" rel="noopener noreferrer">
             Read the full story →
           </a>
         </div>}
