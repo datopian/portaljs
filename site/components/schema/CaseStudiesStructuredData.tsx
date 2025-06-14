@@ -1,29 +1,6 @@
 import { BreadcrumbJsonLd, LogoJsonLd, NextSeo, WebPageJsonLd } from "next-seo";
 
 export function CaseStudiesStructuredData({ casestudies }) {
-  const caseStudiesListItems = casestudies?.map((study, index) => ({
-    "@type": "ListItem",
-    "position": index + 1,
-    "url": `https://www.portaljs.com${study.urlPath}`,
-    "item": {
-      "@type": "CreativeWork",
-      "name": study.title.replace('/', '-'),
-      "image": `https://www.portaljs.com${study.image}`,
-      "description": study.description
-    }
-  }))
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "mainEntity": [
-      {
-        "@type": "ItemList",
-        "name": "Case Studies",
-        "itemListElement": caseStudiesListItems,
-      }
-    ]
-  }
 
   return (
     <>
@@ -44,8 +21,11 @@ export function CaseStudiesStructuredData({ casestudies }) {
             type: 'website',
             images: [
               {
-                url: 'https://www.portaljs.com/icon.png',
-                alt: 'PortalJS Logo',
+                url: 'https://portaljs.com/static/img/seo.webp',
+                alt: 'PortalJS Cloud',
+                width: 1280,
+                height: 720,
+                type: 'image/webp',
               },
             ],
           }
@@ -72,9 +52,8 @@ export function CaseStudiesStructuredData({ casestudies }) {
       <WebPageJsonLd
         id="https://www.portaljs.com/showcase#webpage"
         url="https://www.portaljs.com/showcase"
-        name="Case Studies"
+        name="Showcase of Case Studies"
         description="See our client stories."
-        {...jsonLd}
       />
     </>
   )
