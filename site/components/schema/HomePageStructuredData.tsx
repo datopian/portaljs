@@ -1,6 +1,17 @@
-import { BreadcrumbJsonLd, LogoJsonLd, NextSeo, WebPageJsonLd } from "next-seo";
+import { BreadcrumbJsonLd, FAQPageJsonLd, LogoJsonLd, NextSeo, WebPageJsonLd } from "next-seo";
+import { homeFaqQuestions } from '@/pages/index';
 
 export function HomePageStructuredData() {
+  function markdownToPlainText(md: string) {
+    return md
+      .replace(/\*\*(.*?)\*\*/g, '$1')        // bold **text**
+      .replace(/\*(.*?)\*/g, '$1')            // italic *text*
+      .replace(/!\[.*?\]\(.*?\)/g, '')        // images ![alt](url)
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1')     // links [text](url)
+      .replace(/^\s*[-*+]\s+/gm, '')           // list markers (-, *, +)
+      .replace(/\n+/g, ' ')                    // new lines to space
+      .trim();
+  }
   return (
     <>
       <LogoJsonLd
@@ -46,6 +57,12 @@ export function HomePageStructuredData() {
         url="https://www.portaljs.com"
         name="PortalJS Cloud"
         description="PortalJS Cloud is the simplest way to get started with open data. Designed for governments, nonprofits, and academic institutions, it lets you launch a modern, compliant portal in minutes."
+      />
+      <FAQPageJsonLd
+        mainEntity={homeFaqQuestions.map(({ question, answer }) => ({
+          questionName: question,
+          acceptedAnswerText: markdownToPlainText(answer),
+        }))}
       />
     </>
   );
