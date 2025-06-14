@@ -13,6 +13,7 @@ export function FaqStructuredData() {
       .trim();
   }
 
+
   return (
     <>
       <LogoJsonLd
@@ -59,19 +60,12 @@ export function FaqStructuredData() {
         ]}
       />
       <FAQPageJsonLd
-        name="FAQ"
-        description="Frequently Asked Questions about PortalJS Cloud."
         mainEntity={questions.flatMap(category =>
           category.items.map(({ question, answer }) => ({
-            "@type": "Question",
-            name: question,
-            "acceptedAnswer": {
-              "@type": "Answer",
-              text: markdownToPlainText(answer),
-            }
+            questionName: question,
+            acceptedAnswerText: markdownToPlainText(answer),
           }))
         )}
-        type="FAQPage"
       />
     </>
   );
