@@ -4,31 +4,6 @@ import { dataPortals } from "../Showcases";
 
 export function DataPortalsStructuredData() {
 
-  const dataPortalsListItems = dataPortals.map((portal, index) => ({
-    "@type": "ListItem",
-    "position": index + 1,
-    "url": portal.href,
-    "item": {
-      "@type": "WebSite",
-      "name": portal.title,
-      "description": portal.description,
-      "url": portal.href,
-      "image": `https://www.portaljs.com${portal.image}`
-    }
-  }))
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "mainEntity": [
-      {
-        "@type": "ItemList",
-        "name": "Data Portals",
-        "itemListElement": dataPortalsListItems,
-      }
-    ]
-  }
-
   return (
     <>
       <LogoJsonLd
@@ -48,8 +23,11 @@ export function DataPortalsStructuredData() {
             type: 'website',
             images: [
               {
-                url: 'https://www.portaljs.com/icon.png',
-                alt: 'PortalJS Logo',
+                url: 'https://portaljs.com/static/img/seo.webp',
+                alt: 'PortalJS Cloud',
+                width: 1280,
+                height: 720,
+                type: 'image/webp',
               },
             ],
           }
@@ -76,9 +54,8 @@ export function DataPortalsStructuredData() {
       <WebPageJsonLd
         id="https://www.portaljs.com/showcase#webpage"
         url="https://www.portaljs.com/showcase"
-        name="Data Portals"
+        name="Showcase of Data Portals"
         description="Discover data portals powered by PortalJS."
-        {...jsonLd}
       />
     </>
   )

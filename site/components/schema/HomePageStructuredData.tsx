@@ -1,28 +1,17 @@
-import { BreadcrumbJsonLd, LogoJsonLd, NextSeo, WebPageJsonLd } from "next-seo";
+import { BreadcrumbJsonLd, FAQPageJsonLd, LogoJsonLd, NextSeo, WebPageJsonLd } from "next-seo";
+import { homeFaqQuestions } from '@/pages/index';
 
 export function HomePageStructuredData() {
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "url": "https://www.portaljs.com",
-    "publisher": {
-      "@type": "Organization",
-      "name": "PortalJS Cloud",
-      "url": "https://www.portaljs.com",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://www.portaljs.com/icon.png"
-      },
-      "sameAs": [
-        "https://www.linkedin.com/company/datopian/posts/?feedView=all",
-        "https://x.com/datopian",
-        "https://github.com/datopian",
-        "https://www.youtube.com/@datopian1413"
-      ]
-    },
+  function markdownToPlainText(md: string) {
+    return md
+      .replace(/\*\*(.*?)\*\*/g, '$1')        // bold **text**
+      .replace(/\*(.*?)\*/g, '$1')            // italic *text*
+      .replace(/!\[.*?\]\(.*?\)/g, '')        // images ![alt](url)
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1')     // links [text](url)
+      .replace(/^\s*[-*+]\s+/gm, '')           // list markers (-, *, +)
+      .replace(/\n+/g, ' ')                    // new lines to space
+      .trim();
   }
-
   return (
     <>
       <LogoJsonLd
@@ -41,8 +30,11 @@ export function HomePageStructuredData() {
           type: 'website',
           images: [
             {
-              url: 'https://www.portaljs.com/icon.png',
-              alt: 'PortalJS Logo',
+              url: 'https://portaljs.com/static/img/seo.webp',
+              alt: 'PortalJS Cloud',
+              width: 1280,
+              height: 720,
+              type: 'image/webp',
             },
           ],
         }}
@@ -65,7 +57,12 @@ export function HomePageStructuredData() {
         url="https://www.portaljs.com"
         name="PortalJS Cloud"
         description="PortalJS Cloud is the simplest way to get started with open data. Designed for governments, nonprofits, and academic institutions, it lets you launch a modern, compliant portal in minutes."
-        {...jsonLd}
+      />
+      <FAQPageJsonLd
+        mainEntity={homeFaqQuestions.map(({ question, answer }) => ({
+          questionName: question,
+          acceptedAnswerText: markdownToPlainText(answer),
+        }))}
       />
     </>
   );

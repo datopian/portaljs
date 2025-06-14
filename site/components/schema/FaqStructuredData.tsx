@@ -13,6 +13,7 @@ export function FaqStructuredData() {
       .trim();
   }
 
+
   return (
     <>
       <LogoJsonLd
@@ -21,7 +22,28 @@ export function FaqStructuredData() {
       />
       <NextSeo
         title="FAQ"
-        description="Frequently Asked Questions about PortalJS Cloud."
+        description="Frequently Asked Questions about PortalJS Cloud. Get answers about pricing, features, deployment, and more."
+        canonical="https://www.portaljs.com/faq"
+        openGraph={{
+          url: 'https://www.portaljs.com/faq',
+          title: 'FAQ',
+          description: 'Frequently Asked Questions about PortalJS Cloud. Get answers about pricing, features, deployment, and more.',
+          site_name: 'PortalJS',
+          type: 'website',
+          images: [
+            {
+              url: 'https://portaljs.com/static/img/seo.webp',
+              alt: 'PortalJS Cloud',
+              width: 1280,
+              height: 720,
+              type: 'image/webp',
+            },
+          ],
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+          site: '@PortalJS_',
+        }}
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -38,19 +60,12 @@ export function FaqStructuredData() {
         ]}
       />
       <FAQPageJsonLd
-        name="FAQ"
-        description="Frequently Asked Questions about PortalJS Cloud."
         mainEntity={questions.flatMap(category =>
           category.items.map(({ question, answer }) => ({
-            "@type": "Question",
-            name: question,
-            "acceptedAnswer": {
-              "@type": "Answer",
-              text: markdownToPlainText(answer),
-            }
+            questionName: question,
+            acceptedAnswerText: markdownToPlainText(answer),
           }))
         )}
-        type="FAQPage"
       />
     </>
   );
