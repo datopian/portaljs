@@ -25,8 +25,18 @@ export default {
         permanent: true,
       },
       {
+        source: '/showcase',
+        destination: '/case-studies',
+        permanent: true,
+      },
+      {
         source: '/casestudies',
-        destination: '/showcase',
+        destination: '/case-studies',
+        permanent: true,
+      },
+      {
+        source: '/casestudies/:slug*',
+        destination: '/case-studies/:slug*',
         permanent: true,
       },
       {

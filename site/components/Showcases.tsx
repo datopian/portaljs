@@ -3,13 +3,13 @@ import ShowcasesItem from './ShowcasesItem'
 
 export const dataPortals = [
   {
-    title: 'UAE Open Data Portal',
-    subtitle: 'Government Data Portal',
-    href: 'https://opendata.fcsc.gov.ae/',
-    image: '/static/img/showcases/uae.webp',
+    title: 'Transport Data Commons',
+    subtitle: 'A Global Transport Hub - Building a shared, open data infrastructure for 30+ transport organizations.',
+    href: 'https://portal.transport-data.org/',
+    image: '/static/img/showcases/2025-06-06-TDC/featured-image.jpg',
     description:
-      'Provides UAE national statistics and socio-economic datasets for public policy and transparency.',
-    sourceUrl: 'https://github.com/FCSCOpendata/frontend',
+      'Transport Data Commons aims to improve access, sharing, and analysing transportation data for a more sustainable future.',
+    sourceUrl: 'https://github.com/transport-data/portal',
   },
   {
     title: 'SSEN',
@@ -50,6 +50,15 @@ export const dataPortals = [
     image: '/static/img/showcases/marcus-havard.webp',
     description:
       'Offers datasets and tools for global health and infectious disease research.',
+  },
+  {
+    title: 'UAE Open Data Portal',
+    subtitle: 'Government Data Portal',
+    href: 'https://opendata.fcsc.gov.ae/',
+    image: '/static/img/showcases/uae.webp',
+    description:
+      'Provides UAE national statistics and socio-economic datasets for public policy and transparency.',
+    sourceUrl: 'https://github.com/FCSCOpendata/frontend',
   },
   {
     title: 'London Borough of Hounslow',

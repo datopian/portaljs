@@ -117,6 +117,7 @@ export const getStaticProps: GetStaticProps = async ({
 
   if (dbFile.metadata.filetype === 'casestudy') {
     frontMatter.layout = 'casestudy'
+    frontMatter.showSidebar = false
     frontMatter.authorsDetails = await getAuthorsDetails(
       dbFile.metadata.authors
     )

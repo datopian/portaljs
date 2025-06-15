@@ -34,7 +34,7 @@ export default function JSONLD({
     /^blog\/.*/.test(meta.urlPath) || meta.filetype === "blog" || meta.layout === "blog";
   const isDoc: boolean = /^((docs)|(howtos\/)|(guide\/)).*/.test(meta.urlPath) || meta.layout === "docs";
   const isCaseStudy: boolean =
-    /^casestudies\/.*/.test(meta.urlPath) || meta.filetype === "casestudy" || meta.layout === "casestudy";
+    /^case-studies\/.*/.test(meta.urlPath) || meta.filetype === "casestudy" || meta.layout === "casestudy";
 
   if (isBlog) {
     Component = (

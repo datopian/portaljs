@@ -131,7 +131,7 @@ export default function Layout({
               {children}
             </div>
             {/** TABLE OF CONTENTS */}
-            {router.asPath.startsWith('/casestudies') == false && (
+            {router.asPath.startsWith('/casestudies') == false && router.asPath.startsWith('/case-studies') == false && (
               <div className="hidden xl:sticky xl:right-0 xl:top-[4.5rem] xl:block xl:h-[calc(100vh-4.5rem)] xl:flex-none xl:overflow-y-auto xl:py-16 xl:mb-16 ">
                 {tableOfContents.length > 0 && (
                   <nav aria-labelledby="on-this-page-title" className="w-56">

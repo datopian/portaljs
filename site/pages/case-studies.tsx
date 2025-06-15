@@ -1,5 +1,4 @@
 import Layout from '@/components/Layout'
-import Showcases from '@/components/Showcases'
 import computeFields from '@/lib/computeFields'
 import clientPromise from '@/lib/mddb'
 import { NextSeo } from 'next-seo'
@@ -7,20 +6,22 @@ import fs from 'fs'
 import Link from 'next/link'
 import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
-import { Tab } from '@headlessui/react'
 import { CaseStudiesStructuredData } from '@/components/schema/CaseStudiesStructuredData'
-import { DataPortalsStructuredData } from '@/components/schema/DataPortalStructuredData'
 
-export default function ShowcasesList(casestudies) {
-  function CaseStudiesList() {
-    return (
+export default function CaseStudiesPage(casestudies) {
+  return (
+    <Layout>
+      <NextSeo
+        title="Case Studies | PortalJS"
+        description="Discover how organizations worldwide build powerful data portals with PortalJS. Real client stories, implementations, and success stories."
+        canonical="https://portaljs.org/case-studies"
+      />
+      <CaseStudiesStructuredData casestudies={casestudies.casestudies} />
       <section className="">
         <div>
-          {/* <p className="text-sm font-bold text-blue-400">LONG READ</p> */}
           <div className="flex items-center gap-2 transition blink">
             <p className="text-start text-5xl sm:text-7xl max-w-lg sm:my-8 tracking-tight">
               See our client stories{' '}
-              {/* <FaIcons.FaAngleDoubleDown className=" inline text-blue-400 -ml-3 mt-1 sm:h-16 sm:w-16 " /> */}
             </p>
           </div>
         </div>
@@ -65,44 +66,6 @@ export default function ShowcasesList(casestudies) {
             ))}
         </div>
       </section>
-    )
-  }
-
-  return (
-    <Layout>
-      <Tab.Group>
-        <Tab.List className="mb-12 flex max-w-sm mx-auto p-1 space-x-1 bg-slate-100 dark:bg-slate-900 rounded-lg ring-1 ring-slate-200 dark:ring-slate-800">
-          <Tab
-            className={({ selected }) =>
-              selected
-                ? 'w-full py-2.5 text-base sm:text-lg leading-5 font-medium text-blue-500 rounded-lg transition ease-in-out duration-300'
-                : 'w-full py-2.5 text-base sm:text-lg leading-5 font-medium  rounded-lg transition ease-in-out duration-300'
-            }
-          >
-            <h2>Case Studies</h2>
-          </Tab>
-          <div className="w-px bg-slate-200 dark:bg-slate-800" />
-          <Tab
-            className={({ selected }) =>
-              selected
-                ? 'w-full py-2.5 text-base sm:text-lg leading-5 font-medium text-blue-500 rounded-lg transition ease-in-out duration-300'
-                : 'w-full py-2.5 text-base sm:text-lg leading-5 font-medium  rounded-lg transition ease-in-out duration-300'
-            }
-          >
-            <h2>Data Portals</h2>
-          </Tab>
-        </Tab.List>
-        <Tab.Panels className="mt-2">
-          <Tab.Panel>
-            <CaseStudiesStructuredData casestudies={casestudies.casestudies} />
-            <CaseStudiesList />
-          </Tab.Panel>
-          <Tab.Panel>
-            <DataPortalsStructuredData />
-            <Showcases />
-          </Tab.Panel>
-        </Tab.Panels>
-      </Tab.Group>
     </Layout>
   )
 }
@@ -110,7 +73,7 @@ export default function ShowcasesList(casestudies) {
 export async function getStaticProps() {
   const mddb = await clientPromise
   let casestudies = await mddb.getFiles({
-    folder: 'casestudies',
+    folder: 'case-studies',
     extensions: ['md', 'mdx'],
   })
 

@@ -15,7 +15,16 @@ const config = {
   navLinks: [
     {
       name: 'Showcase',
-      href: '/showcase',
+      subItems: [
+        {
+          name: 'Case Studies',
+          href: '/case-studies',
+        },
+        {
+          name: 'Data Portals',
+          href: '/data-portals',
+        },
+      ],
     },
     {
       name: 'Integrations',
@@ -91,6 +100,15 @@ const config = {
           href: '/faq',
         },
         {
+          name: 'Docs',
+          href: '/opensource/docs',
+        },
+        {
+          name: 'Discord Community',
+          href: 'https://discord.com/invite/KrRzMKU',
+          target: '_blank',
+        },
+        {
           name: 'Partners',
           href: '/partners',
         },
@@ -99,10 +117,6 @@ const config = {
     {
       name: 'Pricing',
       href: '/pricing',
-    },
-    {
-      name: 'Docs',
-      href: '/opensource/docs',
     },
     {
       name: 'Open source 🌐',
