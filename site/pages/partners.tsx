@@ -140,7 +140,7 @@ export default function Partners() {
                   Book a Partnership Meeting
                 </ButtonLink>
                 <ButtonLink
-                  href="/showcase"
+                  href="/case-studies"
                   style="secondary"
                   title="See Client Success Stories"
                 >

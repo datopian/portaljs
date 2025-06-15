@@ -14,8 +14,12 @@ const config = {
   authorUrl: 'https://datopian.com/',
   navLinks: [
     {
-      name: 'Showcase',
-      href: '/showcase',
+      name: 'Case Studies',
+      href: '/case-studies',
+    },
+    {
+      name: 'Data Portals',
+      href: '/data-portals',
     },
     {
       name: 'Integrations',
