@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import ButtonLink from '../ButtonLink'
 import { CheckIcon } from '@heroicons/react/20/solid'
 import { H1, H2 } from '../custom/header'
@@ -7,9 +7,32 @@ import { useTheme } from 'next-themes'
 
 export default function Hero() {
   const { theme } = useTheme()
-  useEffect(() => {
-    const script = document.createElement('script')
+  const [isLargeScreen, setIsLargeScreen] = useState(false)
 
+  useEffect(() => {
+    // Check screen size and update state
+    const checkScreenSize = () => {
+      setIsLargeScreen(window.innerWidth >= 1280)
+    }
+
+    // Initial check
+    checkScreenSize()
+
+    // Add resize listener
+    window.addEventListener('resize', checkScreenSize)
+    
+    return () => {
+      window.removeEventListener('resize', checkScreenSize)
+    }
+  }, [])
+
+  useEffect(() => {
+    // Only load globe on large screens (xl: 1280px+) where it's visible
+    if (!isLargeScreen) {
+      return
+    }
+
+    const script = document.createElement('script')
     script.src = 'globe/main.js'
     // script.async = true;
 
@@ -26,7 +49,7 @@ export default function Hero() {
         globe.innerHTML = ''
       }
     }
-  }, [theme])
+  }, [theme, isLargeScreen])
 
   return (
     <section className="mx-auto">
