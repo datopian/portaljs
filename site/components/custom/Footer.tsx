@@ -3,7 +3,8 @@ import { NavbarTitle } from '../Nav'
 
 const navigation = {
   resources: [
-    { name: 'Showcase', href: '/showcase' },
+    { name: 'Case Studies', href: '/case-studies' },
+    { name: 'Data Portals', href: '/data-portals' },
     { name: 'Documentation', href: '/docs' },
     { name: 'Blog', href: '/blog' },
     { name: 'FAQ', href: '/faq' },

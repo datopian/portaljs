@@ -127,17 +127,6 @@ export default function Nav() {
 
           {/* <ThemeSelector /> */}
 
-          {siteConfig.discord && (
-            <Link
-              href={siteConfig.discord}
-              title={'PortalJS Cloud Discord Server'}
-              className="group"
-              aria-label="Discord"
-              target="_blank"
-            >
-              <DiscordIcon className="h-5 w-5 sm:h-8 sm:w-8 fill-blue-400 dark:fill-slate-400 group-hover:fill-secondary-hover transition duration-300 dark:group-hover:fill-slate-300" />
-            </Link>
-          )}
           {siteConfig.github && (
             <div className="mt-1">
               {/* @ts-ignore */}
