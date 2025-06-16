@@ -103,59 +103,60 @@ export function MobileNavigation({ navigation }) {
           )}
           <ul className="mt-2 space-y-2 border-l-2 border-slate-100 dark:border-slate-800 lg:mt-4 lg:space-y-4 lg:border-slate-200">
             {navigation.map((link) => (
-              <Menu as="div" key={link.name} className="relative">
-                <Menu.Button>
-                  {Object.prototype.hasOwnProperty.call(link, "href") ? (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        className={`
-                  block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block dark:text-slate-400 dark:before:bg-slate-700 dark:hover:text-slate-300`}
-                      >
-                        {link.name}
-                      </Link>
-                    </li>
-                  ) : (
-                    <li key={link.name}>
-                      <div className="flex w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block dark:text-slate-400 dark:before:bg-slate-700 dark:hover:text-slate-300 dark:hover:fill-slate-300 fill-slate-500 hover:fill-slate-600">
+              <div key={link.name}>
+                {Object.prototype.hasOwnProperty.call(link, "href") ? (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={`
+                block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block dark:text-slate-400 dark:before:bg-slate-700 dark:hover:text-slate-300`}
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ) : (
+                  <Menu as="div" className="relative">
+                    <Menu.Button as="li" className="relative">
+                      <div className="flex w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block dark:text-slate-400 dark:before:bg-slate-700 dark:hover:text-slate-300 dark:hover:fill-slate-300 fill-slate-500 hover:fill-slate-600 cursor-pointer">
                         {link.name}
                         <svg
                           height="20"
                           viewBox="0 0 20 20"
                           width="20"
                           xmlns="http://www.w3.org/2000/svg"
+                          className="ml-auto"
                         >
                           <path d="M7 10l5 5 5-5z" />
                         </svg>
                       </div>
-                    </li>
-                  )}
-                </Menu.Button>
-                {Object.prototype.hasOwnProperty.call("subItems") && (
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-200"
-                    enterFrom="transform opacity-0 scale-5"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-5"
-                  >
-                    <Menu.Items className="flex flex-col ml-3">
-                      {link.subItems.map((subItem) => (
-                        <Menu.Item key={subItem.name}>
-                          <BaseLink
-                            href={subItem.href}
-                            className="text-slate-500 inline-flex items-center mt-2 px-1 pt-1 text-sm font-medium hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
-                          >
-                            {subItem.name}
-                          </BaseLink>
-                        </Menu.Item>
-                      ))}
-                    </Menu.Items>
-                  </Transition>
+                    </Menu.Button>
+                    {Object.prototype.hasOwnProperty.call(link, "subItems") && (
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-200"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <Menu.Items className="flex flex-col ml-3 mt-2">
+                          {link.subItems.map((subItem) => (
+                            <Menu.Item key={subItem.name}>
+                              <BaseLink
+                                href={subItem.href}
+                                className="text-slate-500 inline-flex items-center mt-2 px-1 pt-1 text-sm font-medium hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
+                              >
+                                {subItem.name}
+                              </BaseLink>
+                            </Menu.Item>
+                          ))}
+                        </Menu.Items>
+                      </Transition>
+                    )}
+                  </Menu>
                 )}
-              </Menu>
+              </div>
             ))}
           </ul>
         </Dialog.Panel>
