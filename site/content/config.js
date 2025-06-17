@@ -148,7 +148,7 @@ const config = {
       ],
       images: [
         {
-          url: 'https://portaljs.com/static/img/seo.webp',
+          url: 'https://portaljs.com/static/img/seo-image.webp',
           alt: 'PortalJS Cloud',
           width: 1280,
           height: 720,

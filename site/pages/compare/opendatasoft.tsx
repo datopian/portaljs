@@ -178,7 +178,7 @@ export default function PortalJSvsOpenDataSoft() {
           description: 'Compare PortalJS with OpenDataSoft: See how our open source data portal platform stacks up against proprietary solutions in features, flexibility, and cost.',
           images: [
             {
-              url: 'https://portaljs.com/static/img/seo.webp',
+              url: 'https://portaljs.com/static/img/seo-image.webp',
               width: 1200,
               height: 630,
               alt: 'PortalJS vs OpenDataSoft Comparison',
@@ -279,30 +279,30 @@ export default function PortalJSvsOpenDataSoft() {
               </p>
             </div>
             <div className="mt-12 px-4 sm:px-8 xl:px-12 mx-auto grid max-w-8xl grid-cols-1 gap-8 lg:grid-cols-2">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="flex flex-col justify-between bg-white dark:bg-slate-800 p-10 shadow-lg rounded-xl ring-1 ring-slate-200 dark:ring-slate-700 hover:shadow-xl transition-all duration-300">
-                <div>
-                  <svg className="w-10 h-10 text-blue-400/30 dark:text-blue-300/30 mb-4" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true">
-                    <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
-                  </svg>
-                  <p className="text-xl italic font-medium text-slate-800 dark:text-slate-200 mb-6 leading-relaxed">
-                    {testimonial.quote}
-                  </p>
-                </div>
-                <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
-                  <div className="flex items-center gap-x-4">
-                    <div className="flex-shrink-0 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white w-12 h-12 flex items-center justify-center font-semibold">
-                      {testimonial.author.split(' ').map(word => word[0]).join('')}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-slate-900 dark:text-white">{testimonial.author}</div>
-                      <div className="text-slate-600 dark:text-slate-400">{testimonial.organization}</div>
+              {testimonials.map((testimonial, index) => (
+                <div key={index} className="flex flex-col justify-between bg-white dark:bg-slate-800 p-10 shadow-lg rounded-xl ring-1 ring-slate-200 dark:ring-slate-700 hover:shadow-xl transition-all duration-300">
+                  <div>
+                    <svg className="w-10 h-10 text-blue-400/30 dark:text-blue-300/30 mb-4" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true">
+                      <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
+                    </svg>
+                    <p className="text-xl italic font-medium text-slate-800 dark:text-slate-200 mb-6 leading-relaxed">
+                      {testimonial.quote}
+                    </p>
+                  </div>
+                  <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+                    <div className="flex items-center gap-x-4">
+                      <div className="flex-shrink-0 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white w-12 h-12 flex items-center justify-center font-semibold">
+                        {testimonial.author.split(' ').map(word => word[0]).join('')}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-slate-900 dark:text-white">{testimonial.author}</div>
+                        <div className="text-slate-600 dark:text-slate-400">{testimonial.organization}</div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

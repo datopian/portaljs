@@ -7,7 +7,7 @@ import Schedule from '@/components/home/Schedule'
 export default function CompareIndex() {
   // Calendar link for all CTAs
   const calendarLink = "https://calendar.app.google/sn2PU7ZvzjCPo1ok6";
-  
+
   const comparisons = [
     {
       id: 'opendatasoft',
@@ -84,7 +84,7 @@ export default function CompareIndex() {
               description,
               images: [
                 {
-                  url: 'https://portaljs.com/static/img/seo.webp',
+                  url: 'https://portaljs.com/static/img/seo-image.webp',
                   width: 1200,
                   height: 630,
                   alt: 'PortalJS Comparisons',
@@ -195,95 +195,95 @@ export default function CompareIndex() {
           </div>
         </div>
       </div>
-      
+
       {/* Key Advantages Section */}
       <div className="bg-slate-50 dark:bg-slate-900">
         <div className="flex justify-center">
           <div className="max-w-8xl px-4 sm:px-8 xl:px-12 py-24">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-transparent">
-              PortalJS Key Advantages
-            </h2>
-            <p className="mt-4 text-lg text-slate-500 dark:text-slate-400">
-              What makes PortalJS stand out from proprietary alternatives?
-            </p>
-          </div>
-
-          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
-              <div className="text-blue-600 dark:text-blue-400 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">100% Open Source</h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                Full transparency, no black boxes, and freedom to modify code. PortalJS is MIT-licensed and built on a modern tech stack.
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-transparent">
+                PortalJS Key Advantages
+              </h2>
+              <p className="mt-4 text-lg text-slate-500 dark:text-slate-400">
+                What makes PortalJS stand out from proprietary alternatives?
               </p>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
-              <div className="text-blue-600 dark:text-blue-400 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
-                </svg>
+            <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
+                <div className="text-blue-600 dark:text-blue-400 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">100% Open Source</h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Full transparency, no black boxes, and freedom to modify code. PortalJS is MIT-licensed and built on a modern tech stack.
+                </p>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Ultimate Flexibility</h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                Build exactly what you need with complete control over UI/UX, integrations, and workflows. No restrictive templates.
-              </p>
-            </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
-              <div className="text-blue-600 dark:text-blue-400 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+              <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
+                <div className="text-blue-600 dark:text-blue-400 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Ultimate Flexibility</h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Build exactly what you need with complete control over UI/UX, integrations, and workflows. No restrictive templates.
+                </p>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Lower Total Cost</h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                No escalating license fees or hidden costs. Self-host for free or choose predictable pricing with PortalJS Cloud.
-              </p>
-            </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
-              <div className="text-blue-600 dark:text-blue-400 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                </svg>
+              <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
+                <div className="text-blue-600 dark:text-blue-400 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Lower Total Cost</h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  No escalating license fees or hidden costs. Self-host for free or choose predictable pricing with PortalJS Cloud.
+                </p>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Developer-Friendly</h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                Built with React, NextJS and Tailwind CSS — modern tools developers know and love. No proprietary frameworks to learn.
-              </p>
-            </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
-              <div className="text-blue-600 dark:text-blue-400 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+              <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
+                <div className="text-blue-600 dark:text-blue-400 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Developer-Friendly</h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Built with React, NextJS and Tailwind CSS — modern tools developers know and love. No proprietary frameworks to learn.
+                </p>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Superior Performance</h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                Static site generation (SSG), incremental static regeneration (ISR) and modern frontend practices deliver lightning-fast load times and a smooth user experience.
-              </p>
-            </div>
 
-            <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
-              <div className="text-blue-600 dark:text-blue-400 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+              <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
+                <div className="text-blue-600 dark:text-blue-400 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Superior Performance</h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Static site generation (SSG), incremental static regeneration (ISR) and modern frontend practices deliver lightning-fast load times and a smooth user experience.
+                </p>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Scalable Architecture</h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                Efficiently handle massive datasets and high traffic volumes with a decoupled architecture that scales horizontally.
-              </p>
+
+              <div className="bg-white dark:bg-slate-800 shadow-md rounded-xl p-8 ring-1 ring-slate-200 dark:ring-slate-800 transition-all duration-300 dark:hover:bg-slate-800 hover:bg-slate-100">
+                <div className="text-blue-600 dark:text-blue-400 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Scalable Architecture</h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Efficiently handle massive datasets and high traffic volumes with a decoupled architecture that scales horizontally.
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
 
       <Schedule calendar={calendarLink} />

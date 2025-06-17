@@ -30,7 +30,7 @@ export function HomePageStructuredData() {
           type: 'website',
           images: [
             {
-              url: 'https://portaljs.com/icon.png',
+              url: 'https://portaljs.com/static/img/seo-image.webp',
               alt: 'PortalJS Cloud',
               width: 1280,
               height: 720,
