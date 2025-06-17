@@ -178,7 +178,7 @@ export default function PortalJSvsOpenDataSoft() {
           description: 'Compare PortalJS with OpenDataSoft: See how our open source data portal platform stacks up against proprietary solutions in features, flexibility, and cost.',
           images: [
             {
-              url: 'https://portaljs.com/static/img/seo-image.webp',
+              url: 'https://portaljs.com/static/img/seo.webp',
               width: 1200,
               height: 630,
               alt: 'PortalJS vs OpenDataSoft Comparison',

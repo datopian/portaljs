@@ -84,7 +84,7 @@ export default function CompareIndex() {
               description,
               images: [
                 {
-                  url: 'https://portaljs.com/static/img/seo-image.webp',
+                  url: 'https://portaljs.com/static/img/seo.webp',
                   width: 1200,
                   height: 630,
                   alt: 'PortalJS Comparisons',
