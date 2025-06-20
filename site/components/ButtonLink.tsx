@@ -18,6 +18,7 @@ export default function ButtonLink({
   href = "https://cloud.portaljs.com/",
   title = "Get started with PortalJS Cloud",
   trackConversion = false,
+  onClick,
   ...rest
 }: ButtonLinkProps) {
   let _className: string =
@@ -34,14 +35,24 @@ export default function ButtonLink({
 
   _className += ` ${className}`;
 
-  const handleClick = () => {
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    // Execute parent onClick handler first if provided
+    if (onClick) {
+      onClick(event);
+    }
+
+    // Track conversion if enabled
     if (trackConversion && siteConfig.analytics && typeof window.gtag === 'function') {
-      gtag.event({
-        action: 'get_started_click',
-        category: 'Conversion',
-        label: 'CTA Button',
-        value: 1,
-      });
+      try {
+        gtag.event({
+          action: 'get_started_click',
+          category: 'Conversion',
+          label: 'CTA Button',
+          value: 1,
+        });
+      } catch (error) {
+        console.warn('Failed to track conversion event:', error);
+      }
     }
   };
 
@@ -50,8 +61,8 @@ export default function ButtonLink({
       href={href}
       title={title}
       className={_className}
-      onClick={handleClick}
       {...rest}
+      onClick={handleClick}
     >
       {children}
     </a>
