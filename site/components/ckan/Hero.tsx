@@ -28,6 +28,7 @@ export default function Hero() {
               style="secondary"
               className="mt-8 text-sm"
               href="https://cloud.portaljs.com/auth/signup"
+              trackConversion={true}
             >
               Deploy with PortalJS Cloud
             </ButtonLink>

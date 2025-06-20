@@ -89,6 +89,7 @@ export default function Hero() {
                   href="https://cloud.portaljs.com/auth/signup"
                   title="Get started with PortalJS Cloud"
                   className="text-sm"
+                  trackConversion={true}
                 >
                   Get started free
                 </ButtonLink>

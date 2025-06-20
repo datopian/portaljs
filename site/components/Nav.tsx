@@ -145,6 +145,7 @@ export default function Nav() {
             href="https://cloud.portaljs.com/auth/signup"
             title="Get started with PortalJS Cloud"
             className="text-sm !py-2 hidden lg:block"
+            trackConversion={true}
           >
             Get started free
           </ButtonLink>
