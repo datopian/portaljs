@@ -1,4 +1,6 @@
 import { AnchorHTMLAttributes } from "react";
+import * as gtag from '@/lib/gtag';
+import siteConfig from '@/config/siteConfig';
 
 type ButtonLinkProps = {
   style?: "primary" | "secondary" | "tertiary";
@@ -6,6 +8,7 @@ type ButtonLinkProps = {
   className?: string;
   title?: string;
   href?: string;
+  trackConversion?: boolean;
 } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "style">;
 
 export default function ButtonLink({
@@ -14,6 +17,8 @@ export default function ButtonLink({
   className = "",
   href = "https://cloud.portaljs.com/",
   title = "Get started with PortalJS Cloud",
+  trackConversion = false,
+  onClick,
   ...rest
 }: ButtonLinkProps) {
   let _className: string =
@@ -30,12 +35,34 @@ export default function ButtonLink({
 
   _className += ` ${className}`;
 
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    // Execute parent onClick handler first if provided
+    if (onClick) {
+      onClick(event);
+    }
+
+    // Track conversion if enabled
+    if (trackConversion && siteConfig.analytics && typeof window.gtag === 'function') {
+      try {
+        gtag.event({
+          action: 'get_started_click',
+          category: 'Conversion',
+          label: 'CTA Button',
+          value: 1,
+        });
+      } catch (error) {
+        console.warn('Failed to track conversion event:', error);
+      }
+    }
+  };
+
   return (
     <a
       href={href}
       title={title}
       className={_className}
       {...rest}
+      onClick={handleClick}
     >
       {children}
     </a>

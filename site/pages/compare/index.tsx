@@ -135,7 +135,7 @@ export default function CompareIndex() {
                 <ButtonLink href={calendarLink} title="Book a demo">
                   Book a demo
                 </ButtonLink>
-                <ButtonLink href="https://cloud.portaljs.com/auth/signup" title="Sign up for free" style="secondary">
+                <ButtonLink href="https://cloud.portaljs.com/auth/signup" title="Sign up for free" style="secondary" trackConversion={true}>
                   Sign up for free
                 </ButtonLink>
               </div>

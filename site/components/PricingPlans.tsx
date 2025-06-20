@@ -377,6 +377,7 @@ export default function PricingPlans() {
                   aria-describedby={tier.id}
                   title={`${tier.title} - ${tier.cta}`}
                   style={tier.featured ? 'primary' : 'secondary'}
+                  trackConversion={tier.href === 'https://cloud.portaljs.com/auth/signup'}
                 >
                   {index !== 0 && index !== 3 && buy ? 'Buy now' : tier.cta}
                 </ButtonLink>
