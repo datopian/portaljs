@@ -10,6 +10,14 @@ export default function Welcome() {
     const trackAndRedirect = () => {
       // Track the visit to the welcome page
       if (siteConfig.analytics && typeof window.gtag === 'function') {
+        // Store acquisition source in sessionStorage for later use
+        sessionStorage.setItem('acquisition_source', 'cold_email')
+
+        // Set custom user property for cold email acquisition
+        window.gtag('set', {
+          acquisition_source: 'cold_email'
+        })
+
         gtag.event({
           action: 'welcome_page_visit',
           category: 'Engagement',
