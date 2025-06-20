@@ -44,12 +44,23 @@ export default function ButtonLink({
     // Track conversion if enabled
     if (trackConversion && siteConfig.analytics && typeof window.gtag === 'function') {
       try {
-        gtag.event({
+        const eventData = {
           action: 'get_started_click',
           category: 'Conversion',
           label: 'CTA Button',
           value: 1,
-        });
+        };
+
+        // Only add acquisition_source if it exists (cold email visitors)
+        const acquisitionSource = typeof window !== 'undefined' 
+          ? sessionStorage.getItem('acquisition_source')
+          : null;
+        
+        if (acquisitionSource) {
+          eventData.acquisition_source = acquisitionSource;
+        }
+
+        gtag.event(eventData);
       } catch (error) {
         console.warn('Failed to track conversion event:', error);
       }
