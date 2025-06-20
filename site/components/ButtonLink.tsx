@@ -44,7 +44,7 @@ export default function ButtonLink({
     // Track conversion if enabled
     if (trackConversion && siteConfig.analytics && typeof window.gtag === 'function') {
       try {
-        const eventData = {
+        const eventData: any = {
           action: 'get_started_click',
           category: 'Conversion',
           label: 'CTA Button',
