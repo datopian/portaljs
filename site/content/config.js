@@ -57,12 +57,11 @@ const config = {
           href: '/compare/opendatasoft',
         },
         {
-          name: 'CKAN',
-          href: '#',
-          disabled: true,
+          name: 'Socrata',
+          href: '/compare/socrata',
         },
         {
-          name: 'Socrata',
+          name: 'CKAN',
           href: '#',
           disabled: true,
         },
