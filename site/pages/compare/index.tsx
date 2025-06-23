@@ -17,17 +17,17 @@ export default function CompareIndex() {
       status: 'published'
     },
     {
-      id: 'ckan',
-      title: 'PortalJS vs CKAN Classic',
-      description: 'Compare PortalJS Cloud with monolith classic CKAN.',
-      href: '/compare/ckan',
-      status: 'coming-soon'
-    },
-    {
       id: 'socrata',
       title: 'PortalJS vs Socrata',
       description: 'See how PortalJS stacks up against Tyler Technologies\' Socrata.',
       href: '/compare/socrata',
+      status: 'published'
+    },
+    {
+      id: 'ckan',
+      title: 'PortalJS vs CKAN Classic',
+      description: 'Compare PortalJS Cloud with monolith classic CKAN.',
+      href: '/compare/ckan',
       status: 'coming-soon'
     },
     {
