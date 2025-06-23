@@ -24,17 +24,17 @@ export default function CompareIndex() {
       status: 'published'
     },
     {
-      id: 'ckan',
-      title: 'PortalJS vs CKAN Classic',
-      description: 'Compare PortalJS Cloud with monolith classic CKAN.',
-      href: '/compare/ckan',
-      status: 'published'
-    },
-    {
       id: 'arcgis-hub',
       title: 'PortalJS vs ArcGIS Hub',
       description: 'Compare PortalJS to Esri\'s ArcGIS Hub for data portals.',
       href: '/compare/arcgis-hub',
+      status: 'published'
+    },
+    {
+      id: 'ckan',
+      title: 'PortalJS vs CKAN Classic',
+      description: 'Compare PortalJS Cloud with monolith classic CKAN.',
+      href: '/compare/ckan',
       status: 'published'
     },
     {
