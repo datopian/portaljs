@@ -5,21 +5,21 @@ import ButtonLink from '@/components/ButtonLink'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default function PortalJSvsOpenDataSoft() {
+export default function PortalJSvsCKAN() {
   // Calendar link for all CTAs
   const calendarLink = "https://calendar.app.google/sn2PU7ZvzjCPo1ok6";
 
   const testimonials = [
     {
-      quote: "As a public sector CDO, I need to cut costs while maintaining performance. After switching to PortalJS, we reduced our annual data portal expenditure by 65% while gaining more customization options and better performance.",
-      author: "Chief Data Officer",
-      organization: "City Government, US",
+      quote: "We were struggling with CKAN's outdated frontend and slow development cycles. PortalJS gave us a modern React interface while keeping all the CKAN backend functionality we needed. Development velocity increased 3x.",
+      author: "Technical Lead",
+      organization: "Government Data Office",
       image: null
     },
     {
-      quote: "PortalJS gave us the freedom we needed. We deployed on our own infrastructure, integrated with internal systems, and built custom features that would have been impossible before. The flexibility to run on-prem while maintaining compliance with our security protocols was a game-changer.",
-      author: "Director of Information Systems",
-      organization: "National Research Institute",
+      quote: "CKAN Classic's monolithic architecture was holding us back. With PortalJS as our frontend, we gained the flexibility to customize user experiences while maintaining our existing CKAN infrastructure and workflows.",
+      author: "Data Platform Manager",
+      organization: "Research Institution",
       image: null
     }
   ]
@@ -29,49 +29,49 @@ export default function PortalJSvsOpenDataSoft() {
       category: "Architecture",
       items: [
         {
-          feature: "Open Source",
-          portaljs: "Yes - 100% open source codebase",
-          competitor: "No - Proprietary SaaS platform"
-        },
-        {
           feature: "Frontend Technology",
-          portaljs: "Modern React/Next.js frontend",
-          competitor: "Custom framework with limited extensibility"
+          portaljs: "Modern React/Next.js with SSG/SSR",
+          competitor: "Legacy Python/Jinja2 templates"
         },
         {
-          feature: "Hosting Options",
-          portaljs: "Self-hosted or PortalJS Cloud",
-          competitor: "Vendor-hosted only"
+          feature: "Architecture Style",
+          portaljs: "Decoupled frontend with API integration",
+          competitor: "Monolithic full-stack application"
         },
         {
-          feature: "Backend Flexibility",
-          portaljs: "Works with CKAN, OpenMetadata, custom APIs",
-          competitor: "Proprietary backend only"
+          feature: "Performance",
+          portaljs: "Static generation with edge caching",
+          competitor: "Server-rendered pages with database queries"
+        },
+        {
+          feature: "Deployment Flexibility",
+          portaljs: "Frontend deployed anywhere (CDN, edge)",
+          competitor: "Full application stack deployment required"
         }
       ]
     },
     {
-      category: "Customization",
+      category: "User Experience",
       items: [
         {
-          feature: "Visual Customization",
-          portaljs: "Unlimited - full control over UI/UX",
-          competitor: "Limited to theme colors and logo"
+          feature: "Page Load Speed",
+          portaljs: "Lightning fast with pre-generated pages",
+          competitor: "Slower due to server-side processing"
         },
         {
-          feature: "Custom Components",
-          portaljs: "Create any component with React",
-          competitor: "Limited to provided widgets"
+          feature: "Mobile Experience",
+          portaljs: "Responsive design with mobile-first approach",
+          competitor: "Basic responsive capabilities"
         },
         {
-          feature: "Workflow Customization",
-          portaljs: "Complete control over user workflows",
-          competitor: "Fixed workflows with minimal options"
+          feature: "Interactive Features",
+          portaljs: "Rich client-side interactions",
+          competitor: "Limited to server-side form submissions"
         },
         {
-          feature: "Branding",
-          portaljs: "100% white-label capability",
-          competitor: "Vendor branding remains"
+          feature: "SEO Optimization",
+          portaljs: "Built-in SEO with meta tags and structured data",
+          competitor: "Basic SEO support"
         }
       ]
     },
@@ -80,48 +80,73 @@ export default function PortalJSvsOpenDataSoft() {
       items: [
         {
           feature: "Technology Stack",
-          portaljs: "Modern JavaScript/TypeScript stack",
-          competitor: "Proprietary technologies"
+          portaljs: "Modern JavaScript/TypeScript ecosystem",
+          competitor: "Python/Pylons with legacy patterns"
         },
         {
-          feature: "Integration Options",
-          portaljs: "Unlimited - use any library or service",
-          competitor: "Limited to approved integrations"
+          feature: "Development Workflow",
+          portaljs: "Hot reload, modern tooling, Git-based",
+          competitor: "Traditional server restart development"
         },
         {
-          feature: "CI/CD Support",
-          portaljs: "Full DevOps integration with any CI/CD",
-          competitor: "Limited deployment options"
+          feature: "Customization",
+          portaljs: "Component-based architecture",
+          competitor: "Template inheritance with complex overrides"
         },
         {
-          feature: "Version Control",
-          portaljs: "Git-based workflow",
-          competitor: "Vendor-controlled versioning"
+          feature: "Testing",
+          portaljs: "Modern testing frameworks (Jest, Cypress)",
+          competitor: "Limited frontend testing capabilities"
         }
       ]
     },
     {
-      category: "Cost & Ownership",
+      category: "Maintenance & Operations",
       items: [
         {
-          feature: "License Model",
-          portaljs: "Open source (MIT license)",
-          competitor: "Proprietary license"
+          feature: "Scaling",
+          portaljs: "Frontend scales independently via CDN",
+          competitor: "Entire application must scale together"
         },
         {
-          feature: "Cost Structure",
-          portaljs: "Transparent pricing with no hidden fees",
-          competitor: "Complex pricing with tiered features"
+          feature: "Updates & Patches",
+          portaljs: "Frontend updates independent of backend",
+          competitor: "Full application updates required"
         },
         {
-          feature: "Data Ownership",
-          portaljs: "100% data ownership & control",
-          competitor: "Data stored on vendor servers"
+          feature: "Monitoring",
+          portaljs: "Separate frontend and API monitoring",
+          competitor: "Single application monitoring"
         },
         {
-          feature: "Exit Strategy",
-          portaljs: "Take your code & deploy anywhere",
-          competitor: "Migration challenges & vendor lock-in"
+          feature: "Security",
+          portaljs: "Reduced attack surface (static frontend)",
+          competitor: "Full application security considerations"
+        }
+      ]
+    },
+    {
+      category: "Integration & Flexibility",
+      items: [
+        {
+          feature: "Backend Compatibility",
+          portaljs: "Works with any CKAN version via API",
+          competitor: "Tightly coupled to specific CKAN version"
+        },
+        {
+          feature: "Third-party Services",
+          portaljs: "Easy integration of modern services",
+          competitor: "Limited by CKAN extension ecosystem"
+        },
+        {
+          feature: "Analytics Integration",
+          portaljs: "Modern analytics and tracking tools",
+          competitor: "Basic analytics through extensions"
+        },
+        {
+          feature: "Content Management",
+          portaljs: "Flexible content management options",
+          competitor: "Limited to CKAN's built-in CMS"
         }
       ]
     }
@@ -169,19 +194,19 @@ export default function PortalJSvsOpenDataSoft() {
         logo="https://portaljs.com/icon.png"
       />
       <NextSeo
-        title="PortalJS vs OpenDataSoft | Open Source Data Portal Comparison"
-        description="Compare PortalJS with OpenDataSoft: See how our open source data portal platform stacks up against proprietary solutions in features, flexibility, and cost."
-        canonical="https://portaljs.com/compare/opendatasoft"
+        title="PortalJS vs CKAN Classic | Modern Frontend vs Monolithic Architecture"
+        description="Compare PortalJS with CKAN Classic: See how our decoupled frontend approach delivers better performance, developer experience, and user experience than monolithic CKAN."
+        canonical="https://portaljs.com/compare/ckan"
         openGraph={{
-          url: 'https://portaljs.com/compare/opendatasoft',
-          title: 'PortalJS vs OpenDataSoft | Open Source Data Portal Comparison',
-          description: 'Compare PortalJS with OpenDataSoft: See how our open source data portal platform stacks up against proprietary solutions in features, flexibility, and cost.',
+          url: 'https://portaljs.com/compare/ckan',
+          title: 'PortalJS vs CKAN Classic | Modern Frontend vs Monolithic Architecture',
+          description: 'Compare PortalJS with CKAN Classic: See how our decoupled frontend approach delivers better performance, developer experience, and user experience than monolithic CKAN.',
           images: [
             {
               url: 'https://portaljs.com/static/img/seo.webp',
               width: 1200,
               height: 630,
-              alt: 'PortalJS vs OpenDataSoft Comparison',
+              alt: 'PortalJS vs CKAN Classic Comparison',
             }
           ],
           siteName: 'PortalJS',
@@ -189,10 +214,10 @@ export default function PortalJSvsOpenDataSoft() {
         }}
       />
       <WebPageJsonLd
-        id="https://portaljs.com/compare/opendatasoft#webpage"
-        url="https://portaljs.com/compare/opendatasoft"
-        name="PortalJS vs OpenDataSoft | Open Source Data Portal Comparison"
-        description="Compare PortalJS with OpenDataSoft: See how our open source data portal platform stacks up against proprietary solutions in features, flexibility, and cost."
+        id="https://portaljs.com/compare/ckan#webpage"
+        url="https://portaljs.com/compare/ckan"
+        name="PortalJS vs CKAN Classic | Modern Frontend vs Monolithic Architecture"
+        description="Compare PortalJS with CKAN Classic: See how our decoupled frontend approach delivers better performance, developer experience, and user experience than monolithic CKAN."
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -208,8 +233,8 @@ export default function PortalJSvsOpenDataSoft() {
           },
           {
             position: 3,
-            name: 'OpenDataSoft',
-            item: 'https://portaljs.com/compare/opendatasoft',
+            name: 'CKAN Classic',
+            item: 'https://portaljs.com/compare/ckan',
           }
         ]}
       />
@@ -220,10 +245,10 @@ export default function PortalJSvsOpenDataSoft() {
           <div className="mx-auto max-w-2xl px-4 lg:max-w-8xl lg:px-8 xl:px-12">
             <div className="relative mb-10 lg:mb-0 text-center">
               <h1 className="inline bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-5xl tracking-tight text-transparent">
-                PortalJS vs OpenDataSoft
+                PortalJS vs CKAN Classic
               </h1>
               <p className="mt-4 text-xl tracking-tight text-slate-400">
-                See how PortalJS delivers greater flexibility, modern technology, and no vendor lock-in.
+                Upgrade your CKAN frontend with decoupled architecture and lightning-fast performance.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
                 <ButtonLink href={calendarLink} title="Book a demo">
@@ -272,10 +297,10 @@ export default function PortalJSvsOpenDataSoft() {
           <div className="mx-auto">
             <div className="flex flex-col items-center">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-transparent">
-                Hear from PortalJS users
+                Organizations upgrading from CKAN Classic
               </h2>
               <p className="mt-4 text-lg text-slate-500 dark:text-slate-400 text-center max-w-2xl">
-                See what organizations achieved after switching from a proprietary platform to PortalJS.
+                See what organizations achieved by upgrading from monolithic CKAN to PortalJS frontend.
               </p>
             </div>
             <div className="mt-12 px-4 sm:px-8 xl:px-12 mx-auto grid max-w-8xl grid-cols-1 gap-8 lg:grid-cols-2">
@@ -313,10 +338,10 @@ export default function PortalJSvsOpenDataSoft() {
           <div className="mx-auto px-4 sm:px-8 xl:px-12 max-w-8xl">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-transparent">
-                Feature Comparison
+                Architecture Comparison
               </h2>
               <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
-                See how PortalJS compares to OpenDataSoft across key categories.
+                See how PortalJS's decoupled frontend compares to CKAN Classic's monolithic approach.
               </p>
             </div>
 
@@ -334,10 +359,10 @@ export default function PortalJSvsOpenDataSoft() {
                             Feature
                           </th>
                           <th scope="col" className="px-4 py-4 text-left text-base font-semibold text-slate-900 dark:text-white w-1/3">
-                            PortalJS
+                            PortalJS (Decoupled)
                           </th>
                           <th scope="col" className="px-4 py-4 text-left text-base font-semibold text-slate-900 dark:text-white w-1/3">
-                            OpenDataSoft
+                            CKAN Classic (Monolithic)
                           </th>
                         </tr>
                       </thead>

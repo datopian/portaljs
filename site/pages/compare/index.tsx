@@ -28,14 +28,14 @@ export default function CompareIndex() {
       title: 'PortalJS vs CKAN Classic',
       description: 'Compare PortalJS Cloud with monolith classic CKAN.',
       href: '/compare/ckan',
-      status: 'coming-soon'
+      status: 'published'
     },
     {
-      id: 'esri',
+      id: 'arcgis-hub',
       title: 'PortalJS vs ArcGIS Hub',
       description: 'Compare PortalJS to Esri\'s ArcGIS Hub for data portals.',
       href: '/compare/arcgis-hub',
-      status: 'coming-soon'
+      status: 'published'
     },
     {
       id: 'dkan',
