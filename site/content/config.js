@@ -61,12 +61,11 @@ const config = {
           href: '/compare/socrata',
         },
         {
-          name: 'CKAN',
-          href: '#',
-          disabled: true,
+          name: 'ArcGIS Hub',
+          href: '/compare/arcgis-hub',
         },
         {
-          name: 'ArcGIS',
+          name: 'CKAN',
           href: '#',
           disabled: true,
         },
