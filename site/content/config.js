@@ -78,8 +78,7 @@ const config = {
         },
         {
           name: 'Custom Solution',
-          href: '#',
-          disabled: true,
+          href: '/compare/custom-solution',
         },
       ],
     },
