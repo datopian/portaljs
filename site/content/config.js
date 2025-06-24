@@ -65,9 +65,8 @@ const config = {
           href: '/compare/arcgis-hub',
         },
         {
-          name: 'CKAN',
-          href: '#',
-          disabled: true,
+          name: 'CKAN Classic',
+          href: '/compare/ckan',
         },
         {
           name: 'DKAN',
