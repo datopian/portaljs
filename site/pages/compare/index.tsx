@@ -42,7 +42,7 @@ export default function CompareIndex() {
       title: 'PortalJS vs DKAN',
       description: 'Compare PortalJS with DKAN, the Drupal-based open data platform.',
       href: '/compare/dkan',
-      status: 'coming-soon'
+      status: 'published'
     },
     {
       id: 'dataverse',

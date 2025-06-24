@@ -70,8 +70,7 @@ const config = {
         },
         {
           name: 'DKAN',
-          href: '#',
-          disabled: true,
+          href: '/compare/dkan',
         },
         {
           name: 'Dataverse (Harvard)',
