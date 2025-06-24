@@ -73,9 +73,8 @@ const config = {
           href: '/compare/dkan',
         },
         {
-          name: 'Dataverse (Harvard)',
-          href: '#',
-          disabled: true,
+          name: 'Dataverse',
+          href: '/compare/dataverse',
         },
         {
           name: 'Custom Solution',

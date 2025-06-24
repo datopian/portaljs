@@ -49,7 +49,7 @@ export default function CompareIndex() {
       title: 'PortalJS vs Dataverse',
       description: 'See how PortalJS compares to Harvard\'s Dataverse for research data repositories.',
       href: '/compare/dataverse',
-      status: 'coming-soon'
+      status: 'published'
     },
     {
       id: 'custom',
