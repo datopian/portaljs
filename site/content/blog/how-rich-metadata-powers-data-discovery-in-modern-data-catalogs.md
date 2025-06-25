@@ -1,8 +1,8 @@
 ---
 title: "How Rich Metadata Powers Data Discovery in Modern Data Catalogs"
-created: 2025-06-24
+created: 2025-06-25
 description: "Learn how metadata transforms data discovery at scale—from search engines like Solr and Elasticsearch to standardized schemas that help users find exactly what they need among thousands of datasets."
-authors: ['anuveyatsu', 'claude']
+authors: ['anuveyatsu']
 image: /static/img/blog/how-rich-metadata-powers-data-discovery-in-modern-data-catalogs/metadata-search-discovery-illustration.png
 filetype: 'blog'
 faqs:
