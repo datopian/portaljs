@@ -56,7 +56,7 @@ export default function CompareIndex() {
       title: 'PortalJS vs Custom Solution',
       description: 'Compare PortalJS with building a bespoke custom data portal solution from scratch.',
       href: '/compare/custom-solution',
-      status: 'coming-soon'
+      status: 'published'
     }
   ]
 
