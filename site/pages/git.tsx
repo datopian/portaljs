@@ -6,6 +6,7 @@ import Layout from '@/components/Layout'
 import { WhyGitAndPortalJS } from '@/components/git/WhyGitAndPortalJS'
 import { CommonUseCases } from '@/components/git/CommonUseCases'
 import { LiveExamples } from '@/components/git/LiveExamples'
+import { GitLFS } from '@/components/git/GitLFS'
 
 export default function Git() {
   return (
@@ -67,6 +68,10 @@ export default function Git() {
                 acceptedAnswerText: 'PortalJS works with GitHub, GitLab, Bitbucket, and any Git hosting platform that provides API access. You can also use self-hosted Git solutions like GitLab Community Edition or Gitea.',
               },
               {
+                questionName: 'How do you handle large data files in Git?',
+                acceptedAnswerText: 'We use Git LFS (Large File Storage) combined with our open-source Giftless server to store large files in cloud storage (AWS S3, Cloudflare R2, Google Cloud Storage, Azure Blob Storage) while keeping lightweight pointers in Git. This gives you all the benefits of Git version control without file size limitations.',
+              },
+              {
                 questionName: 'How do I add new datasets to a Git-backed portal?',
                 acceptedAnswerText: 'Simply add your dataset files and metadata to the configured Git repositories. The portal automatically detects new datasets and updates the catalog. You can use Git workflows like pull requests for dataset review and approval.',
               },
@@ -82,6 +87,7 @@ export default function Git() {
           <KeyFeatures />
         </div>
       </div>
+      <GitLFS />
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           <LiveExamples />

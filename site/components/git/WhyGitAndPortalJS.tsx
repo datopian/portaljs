@@ -9,21 +9,21 @@ export const WhyGitAndPortalJS = () => {
       title: 'Version Control for Data',
       description:
         'Track changes, collaborate with pull requests, and maintain complete history of your datasets.',
-      icon: `/static/icons/${theme}/git.json`,
+      icon: `/static/icons/${theme}/hexagonal.json`,
       style: 'dark:-rotate-[4deg]',
     },
     {
       title: 'Zero Infrastructure',
       description:
         'No databases, no servers. Use GitHub, GitLab, or any Git platform as your data backend.',
-      icon: `/static/icons/${theme}/server.json`,
+      icon: `/static/icons/${theme}/server-1.json`,
       style: 'dark:-rotate-[3deg]',
     },
     {
       title: 'Community Collaboration',
       description:
         'Enable contributors to propose datasets, improvements, and corrections through standard Git workflows.',
-      icon: `/static/icons/${theme}/team.json`,
+      icon: `/static/icons/${theme}/presentation.json`,
       style: 'dark:-rotate-[2deg]',
     },
     {
