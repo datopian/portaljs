@@ -38,10 +38,8 @@ const config = {
           href: '/openmetadata',
         },
         {
-          name: 'Git (coming soon)',
-          href: '#',
-          disabled: true,
-          style: 'whitespace-nowrap',
+          name: 'Git',
+          href: '/git',
         },
       ],
     },
