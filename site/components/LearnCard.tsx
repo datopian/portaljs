@@ -42,7 +42,7 @@ const LearnCard: FC<LearnCardProps> = ({
     </>
   );
 
-  const heightClass = compact ? 'min-h-[300px]' : 'min-h-[300px] lg:min-h-[600px]';
+  const heightClass = compact ? 'min-h-[300px]' : 'min-h-[400px] lg:min-h-[600px]';
   const paddingClass = compact ? 'p-6' : 'p-8';
 
   if (comingSoon) {
