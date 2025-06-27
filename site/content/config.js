@@ -96,6 +96,10 @@ const config = {
           href: '/opensource/docs',
         },
         {
+          name: 'Learn',
+          href: '/learn',
+        },
+        {
           name: 'Discord Community',
           href: 'https://discord.com/invite/KrRzMKU',
           target: '_blank',
