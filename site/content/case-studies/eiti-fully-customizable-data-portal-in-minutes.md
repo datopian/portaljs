@@ -32,16 +32,31 @@ solution:
 results: 'The new EITI open data portal became a **central hub** for stakeholders to access detailed reports, visualize extractive industry data, and explore global datasets effortlessly. The scalable infrastructure and rapid deployment empowered EITI to focus on their mission of transparency without being burdened by IT complexities.'
 features:
   [
-    ' - **Rapid Deployment with Zero Maintenance** – EITI launched their fully functional open data portal in less than a day using PortalJS Cloud. The platform eliminates the need for manual IT setup and ongoing maintenance, freeing up resources to focus on critical tasks.',
-    'rocket',
-    ' - **Comprehensive Data Repository** – The portal hosts a wide array of open datasets, including country-level reports, production figures, and revenue distributions. This makes it a one-stop shop for anyone seeking reliable extractive industry data.',
-    'database',
-    ' - **Full Customization & Developer-Friendly Access** – EITI leveraged the platform’s **public GitHub repository**, tailoring the portal to align with their branding and mission. They redesigned the UI/UX, integrated advanced data visualizations, and implemented features like **custom search filters** for better data discovery.',
-    'browser',
-    ' - **Scalable, Secure Infrastructure** – The portal’s infrastructure supports large data volumes and high user traffic without compromising on performance or data security, ensuring reliable access at all times.',
-    'api',
-    ' - **Continuous Improvement** - With access to the portal’s underlying source code, EITI continuously evolves their platform by responding to user feedback, adding new features, and refining the user experience.',
-    'verified',
+    {
+      title: "Rapid Deployment with Zero Maintenance",
+      text: "EITI launched their fully functional open data portal in less than a day using PortalJS Cloud. The platform eliminates the need for manual IT setup and ongoing maintenance, freeing up resources to focus on critical tasks.",
+      icon: "rocket",
+    },
+    {
+      title: "Comprehensive Data Repository",
+      text: "The portal hosts a wide array of open datasets, including country-level reports, production figures, and revenue distributions. This makes it a one-stop shop for anyone seeking reliable extractive industry data.",
+      icon: "database",
+    },
+    {
+      title: "Full Customization & Developer-Friendly Access",
+      text: "EITI leveraged the platform’s **public GitHub repository**, tailoring the portal to align with their branding and mission. They redesigned the UI/UX, integrated advanced data visualizations, and implemented features like **custom search filters** for better data discovery.",
+      icon: "browser",
+    },
+    {
+      title: "Scalable, Secure Infrastructure",
+      text: "The portal’s infrastructure supports large data volumes and high user traffic without compromising on performance or data security, ensuring reliable access at all times.",
+      icon: "api",
+    },
+    {
+      title: "Continuous Improvement",
+      text: "With access to the portal’s underlying source code, EITI continuously evolves their platform by responding to user feedback, adding new features, and refining the user experience.",
+      icon: "verified",
+    }
   ]
 quote:
   [

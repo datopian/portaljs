@@ -15,7 +15,27 @@ solution: 'Datopian delivered a full-stack solution using **PortalJS** for the f
 
  MOEI’s non-technical staff manage content and datasets directly, without needing developers. The platform is fully hosted and maintained by Datopian, requiring zero operational effort from the Ministry. It’s a scalable, secure, and API-first solution that delivers on both transparency and usability.'
 results: 'The MOEI Open Data Portal now serves as a **trusted digital resource**, offering public access to clean, categorized, and searchable datasets. The platform simplifies data discovery, empowers developers through APIs, and enables non-technical staff to manage content effortlessly—while maintaining full security and performance at scale.'
-features: [' - **Zero maintenance burden for the MOEI team**', 'database', ' - **Managed hosting with ongoing updates and security patches**', 'menu', ' - **Scalable infrastructure, compatible with Azure**', 'expand',' - **Rapid delivery and branding alignment out of the box**' , 'verified'
+features: [
+  {
+    title: "Zero maintenance burden for the MOEI team",
+    text: "",
+    icon: "database",
+  },
+  {
+    title: "Managed hosting with ongoing updates and security patches",
+    text: "",
+    icon: "menu",
+  },
+  {
+    title: "Scalable infrastructure, compatible with Azure",
+    text: "",
+    icon: "expand",
+  },
+  {
+    title: "Rapid delivery and branding alignment out of the box",
+    text: "",
+    icon: "verified",
+  }
 ]
 quote: ['The platform gives us exactly what we needed—bilingual access, strong data infrastructure, and zero maintenance on our end. It’s been a reliable tool for sharing our datasets with the public.', '/static/img/social-proof/uae-logo.webp', 'MOEI' ]
 highlight: '- **CKAN** provides a battle-tested backend for structured data, metadata management, and API endpoints.

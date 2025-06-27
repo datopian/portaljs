@@ -48,21 +48,38 @@ results:
   - **Human-Centric UX**- Q&A threads and glossary terms reduce confusion and support tickets.
 
   - **Operational Boost**- Faster dataset provisioning, better data reuse, and less friction in onboarding new researchers.'
-features:
-  [
-    ' - **Api-first, backend-agnostic** – Build modern data portals on any backend — from CKAN to OpenMetadata — using a clean, decoupled, API-first architecture.',
-    'standards',
-    ' - **Modern web stack** – Built with Next.js, TailwindCSS, and React — PortalJS offers a lightweight, maintainable, developer-friendly foundation.',
-    'api',
-    ' - **Dockerized for speed** – Deploy fast with containerized builds that fit neatly into your DevOps pipelines — on cloud or on-prem.',
-    'rocket',
-    ' - **Designed for non-technical users** – Make data usable for everyone — researchers, citizens, analysts — with intuitive, clean UI tailored to real-world needs.',
-    'presentation-3',
-    ' - **Secure by design** - Integrates easily with identity providers like Microsoft Entra ID to ensure secure, role-based access control.',
-    'key',
-    ' - **Pluggable and extensible** - Adapt and grow your portal with reusable components, custom layouts, and rich integration options — all without vendor lock-in.',
-    'puzzle',
-  ]
+features: [
+  {
+    title: "Api-first, backend-agnostic",
+    text: "Build modern data portals on any backend — from CKAN to OpenMetadata — using a clean, decoupled, API-first architecture.",
+    icon: "standards",
+  },
+  {
+    title: "Modern web stack",
+    text: "Built with Next.js, TailwindCSS, and React — PortalJS offers a lightweight, maintainable, developer-friendly foundation.",
+    icon: "api",
+  },
+  {
+    title: "Dockerized for speed",
+    text: "Deploy fast with containerized builds that fit neatly into your DevOps pipelines — on cloud or on-prem.",
+    icon: "rocket",
+  },
+  {
+    title: "Designed for non-technical users",
+    text: "Make data usable for everyone — researchers, citizens, analysts — with intuitive, clean UI tailored to real-world needs.",
+    icon: "presentation-3",
+  },
+  {
+    title: "Secure by design",
+    text: "Integrates easily with identity providers like Microsoft Entra ID to ensure secure, role-based access control.",
+    icon: "key",
+  },
+  {
+    title: "Pluggable and extensible",
+    text: "Adapt and grow your portal with reusable components, custom layouts, and rich integration options — all without vendor lock-in.",
+    icon: "puzzle",
+  }
+]
 quote:
   [
     'We needed a simple way to bridge usability gaps without rebuilding infrastructure. PortalJS delivered exactly that.',
