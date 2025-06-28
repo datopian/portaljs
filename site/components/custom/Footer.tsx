@@ -5,6 +5,7 @@ const navigation = {
   resources: [
     { name: 'Case Studies', href: '/case-studies' },
     { name: 'Data Portals', href: '/data-portals' },
+    { name: 'Learn', href: '/learn' },
     { name: 'Documentation', href: '/docs' },
     { name: 'Blog', href: '/blog' },
     { name: 'FAQ', href: '/faq' },
