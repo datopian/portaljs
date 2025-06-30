@@ -52,32 +52,32 @@ features: [
   {
     title: "Api-first, backend-agnostic",
     text: "Build modern data portals on any backend — from CKAN to OpenMetadata — using a clean, decoupled, API-first architecture.",
-    icon: "standards",
+    icon: "standards"
   },
   {
     title: "Modern web stack",
     text: "Built with Next.js, TailwindCSS, and React — PortalJS offers a lightweight, maintainable, developer-friendly foundation.",
-    icon: "api",
+    icon: "api"
   },
   {
     title: "Dockerized for speed",
     text: "Deploy fast with containerized builds that fit neatly into your DevOps pipelines — on cloud or on-prem.",
-    icon: "rocket",
+    icon: "rocket"
   },
   {
     title: "Designed for non-technical users",
     text: "Make data usable for everyone — researchers, citizens, analysts — with intuitive, clean UI tailored to real-world needs.",
-    icon: "presentation-3",
+    icon: "presentation-3"
   },
   {
     title: "Secure by design",
     text: "Integrates easily with identity providers like Microsoft Entra ID to ensure secure, role-based access control.",
-    icon: "key",
+    icon: "key"
   },
   {
     title: "Pluggable and extensible",
     text: "Adapt and grow your portal with reusable components, custom layouts, and rich integration options — all without vendor lock-in.",
-    icon: "puzzle",
+    icon: "puzzle"
   }
 ]
 quote:

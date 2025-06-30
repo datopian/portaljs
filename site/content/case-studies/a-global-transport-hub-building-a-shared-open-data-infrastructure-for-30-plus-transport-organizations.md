@@ -36,39 +36,39 @@ features: [
     {
       title: "Built for multi-organization publishing",
       text: "PortalJS is ideal for coalitions like TDC — enabling role-based access, contributor dashboards, and streamlined publishing across 30+ organizations.",
-      icon: "hexagonal",
+      icon: "hexagonal"
     },
     {
       title: "Supports structured metadata like SDMX",
       text: "TDC needed metadata aligned with SDMX standards. PortalJS made it easy to surface, search, and display structured datasets clearly.",
-      icon: "presentation-1",
+      icon: "presentation-1"
     },
     {
       title: "Turned disconnected data into a unified platform",
       text: "From scattered PDFs to a live, searchable portal — PortalJS helped TDC centralize transport and sustainability data in one public space.",
-      icon: "rocket",
+      icon: "rocket"
     },
     {
       title: "Frontend flexibility without backend changes",
       text: "All workflows — including dataset approval, visibility toggling, and publishing flows — were built on the frontend with no backend rewrites.",
-      icon: "repair-tools",
+      icon: "repair-tools"
     },
     {
       title: "Visual exploration through filters and maps",
       text: "Users can search by region, sector, or keyword — or use an interactive map to explore country-specific datasets.",
-      icon: "magnify",
+      icon: "magnify"
     },
     {
       title: "Custom contributor onboarding flow",
       text: "We built a guided onboarding experience tailored to TDC: helping users follow topics, join organizations, and start contributing with confidence.",
-      icon: "presentation-4",
+      icon: "presentation-4"
     }
   ]
 quote:
   [
     'This isn’t just a frontend — it’s a public infrastructure for collaboration on transport data.',
     '/static/img/showcases/2025-06-06-TDC/logo.png',
-    'Transport Data Commons',
+    'Transport Data Commons'
   ]
 portal:
   [

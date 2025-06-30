@@ -219,6 +219,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                       href={portal[2]}
                       title="Get started with PortalJS Cloud"
                       className="text-sm"
+                      target="_blank"
                     >
                       See the portal
                     </ButtonLink>
@@ -295,21 +296,21 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
 
         <Journey />
 
-        <div className="text-2xl font-bold mt-20 max-w-5xl justify-self-center">Why PortalJS Cloud?</div>
+        <div className="text-2xl font-bold mt-20 max-w-5xl mx-auto">Why PortalJS Cloud?</div>
 
         <div className="flex max-w-5xl justify-self-center ">
           <IconWrapper features={features} />
         </div>
 
         {highlight && (
-          <>
+          <div className='max-w-5xl mx-auto'>
             <div className="text-2xl font-bold mt-8 ">
               Why PortalJS Cloud + CKAN is the perfect pair?
             </div>
             <ReactMarkdown className="prose prose-headings:font-headings dark:prose-invert prose-a:break-word mt-8">
               {highlight}
             </ReactMarkdown>
-          </>
+          </div>
         )}
         <div className="w-full flex flex-col items-center mt-32">
           <div className="max-w-4xl relative">
@@ -363,6 +364,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                 title="Explore"
                 className="mt-6 text-sm"
                 style="secondary"
+                target="_blank"
               >
                 Explore
               </ButtonLink>}

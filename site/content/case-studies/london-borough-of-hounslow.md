@@ -32,22 +32,22 @@ features: [
   {
     title: "No Infrastructure Maintenance",
     text: "PortalJS Cloud manages updates, security, and hosting.",
-    icon: "server",
+    icon: "server"
   },
   {
     title: "Cost Optimization",
     text: "Pay-as-you-go model reduces cloud and staffing expenses.",
-    icon: "ewallet",
+    icon: "ewallet"
   },
   {
     title: "Seamless Scaling",
     text: "Adapts automatically to increasing data demands.",
-    icon: "expand",
+    icon: "expand"
   },
   {
     title: "Improved UI/UX",
     text: "Faster load times, modern design, and better navigation.",
-    icon: "browser",
+    icon: "browser"
   }
 ]
 quote: ['With PortalJS Cloud, we no longer worry about infrastructure. We’ve cut costs and improved our platform’s usability for citizens and researchers alike.', '/images/casestudies/hounslow-logo.webp', 'London Borough of Hounslow' ]

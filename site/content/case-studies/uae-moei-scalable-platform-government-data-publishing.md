@@ -19,22 +19,22 @@ features: [
   {
     title: "Zero maintenance burden for the MOEI team",
     text: "",
-    icon: "database",
+    icon: "database"
   },
   {
     title: "Managed hosting with ongoing updates and security patches",
     text: "",
-    icon: "menu",
+    icon: "menu"
   },
   {
     title: "Scalable infrastructure, compatible with Azure",
     text: "",
-    icon: "expand",
+    icon: "expand"
   },
   {
     title: "Rapid delivery and branding alignment out of the box",
     text: "",
-    icon: "verified",
+    icon: "verified"
   }
 ]
 quote: ['The platform gives us exactly what we needed—bilingual access, strong data infrastructure, and zero maintenance on our end. It’s been a reliable tool for sharing our datasets with the public.', '/static/img/social-proof/uae-logo.webp', 'MOEI' ]

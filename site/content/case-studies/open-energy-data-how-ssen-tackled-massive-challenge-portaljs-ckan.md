@@ -34,22 +34,22 @@ features: [
   {
     title: "Lightning-Fast Frontend",
     text: "PortalJS delivers a sleek, intuitive interface that’s built for usability.",
-    icon: "favorite",
+    icon: "favorite"
   },
   {
     title: "Reliable Data Backbone",
     text: "[CKAN](https://www.datopian.com/solutions/ckan) ensures large datasets are stored, organized, and shared efficiently.",
-    icon: "database",
+    icon: "database"
   },
   {
     title: "Powerful Add-Ons",
     text: "Extensions like ckanext-dcat and ckanext-scheming boost interoperability and customization.",
-    icon: "layers",
+    icon: "layers"
   },
   {
     title: "Scalable Infrastructure",
     text: "BigQuery and Prefect make processing and analyzing huge datasets (over 1TB of data) effortless.",
-    icon: "cloud-network",
+    icon: "cloud-network"
   }
 ]
 quote: ['I would like to take this opportunity to extend my heartfelt gratitude for the outstanding support and collaboration your team has offered over the past year. The agility, technical prowess, and steadfast dedication you have demonstrated are truly commendable. Your efforts have been integral to our successes, and I am deeply appreciative. I am hopeful that there will be opportunities for me to engage with future projects and contribute. Thank you once again for your exemplary contribution and for the positive spirit you bring to our work.', '/images/casestudies/ssen-logo.png', 'Shailesh Kumar, Analytics and Data Architect - SSEN' ]
