@@ -102,16 +102,14 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
 
   const IconWrapper: React.FC<any> = ({ features }) => {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 mt-9">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 mt-14 mb-20">
         {features.map((item, index) => {
-          if (index % 2 === 0) {
-            const text = item
-            const icon = features[index + 1]
+          if (item) {
             const IconComponent = ({ className }) => (
               <Player
                 autoplay
                 loop
-                src={`/static/icons/${theme}/${icon}.json`}
+                src={`/static/icons/${theme}/${item.icon}.json`}
                 style={{ height: '60px', width: '60px' }}
                 className={className}
               />
@@ -123,9 +121,13 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                   <IconComponent className="mr-2 text-blue-400 min-w-4 min-h-4 dark:-rotate-[4deg] " />
                 </div>
 
-                <div className="">
-                  {' '}
-                  <ReactMarkdown>{text}</ReactMarkdown>
+                <div>
+                  <h5 className="text-lg font-bold">
+                    <ReactMarkdown>{item.title}</ReactMarkdown>
+                  </h5>
+                  <p className="text-gray-300 font-medium mt-[2px]">
+                    <ReactMarkdown>{item.text}</ReactMarkdown>
+                  </p>
                 </div>
               </div>
             ) : (
@@ -217,6 +219,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                       href={portal[2]}
                       title="Get started with PortalJS Cloud"
                       className="text-sm"
+                      target="_blank"
                     >
                       See the portal
                     </ButtonLink>
@@ -293,21 +296,21 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
 
         <Journey />
 
-        <div className="text-2xl font-bold mt-16 ">Why PortalJS Cloud?</div>
+        <div className="text-2xl font-bold mt-20 max-w-5xl mx-auto">Why PortalJS Cloud?</div>
 
-        <div className="flex ">
+        <div className="flex max-w-5xl justify-self-center ">
           <IconWrapper features={features} />
         </div>
 
         {highlight && (
-          <>
+          <div className='max-w-5xl mx-auto'>
             <div className="text-2xl font-bold mt-8 ">
               Why PortalJS Cloud + CKAN is the perfect pair?
             </div>
             <ReactMarkdown className="prose prose-headings:font-headings dark:prose-invert prose-a:break-word mt-8">
               {highlight}
             </ReactMarkdown>
-          </>
+          </div>
         )}
         <div className="w-full flex flex-col items-center mt-32">
           <div className="max-w-4xl relative">
@@ -361,6 +364,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                 title="Explore"
                 className="mt-6 text-sm"
                 style="secondary"
+                target="_blank"
               >
                 Explore
               </ButtonLink>}

@@ -30,7 +30,28 @@ results: '### Making energy data work smarter, not harder
 - User satisfaction skyrocketed with faster queries and better access to critical insights.
 
 - The portal supports sustainability initiatives, paving the way for net-zero goals.'
-features: [' - **Lightning-Fast Frontend** – PortalJS delivers a sleek, intuitive interface that’s built for usability.','favorite',' - **Reliable Data Backbone** – [CKAN](https://www.datopian.com/solutions/ckan) ensures large datasets are stored, organized, and shared efficiently.','database',' - **Powerful Add-Ons** – Extensions like ckanext-dcat and ckanext-scheming boost interoperability and customization.','layers',' - **Scalable Infrastructure** – BigQuery and Prefect make processing and analyzing huge datasets (over 1TB of data) effortless.','cloud-network']
+features: [
+  {
+    title: "Lightning-Fast Frontend",
+    text: "PortalJS delivers a sleek, intuitive interface that’s built for usability.",
+    icon: "favorite"
+  },
+  {
+    title: "Reliable Data Backbone",
+    text: "[CKAN](https://www.datopian.com/solutions/ckan) ensures large datasets are stored, organized, and shared efficiently.",
+    icon: "database"
+  },
+  {
+    title: "Powerful Add-Ons",
+    text: "Extensions like ckanext-dcat and ckanext-scheming boost interoperability and customization.",
+    icon: "layers"
+  },
+  {
+    title: "Scalable Infrastructure",
+    text: "BigQuery and Prefect make processing and analyzing huge datasets (over 1TB of data) effortless.",
+    icon: "cloud-network"
+  }
+]
 quote: ['I would like to take this opportunity to extend my heartfelt gratitude for the outstanding support and collaboration your team has offered over the past year. The agility, technical prowess, and steadfast dedication you have demonstrated are truly commendable. Your efforts have been integral to our successes, and I am deeply appreciative. I am hopeful that there will be opportunities for me to engage with future projects and contribute. Thank you once again for your exemplary contribution and for the positive spirit you bring to our work.', '/images/casestudies/ssen-logo.png', 'Shailesh Kumar, Analytics and Data Architect - SSEN' ]
 portal:
   [

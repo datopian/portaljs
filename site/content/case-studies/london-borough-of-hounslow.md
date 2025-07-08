@@ -28,7 +28,27 @@ solution: '### PortalJS Cloud: A Fully Managed, Cost-Effective Solution
 results: '### Results:
 
 Migrating to PortalJS Cloud allowed the Borough to eliminate infrastructure maintenance, cut costs, and allocate resources more effectively. The open data portal remains accessible, reliable, and cost-efficient without requiring ongoing technical oversight.'
-features: [' - **No Infrastructure Maintenance** – PortalJS Cloud manages updates, security, and hosting.', 'server', ' - **Cost Optimization** – Pay-as-you-go model reduces cloud and staffing expenses.', 'ewallet', ' - **Seamless Scaling** – Adapts automatically to increasing data demands.', 'expand',' - **Improved UI/UX** – Faster load times, modern design, and better navigation.' , 'browser'
+features: [
+  {
+    title: "No Infrastructure Maintenance",
+    text: "PortalJS Cloud manages updates, security, and hosting.",
+    icon: "server"
+  },
+  {
+    title: "Cost Optimization",
+    text: "Pay-as-you-go model reduces cloud and staffing expenses.",
+    icon: "ewallet"
+  },
+  {
+    title: "Seamless Scaling",
+    text: "Adapts automatically to increasing data demands.",
+    icon: "expand"
+  },
+  {
+    title: "Improved UI/UX",
+    text: "Faster load times, modern design, and better navigation.",
+    icon: "browser"
+  }
 ]
 quote: ['With PortalJS Cloud, we no longer worry about infrastructure. We’ve cut costs and improved our platform’s usability for citizens and researchers alike.', '/images/casestudies/hounslow-logo.webp', 'London Borough of Hounslow' ]
 portal:
