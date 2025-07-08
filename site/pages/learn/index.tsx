@@ -1,5 +1,6 @@
 import React from "react";
 import { FaBook, FaGraduationCap, FaShieldAlt, FaChartLine, FaDatabase, FaCogs } from "react-icons/fa";
+import { NextSeo } from "next-seo";
 import Layout from "@/components/Layout";
 import LearnCard from "@/components/LearnCard";
 
@@ -56,6 +57,21 @@ const learningTopics = [
 const LearnPage = () => {
   return (
     <Layout>
+      <NextSeo
+        title="Learn Data Management"
+        description="Master the fundamentals of data management through our comprehensive learning paths. Choose a topic below to explore in-depth guides and best practices."
+        canonical="https://portaljs.com/learn"
+        openGraph={{
+          url: 'https://portaljs.com/learn',
+          title: 'Learn Data Management',
+          description: 'Master the fundamentals of data management through our comprehensive learning paths. Choose a topic below to explore in-depth guides and best practices.',
+          site_name: 'PortalJS',
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+          site: '@PortalJS_',
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-primary dark:text-primary-dark mb-4">
@@ -66,7 +82,7 @@ const LearnPage = () => {
           </p>
         </div>
 
-        <div 
+        <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
           role="grid"
           aria-label="Learning topics grid"
