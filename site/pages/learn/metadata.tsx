@@ -20,6 +20,13 @@ const metadataPosts = [
     date: "June 25, 2025",
     readTime: "10 min read",
   },
+  {
+    title: "The Metadata Standards Landscape: Making Data Discoverable Across Organizations",
+    description: "Navigate the world of metadata standards from Dublin Core to DCAT to Frictionless Data. Learn which standards work best for government, academic, and enterprise data portals, and how to choose the right approach for your organization.",
+    href: "/blog/the-metadata-standards-landscape-making-data-discoverable-across-organizations",
+    date: "July 8, 2025",
+    readTime: "12 min read",
+  },
 ];
 
 const MetadataLearnPage = () => {
