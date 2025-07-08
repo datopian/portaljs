@@ -36,6 +36,8 @@ But data catalogs grow quickly:
 
 At this scale, browsing becomes impossible. Users need search capabilities—and search engines need rich, consistent metadata to deliver relevant results.
 
+![Metadata search discovey illustration](/static/img/blog/how-rich-metadata-powers-data-discovery-in-modern-data-catalogs/metadata-search-discovery-illustration.png)
+
 > [!info] A common question:
 > Can our search engine query the actual data rows within tables?
 > **Answer:**
