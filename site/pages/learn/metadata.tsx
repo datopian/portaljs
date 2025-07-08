@@ -1,5 +1,6 @@
 import React from "react";
 import { FaArrowLeft, FaBook } from "react-icons/fa";
+import { NextSeo } from "next-seo";
 import Link from "next/link";
 import Layout from "@/components/Layout";
 import LearnPostCard from "@/components/LearnPostCard";
@@ -20,11 +21,33 @@ const metadataPosts = [
     date: "June 25, 2025",
     readTime: "10 min read",
   },
+  {
+    title: "The Metadata Standards Landscape: Making Data Discoverable Across Organizations",
+    description: "Navigate the world of metadata standards from Dublin Core to DCAT to Frictionless Data. Learn which standards work best for government, academic, and enterprise data portals, and how to choose the right approach for your organization.",
+    href: "/blog/the-metadata-standards-landscape-making-data-discoverable-across-organizations",
+    date: "July 8, 2025",
+    readTime: "12 min read",
+  },
 ];
 
 const MetadataLearnPage = () => {
   return (
     <Layout>
+      <NextSeo
+        title="Metadata Fundamentals | Learn Data Management"
+        description="Master the fundamentals of metadata—what it is, how it works, and why it's essential for data discovery and management. Learn about metadata schemas, standards, and best practices."
+        canonical="https://portaljs.com/learn/metadata"
+        openGraph={{
+          url: 'https://portaljs.com/learn/metadata',
+          title: 'Metadata Fundamentals | Learn Data Management',
+          description: 'Master the fundamentals of metadata—what it is, how it works, and why it\'s essential for data discovery and management. Learn about metadata schemas, standards, and best practices.',
+          site_name: 'PortalJS',
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+          site: '@PortalJS_',
+        }}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <div className="mb-8">
