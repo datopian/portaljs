@@ -141,6 +141,8 @@ const config = {
       additionalLinkTags: [
         { rel: 'icon', href: '/favicon.ico' },
         { rel: 'apple-touch-icon', href: '/icon.png', sizes: '120x120' },
+        { rel: 'alternate', type: 'application/rss+xml', title: 'PortalJS Blog RSS Feed', href: '/api/rss.xml' },
+        { rel: 'alternate', type: 'application/atom+xml', title: 'PortalJS Blog Atom Feed', href: '/api/atom.xml' },
       ],
       images: [
         {

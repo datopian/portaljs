@@ -65,6 +65,7 @@
     "remark-smartypants": "^2.0.0",
     "remark-toc": "^8.0.1",
     "remark-wiki-link-plus": "^1.1.1",
+    "rss": "^1.2.2",
     "sass": "^1.86.0",
     "slick-carousel": "^1.8.1",
     "strip-markdown": "^5.0.1",
