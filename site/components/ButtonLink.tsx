@@ -60,6 +60,15 @@ export default function ButtonLink({
           eventData.acquisition_source = acquisitionSource;
         }
 
+        // Add campaign person if it exists (LinkedIn connect campaigns)
+        const campaignPerson = typeof window !== 'undefined' 
+          ? sessionStorage.getItem('campaign_person')
+          : null;
+        
+        if (campaignPerson) {
+          eventData.campaign_person = campaignPerson;
+        }
+
         gtag.event(eventData);
       } catch (error) {
         console.warn('Failed to track conversion event:', error);
