@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import RSS from 'rss';
 import clientPromise from '@/lib/mddb';
-import computeFields from '@/lib/computeFields';
-import * as fs from 'fs';
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,22 +23,21 @@ export default async function handler(
     docs = docs.filter((doc) => doc.metadata.filetype === 'blog');
     blogs = [...blogs, ...docs];
 
-    const blogsWithComputedFields = blogs.map(async (blog) => {
-      const source = fs.readFileSync(blog.file_path, { encoding: 'utf-8' });
-
-      return await computeFields({
-        frontMatter: blog.metadata,
+    // Process blogs with basic metadata (no file reading)
+    const blogList = blogs.map((blog) => {
+      const metadata = blog.metadata;
+      return {
+        title: metadata.title,
+        description: metadata.description,
+        date: metadata.created || metadata.date,
         urlPath: blog.url_path,
-        filePath: blog.file_path,
-        source,
-      });
+        authors: metadata.authors || [],
+      };
     });
 
-    const blogList = await Promise.all(blogsWithComputedFields);
-
-    const blogsSorted = blogList.sort(
-      (a, b) => new Date(b?.date).getTime() - new Date(a?.date).getTime()
-    );
+    const blogsSorted = blogList
+      .filter(blog => blog.title && blog.date && blog.urlPath)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     // Create RSS feed
     const feed = new RSS({
@@ -58,16 +55,14 @@ export default async function handler(
 
     // Add blog posts to feed
     blogsSorted.forEach((post) => {
-      if (post.title && post.date && post.urlPath) {
-        feed.item({
-          title: post.title,
-          description: post.description || post.excerpt || 'Read more...',
-          url: `https://portaljs.com${post.urlPath}`,
-          guid: `https://portaljs.com${post.urlPath}`,
-          date: new Date(post.date),
-          author: post.authors && post.authors.length > 0 ? post.authors[0].name : 'Datopian',
-        });
-      }
+      feed.item({
+        title: post.title,
+        description: post.description || 'Read more...',
+        url: `https://portaljs.com${post.urlPath}`,
+        guid: `https://portaljs.com${post.urlPath}`,
+        date: new Date(post.date),
+        author: post.authors && post.authors.length > 0 ? post.authors[0] : 'Datopian',
+      });
     });
 
     const xml = feed.xml();

@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '@/lib/mddb';
-import computeFields from '@/lib/computeFields';
-import * as fs from 'fs';
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,22 +22,21 @@ export default async function handler(
     docs = docs.filter((doc) => doc.metadata.filetype === 'blog');
     blogs = [...blogs, ...docs];
 
-    const blogsWithComputedFields = blogs.map(async (blog) => {
-      const source = fs.readFileSync(blog.file_path, { encoding: 'utf-8' });
-
-      return await computeFields({
-        frontMatter: blog.metadata,
+    // Process blogs with basic metadata (no file reading)
+    const blogList = blogs.map((blog) => {
+      const metadata = blog.metadata;
+      return {
+        title: metadata.title,
+        description: metadata.description,
+        date: metadata.created || metadata.date,
         urlPath: blog.url_path,
-        filePath: blog.file_path,
-        source,
-      });
+        authors: metadata.authors || [],
+      };
     });
 
-    const blogList = await Promise.all(blogsWithComputedFields);
-
-    const blogsSorted = blogList.sort(
-      (a, b) => new Date(b?.date).getTime() - new Date(a?.date).getTime()
-    );
+    const blogsSorted = blogList
+      .filter(blog => blog.title && blog.date && blog.urlPath)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     const siteUrl = 'https://portaljs.com';
     const feedUrl = `${siteUrl}/api/atom.xml`;
@@ -65,8 +62,8 @@ ${blogsSorted.map(post => {
   
   const postUrl = `${siteUrl}${post.urlPath}`;
   const postDate = new Date(post.date).toISOString();
-  const author = post.authors && post.authors.length > 0 ? post.authors[0].name : 'Datopian';
-  const description = post.description || post.excerpt || 'Read more...';
+  const author = post.authors && post.authors.length > 0 ? post.authors[0] : 'Datopian';
+  const description = post.description || 'Read more...';
   
   return `  <entry>
     <title>${escapeXml(post.title)}</title>
