@@ -41,6 +41,7 @@ async function generateFeeds() {
           blogList.push({
             title: metadata.title,
             description: metadata.description,
+            content: parsed.content, // Full markdown content
             date: metadata.created || metadata.date,
             urlPath: urlPath,
             authors: metadata.authors || [],
@@ -73,7 +74,7 @@ async function generateFeeds() {
     blogsSorted.forEach((post) => {
       feed.item({
         title: post.title,
-        description: post.description || 'Read more...',
+        description: post.content || post.description || 'Read more...', // Full content for cross-posting
         url: `https://portaljs.com${post.urlPath}`,
         guid: `https://portaljs.com${post.urlPath}`,
         date: new Date(post.date),
@@ -103,7 +104,7 @@ ${blogsSorted.map(post => {
   const postUrl = `${siteUrl}${post.urlPath}`;
   const postDate = new Date(post.date).toISOString();
   const author = post.authors && post.authors.length > 0 ? post.authors[0] : 'Datopian';
-  const description = post.description || 'Read more...';
+  const content = post.content || post.description || 'Read more...';
   
   return `  <entry>
     <title>${escapeXml(post.title)}</title>
@@ -114,7 +115,8 @@ ${blogsSorted.map(post => {
     <author>
       <name>${escapeXml(author)}</name>
     </author>
-    <summary type="html">${escapeXml(description)}</summary>
+    <content type="html">${escapeXml(content)}</content>
+    <summary type="html">${escapeXml(post.description || 'Read more...')}</summary>
   </entry>`;
 }).join('\n')}
 </feed>`;
