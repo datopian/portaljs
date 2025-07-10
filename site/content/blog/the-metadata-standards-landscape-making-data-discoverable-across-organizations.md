@@ -28,6 +28,8 @@ This is where metadata standards come in—providing the consistent structure th
 
 The metadata standards landscape might seem overwhelming at first, but it's built around a few foundational standards that work together rather than compete. Let's explore the key players and how they complement each other.
 
+![Metadata standards landscape illustration](/static/img/blog/the-metadata-standards-landscape-making-data-discoverable-across-organizations/metadata-standards-landscape-illustration.png)
+
 ### Dublin Core: The Universal Foundation
 
 Dublin Core is the veteran of metadata standards with its 15 basic elements that can describe virtually any resource. Published as ISO Standard 15836, it's domain-agnostic and internationally recognized.
