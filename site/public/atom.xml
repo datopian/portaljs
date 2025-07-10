@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>PortalJS Blog</title>
+  <subtitle>Latest insights, updates and stories from the PortalJS team</subtitle>
+  <id>https://portaljs.com/</id>
+  <link href="https://portaljs.com" />
+  <link href="https://portaljs.com/atom.xml" rel="self" />
+  <updated>2025-07-08T00:00:00.000Z</updated>
+  <author>
+    <name>Datopian</name>
+    <email>contact@datopian.com</email>
+  </author>
+  <rights>Copyright 2025 Datopian</rights>
+  <generator uri="https://portaljs.com" version="1.0">PortalJS</generator>
+  <entry>
+    <title>The Metadata Standards Landscape: Making Data Discoverable Across Organizations</title>
+    <id>https://portaljs.com/blog/the-metadata-standards-landscape-making-data-discoverable-across-organizations</id>
+    <link href="https://portaljs.com/blog/the-metadata-standards-landscape-making-data-discoverable-across-organizations" />
+    <updated>2025-07-08T00:00:00.000Z</updated>
+    <published>2025-07-08T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Navigate the world of metadata standards from Dublin Core to DCAT to Frictionless Data. Learn which standards work best for government, academic, and enterprise data portals, and how to choose the right approach for your organization.</summary>
+  </entry>
+  <entry>
+    <title>How Rich Metadata Powers Data Discovery in Modern Data Catalogs</title>
+    <id>https://portaljs.com/blog/how-rich-metadata-powers-data-discovery-in-modern-data-catalogs</id>
+    <link href="https://portaljs.com/blog/how-rich-metadata-powers-data-discovery-in-modern-data-catalogs" />
+    <updated>2025-06-25T00:00:00.000Z</updated>
+    <published>2025-06-25T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Learn how metadata transforms data discovery at scale—from search engines like Solr and Elasticsearch to standardized schemas that help users find exactly what they need among thousands of datasets.</summary>
+  </entry>
+  <entry>
+    <title>Basics of Metadata: How It Helps Understand Your Data</title>
+    <id>https://portaljs.com/blog/basics-of-metadata-how-it-helps-to-understand-your-data</id>
+    <link href="https://portaljs.com/blog/basics-of-metadata-how-it-helps-to-understand-your-data" />
+    <updated>2025-06-02T00:00:00.000Z</updated>
+    <published>2025-06-02T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Learn the basics of metadata—from built-in CSV attributes like filename and media type to simple external files—and see how it makes your data discoverable.</summary>
+  </entry>
+  <entry>
+    <title>Why We Decoupled CKAN’s Frontend — And What We Gained with PortalJS</title>
+    <id>https://portaljs.com/blog/why-we-decoupled-CKAN-frontend</id>
+    <link href="https://portaljs.com/blog/why-we-decoupled-CKAN-frontend" />
+    <updated>2025-05-28T00:00:00.000Z</updated>
+    <published>2025-05-28T00:00:00.000Z</published>
+    <author>
+      <name>popovayoana</name>
+    </author>
+    <summary type="html">We explain why we chose to decouple CKAN’s frontend and how PortalJS made our data portal faster, more flexible, and easier to maintain. A practical look at SSG, serverless scaling, and modern dev workflows with CKAN.</summary>
+  </entry>
+  <entry>
+    <title>Why NASA — and Anyone Using CKAN — Should Consider a Decoupled Front-End with PortalJS</title>
+    <id>https://portaljs.com/blog/why-NASA-and-anyone-using-CKAN-should-consider-a-decoupled-front-end-with-PortalJS</id>
+    <link href="https://portaljs.com/blog/why-NASA-and-anyone-using-CKAN-should-consider-a-decoupled-front-end-with-PortalJS" />
+    <updated>2025-05-19T00:00:00.000Z</updated>
+    <published>2025-05-19T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">NASA’s open data portal is powered by CKAN—but what if its user experience could match its scientific depth? This post explores how a decoupled frontend using PortalJS can transform performance, design flexibility, and scalability—without changing the backend. Learn how CKAN and PortalJS can work together to deliver a faster, smarter, and more user-friendly data experience.</summary>
+  </entry>
+  <entry>
+    <title>The New Look of PortalJS Cloud</title>
+    <id>https://portaljs.com/blog/the-new-look-of-portaljs-cloud</id>
+    <link href="https://portaljs.com/blog/the-new-look-of-portaljs-cloud" />
+    <updated>2025-04-01T00:00:00.000Z</updated>
+    <published>2025-04-01T00:00:00.000Z</published>
+    <author>
+      <name>williamlima</name>
+    </author>
+    <summary type="html">Discover how the redesigned PortalJS Cloud helps you launch a modern, WCAG 2.1/2.2-compliant open data portal—fully responsive, customizable, and optimized for lightning-fast search and data sharing. Built for governments, non-profits, academic institutions, and private organizations, it&apos;s the easiest way to deploy a user-friendly data platform in minutes.</summary>
+  </entry>
+  <entry>
+    <title>How to Reduce Data Portal Costs by 90% or More</title>
+    <id>https://portaljs.com/blog/how-to-reduce-data-portal-costs-by-90-percent</id>
+    <link href="https://portaljs.com/blog/how-to-reduce-data-portal-costs-by-90-percent" />
+    <updated>2025-03-14T00:00:00.000Z</updated>
+    <published>2025-03-14T00:00:00.000Z</published>
+    <author>
+      <name>Yoana Popova</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Enhancing CKAN Resource Uploads via API with Cloudflare R2, Workers, and Queues.</title>
+    <id>https://portaljs.com/blog/ckan-resource-uploads-via-api</id>
+    <link href="https://portaljs.com/blog/ckan-resource-uploads-via-api" />
+    <updated>2025-02-26T00:00:00.000Z</updated>
+    <published>2025-02-26T00:00:00.000Z</published>
+    <author>
+      <name>shreyas</name>
+    </author>
+    <summary type="html">Integrating Cloudflare R2 with CKAN revolutionizes resource uploads by enabling direct API-based file storage. Using pre-signed URLs, event-driven processing, and automated metadata updates via Workers and Queues, this approach streamlines uploads, enhances data consistency, and eliminates manual intervention.</summary>
+  </entry>
+  <entry>
+    <title>Effortless User Management in PortalJS</title>
+    <id>https://portaljs.com/blog/effortless-user-management-portaljs</id>
+    <link href="https://portaljs.com/blog/effortless-user-management-portaljs" />
+    <updated>2025-01-28T00:00:00.000Z</updated>
+    <published>2025-01-28T00:00:00.000Z</published>
+    <author>
+      <name>popovayoana</name>
+    </author>
+    <summary type="html">The latest PortalJS user management update makes this process more intuitive.</summary>
+  </entry>
+  <entry>
+    <title>Making PortalJS Cloud Admin Panel Accessible: The Digital Ramp Everyone Deserves</title>
+    <id>https://portaljs.com/blog/making-portalJS-cloud-admin-panel-accessible</id>
+    <link href="https://portaljs.com/blog/making-portalJS-cloud-admin-panel-accessible" />
+    <updated>2025-01-26T00:00:00.000Z</updated>
+    <published>2025-01-26T00:00:00.000Z</published>
+    <author>
+      <name>popovayoana</name>
+    </author>
+    <summary type="html">Learn how PortalJS Cloud’s commitment to accessibility enhances the user experience for everyone.</summary>
+  </entry>
+  <entry>
+    <title>Why PortalJS is the Future of Decoupled Frontend for Data Portals</title>
+    <id>https://portaljs.com/blog/why-portaljs-is-the-future-of-decoupled-frontend-for-data-portals</id>
+    <link href="https://portaljs.com/blog/why-portaljs-is-the-future-of-decoupled-frontend-for-data-portals" />
+    <updated>2024-12-06T00:00:00.000Z</updated>
+    <published>2024-12-06T00:00:00.000Z</published>
+    <author>
+      <name>Anuar Ustayev</name>
+    </author>
+    <summary type="html">Let’s take a look at how PortalJS based decoupled frontend can improve your data portal, its performance, user experience and more.</summary>
+  </entry>
+  <entry>
+    <title>The OpenSpending Revamp: Behind the Scenes</title>
+    <id>https://portaljs.com/blog/the-open-spending-revamp-behind-the-scenes</id>
+    <link href="https://portaljs.com/blog/the-open-spending-revamp-behind-the-scenes" />
+    <updated>2023-10-13T00:00:00.000Z</updated>
+    <published>2023-10-13T00:00:00.000Z</published>
+    <author>
+      <name>Luccas Mateus</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Announcing MarkdownDB: an open source tool to create an SQL API to your markdown files! 🚀</title>
+    <id>https://portaljs.com/blog/markdowndb-launch</id>
+    <link href="https://portaljs.com/blog/markdowndb-launch" />
+    <updated>2023-10-11T00:00:00.000Z</updated>
+    <published>2023-10-11T00:00:00.000Z</published>
+    <author>
+      <name>Ola Rubaj</name>
+    </author>
+    <summary type="html">MarkdownDB - an open source library to transform markdown content into sql-queryable data. Build rich markdown-powered sites easily and reliably. New dedicated website at markdowndb.com</summary>
+  </entry>
+  <entry>
+    <title>What We Shipped in Jul-Aug 2023</title>
+    <id>https://portaljs.com/blog/summer-updates-2023</id>
+    <link href="https://portaljs.com/blog/summer-updates-2023" />
+    <updated>2023-09-01T18:00:00.000Z</updated>
+    <published>2023-09-01T18:00:00.000Z</published>
+    <author>
+      <name>ola-rubaj</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Adding Maps to PortalJS: Enhancing Geospatial Data Visualization with PortalJS</title>
+    <id>https://portaljs.com/blog/enhancing-geospatial-data-visualization-with-portaljs</id>
+    <link href="https://portaljs.com/blog/enhancing-geospatial-data-visualization-with-portaljs" />
+    <updated>2023-07-18T00:00:00.000Z</updated>
+    <published>2023-07-18T00:00:00.000Z</published>
+    <author>
+      <name>João Demenech</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Tutorial 2: Edit your Flowershow website locally on your computer</title>
+    <id>https://portaljs.com/blog/edit-a-website-locally</id>
+    <link href="https://portaljs.com/blog/edit-a-website-locally" />
+    <updated>2023-06-22T00:00:00.000Z</updated>
+    <published>2023-06-22T00:00:00.000Z</published>
+    <author>
+      <name>Ola Rubaj</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Tutorial 1: Create a website from scratch using Markdown and Flowershow</title>
+    <id>https://portaljs.com/blog/create-a-website-from-scratch</id>
+    <link href="https://portaljs.com/blog/create-a-website-from-scratch" />
+    <updated>2023-06-20T00:00:00.000Z</updated>
+    <published>2023-06-20T00:00:00.000Z</published>
+    <author>
+      <name>Ola Rubaj</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Create a catalog of anything using Markdown files in Obsidian</title>
+    <id>https://portaljs.com/blog/create-a-simple-catalog-of-anything-using-markdown</id>
+    <link href="https://portaljs.com/blog/create-a-simple-catalog-of-anything-using-markdown" />
+    <updated>2023-05-30T00:00:00.000Z</updated>
+    <published>2023-05-30T00:00:00.000Z</published>
+    <author>
+      <name>Ola Rubaj</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Learn how to use MarkdownDB with our First Tutorial!</title>
+    <id>https://portaljs.com/blog/markdowndb-basics-tutorial-2023</id>
+    <link href="https://portaljs.com/blog/markdowndb-basics-tutorial-2023" />
+    <updated>2023-05-26T00:00:00.000Z</updated>
+    <published>2023-05-26T00:00:00.000Z</published>
+    <author>
+      <name>Ola Rubaj</name>
+    </author>
+    <summary type="html">We&apos;ve just released our first tutorial that covers the fundamentals of MarkdownDB - our new package for treating markdown files as a database. If you&apos;ve been curious about how to manage your markdown files more effectively, check it out!</summary>
+  </entry>
+  <entry>
+    <title>Generate an interactive webpage from CSV data and markdown</title>
+    <id>https://portaljs.com/blog/generate-an-interactive-webpage-from-csv-data-and-markdown</id>
+    <link href="https://portaljs.com/blog/generate-an-interactive-webpage-from-csv-data-and-markdown" />
+    <updated>2022-03-14T00:00:00.000Z</updated>
+    <published>2022-03-14T00:00:00.000Z</published>
+    <author>
+      <name>Rising Odegua</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>A Short Case Study Involving Table Schema Frictionless Specs at the European Union</title>
+    <id>https://portaljs.com/blog/frictionless-specs-european-commission</id>
+    <link href="https://portaljs.com/blog/frictionless-specs-european-commission" />
+    <updated>2021-06-22T00:00:00.000Z</updated>
+    <published>2021-06-22T00:00:00.000Z</published>
+    <author>
+      <name>sebastien.lavoie</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Setup Guide: How to create a full-featured custom data portal frontend for CKAN with PortalJS</title>
+    <id>https://portaljs.com/blog/example-ckan-2021</id>
+    <link href="https://portaljs.com/blog/example-ckan-2021" />
+    <updated>2021-04-20T00:00:00.000Z</updated>
+    <published>2021-04-20T00:00:00.000Z</published>
+    <author>
+      <name>Luccas Mateus</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>COVID-19 and Compartmental Models in Epidemiology</title>
+    <id>https://portaljs.com/blog/covid19-and-compartmental-models-in-epidemiology</id>
+    <link href="https://portaljs.com/blog/covid19-and-compartmental-models-in-epidemiology" />
+    <updated>2020-05-08T00:00:00.000Z</updated>
+    <published>2020-05-08T00:00:00.000Z</published>
+    <author>
+      <name>rufuspollock</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Open Data Day 2020 and COVID-19 data</title>
+    <id>https://portaljs.com/blog/open-data-day-covid-19</id>
+    <link href="https://portaljs.com/blog/open-data-day-covid-19" />
+    <updated>2020-03-17T00:00:00.000Z</updated>
+    <published>2020-03-17T00:00:00.000Z</published>
+    <author>
+      <name>michael.polidori</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Comparotron: A simple way to visualize and share comparisons</title>
+    <id>https://portaljs.com/blog/comparotron-a-simple-way-to-visualize-and-share-comparisons</id>
+    <link href="https://portaljs.com/blog/comparotron-a-simple-way-to-visualize-and-share-comparisons" />
+    <updated>2020-03-08T00:00:00.000Z</updated>
+    <published>2020-03-08T00:00:00.000Z</published>
+    <author>
+      <name>rufuspollock</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>New Machine Learning Datasets</title>
+    <id>https://portaljs.com/blog/new-machine-learning-datasets</id>
+    <link href="https://portaljs.com/blog/new-machine-learning-datasets" />
+    <updated>2018-09-10T00:00:00.000Z</updated>
+    <published>2018-09-10T00:00:00.000Z</published>
+    <author>
+      <name>branko-dj</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Automatically updated core datasets on DataHub</title>
+    <id>https://portaljs.com/blog/automatically-updated-core-datasets-on-datahub</id>
+    <link href="https://portaljs.com/blog/automatically-updated-core-datasets-on-datahub" />
+    <updated>2018-09-05T00:00:00.000Z</updated>
+    <published>2018-09-05T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Sports data on DataHub</title>
+    <id>https://portaljs.com/blog/sports-data-on-datahub</id>
+    <link href="https://portaljs.com/blog/sports-data-on-datahub" />
+    <updated>2018-08-31T00:00:00.000Z</updated>
+    <published>2018-08-31T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Attribute Relation File Format (ARFF)</title>
+    <id>https://portaljs.com/blog/attribute-relation-file-format-arff</id>
+    <link href="https://portaljs.com/blog/attribute-relation-file-format-arff" />
+    <updated>2018-08-23T00:00:00.000Z</updated>
+    <published>2018-08-23T00:00:00.000Z</published>
+    <author>
+      <name>branko-dj</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>How to use multiple DataHub accounts</title>
+    <id>https://portaljs.com/blog/how-to-use-multiple-datahub-accounts</id>
+    <link href="https://portaljs.com/blog/how-to-use-multiple-datahub-accounts" />
+    <updated>2018-07-18T00:00:00.000Z</updated>
+    <published>2018-07-18T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>World Bank Indicators on DataHub</title>
+    <id>https://portaljs.com/blog/world-bank-indicators-on-datahub</id>
+    <link href="https://portaljs.com/blog/world-bank-indicators-on-datahub" />
+    <updated>2018-07-16T00:00:00.000Z</updated>
+    <published>2018-07-16T00:00:00.000Z</published>
+    <author>
+      <name>branko-dj</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Automated KPIs collection and visualization of the funnels</title>
+    <id>https://portaljs.com/blog/automated-kpis-collection-and-visualization-of-the-funnels</id>
+    <link href="https://portaljs.com/blog/automated-kpis-collection-and-visualization-of-the-funnels" />
+    <updated>2018-07-10T00:00:00.000Z</updated>
+    <published>2018-07-10T00:00:00.000Z</published>
+    <author>
+      <name>branko-dj</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Revamped awesome collections: data sets that are grouped by subject</title>
+    <id>https://portaljs.com/blog/revamped-awesome-collections-data-sets-that-are-grouped-by-subject</id>
+    <link href="https://portaljs.com/blog/revamped-awesome-collections-data-sets-that-are-grouped-by-subject" />
+    <updated>2018-06-11T00:00:00.000Z</updated>
+    <published>2018-06-11T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Machine learning datasets</title>
+    <id>https://portaljs.com/blog/machine-learning-datasets</id>
+    <link href="https://portaljs.com/blog/machine-learning-datasets" />
+    <updated>2018-05-25T00:00:00.000Z</updated>
+    <published>2018-05-25T00:00:00.000Z</published>
+    <author>
+      <name>svetozarstojkovic</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Auto-publish your datasets using Travis-CI</title>
+    <id>https://portaljs.com/blog/auto-publish-your-datasets-using-travis-ci</id>
+    <link href="https://portaljs.com/blog/auto-publish-your-datasets-using-travis-ci" />
+    <updated>2018-05-23T00:00:00.000Z</updated>
+    <published>2018-05-23T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>JavaScript SDK for data deployment</title>
+    <id>https://portaljs.com/blog/javascript-sdk-for-data-deployment</id>
+    <link href="https://portaljs.com/blog/javascript-sdk-for-data-deployment" />
+    <updated>2018-05-15T00:00:00.000Z</updated>
+    <published>2018-05-15T00:00:00.000Z</published>
+    <author>
+      <name>acckiygerman</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>How to initialize a data package using data tool</title>
+    <id>https://portaljs.com/blog/how-to-initialize-a-data-package-using-data-tool</id>
+    <link href="https://portaljs.com/blog/how-to-initialize-a-data-package-using-data-tool" />
+    <updated>2018-05-14T00:00:00.000Z</updated>
+    <published>2018-05-14T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Validate your Data Package descriptor online</title>
+    <id>https://portaljs.com/blog/online-validation-tool</id>
+    <link href="https://portaljs.com/blog/online-validation-tool" />
+    <updated>2018-04-19T00:00:00.000Z</updated>
+    <published>2018-04-19T00:00:00.000Z</published>
+    <author>
+      <name>acckiygerman</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Q1 2018 Review</title>
+    <id>https://portaljs.com/blog/q1-2018-review</id>
+    <link href="https://portaljs.com/blog/q1-2018-review" />
+    <updated>2018-04-11T00:00:00.000Z</updated>
+    <published>2018-04-11T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>New Features and Improvements</title>
+    <id>https://portaljs.com/blog/new-features-and-improvements</id>
+    <link href="https://portaljs.com/blog/new-features-and-improvements" />
+    <updated>2018-03-26T00:00:00.000Z</updated>
+    <published>2018-03-26T00:00:00.000Z</published>
+    <author>
+      <name>acckiygerman</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Improved Reporting and Debugging of Data Publishing</title>
+    <id>https://portaljs.com/blog/improved-reporting-and-debugging-of-data-publishing</id>
+    <link href="https://portaljs.com/blog/improved-reporting-and-debugging-of-data-publishing" />
+    <updated>2018-01-29T00:00:00.000Z</updated>
+    <published>2018-01-29T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Data Validation in the DataHub</title>
+    <id>https://portaljs.com/blog/data-validation-in-the-datahub</id>
+    <link href="https://portaljs.com/blog/data-validation-in-the-datahub" />
+    <updated>2018-01-24T00:00:00.000Z</updated>
+    <published>2018-01-24T00:00:00.000Z</published>
+    <author>
+      <name>rufuspollock</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Which country spends the most on pharmaceutical drugs?</title>
+    <id>https://portaljs.com/blog/pharmaceutical-drug-spending</id>
+    <link href="https://portaljs.com/blog/pharmaceutical-drug-spending" />
+    <updated>2018-01-23T00:00:00.000Z</updated>
+    <published>2018-01-23T00:00:00.000Z</published>
+    <author>
+      <name>mikanebu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Introducing private datasets on the DataHub</title>
+    <id>https://portaljs.com/blog/introducing-private-datasets-on-the-datahub</id>
+    <link href="https://portaljs.com/blog/introducing-private-datasets-on-the-datahub" />
+    <updated>2017-12-13T00:00:00.000Z</updated>
+    <published>2017-12-13T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Data desktop app - alpha release with drag and drop data publishing support</title>
+    <id>https://portaljs.com/blog/data-desktop-app-alpha-release</id>
+    <link href="https://portaljs.com/blog/data-desktop-app-alpha-release" />
+    <updated>2017-12-01T00:00:00.000Z</updated>
+    <published>2017-12-01T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>How to use Data Packages from R</title>
+    <id>https://portaljs.com/blog/how-to-use-data-packages-from-r</id>
+    <link href="https://portaljs.com/blog/how-to-use-data-packages-from-r" />
+    <updated>2017-11-16T00:00:00.000Z</updated>
+    <published>2017-11-16T00:00:00.000Z</published>
+    <author>
+      <name>mikanebu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Import online data files directly with scheduling</title>
+    <id>https://portaljs.com/blog/import-online-data-files-directly-with-scheduling</id>
+    <link href="https://portaljs.com/blog/import-online-data-files-directly-with-scheduling" />
+    <updated>2017-11-14T00:00:00.000Z</updated>
+    <published>2017-11-14T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Core Data: Essential Datasets for Data Wranglers and Data Scientists</title>
+    <id>https://portaljs.com/blog/core-data-essential-datasets-for-data-wranglers-and-data-scientists</id>
+    <link href="https://portaljs.com/blog/core-data-essential-datasets-for-data-wranglers-and-data-scientists" />
+    <updated>2017-11-03T00:00:00.000Z</updated>
+    <published>2017-11-03T00:00:00.000Z</published>
+    <author>
+      <name>rufuspollock</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>See events and activity related to datasets or publishers</title>
+    <id>https://portaljs.com/blog/see-events-and-activity-related-to-datasets-or-publishers</id>
+    <link href="https://portaljs.com/blog/see-events-and-activity-related-to-datasets-or-publishers" />
+    <updated>2017-10-31T00:00:00.000Z</updated>
+    <published>2017-10-31T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Datasets in zip format</title>
+    <id>https://portaljs.com/blog/datasets-in-zip-format</id>
+    <link href="https://portaljs.com/blog/datasets-in-zip-format" />
+    <updated>2017-10-19T00:00:00.000Z</updated>
+    <published>2017-10-19T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Previews for large datasets</title>
+    <id>https://portaljs.com/blog/previews-for-large-datasets</id>
+    <link href="https://portaljs.com/blog/previews-for-large-datasets" />
+    <updated>2017-10-18T00:00:00.000Z</updated>
+    <published>2017-10-18T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Vega views upgrade - now using v3</title>
+    <id>https://portaljs.com/blog/vega-upgrade-spec-v3</id>
+    <link href="https://portaljs.com/blog/vega-upgrade-spec-v3" />
+    <updated>2017-10-17T00:00:00.000Z</updated>
+    <published>2017-10-17T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Excel Files on the DataHub: Automated Previews and Data Extraction</title>
+    <id>https://portaljs.com/blog/excel-files-on-the-datahub-automated-previews-and-data-extraction</id>
+    <link href="https://portaljs.com/blog/excel-files-on-the-datahub-automated-previews-and-data-extraction" />
+    <updated>2017-10-16T00:00:00.000Z</updated>
+    <published>2017-10-16T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+  <entry>
+    <title>Data Package v1 Specifications. What has Changed and how to Upgrade</title>
+    <id>https://portaljs.com/blog/upgrade-to-data-package-specs-v1</id>
+    <link href="https://portaljs.com/blog/upgrade-to-data-package-specs-v1" />
+    <updated>2017-10-11T00:00:00.000Z</updated>
+    <published>2017-10-11T00:00:00.000Z</published>
+    <author>
+      <name>mikanebu</name>
+    </author>
+    <summary type="html">Read more...</summary>
+  </entry>
+</feed>
