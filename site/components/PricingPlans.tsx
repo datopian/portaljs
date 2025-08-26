@@ -146,6 +146,11 @@ export const tiers = [
           ],
         },
       },
+      { title: 'Complex data processing pipelines with expert team support (coming soon)' },
+      { title: 'Harvesting features: automatic data collection from multiple sources (coming soon)' },
+      { title: 'Model Context Protocol (MCP) server for your data portal (coming soon)' },
+      { title: 'AI-powered visualisation tools for publishers (coming soon)' },
+      { title: 'Self-service tool for charts and maps creation for end users (coming soon)' },
       { title: 'Data curator support (business hours)' },
       { title: 'Priority technical support (24-hour response time)' },
       { title: 'Explore more add-ons', href: '/pricing#addons' },
@@ -342,7 +347,7 @@ export default function PricingPlans() {
                           (2 months free!)
                         </span>
                         <span className=" hidden custom:inline pl-1">
-                          (2M free!)
+                          (2 months free!)
                         </span>
                       </span>
                     </div>
