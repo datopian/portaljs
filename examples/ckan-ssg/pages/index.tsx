@@ -17,15 +17,10 @@ const formatter = new Intl.DateTimeFormat('en-US', {
 
 export async function getServerSideProps() {
   const ckan = new CKAN(backend_url)
-  const { datasets } = await ckan.packageSearch({ limit: 1000, offset: 0, groups:[], orgs: [], tags: []})
-  const datasetsWithDetails = await Promise.all(datasets.map(async (dataset) => {
-    const _dataset = await ckan.getDatasetDetails(dataset.name)
-    return _dataset
-  }))
-
+  const { datasets } = await ckan.packageSearch({ limit: 50, offset: 0, groups:[], orgs: [], tags: []})
   return {
     props: {
-      datasets: datasetsWithDetails
+      datasets
     }
   }
 }
