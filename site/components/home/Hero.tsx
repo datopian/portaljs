@@ -74,14 +74,10 @@ export default function Hero() {
           <div className="py-10 dark:py-4">
             {' '}
             <H1 className="-ml-1 text-3xl sm:text-6xl xl:text-7xl bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 bg-clip-text text-transparent pb-3 font-semibold">
-              Managed <br />
-              Data Portal <br />
-              In the Cloud
+              The Data Portals Framework
             </H1>
             <H2 sub={true} className="mt-5 text-base  sm:text-lg xl:text-xl">
-              PortalJS Cloud is the simplest way to get started with open data.
-              Designed for governments, nonprofits, and academic institutions,
-              it lets you launch a modern, compliant portal in minutes.
+              Create data portals for internal data management, inter-organisational sharing, research repositories, and open data.
             </H2>
             <div className="mt-5 mt-10 flex justify-center dark:xl:justify-start">
               <div className="mt-3 mt-0 flex gap-4">
