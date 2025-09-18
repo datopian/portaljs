@@ -77,7 +77,7 @@ export default function Hero() {
               The Data Portals Framework
             </H1>
             <H2 sub={true} className="mt-5 text-base  sm:text-lg xl:text-xl">
-              Create data portals for internal data management, inter-organisational sharing, research repositories, and open data.
+              Create data portals people love to use - for internal data management and sharing, research data repositories, and open data portals.
             </H2>
             <div className="mt-5 mt-10 flex justify-center dark:xl:justify-start">
               <div className="mt-3 mt-0 flex gap-4">
