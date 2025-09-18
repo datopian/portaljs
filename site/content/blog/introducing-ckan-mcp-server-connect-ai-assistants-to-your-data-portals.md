@@ -120,39 +120,6 @@ Organizations can connect their internal CKAN instances to AI assistants, enabli
 ### Data Journalism
 Journalists can rapidly identify story-relevant datasets, understand their context, and explore connections between different data sources through conversational interfaces.
 
-## Demo: See It in Action
-
-Want to see the CKAN MCP Server in action? Check out our demo video showing real-time interaction between an AI assistant and a CKAN data portal:
-
-**[🎥 Watch Demo Video](https://www.loom.com/share/7b3a34e494e9428d931e663cd909e7c3?sid=88d1fb9f-b937-4292-8359-ac60d873946f)**
-
-<!-- Screenshot placeholder: Demo video thumbnail -->
-*[Screenshot: Demo video thumbnail will be added here]*
-
-The demo showcases:
-- Natural language dataset search
-- Intelligent data summarization
-- Metadata extraction and presentation
-- Multi-dataset comparison capabilities
-
-## Security and Enterprise Readiness
-
-### Built-in Security Features
-- **Authentication support** with Bearer token validation
-- **CORS configuration** for secure cross-origin requests
-- **Docker-based isolation** with security hardening
-- **Non-root user execution** and read-only filesystems
-
-### Production Features
-- **Load balancing** with Nginx reverse proxy
-- **SSL/TLS termination** for secure HTTPS connections
-- **Health monitoring** and automatic restarts
-- **Resource limits** and performance optimization
-- **Comprehensive logging** for monitoring and debugging
-
-<!-- Screenshot placeholder: Security architecture diagram -->
-*[Screenshot: Security and deployment architecture will be added here]*
-
 ## Getting Started: Your Journey to AI-Powered Data Discovery
 
 ### Prerequisites
@@ -197,9 +164,6 @@ Add the MCP server to your AI assistant's configuration:
 }
 ```
 
-<!-- Screenshot placeholder: Configuration examples -->
-*[Screenshot: AI client configuration examples will be added here]*
-
 ## The Future of AI-Powered Data Discovery
 
 The CKAN MCP Server represents more than just a technical integration - it's a glimpse into the future of how we'll interact with data. As MCP becomes the standard protocol for AI-data connections, we're moving toward a world where:
@@ -222,7 +186,6 @@ We're continuously improving the CKAN MCP Server with:
 
 The CKAN MCP Server is open source and ready for your contribution. Whether you're a data manager looking to modernize your portal, a developer interested in AI-data integration, or an organization ready to embrace the future of data discovery, we invite you to:
 
-- **Try the demo** and experience AI-powered data discovery
 - **Deploy in your environment** using our Docker-based setup
 - **Contribute to development** on GitHub
 - **Share your use cases** and help shape the roadmap
@@ -230,11 +193,8 @@ The CKAN MCP Server is open source and ready for your contribution. Whether you'
 ### Resources
 - **GitHub Repository**: [github.com/datopian/ckan-mcp-server](https://github.com/datopian/ckan-mcp-server)
 - **Documentation**: Complete deployment and configuration guides
-- **Demo Video**: [Live demonstration](https://www.loom.com/share/7b3a34e494e9428d931e663cd909e7c3?sid=88d1fb9f-b937-4292-8359-ac60d873946f)
 - **Community**: Join discussions and get support
 
-<!-- Screenshot placeholder: GitHub repository preview -->
-*[Screenshot: GitHub repository homepage will be added here]*
 
 ## Conclusion
 
@@ -245,5 +205,3 @@ By bridging CKAN data portals with AI assistants, we're not just enabling new te
 The future of data discovery is here, and it speaks your language. Ready to get started?
 
 ---
-
-*Have questions or want to share your experience with the CKAN MCP Server? Reach out to our team or contribute to the project on GitHub. Let's build the future of AI-powered data discovery together.*
