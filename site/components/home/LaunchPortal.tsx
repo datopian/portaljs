@@ -1,5 +1,6 @@
 import { CheckIcon } from '@heroicons/react/24/solid'
 import { H2, H3 } from '../custom/header'
+import ButtonLink from '../ButtonLink'
 
 export default function LaunchPortal() {
   return (
@@ -8,14 +9,24 @@ export default function LaunchPortal() {
         <div className="flex flex-col lg:flex-row gap-32 lg:justify-between">
           <div className="!z-40">
             <H2 className=" mb-2 leading-[3rem]">
-              Imagine Launching Your Data Portal in Minutes
+              Launch your data portal in minutes
             </H2>
             <H3 className=" mb-4 max-w-2xl">
               Meet <b>PortalJS Cloud</b> — <b>the only solution on the market</b>{' '} 
-              that combines full public-sector compliance, CKAN compatibility,
+              that combines full public-sector compliance, metadata backend compatibility,
               AI-powered features, and instant deployment — all in a fully
               managed package.
             </H3>
+            <div className="mt-6">
+              <ButtonLink
+                href="https://cloud.portaljs.com/auth/signup"
+                title="Deploy your data portal with PortalJS Cloud"
+                className="text-sm"
+                trackConversion={true}
+              >
+                Deploy your data portal
+              </ButtonLink>
+            </div>
             {/* <ul className="list-none list-inside mb-4  flex flex-col gap-1">
               <li className="">
                 <div className="flex items-center gap-2">
