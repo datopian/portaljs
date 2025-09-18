@@ -6,40 +6,54 @@ export const KeyFeatures = () => {
   const { theme } = useTheme()
   const features = [
     {
-      title: 'Launch in Minutes',
+      title: 'Unified sites',
       description:
-        'Get your data portal up and running in minutes, not months. No technical expertise required.',
-      icon: `/static/icons/${theme}/clock.json`,
+        'Present data and content in one seamless site, pulling datasets from a DMS (eg, CKAN or OpenMetadata) and content from a CMS (eg, WordPress or other).',
+      icon: `/static/icons/${theme}/network.json`,
       style: 'dark:-rotate-[4deg]',
     },
     {
-      title: 'Secure & Compliant',
+      title: 'Developer friendly',
       description:
-        'Built with security and compliance in mind. GDPR compliant and follows best practices.',
-      icon: `/static/icons/${theme}/verified.json`,
+        'Built with familiar frontend tech (Next.js and Tailwind CSS) with great local dev tooling.',
+      icon: `/static/icons/${theme}/html.json`,
       style: 'dark:-rotate-[3deg]',
     },
     {
-      title: 'Data Management',
+      title: 'Batteries included',
       description:
-        'Easily upload, manage, and organize your data with our intuitive interface.',
-      icon: `/static/icons/${theme}/data-catalog.json`,
+        'Ready-made portal components out of the box: catalog search, dataset pages, previews (tables, charts, maps), blogs, and more.',
+      icon: `/static/icons/${theme}/layers.json`,
       style: 'dark:-rotate-[2deg]',
     },
     {
-      title: 'Powerful Search',
+      title: 'Easy to theme & customize',
       description:
-        'Help users find what they need with powerful search capabilities across all your datasets.',
-      icon: `/static/icons/${theme}/search.json`,
+        'Installable themes, standard CSS/React tooling, quick route creation, and support for custom branding.',
+      icon: `/static/icons/${theme}/paint-roller.json`,
       style: 'dark:-rotate-[4deg]',
+    },
+    {
+      title: 'Extensible',
+      description:
+        'Extend with your own components, or import from the wider ecosystem.',
+      icon: `/static/icons/${theme}/expand.json`,
+      style: 'dark:-rotate-[3deg]',
+    },
+    {
+      title: 'Enterprise ready',
+      description:
+        'Optional modules for authentication/SSO, role-based access control, data quality, and API management.',
+      icon: `/static/icons/${theme}/padlock.json`,
+      style: 'dark:-rotate-[2deg]',
     },
   ]
 
   return (
     <div className="py-24">
       <div className="">
-        <H2 className="text-center">Key Features</H2>
-        <div className="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-12 lg:grid-cols-4 lg:gap-x-6">
+        <H2 className="text-center">Features</H2>
+        <div className="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-12 lg:grid-cols-3 lg:gap-x-6">
           {features.map((feature) => (
             <div
               key={feature.title}
