@@ -14,6 +14,8 @@ Today, we're excited to introduce the **CKAN MCP Server**, a specialized impleme
 
 ## What is the Model Context Protocol?
 
+![MCP to LLM Connection](/static/img/blog/introducing-ckan-mcp-server-connect-ai-assistants-to-your-data-portals/mcp-llm.png)
+
 Before diving into our CKAN implementation, let's understand what makes MCP so revolutionary. Announced by Anthropic in November 2024, the Model Context Protocol is quickly becoming the universal standard for connecting AI assistants to data systems.
 
 ### The Problem MCP Solves
@@ -61,6 +63,8 @@ This is exactly what the CKAN MCP Server enables.
 
 ### Architecture
 
+![MCP Server Architecture Diagram](/static/img/blog/introducing-ckan-mcp-server-connect-ai-assistants-to-your-data-portals/mcp-server-diagram.png)
+
 The CKAN MCP Server acts as a bridge between MCP-compatible AI clients and CKAN APIs. Here's the flow:
 
 1. **AI Assistant** sends a request through MCP protocol
@@ -107,6 +111,14 @@ docker-compose -f docker-compose.http.yml up -d
 The server supports both **stdio transport** (for local development) and **HTTP/HTTPS transport** (for production deployments), making it suitable for everything from individual experimentation to enterprise-scale implementations.
 
 ## Real-World Use Cases
+
+### Examples in Action
+
+#### Searching for Datasets
+![MCP Dataset Search Example](/static/img/blog/introducing-ckan-mcp-server-connect-ai-assistants-to-your-data-portals/mcp-dataset-fetch.png)
+
+#### Creating Metadata
+![MCP Metadata Creation Example](/static/img/blog/introducing-ckan-mcp-server-connect-ai-assistants-to-your-data-portals/mcp-metadata-create.png)
 
 ### Government Open Data
 Government agencies can enable citizens and researchers to interact with public datasets using natural language. Instead of navigating complex data portals, users can simply ask: "What environmental data is available for my city?"
