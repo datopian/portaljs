@@ -117,13 +117,10 @@ We're continuously improving the MCP Server with:
 The MCP Server for data portals is open source and ready for your contribution. Whether you're a data manager looking to modernize your portal, a developer interested in AI-data integration, or an organization ready to embrace the future of data discovery, we invite you to:
 
 - **Explore the possibilities** for your data portal
-- **Contribute to development** on GitHub
-- **Share your use cases** and help shape the roadmap
+
 
 ### Resources
 - **GitHub Repository**: [github.com/datopian/ckan-mcp-server](https://github.com/datopian/ckan-mcp-server)
-- **Documentation**: Complete guides and tutorials
-- **Community**: Join discussions and get support
 
 
 ## Conclusion
@@ -131,7 +128,5 @@ The MCP Server for data portals is open source and ready for your contribution. 
 The Model Context Protocol is transforming how AI systems access and interact with data. The MCP Server for data portals makes this connection seamless, secure, and scalable.
 
 By bridging data portals with AI assistants, we're not just enabling new technical capabilities - we're fundamentally changing how people discover, understand, and work with data. The barriers between human curiosity and data insights are dissolving, replaced by natural, conversational interfaces that make data accessible to everyone.
-
-The future of data discovery is here, and it speaks your language. Ready to get started?
 
 ---
