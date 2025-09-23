@@ -1,5 +1,5 @@
 ---
-title: 'MCP Server: A better way to have AI Assistants to Your Data Portals'
+title: 'MCP Server: A better way to connect AI assistants to data portals'
 description: 'How MCP Server bridges the gap between AI assistants and data portals, enabling seamless data discovery and interaction for ChatGPT, Claude, and other AI tools for better quality of life and time.'
 created: 2025-09-17
 authors: ['Theo Bertol']
@@ -12,7 +12,7 @@ The world of AI assistants is rapidly evolving, but there's been a persistent ch
 
 ## What is the Model Context Protocol?
 
-![MCP to LLM Connection](/static/img/blog/introducing-mcp-server-connect-ai-assistants-to-your-data-portals/mcp-llm.png)
+![MCP to LLM Connection](/static/img/blog/mcp-server-ai-assistants-to-improve-data-portals/mcp-llm.png)
 
 Before diving into our MCP Data Portal implementation, let's understand what makes MCP so revolutionary. Announced by Anthropic in November 2024, the Model Context Protocol is quickly becoming the universal standard for connecting AI assistants to data systems.
 
