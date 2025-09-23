@@ -1,6 +1,6 @@
 ---
-title: 'Introducing MCP Server: Connect AI Assistants to Your Data Portals'
-description: 'Discover how the MCP Server bridges the gap between AI assistants and your data portals using the Model Context Protocol, enabling seamless data discovery and interaction for ChatGPT, Claude, and other AI tools.'
+title: 'MCP Server: A better way to make AI Assistants to Your Data Portals'
+description: 'How MCP Server bridges the gap between AI assistants and data portals, enabling seamless data discovery and interaction for ChatGPT, Claude, and other AI tools for better quality of life and time.'
 created: 2025-09-17
 authors: ['Theo Bertol']
 filetype: 'blog'
@@ -20,18 +20,24 @@ Before diving into our MCP Data Portal implementation, let's understand what mak
 
 ### The Problem MCP Solves
 
-Traditional AI assistants are "trapped behind information silos and legacy systems." Every new data source requires custom implementation, making truly connected systems difficult to scale. Until now, connecting an AI assistant to your organization's data meant:
+Traditional AI assistants are "trapped behind an overwhelming amount of unnecessary context bloat of copy-paste .json, .csv, context" Where we needed to get a lot of information before having a good conversation/problem solved, normally just ending into a very big token usage and in the end, not solving the problem because the AI just had too much overflowing context.
 
-- Building custom integrations for each data source
-- Managing fragmented, bespoke connections
-- Dealing with security and access control complexities
-- Maintaining multiple different protocols and standards
+- How can i make this conversation more straight to the point?
+- Why does my AI Chat keeps useless information?
+- When did i ask for this?
+- Where is the context of this chat going?
+
+All of those questions bring a core point into the current problem... Context of the conversation, how can we fix that?
 
 ### The MCP Solution
 
 MCP replaces these fragmented integrations with a single, open protocol. Think of it as the "USB standard" for AI-data connections - any MCP-compliant data source can serve context to any MCP-enabled AI client, and vice versa.
 
-## Industry Adoption: The New Standard for AI
+Think it as a very simple prompt, without needing to be copy pasting, contextualizing, "re-phrasing your idea, the MCP server will have a direct access to anything necessary and straight to the point over the context (It can be an API, database, dataset, connectors, etc...).
+
+With MCP server, the AI will be asked a prompt, and know exactly what it needs to query/search to therefore respond/build to your question, the days of pasting that 10.000 lines of .csv are over!
+
+## A new era in AI history: The Standard for AI
 
 The adoption of MCP has been remarkable. Major tech companies are rapidly integrating it:
 
