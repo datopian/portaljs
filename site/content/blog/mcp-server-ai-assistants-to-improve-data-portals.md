@@ -1,6 +1,6 @@
 ---
 title: 'MCP Server: A better way to connect AI assistants to data portals'
-description: 'How MCP Server bridges the gap between AI assistants and data portals, enabling seamless data discovery and interaction for ChatGPT, Claude, and other AI tools for better quality of life and time.'
+description: 'How an MCP server bridges AI assistants and data portals, enabling seamless, efficient data discovery for ChatGPT, Claude, and other AI tools.'
 created: 2025-09-17
 authors: ['Theo Bertol']
 filetype: 'blog'
@@ -21,9 +21,9 @@ Before diving into our MCP Data Portal implementation, let's understand what mak
 Traditional AI assistants are often overwhelmed by unnecessary, copy-pasted context (JSON, CSV, etc.). We end up pasting a lot of information before having a good conversation or solving the problem, burning a lot of tokens, and still not solving the problem because the signal is buried in noise.
 
 - How can I make this conversation more straight to the point?
-- Why does my AI chat keeps storing useless information?
+- Why does my AI chat keep storing useless information?
 - When did I ask for this?
-- Where is the context of this chat going?
+- Where is this chat's context going?
 
 All of these questions point to the core issue: managing context. How do we fix it?
 
@@ -31,11 +31,11 @@ All of these questions point to the core issue: managing context. How do we fix 
 
 MCP replaces these fragmented integrations with a single, open protocol. Think of it as the "USB standard" for AI-data connections - any MCP-compliant data source can serve context to any MCP-enabled AI client, and vice versa.
 
-Think it as a very simple prompt, without needing to be copy/pasting, contextualizing, re-phrasing your idea, the MCP server will have a direct access to anything necessary and straight to the point over the context (It can be an API, database, dataset, connectors, etc...).
+Think of it as simple: instead of copy/pasting, contextualizing, and rephrasing, an MCP server provides direct, permissioned access to the right sources (APIs, databases, datasets, connectors).
 
-With MCP server, the AI will be asked a prompt, and know exactly what it needs to query/search to therefore respond/build to your question, the days of pasting that 10.000 lines of .csv are over!
+With an MCP server, the assistant knows which tools to call to answer your question. No more pasting 10,000-line CSVs.
 
-### Why Connect Data Portal to AI Assistants?
+### Why Connect Data Portals to AI Assistants?
 
 Imagine being able to:
 
