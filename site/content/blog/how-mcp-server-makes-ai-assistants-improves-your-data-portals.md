@@ -16,7 +16,7 @@ Today, we're excited to introduce the **MCP Server for Data Portals**, a special
 
 ![MCP to LLM Connection](/static/img/blog/introducing-mcp-server-connect-ai-assistants-to-your-data-portals/mcp-llm.png)
 
-Before diving into our CKAN implementation, let's understand what makes MCP so revolutionary. Announced by Anthropic in November 2024, the Model Context Protocol is quickly becoming the universal standard for connecting AI assistants to data systems.
+Before diving into our MCP Data Portal implementation, let's understand what makes MCP so revolutionary. Announced by Anthropic in November 2024, the Model Context Protocol is quickly becoming the universal standard for connecting AI assistants to data systems.
 
 ### The Problem MCP Solves
 
@@ -57,8 +57,6 @@ This is exactly what the MCP Server enables for your data portal.
 
 ## How It Works: Technical Overview
 
-### Architecture
-
 The MCP Server acts as a bridge between MCP-compatible AI clients and data portal APIs. Here's the flow:
 
 1. **AI Assistant** sends a request through MCP protocol
@@ -66,17 +64,6 @@ The MCP Server acts as a bridge between MCP-compatible AI clients and data porta
 3. **Data Portal** returns data and metadata
 4. **Server processes and formats** the response for the AI
 5. **AI Assistant** receives structured data to provide intelligent responses
-
-
-## Real-World Use Cases
-
-### Examples in Action
-
-#### Searching for Datasets
-![MCP Dataset Search Example](/static/img/blog/introducing-mcp-server-connect-ai-assistants-to-your-data-portals/mcp-dataset-fetch.png)
-
-#### Creating Metadata
-![MCP Metadata Creation Example](/static/img/blog/introducing-mcp-server-connect-ai-assistants-to-your-data-portals/mcp-metadata-create.png)
 
 ### Government Open Data
 Government agencies can enable citizens and researchers to interact with public datasets using natural language. Instead of navigating complex data portals, users can simply ask: "What environmental data is available for my city?"
@@ -90,10 +77,6 @@ Organizations can connect their internal data portals to AI assistants, enabling
 ### Data Journalism
 Journalists can rapidly identify story-relevant datasets, understand their context, and explore connections between different data sources through conversational interfaces.
 
-## Getting Started: Your Journey to AI-Powered Data Discovery
-
-The MCP Server for data portals is designed to be easy to deploy and configure. Whether you're running a government open data portal, a research repository, or an enterprise data catalog, you can enable AI-powered discovery in minutes.
-
 ## The Future of AI-Powered Data Discovery
 
 The MCP Server for data portals represents more than just a technical integration - it's a glimpse into the future of how we'll interact with data. As MCP becomes the standard protocol for AI-data connections, we're moving toward a world where:
@@ -103,30 +86,8 @@ The MCP Server for data portals represents more than just a technical integratio
 - **Complex data relationships** are explained in natural language
 - **Data democratization** happens through familiar AI interfaces
 
-### What's Next?
-
-We're continuously improving the MCP Server with:
-- **Enhanced search capabilities** including full-text and semantic search
-- **Multi-portal federation** to query across multiple data sources
-- **Advanced analytics integration**
-- **Custom visualization generation** based on dataset characteristics
-- **Data quality assessment** and recommendations
-
-## Join the Movement
-
-The MCP Server for data portals is open source and ready for your contribution. Whether you're a data manager looking to modernize your portal, a developer interested in AI-data integration, or an organization ready to embrace the future of data discovery, we invite you to:
-
-- **Explore the possibilities** for your data portal
-
-
-### Resources
-- **GitHub Repository**: [github.com/datopian/ckan-mcp-server](https://github.com/datopian/ckan-mcp-server)
-
-
 ## Conclusion
 
 The Model Context Protocol is transforming how AI systems access and interact with data. The MCP Server for data portals makes this connection seamless, secure, and scalable.
 
 By bridging data portals with AI assistants, we're not just enabling new technical capabilities - we're fundamentally changing how people discover, understand, and work with data. The barriers between human curiosity and data insights are dissolving, replaced by natural, conversational interfaces that make data accessible to everyone.
-
----
