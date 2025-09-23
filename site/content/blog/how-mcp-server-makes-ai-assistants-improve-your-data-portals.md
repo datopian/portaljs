@@ -35,16 +35,6 @@ Think it as a very simple prompt, without needing to be copy/pasting, contextual
 
 With MCP server, the AI will be asked a prompt, and know exactly what it needs to query/search to therefore respond/build to your question, the days of pasting that 10.000 lines of .csv are over!
 
-## A new era in AI history: The Standard for AI
-
-The adoption of MCP has been remarkable. Major tech companies are rapidly integrating it:
-
-- **OpenAI** officially adopted MCP in March 2025, integrating it across ChatGPT, their Agents SDK, and Responses API
-- **Google DeepMind** announced MCP support in Gemini models, with CEO Demis Hassabis calling it "rapidly becoming an open standard for the AI agentic era"
-- **Microsoft** unveiled plans to make MCP a "foundational layer for secure, interoperable agentic computing" in Windows 11
-
-The MCP ecosystem is growing rapidly, with servers covering everything from GitHub and Slack to databases and systems.
-
 ### Why Connect Data Portal to AI Assistants?
 
 Imagine being able to:
