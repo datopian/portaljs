@@ -20,14 +20,14 @@ Before diving into our MCP Data Portal implementation, let's understand what mak
 
 ### The Problem MCP Solves
 
-Traditional AI assistants are "trapped behind an overwhelming amount of unnecessary context bloat of copy-paste .json, .csv, context" Where we needed to get a lot of information before having a good conversation/problem solved, normally just ending into a very big token usage and in the end, not solving the problem because the AI just had too much overflowing context.
+Traditional AI assistants are often overwhelmed by unnecessary, copy-pasted context (JSON, CSV, etc.). We end up pasting a lot of information before having a good conversation or solving the problem, burning a lot of tokens, and still not solving the problem because the signal is buried in noise.
 
-- How can i make this conversation more straight to the point?
-- Why does my AI Chat keeps useless information?
-- When did i ask for this?
+- How can I make this conversation more straight to the point?
+- Why does my AI chat keeps storing useless information?
+- When did I ask for this?
 - Where is the context of this chat going?
 
-All of those questions bring a core point into the current problem... Context of the conversation, how can we fix that?
+All of these questions point to the core issue: managing context. How do we fix it?
 
 ### The MCP Solution
 
