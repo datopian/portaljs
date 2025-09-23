@@ -1,5 +1,5 @@
 ---
-title: 'MCP Server: A better way to make AI Assistants to Your Data Portals'
+title: 'MCP Server: A better way to have AI Assistants to Your Data Portals'
 description: 'How MCP Server bridges the gap between AI assistants and data portals, enabling seamless data discovery and interaction for ChatGPT, Claude, and other AI tools for better quality of life and time.'
 created: 2025-09-17
 authors: ['Theo Bertol']
@@ -9,8 +9,6 @@ filetype: 'blog'
 ## Introduction
 
 The world of AI assistants is rapidly evolving, but there's been a persistent challenge: how do we connect these powerful tools to the vast repositories of data that organizations maintain? Enter the **Model Context Protocol (MCP)** - Anthropic's groundbreaking open standard that's revolutionizing how AI systems interact with data sources.
-
-Today, we're excited to introduce the **MCP Server for Data Portals**, a specialized implementation that bridges AI assistants like ChatGPT, Claude, and others directly to your data portals. This isn't just another integration - it's a fundamental shift in how we think about AI-powered data discovery and interaction.
 
 ## What is the Model Context Protocol?
 
@@ -33,7 +31,7 @@ All of these questions point to the core issue: managing context. How do we fix 
 
 MCP replaces these fragmented integrations with a single, open protocol. Think of it as the "USB standard" for AI-data connections - any MCP-compliant data source can serve context to any MCP-enabled AI client, and vice versa.
 
-Think it as a very simple prompt, without needing to be copy pasting, contextualizing, "re-phrasing your idea, the MCP server will have a direct access to anything necessary and straight to the point over the context (It can be an API, database, dataset, connectors, etc...).
+Think it as a very simple prompt, without needing to be copy/pasting, contextualizing, re-phrasing your idea, the MCP server will have a direct access to anything necessary and straight to the point over the context (It can be an API, database, dataset, connectors, etc...).
 
 With MCP server, the AI will be asked a prompt, and know exactly what it needs to query/search to therefore respond/build to your question, the days of pasting that 10.000 lines of .csv are over!
 
@@ -45,11 +43,9 @@ The adoption of MCP has been remarkable. Major tech companies are rapidly integr
 - **Google DeepMind** announced MCP support in Gemini models, with CEO Demis Hassabis calling it "rapidly becoming an open standard for the AI agentic era"
 - **Microsoft** unveiled plans to make MCP a "foundational layer for secure, interoperable agentic computing" in Windows 11
 
-The MCP ecosystem is growing rapidly, with servers covering everything from GitHub and Slack to databases and enterprise systems.
+The MCP ecosystem is growing rapidly, with servers covering everything from GitHub and Slack to databases and systems.
 
-## Introducing the MCP Server for Data Portals
-
-### Why Connect Your Data Portal to AI Assistants?
+### Why Connect Data Portal to AI Assistants?
 
 Imagine being able to:
 
@@ -59,9 +55,9 @@ Imagine being able to:
 - **Access metadata** and resources through conversational interfaces
 - **Integrate data discovery** into your existing AI workflows
 
-This is exactly what the MCP Server enables for your data portal.
+This is exactly what the MCP Server enables for data portals.
 
-## How It Works: Technical Overview
+## How It Works:
 
 The MCP Server acts as a bridge between MCP-compatible AI clients and data portal APIs. Here's the flow:
 
