@@ -43,6 +43,8 @@ export default function ButtonLink({
 
     // Track conversion if enabled
     if (trackConversion && siteConfig.analytics && typeof window.gtag === 'function') {
+      event.preventDefault(); // Prevent immediate navigation
+      
       try {
         const eventData: any = {
           action: 'get_started_click',
@@ -69,9 +71,27 @@ export default function ButtonLink({
           eventData.campaign_person = campaignPerson;
         }
 
-        gtag.event(eventData);
+        // Use event_callback to ensure navigation happens after tracking
+        window.gtag('event', eventData.action, {
+          event_category: eventData.category,
+          event_label: eventData.label,
+          value: eventData.value,
+          acquisition_source: eventData.acquisition_source,
+          campaign_person: eventData.campaign_person,
+          event_callback: () => {
+            window.location.href = href || 'https://cloud.portaljs.com/';
+          }
+        });
+
+        // Fallback timeout in case gtag callback doesn't fire
+        setTimeout(() => {
+          window.location.href = href || 'https://cloud.portaljs.com/';
+        }, 200);
+
       } catch (error) {
         console.warn('Failed to track conversion event:', error);
+        // Navigate anyway if tracking fails
+        window.location.href = href || 'https://cloud.portaljs.com/';
       }
     }
   };
