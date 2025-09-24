@@ -43,6 +43,48 @@ export default function ButtonLink({
 
     // Track conversion if enabled
     if (trackConversion && siteConfig.analytics && typeof window.gtag === 'function') {
+      // Don't intercept if event is already prevented, or if it's a modified/new-tab/download click
+      if (event.defaultPrevented || 
+          event.button !== 0 || // not left click
+          event.metaKey || event.ctrlKey || event.altKey || event.shiftKey || // modifier keys
+          event.currentTarget.target === '_blank' || // new tab
+          event.currentTarget.hasAttribute('download')) { // download
+        // Just track the event without preventing navigation
+        try {
+          const eventData: any = {
+            action: 'get_started_click',
+            category: 'Conversion',
+            label: 'CTA Button',
+            value: 1,
+          };
+
+          // Only add acquisition_source if it exists (cold email visitors)
+          const acquisitionSource = typeof window !== 'undefined' 
+            ? sessionStorage.getItem('acquisition_source')
+            : null;
+          
+          if (acquisitionSource) {
+            eventData.acquisition_source = acquisitionSource;
+          }
+
+          // Add campaign person if it exists (LinkedIn connect campaigns)
+          const campaignPerson = typeof window !== 'undefined' 
+            ? sessionStorage.getItem('campaign_person')
+            : null;
+          
+          if (campaignPerson) {
+            eventData.campaign_person = campaignPerson;
+          }
+
+          gtag.event(eventData);
+        } catch (error) {
+          console.warn('Failed to track conversion event:', error);
+        }
+        return; // Let the browser handle navigation normally
+      }
+
+      event.preventDefault(); // Only prevent for normal left clicks
+      
       try {
         const eventData: any = {
           action: 'get_started_click',
@@ -69,9 +111,27 @@ export default function ButtonLink({
           eventData.campaign_person = campaignPerson;
         }
 
-        gtag.event(eventData);
+        // Use event_callback to ensure navigation happens after tracking
+        window.gtag('event', eventData.action, {
+          event_category: eventData.category,
+          event_label: eventData.label,
+          value: eventData.value,
+          acquisition_source: eventData.acquisition_source,
+          campaign_person: eventData.campaign_person,
+          event_callback: () => {
+            window.location.href = href || 'https://cloud.portaljs.com/';
+          }
+        });
+
+        // Fallback timeout in case gtag callback doesn't fire
+        setTimeout(() => {
+          window.location.href = href || 'https://cloud.portaljs.com/';
+        }, 200);
+
       } catch (error) {
         console.warn('Failed to track conversion event:', error);
+        // Navigate anyway if tracking fails
+        window.location.href = href || 'https://cloud.portaljs.com/';
       }
     }
   };
