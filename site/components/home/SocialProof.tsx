@@ -13,6 +13,14 @@ export default function SocialProof() {
       width: 170,
     },
     {
+      name: 'Bank of England',
+      srcDark: '/static/img/social-proof/bank-of-england.svg',
+      srcLight: '/static/img/social-proof/bank-of-england.svg',
+      url: 'https://www.bankofengland.co.uk/',
+      style: 'grayscale dark:invert opacity-80',
+      width: 200,
+    },
+    {
       name: 'Transport Data Commons',
       srcDark: '/static/img/social-proof/TDC_logo.svg',
       srcLight: '/static/img/social-proof/TDC_logo.svg',
@@ -92,14 +100,6 @@ export default function SocialProof() {
       url: 'https://data.hounslow.gov.uk',
       style: 'grayscale  dark:invert-0 opacity-80',
       width: 200,
-    },
-    {
-      name: 'EITI',
-      srcDark: '/static/img/social-proof/EITI.webp',
-      srcLight: '/static/img/social-proof/EITI.webp',
-      url: 'https://eiti.portaljs.com',
-      style: 'grayscale dark:invert',
-      width: 120,
     },
   ]
 
