@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Transport Data Commons",
+    "quote": "This isn’t just a frontend — it’s a public infrastructure for collaboration on transport data.",
+    "url": "https://portal.transport-data.org/"
+  },
+  {
+    "name": "London Borough of Hounslow",
+    "quote": "With PortalJS Cloud, we no longer worry about infrastructure. We’ve cut costs and improved our platform’s usability for citizens and researchers alike.",
+    "url": "https://data.hounslow.gov.uk"
+  },
+  {
+    "name": "Public Health Data Service",
+    "quote": "We needed a simple way to bridge usability gaps without rebuilding infrastructure. PortalJS delivered exactly that."
+  }
+]
