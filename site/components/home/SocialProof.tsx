@@ -48,7 +48,7 @@ export default function SocialProof() {
       name: 'Sigma2',
       srcDark: '/static/img/social-proof/sigma2-light-transparent.png',
       srcLight: '/static/img/social-proof/sigma2-light-transparent.png',
-      url: 'https://www.sigma2.no/',
+      url: 'https://archive.sigma2.no/',
       style: 'grayscale ',
       width: 180,
     },
