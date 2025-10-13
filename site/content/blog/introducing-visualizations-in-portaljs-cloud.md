@@ -23,7 +23,7 @@ Visualizations bridge that gap by helping users:
 - Combine narrative and analysis into data-driven storytelling
 - Share interactive dashboards directly with stakeholders
 
-![Data to Insight](/static/img/blog/introducting-visualizations-in-portaljs-cloud/spreadsheet-to-viz.png)
+![Data to Insight](/static/img/blog/introducing-visualizations-in-portaljs-cloud/spreadsheet-to-viz.png)
 
 ## Tool-Agnostic by Design
 
@@ -49,7 +49,7 @@ This means your portal can now serve as both a catalog of datasets and a catalog
 
 For users who prefer a code-driven workflow, PortalJS offers an optional Observable Framework Data App Add-on integration.
 
-![Code to Insight](/static/img/blog/introducting-visualizations-in-portaljs-cloud/code-to-viz.png)
+![Code to Insight](/static/img/blog/introducing-visualizations-in-portaljs-cloud/code-to-viz.png)
 
 [Observable Framework](https://observablehq.com/framework/) is an open-source JavaScript framework for building interactive data applications, dashboards, and reports. It was created by the team behind ObservableHQ, with the goal of making it easier for developers and analysts to turn data into live, shareable, and interactive visualizations using standard web technologies.
 
@@ -57,7 +57,7 @@ Data apps powered by the Observable Framework are static sites that can be built
 
 The data app addon works similarly to the main data portal: once enabled on PortalJS Cloud, a dedicated GitHub repository and deployment will be created for your data app.
 
-<iframe src="https://drive.google.com/file/d/1Y6g89nMq3YjVGLXkaUP5VFQDxls6TZe-/preview" width="640" height="480" allow="autoplay"></iframe>
+<iframe src="https://drive.google.com/file/d/1Y6g89nMq3YjVGLXkaUP5VFQDxls6TZe-/preview" width="569" height="308" allow="autoplay; fullscreen"></iframe>
 
 The GitHub repository is created based on the [PortalJS Data App Starter template](https://github.com/datopian/portaljs-data-app-starter). You can then clone it locally for development and raise PRs to deploy changes to your data app, such as the creation of new dashboards or branding.
 
@@ -65,7 +65,7 @@ The GitHub repository is created based on the [PortalJS Data App Starter templat
 
 Once your dashboards and reports are deployed to the data app (or any other tool), you can then publish them in PortalJS Cloud by creating corresponding visualizations.
 
-<iframe src="https://drive.google.com/file/d/170GaJd8WK6_wEna2gR-dbgR-Z0krTVSt/preview" width="640" height="480" allow="autoplay"></iframe>
+<iframe src="https://drive.google.com/file/d/170GaJd8WK6_wEna2gR-dbgR-Z0krTVSt/preview" width="569" height="308" allow="autoplay; fullscreen"></iframe>
 
 ## Browsable and Searchable Like Datasets
 
@@ -73,7 +73,7 @@ Finally, users will be able to explore the visualizations published to your port
 
 Just like with datasets, users can search visualizations by organization, groups, and tags.
 
-<iframe src="https://drive.google.com/file/d/1zYJaz2HOCinVRFokrxooAWqQbvOpoPJ-/preview" width="640" height="480" allow="autoplay"></iframe>
+<iframe src="https://drive.google.com/file/d/1zYJaz2HOCinVRFokrxooAWqQbvOpoPJ-/preview" width="569" height="308" allow="autoplay; fullscreen"></iframe>
 
 On the visualization details page, the full metadata for the visualization can be found, along with a link to access it.
 
