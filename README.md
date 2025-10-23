@@ -1,7 +1,7 @@
 <p align="center">
   Bugs, issues and suggestions re PortalJS framework
   <br />
-  <br /><a href="https://discord.gg/xfFDMPU9dC"><img src="https://dcbadge.vercel.app/api/server/xfFDMPU9dC" /></a>
+  <br /><a href="https://discord.gg/krmj5HM6He"><img src="https://dcbadge.vercel.app/api/server/xfFDMPU9dC" /></a>
 </p>
 
 ## PortalJS framework
@@ -25,7 +25,7 @@ Head to the discussion forum: 👉 https://github.com/datopian/portaljs/discussi
 
 If you would prefer to get help via live chat check out our discord 👉
 
-[Discord](https://discord.gg/xfFDMPU9dC)
+[Discord](https://discord.gg/krmj5HM6He)
 
 ### Docs
 
