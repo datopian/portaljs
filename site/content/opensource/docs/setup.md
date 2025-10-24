@@ -7,7 +7,7 @@ description: 'Getting started guide and tutorial about data portal-building with
 
 Welcome to the PortalJS documentation!
 
-If you have questions about anything related to PortalJS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/datahub/discussions) or on [our chat channel on Discord](https://discord.com/invite/KrRzMKU).
+If you have questions about anything related to PortalJS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/datahub/discussions) or on [our chat channel on Discord](https://discord.gg/krmj5HM6He).
 
 ## Setup
 

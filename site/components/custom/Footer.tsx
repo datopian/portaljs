@@ -1,5 +1,6 @@
 import { HeartIcon } from '@heroicons/react/24/solid'
 import { NavbarTitle } from '../Nav'
+import { RiDiscordFill } from 'react-icons/ri'
 
 const navigation = {
   resources: [
@@ -80,6 +81,13 @@ const navigation = {
             clipRule="evenodd"
           />
         </svg>
+      ),
+    },
+    {
+      name: 'Discord',
+      href: 'https://discord.gg/krmj5HM6He', 
+      icon: (props) => (
+        <RiDiscordFill size={24} {...props}/>
       ),
     },
   ],
