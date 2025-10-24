@@ -1,9 +1,3 @@
-<p align="center">
-  Bugs, issues and suggestions re PortalJS framework
-  <br />
-  <br /><a href="https://discord.gg/krmj5HM6He"><img src="https://dcbadge.vercel.app/api/server/xfFDMPU9dC" /></a>
-</p>
-
 ## PortalJS framework
 
 This repo and issue tracker are for
