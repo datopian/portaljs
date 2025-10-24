@@ -1,6 +1,5 @@
 import { HeartIcon } from '@heroicons/react/24/solid'
 import { NavbarTitle } from '../Nav'
-import DiscordIcon from '../icons/DiscordIcon'
 import { RiDiscordFill } from 'react-icons/ri'
 
 const navigation = {
