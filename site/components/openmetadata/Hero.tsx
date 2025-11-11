@@ -17,7 +17,8 @@ export default function Hero() {
               OpenMetadata & PortalJS
             </h1>
             <p className="mt-8 text-xl tracking-tight text-slate-400">
-              Transform OpenMetadata's technical interface into user-friendly, customized data catalogs for business users.
+              Transform OpenMetadata's technical interface into user-friendly,
+              customized data catalogs for business users.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
@@ -28,6 +29,33 @@ export default function Hero() {
               >
                 Book a Free Consultation
               </ButtonLink>
+              <ButtonLink
+                href="https://demo.portaljs.com/"
+                title="PortalJS Live Demo"
+                className="text-sm"
+                style="secondary"
+                target="_blank"
+              >
+                Live Demo
+              </ButtonLink>
+            </div>
+            <div className="flex flex-col items-center mt-8">
+              <video
+                controls
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                width="800"
+                className="rounded-2xl shadow-md"
+              >
+                <source
+                  src="https://qvnmpnsjkalzxdo4.public.blob.vercel-storage.com/portaljs.com/omd-template-demo.mp4"
+                  type="video/mp4"
+                />
+                Your browser does not support the video tag.
+              </video>
             </div>
 
             <div className="mt-16 mb-12 flex flex-col md:flex-row items-center justify-center gap-8">
@@ -35,7 +63,9 @@ export default function Hero() {
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                   Without PortalJS
                 </div>
-                <h3 className="text-white text-lg mb-4">Technical OpenMetadata UI</h3>
+                <h3 className="text-white text-lg mb-4">
+                  Technical OpenMetadata UI
+                </h3>
                 <ul className="text-left text-slate-300 text-sm space-y-2">
                   <li className="flex items-start">
                     <span className="mr-2">❌</span>
@@ -56,7 +86,9 @@ export default function Hero() {
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                   With PortalJS
                 </div>
-                <h3 className="text-slate-800 dark:text-white text-lg mb-4">Business-Friendly UI</h3>
+                <h3 className="text-slate-800 dark:text-white text-lg mb-4">
+                  Business-Friendly UI
+                </h3>
                 <ul className="text-left text-slate-700 dark:text-slate-300 text-sm space-y-2">
                   <li className="flex items-start">
                     <span className="mr-2">✅</span>
@@ -73,7 +105,6 @@ export default function Hero() {
                 </ul>
               </div>
             </div>
-
           </div>
         </div>
       </div>
