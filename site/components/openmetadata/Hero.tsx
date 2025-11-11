@@ -1,9 +1,15 @@
-import React from 'react';
-import ButtonLink from '../ButtonLink';
-import { useTheme } from 'next-themes';
+import React from 'react'
+import ButtonLink from '../ButtonLink'
 
-export default function Hero() {
-  const { theme } = useTheme();
+type HeroProps = {
+  productName: string
+  description?: string
+}
+
+export default function Hero({ productName, description }: HeroProps) {
+  const heroDescription =
+    description ??
+    `Transform ${productName}'s technical interface into user-friendly, customized data catalogs for business users.`
 
   return (
     <div
@@ -14,11 +20,10 @@ export default function Hero() {
         <div className="mx-auto max-w-2xl px-4 lg:max-w-8xl lg:px-8 xl:px-12">
           <div className="relative mb-10 lg:mb-0 text-center">
             <h1 className="inline bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 bg-clip-text text-5xl tracking-tight text-transparent">
-              OpenMetadata & PortalJS
+              {productName} & PortalJS
             </h1>
             <p className="mt-8 text-xl tracking-tight text-slate-400">
-              Transform OpenMetadata's technical interface into user-friendly,
-              customized data catalogs for business users.
+              {heroDescription}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
@@ -64,7 +69,7 @@ export default function Hero() {
                   Without PortalJS
                 </div>
                 <h3 className="text-white text-lg mb-4">
-                  Technical OpenMetadata UI
+                  Technical {productName} UI
                 </h3>
                 <ul className="text-left text-slate-300 text-sm space-y-2">
                   <li className="flex items-start">
