@@ -38,6 +38,14 @@ const config = {
           href: '/openmetadata',
         },
         {
+          name: 'Microsoft Purview',
+          href: '/purview',
+        },
+        {
+          name: 'Datahub',
+          href: '/datahub',
+        },
+        {
           name: 'Git',
           href: '/git',
         },

@@ -2,27 +2,31 @@ import { Player } from '@lottiefiles/react-lottie-player'
 import { H2, H3 } from '../custom/header'
 import { useTheme } from 'next-themes'
 
-export const CommonUseCases = () => {
+type CommonUseCasesProps = {
+  productName: string
+}
+
+export const CommonUseCases = ({ productName }: CommonUseCasesProps) => {
   const { theme } = useTheme()
   const features = [
     {
       title: 'Business-Friendly Data Catalogs',
       description:
-        'Transform OpenMetadata\'s technical interface into intuitive experiences for non-technical users. Create simplified views of complex metadata that business teams can easily navigate and understand.',
+        `Transform ${productName}'s technical interface into intuitive experiences for non-technical users. Create simplified views of complex metadata that business teams can easily navigate and understand.`,
       icon: `/static/icons/${theme}/data-portal.json`,
       style: 'dark:-rotate-[4deg]',
     },
     {
       title: 'Multi-Audience Portals',
       description:
-        'Deploy separate interfaces for different user groups—detailed technical portals for data engineers, simplified asset browsers for analysts, and executive dashboards for leadership—all from a single OpenMetadata instance.',
+        `Deploy separate interfaces for different user groups—detailed technical portals for data engineers, simplified asset browsers for analysts, and executive dashboards for leadership—all from a single ${productName} instance.`,
       icon: `/static/icons/${theme}/diagram.json`,
       style: 'dark:-rotate-[4deg]',
     },
     {
       title: 'Custom Data Experiences',
       description:
-        'Overcome OpenMetadata\'s UI customization limitations by building completely bespoke interfaces with your branding, terminology, and user flows while leveraging all the powerful metadata management capabilities in the background.',
+        `Overcome ${productName}'s UI customization limitations by building completely bespoke interfaces with your branding, terminology, and user flows while leveraging all the powerful metadata management capabilities in the background.`,
       icon: `/static/icons/${theme}/seminar.json`,
       style: 'dark:-rotate-[4deg]',
     },

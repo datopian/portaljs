@@ -2,10 +2,14 @@ import { Player } from '@lottiefiles/react-lottie-player'
 import { H2, H3 } from '../custom/header'
 import { useTheme } from 'next-themes'
 
-const features = [
+type KeyFeaturesProps = {
+  productName: string
+}
+
+const createFeatures = (productName: string) => [
   {
     title: 'Business-Friendly Interfaces',
-    description: 'Create simplified interfaces that hide OpenMetadata\'s technical complexity, making data assets accessible to non-technical users.',
+    description: `Create simplified interfaces that hide ${productName}'s technical complexity, making data assets accessible to non-technical users.`,
     icon: 'data-catalog',
     iconStyle: 'dark:-rotate-[4deg]',
     style: 'max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem] w-full',
@@ -21,7 +25,7 @@ const features = [
   },
   {
     title: 'Complete UI Freedom',
-    description: 'Overcome OpenMetadata\'s frontend customization limitations with unlimited design flexibility and branding options.',
+    description: `Overcome ${productName}'s frontend customization limitations with unlimited design flexibility and branding options.`,
     icon: 'browser',
     iconStyle: 'dark:-rotate-[4deg]',
     style: '',
@@ -45,7 +49,7 @@ const features = [
   },
   {
     title: 'Integration Hub',
-    description: 'Connect OpenMetadata with documentation, BI dashboards, and business glossaries in one unified experience.',
+    description: `Connect ${productName} with documentation, BI dashboards, and business glossaries in one unified experience.`,
     icon: 'data-lake',
     iconStyle: 'dark:-rotate-[2deg]',
     style: '',
@@ -53,7 +57,7 @@ const features = [
   },
   {
     title: 'No-Code Implementation',
-    description: 'Deploy custom data catalog frontends without deep OpenMetadata technical expertise using pre-built components.',
+    description: `Deploy custom data catalog frontends without deep ${productName} technical expertise using pre-built components.`,
     icon: 'click',
     iconStyle: 'dark:-rotate-[4deg]',
     style: 'max-lg:rounded-b-[2rem] lg:rounded-br-[2rem] w-full',
@@ -61,9 +65,10 @@ const features = [
   },
 ]
 
-export const KeyFeatures = () => {
-
+export const KeyFeatures = ({ productName }: KeyFeaturesProps) => {
   const { theme } = useTheme()
+  const features = createFeatures(productName)
+
   return (
     <div className="py-24">
       <div className="mx-auto">
@@ -72,7 +77,7 @@ export const KeyFeatures = () => {
             Key Features
           </H2>
           <H3 className="text-lg leading-8 opacity-75 text-center">
-            Solve OpenMetadata's user experience challenges with PortalJS—transform technical interfaces into business-friendly data portals
+            Solve {productName}'s user experience challenges with PortalJS—transform technical interfaces into business-friendly data portals
           </H3>
         </div>
         <div className="mt-10 grid grid-cols-1 gap-4 sm:mt-16 lg:grid-cols-6 lg:grid-rows-2">
