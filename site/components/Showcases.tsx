@@ -4,7 +4,7 @@ import ShowcasesItem from './ShowcasesItem'
 export const dataPortals = [
   {
     title: 'City of Ann Arbor',
-    subtitle: 'Municipal Open Data Portal',
+    subtitle: 'Municipal Data Portal',
     href: 'https://data.a2gov.org/',
     image: '/static/img/showcases/ann-arbor.webp',
     description:
@@ -12,7 +12,7 @@ export const dataPortals = [
   },
   {
     title: 'Open Data Nepal',
-    subtitle: 'National Open Data Hub',
+    subtitle: 'National Data Portal',
     href: 'https://opendatanepal.com/',
     image: '/static/img/showcases/open-data-nepal.webp',
     description:
@@ -20,7 +20,7 @@ export const dataPortals = [
   },
   {
     title: 'Open Data Bhutan',
-    subtitle: 'Government Data Portal',
+    subtitle: 'National Data Portal',
     href: 'https://data.gov.bt/',
     image: '/static/img/showcases/open-data-bhutan.webp',
     description:
@@ -28,7 +28,7 @@ export const dataPortals = [
   },
   {
     title: 'Lincolnshire County Council',
-    subtitle: 'Local Government Data Portal',
+    subtitle: 'Municipal Data Portal',
     href: 'https://data.lincolnshire.gov.uk/',
     image: '/static/img/showcases/lincolnshire-open-data.webp',
     description:
@@ -77,7 +77,7 @@ export const dataPortals = [
   },
   {
     title: 'Open Data Northern Ireland',
-    subtitle: 'Government Data Portal',
+    subtitle: 'National Data Portal',
     href: 'https://www.opendatani.gov.uk/',
     image: '/static/img/showcases/odni.webp',
     description:
@@ -85,7 +85,7 @@ export const dataPortals = [
   },
   {
     title: 'Marcus Institute',
-    subtitle: 'Research Data Portal',
+    subtitle: 'Research Data Repository',
     href: 'https://data.hsl.harvard.edu/',
     image: '/static/img/showcases/marcus-havard.webp',
     description:
@@ -93,7 +93,7 @@ export const dataPortals = [
   },
   {
     title: 'UAE Open Data Portal',
-    subtitle: 'Government Data Portal',
+    subtitle: 'National Data Portal',
     href: 'https://opendata.fcsc.gov.ae/',
     image: '/static/img/showcases/uae.webp',
     description:
