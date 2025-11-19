@@ -3,6 +3,46 @@ import ShowcasesItem from './ShowcasesItem'
 
 export const dataPortals = [
   {
+    title: 'City of Ann Arbor',
+    subtitle: 'Municipal Open Data Portal',
+    href: 'https://data.a2gov.org/',
+    image: '/static/img/showcases/ann-arbor.webp',
+    description:
+      'Shares municipal datasets and dashboards focused on sustainability, infrastructure, and civic transparency.',
+  },
+  {
+    title: 'Open Data Nepal',
+    subtitle: 'National Open Data Hub',
+    href: 'https://opendatanepal.com/',
+    image: '/static/img/showcases/open-data-nepal.webp',
+    description:
+      'Aggregates public datasets and research resources that highlight development indicators across Nepal.',
+  },
+  {
+    title: 'Open Data Bhutan',
+    subtitle: 'Government Data Portal',
+    href: 'https://data.gov.bt/',
+    image: '/static/img/showcases/open-data-bhutan.webp',
+    description:
+      'Publishes official statistics and administrative datasets from agencies in Bhutan.',
+  },
+  {
+    title: 'Lincolnshire County Council',
+    subtitle: 'Local Government Data Portal',
+    href: 'https://data.lincolnshire.gov.uk/',
+    image: '/static/img/showcases/lincolnshire-open-data.webp',
+    description:
+      'Provides location-based services data, community statistics, and council transparency reports.',
+  },
+  {
+    title: 'NIRD Research Data Archive',
+    subtitle: 'Research Data Repository',
+    href: 'https://archive.sigma2.no/',
+    image: '/static/img/showcases/nird-sigma2.webp',
+    description:
+      'Hosts curated datasets from Norwegian research projects with controlled access workflows.',
+  },
+  {
     title: 'Transport Data Commons',
     subtitle: 'A Global Transport Hub - Building a shared, open data infrastructure for 30+ transport organizations.',
     href: 'https://portal.transport-data.org/',
