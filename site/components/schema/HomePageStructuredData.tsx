@@ -1,5 +1,5 @@
 import { BreadcrumbJsonLd, FAQPageJsonLd, LogoJsonLd, NextSeo, WebPageJsonLd } from "next-seo";
-import { homeFaqQuestions } from '@/pages/index';
+import { homeFaqQuestions } from '@/lib/homeFaqQuestions';
 
 export function HomePageStructuredData() {
   function markdownToPlainText(md: string) {
