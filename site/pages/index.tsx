@@ -12,13 +12,13 @@ export default function Homepage() {
     <Layout isHomePage={true}>
       <HomePageStructuredData />
       <div className="flex justify-center">
-        <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
+        <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
           <Hero />
-          <SocialProof />
-          <KeyFeatures />
-          <ShowcaseHighlight />
         </div>
       </div>
+      <SocialProof />
+      <KeyFeatures />
+      <ShowcaseHighlight />
       <Schedule />
       <div className="flex justify-center w-full">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">

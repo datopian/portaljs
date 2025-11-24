@@ -103,35 +103,38 @@ export default function SocialProof() {
     },
   ]
 
-  const { theme, setTheme } = useTheme()
+  const { theme } = useTheme()
   return (
-    <div className="text-center max-w-full mx-auto py-24 px-4 sm:px-6 lg:px-8 w-full ">
-      <h2 className="text-base font-semibold text-theme-orange uppercase tracking-wide opacity-75">
-        Trusted by 100+ Governments, Cities & Institutions
-      </h2>
-      <div className="max-w-8xl flex justify-center mt-5" tabIndex={0}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-center items-center gap-x-4 gap-y-5 w-full mt-6">
+    <section className="py-20 bg-slate-50 dark:bg-slate-900/40 w-full">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-12">
+        <div className="flex flex-col gap-4">
+          <p className="text-sm font-semibold uppercase tracking-widest text-blue-500">
+            Trusted by data leaders worldwide
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+            Leading governments, enterprises, and research institutions trust PortalJS
+          </h2>
+        </div>
+        <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
           {logos.map((logo, index) => (
             <Link
-              className="flex items-center justify-center w-full  h-full max-h-24 p-2 opacity-100 opacity-75 hover:opacity-100 transition-all duration-300 "
+              className="flex items-center justify-center p-4 opacity-75 transition hover:-translate-y-0.5 hover:opacity-100"
               key={logo.srcDark + index}
               title={logo.name}
               href={logo.url}
             >
               <Image
-                className={`
-
-                   h-auto ${logo.style}`}
+                className={`h-auto ${logo.style}`}
                 src={theme === 'light' ? logo.srcLight : logo.srcDark}
                 alt={`${logo.name} Logo`}
                 title={logo.name}
-                height={100}
+                height={70}
                 width={logo.width}
               />
             </Link>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   )
 }
