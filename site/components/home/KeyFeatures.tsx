@@ -1,6 +1,8 @@
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { useTheme } from 'next-themes'
-import { Player } from '@lottiefiles/react-lottie-player'
+
+const Player = dynamic(() => import('./LottiePlayer'), { ssr: false })
 
 const features = [
   {
@@ -42,7 +44,8 @@ const features = [
 ] as const
 
 export function KeyFeatures() {
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
+  const currentTheme = resolvedTheme ?? 'light'
 
   return (
     <section className="py-24 bg-white dark:bg-slate-950">
@@ -71,7 +74,7 @@ export function KeyFeatures() {
                   <Player
                     autoplay
                     loop
-                    src={`/static/icons/${theme}/${feature.icon}.json`}
+                    src={`/static/icons/${currentTheme}/${feature.icon}.json`}
                     className="h-6 w-6"
                   />
                 </span>

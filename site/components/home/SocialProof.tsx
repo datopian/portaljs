@@ -2,16 +2,15 @@ import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default function SocialProof() {
-  const logos = [
-    {
-      name: 'OECD',
-      srcDark: '/static/img/social-proof/OECD-grey.png',
-      srcLight: '/static/img/social-proof/OECD-light.png',
-      url: 'https://www.oecd.org/',
-      style: 'grayscale opacity-75',
-      width: 170,
-    },
+const logos = [
+  {
+    name: 'OECD',
+    srcDark: '/static/img/social-proof/OECD-grey.png',
+    srcLight: '/static/img/social-proof/OECD-light.png',
+    url: 'https://www.oecd.org/',
+    style: 'grayscale opacity-75',
+    width: 170,
+  },
     {
       name: 'Bank of England',
       srcDark: '/static/img/social-proof/bank-of-england.svg',
@@ -93,17 +92,19 @@ export default function SocialProof() {
       style: 'grayscale',
       width: 180,
     },
-    {
-      name: 'Hounslow',
-      srcDark: '/static/img/social-proof/hounslow.svg',
-      srcLight: '/static/img/social-proof/hounslow-light.svg',
-      url: 'https://data.hounslow.gov.uk',
-      style: 'grayscale  dark:invert-0 opacity-80',
-      width: 200,
-    },
-  ]
+  {
+    name: 'Hounslow',
+    srcDark: '/static/img/social-proof/hounslow.svg',
+    srcLight: '/static/img/social-proof/hounslow-light.svg',
+    url: 'https://data.hounslow.gov.uk',
+    style: 'grayscale  dark:invert-0 opacity-80',
+    width: 200,
+  },
+] as const
 
-  const { theme } = useTheme()
+export default function SocialProof() {
+  const { resolvedTheme } = useTheme()
+  const currentTheme = resolvedTheme ?? 'light'
   return (
     <section className="py-20 bg-slate-50 dark:bg-slate-900/40 w-full">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-12">
@@ -125,7 +126,7 @@ export default function SocialProof() {
             >
               <Image
                 className={`h-auto ${logo.style}`}
-                src={theme === 'light' ? logo.srcLight : logo.srcDark}
+                src={currentTheme === 'light' ? logo.srcLight : logo.srcDark}
                 alt={`${logo.name} Logo`}
                 title={logo.name}
                 height={70}

@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useTheme } from 'next-themes'
-import { Player } from '@lottiefiles/react-lottie-player'
+
+const Player = dynamic(() => import('./LottiePlayer'), { ssr: false })
 
 const useCases = [
   {
@@ -56,7 +58,8 @@ const useCases = [
 export default function UseCases() {
   const [activeCase, setActiveCase] = useState(useCases[0].id)
   const current = useCases.find((item) => item.id === activeCase) ?? useCases[0]
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
+  const currentTheme = resolvedTheme ?? 'light'
 
   return (
     <section id="solutions" className="py-24 bg-white dark:bg-slate-950">
@@ -88,7 +91,7 @@ export default function UseCases() {
                 <Player
                   autoplay
                   loop
-                  src={`/static/icons/${theme}/${useCase.icon}.json`}
+                  src={`/static/icons/${currentTheme}/${useCase.icon}.json`}
                   className="h-6 w-6"
                 />
                 {useCase.title}
@@ -101,7 +104,7 @@ export default function UseCases() {
             <Player
               autoplay
               loop
-              src={`/static/icons/${theme}/${current.icon}.json`}
+              src={`/static/icons/${currentTheme}/${current.icon}.json`}
               className="h-7 w-7"
             />
           </div>
