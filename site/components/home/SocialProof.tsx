@@ -5,8 +5,8 @@ import Link from 'next/link'
 const logos = [
   {
     name: 'OECD',
-    srcDark: '/static/img/social-proof/OECD-grey.png',
-    srcLight: '/static/img/social-proof/OECD-light.png',
+    srcDark: '/static/img/social-proof/OECD-light.png',
+    srcLight: '/static/img/social-proof/OECD-grey.png',
     url: 'https://www.oecd.org/',
     style: 'grayscale opacity-75',
     width: 170,
@@ -45,8 +45,8 @@ const logos = [
     },
     {
       name: 'IDPO (University of Sydney)',
-      srcDark: '/static/img/social-proof/UNIOFSY.png',
-      srcLight: '/static/img/social-proof/usyd-dark.svg',
+      srcDark: '/static/img/social-proof/usyd-dark.svg',
+      srcLight: '/static/img/social-proof/UNIOFSY.png',
       url: 'https://www.idpo.org.au',
       style: '',
       width: 115,
@@ -71,7 +71,7 @@ const logos = [
       name: 'Marcus Institute',
       srcDark:
         '/static/img/social-proof/Marcus_Institute_HMS_vertical-grey-transparent.png',
-      srcLight: '/static/img/social-proof/Marcus_Institute_HMS-light.png',
+      srcLight: '/static/img/social-proof/Marcus_Institute_HMS_vertical-grey-transparent.png',
       url: 'https://data.hsl.harvard.edu/',
       style: 'grayscale',
       width: 200,
@@ -94,8 +94,8 @@ const logos = [
     },
   {
     name: 'Hounslow',
-    srcDark: '/static/img/social-proof/hounslow.svg',
-    srcLight: '/static/img/social-proof/hounslow-light.svg',
+    srcDark: '/static/img/social-proof/hounslow-light.svg',
+    srcLight: '/static/img/social-proof/hounslow.svg',
     url: 'https://data.hounslow.gov.uk',
     style: 'grayscale  dark:invert-0 opacity-80',
     width: 200,
