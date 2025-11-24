@@ -1,82 +1,93 @@
-import { Player } from '@lottiefiles/react-lottie-player'
-import { H2 } from '../custom/header'
+import Link from 'next/link'
 import { useTheme } from 'next-themes'
+import { Player } from '@lottiefiles/react-lottie-player'
 
-export const KeyFeatures = () => {
+const features = [
+  {
+    title: 'Unified sites',
+    description:
+      'Blend datasets from data backend with CMS content to ship one cohesive experience.',
+    icon: 'network',
+  },
+  {
+    title: 'Developer friendly',
+    description:
+      'Next.js + Tailwind foundation, fast local dev, and unlimited customization via React.',
+    icon: 'html',
+  },
+  {
+    title: 'Batteries included',
+    description:
+      'Catalog search, dataset pages, tables, charts, blogs, and dashboards ready to go.',
+    icon: 'layers',
+  },
+  {
+    title: 'Easy to brand',
+    description:
+      'Install themes, override Tailwind tokens, and create custom routes that match your identity.',
+    icon: 'paint-roller',
+  },
+  {
+    title: 'Extensible',
+    description:
+      'Drop in your own components or integrate third-party widgets without fighting the framework.',
+    icon: 'expand',
+  },
+  {
+    title: 'Enterprise ready',
+    description:
+      'Optional modules for SSO, RBAC, quality workflows, and API management keep orgs compliant.',
+    icon: 'padlock',
+  },
+] as const
+
+export function KeyFeatures() {
   const { theme } = useTheme()
-  const features = [
-    {
-      title: 'Unified sites',
-      description:
-        'Present data and content in one seamless site, pulling datasets from a DMS (eg, CKAN or OpenMetadata) and content from a CMS (eg, WordPress or other).',
-      icon: `/static/icons/${theme}/network.json`,
-      style: 'dark:-rotate-[4deg]',
-    },
-    {
-      title: 'Developer friendly',
-      description:
-        'Built with familiar frontend tech (Next.js and Tailwind CSS) with great local dev tooling.',
-      icon: `/static/icons/${theme}/html.json`,
-      style: 'dark:-rotate-[3deg]',
-    },
-    {
-      title: 'Batteries included',
-      description:
-        'Ready-made portal components out of the box: catalog search, dataset pages, previews (tables, charts, maps), blogs, and more.',
-      icon: `/static/icons/${theme}/layers.json`,
-      style: 'dark:-rotate-[2deg]',
-    },
-    {
-      title: 'Easy to theme & customize',
-      description:
-        'Installable themes, standard CSS/React tooling, quick route creation, and support for custom branding.',
-      icon: `/static/icons/${theme}/paint-roller.json`,
-      style: 'dark:-rotate-[4deg]',
-    },
-    {
-      title: 'Extensible',
-      description:
-        'Extend with your own components, or import from the wider ecosystem.',
-      icon: `/static/icons/${theme}/expand.json`,
-      style: 'dark:-rotate-[3deg]',
-    },
-    {
-      title: 'Enterprise ready',
-      description:
-        'Optional modules for authentication/SSO, role-based access control, data quality, and API management.',
-      icon: `/static/icons/${theme}/padlock.json`,
-      style: 'dark:-rotate-[2deg]',
-    },
-  ]
 
   return (
-    <div className="py-24">
-      <div className="">
-        <H2 className="text-center">Features</H2>
-        <div className="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-12 lg:grid-cols-3 lg:gap-x-6">
+    <section className="py-24 bg-white dark:bg-slate-950">
+      <div className="max-w-8xl mx-auto px-4 sm:px-8 xl:px-12">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-widest text-blue-500">
+              Why teams choose PortalJS
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+              Modern features for real-world data portals
+            </h2>
+            <p className="mt-4 text-base text-slate-600 dark:text-slate-300">
+              Build, launch, and scale data portals without reinventing the stack. PortalJS pairs a rich component library with a developer-first workflow.
+            </p>
+          </div>
+        </div>
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="relative flex flex-col rounded-xl dark:bg-slate-900 dark:hover:bg-slate-800 hover:bg-slate-100 transition-all duration-300 ring-1 ring-slate-200 dark:ring-slate-800 p-7 rounded-lg shadow-lg overflow-hidden"
+              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
             >
-              <div className="flex-shrink-0 w-full flex items-start -ml-2">
-                <Player
-                  autoplay
-                  loop
-                  src={feature.icon}
-                  className={`w-14 h-14 ${feature.style}`}
-                />
-              </div>
-              <div className="pt-4">
-                <h3 className="text-lg font-medium ">{feature.title}</h3>
-                <p className="mt-4 text-base ">
-                  {feature.description}
-                </p>
+              <div className="flex flex-col gap-4 p-5">
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-300">
+                  <Player
+                    autoplay
+                    loop
+                    src={`/static/icons/${theme}/${feature.icon}.json`}
+                    className="h-6 w-6"
+                  />
+                </span>
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                    {feature.description}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   )
 }
