@@ -4,6 +4,7 @@ import Schedule from '@/components/home/Schedule'
 import Layout from '@/components/Layout'
 import { KeyFeatures } from '@/components/home/KeyFeatures'
 import { ShowcaseHighlight } from '@/components/home/ShowcaseHighlight'
+import UseCases from '@/components/home/UseCases'
 import FAQ from '@/components/home/FAQ'
 import { HomePageStructuredData } from '@/components/schema/HomePageStructuredData'
 
@@ -18,6 +19,7 @@ export default function Homepage() {
       </div>
       <SocialProof />
       <KeyFeatures />
+      <UseCases />
       <ShowcaseHighlight />
       <Schedule />
       <div className="flex justify-center w-full">
