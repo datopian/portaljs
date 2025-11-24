@@ -59,7 +59,7 @@ export default function UseCases() {
   const { theme } = useTheme()
 
   return (
-    <section className="py-24 bg-white dark:bg-slate-950">
+    <section id="solutions" className="py-24 bg-white dark:bg-slate-950">
       <div className="max-w-8xl mx-auto px-4 sm:px-8 xl:px-12">
         <div className="flex flex-col gap-4">
           <p className="text-sm font-semibold uppercase tracking-widest text-blue-500">
