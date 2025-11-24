@@ -27,6 +27,10 @@ const config = {
       ],
     },
     {
+      name: 'Solutions',
+      href: '/#solutions',
+    },
+    {
       name: 'Integrations',
       subItems: [
         {

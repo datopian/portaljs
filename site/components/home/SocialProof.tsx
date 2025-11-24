@@ -2,16 +2,15 @@ import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default function SocialProof() {
-  const logos = [
-    {
-      name: 'OECD',
-      srcDark: '/static/img/social-proof/OECD-grey.png',
-      srcLight: '/static/img/social-proof/OECD-light.png',
-      url: 'https://www.oecd.org/',
-      style: 'grayscale opacity-75',
-      width: 170,
-    },
+const logos = [
+  {
+    name: 'OECD',
+    srcDark: '/static/img/social-proof/OECD-light.png',
+    srcLight: '/static/img/social-proof/OECD-grey.png',
+    url: 'https://www.oecd.org/',
+    style: 'grayscale opacity-75',
+    width: 170,
+  },
     {
       name: 'Bank of England',
       srcDark: '/static/img/social-proof/bank-of-england.svg',
@@ -46,8 +45,8 @@ export default function SocialProof() {
     },
     {
       name: 'IDPO (University of Sydney)',
-      srcDark: '/static/img/social-proof/UNIOFSY.png',
-      srcLight: '/static/img/social-proof/usyd-dark.svg',
+      srcDark: '/static/img/social-proof/usyd-dark.svg',
+      srcLight: '/static/img/social-proof/UNIOFSY.png',
       url: 'https://www.idpo.org.au',
       style: '',
       width: 115,
@@ -72,7 +71,7 @@ export default function SocialProof() {
       name: 'Marcus Institute',
       srcDark:
         '/static/img/social-proof/Marcus_Institute_HMS_vertical-grey-transparent.png',
-      srcLight: '/static/img/social-proof/Marcus_Institute_HMS-light.png',
+      srcLight: '/static/img/social-proof/Marcus_Institute_HMS_vertical-grey-transparent.png',
       url: 'https://data.hsl.harvard.edu/',
       style: 'grayscale',
       width: 200,
@@ -93,45 +92,50 @@ export default function SocialProof() {
       style: 'grayscale',
       width: 180,
     },
-    {
-      name: 'Hounslow',
-      srcDark: '/static/img/social-proof/hounslow.svg',
-      srcLight: '/static/img/social-proof/hounslow-light.svg',
-      url: 'https://data.hounslow.gov.uk',
-      style: 'grayscale  dark:invert-0 opacity-80',
-      width: 200,
-    },
-  ]
+  {
+    name: 'Hounslow',
+    srcDark: '/static/img/social-proof/hounslow-light.svg',
+    srcLight: '/static/img/social-proof/hounslow.svg',
+    url: 'https://data.hounslow.gov.uk',
+    style: 'grayscale  dark:invert-0 opacity-80',
+    width: 200,
+  },
+] as const
 
-  const { theme, setTheme } = useTheme()
+export default function SocialProof() {
+  const { resolvedTheme } = useTheme()
+  const currentTheme = resolvedTheme ?? 'light'
   return (
-    <div className="text-center max-w-full mx-auto py-24 px-4 sm:px-6 lg:px-8 w-full ">
-      <h2 className="text-base font-semibold text-theme-orange uppercase tracking-wide opacity-75">
-        Trusted by 100+ Governments, Cities & Institutions
-      </h2>
-      <div className="max-w-8xl flex justify-center mt-5" tabIndex={0}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-center items-center gap-x-4 gap-y-5 w-full mt-6">
+    <section className="py-20 bg-slate-50 dark:bg-slate-900/40 w-full">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-12">
+        <div className="flex flex-col gap-4">
+          <p className="text-sm font-semibold uppercase tracking-widest text-blue-500">
+            Trusted by data leaders worldwide
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+            Leading governments, enterprises, and research institutions trust PortalJS
+          </h2>
+        </div>
+        <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
           {logos.map((logo, index) => (
             <Link
-              className="flex items-center justify-center w-full  h-full max-h-24 p-2 opacity-100 opacity-75 hover:opacity-100 transition-all duration-300 "
+              className="flex items-center justify-center p-4 opacity-75 transition hover:-translate-y-0.5 hover:opacity-100"
               key={logo.srcDark + index}
               title={logo.name}
               href={logo.url}
             >
               <Image
-                className={`
-
-                   h-auto ${logo.style}`}
-                src={theme === 'light' ? logo.srcLight : logo.srcDark}
+                className={`h-auto ${logo.style}`}
+                src={currentTheme === 'light' ? logo.srcLight : logo.srcDark}
                 alt={`${logo.name} Logo`}
                 title={logo.name}
-                height={100}
+                height={70}
                 width={logo.width}
               />
             </Link>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   )
 }

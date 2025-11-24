@@ -2,7 +2,7 @@ import { Disclosure } from '@headlessui/react'
 import ReactMarkdown from 'react-markdown'
 import ButtonLink from '../ButtonLink'
 import { H2 } from '../custom/header'
-import { homeFaqQuestions } from '@/pages/index'
+import { homeFaqQuestions } from '@/lib/homeFaqQuestions'
 
 export default function FAQ() {
   return (
