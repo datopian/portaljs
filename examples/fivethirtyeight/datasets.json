@@ -1,5 +1,140 @@
 [
   {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/trump-2-poll-issue-questions",
+    "name": "trump-2-poll-issue-questions",
+    "displayName": "trump-2-poll-issue-<span class=\"lastword\">questions</span>",
+    "articles": [
+      {
+        "url": "https://abcnews.go.com/538/americans-voted-trump-support-agenda/story?id=119136603",
+        "title": "Americans voted for Trump, but don't support his agenda",
+        "date": "2025-02-25T19:40:27Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/trump-2-poll-issue-questions/trump-poll-issue-questions.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/state-of-the-polls-2024",
+    "name": "state-of-the-polls-2024",
+    "displayName": "state-of-the-polls-<span class=\"lastword\">2024</span>",
+    "articles": [
+      {
+        "url": "https://abcnews.go.com/538/2024-fewer-polls-higher-quality/story?id=115157919",
+        "title": "2024 has fewer polls, but they are higher quality",
+        "date": "2024-10-28T20:53:56Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/state-of-the-polls-2024/2012_polls.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/state-of-the-polls-2024/2012_races.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/state-of-the-polls-2024/2016_polls.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/state-of-the-polls-2024/2016_races.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/state-of-the-polls-2024/2020_polls.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/state-of-the-polls-2024/2020_races.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/state-of-the-polls-2024/2024_polls.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/state-of-the-polls-2024/2024_races.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/quiet-caucus-2024",
+    "name": "quiet-caucus-2024",
+    "displayName": "quiet-caucus-<span class=\"lastword\">2024</span>",
+    "articles": [
+      {
+        "url": "https://projects.fivethirtyeight.com/types-democrats-republicans-house-2024/",
+        "title": "The 8 Types Of Democrats And Republicans In The House",
+        "date": "2024-05-01T03:00:00.000Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/quiet-caucus-2024/clustered_congress.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/gop-delegate-benchmarks-2024",
+    "name": "gop-delegate-benchmarks-2024",
+    "displayName": "gop-delegate-benchmarks-<span class=\"lastword\">2024</span>",
+    "articles": [
+      {
+        "url": "https://projects.fivethirtyeight.com/2024-republican-delegate-benchmarks/",
+        "title": "538's GOP delegate benchmark tracker",
+        "date": "2024-02-26T15:06:09Z"
+      },
+      {
+        "url": "https://abcnews.go.com/538/desantis-haley-win-early/story?id=106254579",
+        "title": "DeSantis and Haley need to win early, or it's over",
+        "date": "2024-02-26T15:06:09Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/gop-delegate-benchmarks-2024/delegate_targets.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/congress-biden-score",
+    "name": "congress-biden-score",
+    "displayName": "congress-biden-<span class=\"lastword\">score</span>",
+    "articles": [
+      {
+        "url": "https://abcnews.go.com/538/member-congress-voted-biden-2023/story?id=106718543",
+        "title": "How often every member of Congress voted with Biden in 2023",
+        "date": "2024-01-29T21:43:35Z"
+      }
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/gop-candidate-visits-2024",
+    "name": "gop-candidate-visits-2024",
+    "displayName": "gop-candidate-visits-<span class=\"lastword\">2024</span>",
+    "articles": [
+      {
+        "url": "https://abcnews.go.com/538/busy-campaign-schedule-save-trumps-gop-primary-opponents/story?id=106292772",
+        "title": "Can a busy campaign schedule save Trump's GOP primary opponents?",
+        "date": "2024-01-11T00:00:00.000Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/gop-candidate-visits-2024/candidate_visits.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/gop-candidate-visits-2024/candidate_visits_2024-01-11.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/off-year-turnout-2023",
+    "name": "off-year-turnout-2023",
+    "displayName": "off-year-turnout-<span class=\"lastword\">2023</span>",
+    "articles": [
+      {
+        "url": "https://abcnews.go.com/538/high-suburban-turnout-new-norm/story?id=105792075",
+        "title": "High suburban turnout may be the new norm",
+        "date": "2023-12-21T03:00:00.000Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/off-year-turnout-2023/Kentucky_turnout_2023.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/off-year-turnout-2023/New_Jersey_turnout_2023.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/off-year-turnout-2023/Ohio_turnout_2023.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/off-year-turnout-2023/Pennsylvania_turnout_2023.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/off-year-turnout-2023/Virginia_turnout_2023.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/polls",
+    "name": "polls",
+    "displayName": "<span class=\"lastword\">polls</span>",
+    "articles": [
+      {
+        "date": "2023-05-11T14:35:40.000Z",
+        "title": "Latest Polls",
+        "url": "https://projects.fivethirtyeight.com/polls/"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/polls/pres_pollaverages_1968-2016.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/polls/pres_primary_avgs_1980-2016.csv"
+    ]
+  },
+  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/congress-generic-ballot",
     "name": "congress-generic-ballot",
     "displayName": "congress-generic-<span class=\"lastword\">ballot</span>",
@@ -11,8 +146,7 @@
       }
     ],
     "files": [
-      "https://projects.fivethirtyeight.com/generic-ballot-data/generic_polllist.csv",
-      "https://projects.fivethirtyeight.com/polls/data/generic_ballot_averages.csv"
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/congress-generic-ballot/generic_topline_historical.csv"
     ]
   },
   {
@@ -56,8 +190,10 @@
       }
     ],
     "files": [
-      "https://projects.fivethirtyeight.com/nba-model/2023/latest_RAPTOR_by_team.csv",
-      "https://projects.fivethirtyeight.com/nba-model/2023/latest_RAPTOR_by_player.csv"
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-raptor/historical_RAPTOR_by_player.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-raptor/historical_RAPTOR_by_team.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-raptor/modern_RAPTOR_by_player.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-raptor/modern_RAPTOR_by_team.csv"
     ]
   },
   {
@@ -121,6 +257,9 @@
         "title": "Congress Today Is Older Than It's Ever Been",
         "url": "https://fivethirtyeight.com/features/aging-congress-boomers/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/congress-demographics/data_aging_congress.csv"
     ]
   },
   {
@@ -164,35 +303,10 @@
         "rowspan": 0,
         "url": "http://fivethirtyeight.com/features/how-fivethirtyeight-calculates-pollster-ratings"
       }
-    ]
-  },
-  {
-    "url": "https://github.com/fivethirtyeight/data/tree/master/polls",
-    "name": "polls",
-    "displayName": "<span class=\"lastword\">polls</span>",
-    "articles": [
-      {
-        "date": "2023-05-11T14:35:40.000Z",
-        "title": "Latest Polls",
-        "url": "https://projects.fivethirtyeight.com/polls/"
-      }
     ],
     "files": [
-      "https://projects.fivethirtyeight.com/polls-page/data/president_primary_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/president_primary_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/president_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/president_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/senate_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/senate_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/house_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/house_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/governor_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/governor_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/president_approval_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/generic_ballot_polls.csv",
-      "https://projects.fivethirtyeight.com/polls-page/data/generic_ballot_polls_historical.csv",
-      "https://projects.fivethirtyeight.com/2020-primary-data/pres_primary_avgs_2020.csv",
-      "https://projects.fivethirtyeight.com/2020-general-data/presidential_poll_averages_2020.csv"
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/pollster-ratings/pollster-ratings-combined.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/pollster-ratings/raw_polls.csv"
     ]
   },
   {
@@ -212,6 +326,36 @@
     ]
   },
   {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/mlb-quasi-win-shares",
+    "name": "mlb-quasi-win-shares",
+    "displayName": "mlb-quasi-win-<span class=\"lastword\">shares</span>",
+    "articles": [
+      {
+        "url": "https://fivethirtyeight.com/features/the-yankees-always-have-the-twins-number-will-this-postseason-be-different/",
+        "title": "The Twins’ Magical Run Will Likely Go Through The Yankees. (Because Of Course.)",
+        "date": "2022-12-19T20:51:00Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/mlb-quasi-win-shares/quasi_winshares.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/riddler-pick-lowest",
+    "name": "riddler-pick-lowest",
+    "displayName": "riddler-pick-<span class=\"lastword\">lowest</span>",
+    "articles": [
+      {
+        "url": "https://fivethirtyeight.com/features/pick-a-number-any-number/",
+        "title": "Pick A Number, Any Number",
+        "date": "2022-12-19T20:51:00Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/riddler-pick-lowest/low_numbers.csv"
+    ]
+  },
+  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/world-cup-2022",
     "name": "world-cup-2022",
     "displayName": "world-cup-<span class=\"lastword\">2022</span>",
@@ -228,6 +372,66 @@
     ]
   },
   {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/endorsements-june-30",
+    "name": "endorsements-june-30",
+    "displayName": "endorsements-june-<span class=\"lastword\">30</span>",
+    "articles": [
+      {
+        "url": "https://fivethirtyeight.com/features/pols-and-polls-say-the-same-thing-jeb-bush-is-a-weak-front-runner/",
+        "title": "Pols And Polls Say The Same Thing: Jeb Bush Is A Weak Front-Runner",
+        "date": "2022-12-16T18:53:39Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/endorsements-june-30/endorsements-june-30.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/democratic-bench",
+    "name": "democratic-bench",
+    "displayName": "democratic-<span class=\"lastword\">bench</span>",
+    "articles": [
+      {
+        "url": "https://fivethirtyeight.com/features/some-democrats-who-could-step-up-if-hillary-isnt-ready-for-hillary/",
+        "title": "Some Democrats Who Could Step Up If Hillary Isn’t Ready For Hillary",
+        "date": "2022-12-16T18:53:39Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/democratic-bench/democratic-bench.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/bad-drivers",
+    "name": "bad-drivers",
+    "displayName": "bad-<span class=\"lastword\">drivers</span>",
+    "articles": [
+      {
+        "url": "https://fivethirtyeight.com/features/which-state-has-the-worst-drivers/",
+        "title": "Dear Mona, Which State Has The Worst Drivers?",
+        "date": "2022-12-16T18:53:39Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/bad-drivers/bad-drivers.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/comma-survey",
+    "name": "comma-survey",
+    "displayName": "comma-<span class=\"lastword\">survey</span>",
+    "articles": [
+      {
+        "url": "https://fivethirtyeight.com/features/elitist-superfluous-or-popular-we-polled-americans-on-the-oxford-comma/",
+        "title": "Elitist, Superfluous, Or Popular? We Polled Americans on the Oxford Comma",
+        "date": "2022-12-16T18:53:39Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/comma-survey/comma-survey.csv"
+    ]
+  },
+  {
     "url": "https://github.com/fivethirtyeight/data/tree/master/election-deniers",
     "name": "election-deniers",
     "displayName": "election-<span class=\"lastword\">deniers</span>",
@@ -237,6 +441,9 @@
         "title": "Where Republicans Who Deny The 2020 Election Results Are On The Ballot — And Where They Could Win",
         "url": "https://projects.fivethirtyeight.com/republicans-trump-election-fraud/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/election-deniers/fivethirtyeight_election_deniers.csv"
     ]
   },
   {
@@ -274,6 +481,9 @@
         "title": "The Republican Path To A House Majority Goes Through The Suburbs",
         "url": "https://fivethirtyeight.com/features/the-republican-path-to-a-house-majority-goes-through-the-suburbs/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/district-urbanization-index-2022/urbanization-index-2022.csv"
     ]
   },
   {
@@ -305,6 +515,10 @@
         "rowspan": 0,
         "url": "https://fivethirtyeight.com/features/trumps-endorsees-have-started-losing-more-but-dont-read-into-that-for-2024/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/primary-project-2022/dem_candidates.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/primary-project-2022/rep_candidates.csv"
     ]
   },
   {
@@ -333,6 +547,9 @@
         "title": "What If Only Democrats Or Only Republicans Had Won Every Redistricting Battle?",
         "url": "https://projects.fivethirtyeight.com/redistricting-alternate-maps/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/redistricting-alternate-maps/redistricting-alternate-maps.csv"
     ]
   },
   {
@@ -345,6 +562,9 @@
         "title": "How Redistricting Affects The Battle For State Legislatures",
         "url": "https://fivethirtyeight.com/features/how-redistricting-affects-the-battle-for-state-legislatures/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/redistricting-2022-state-legislatures/fivethirtyeight_state_legislative_district_analysis.csv"
     ]
   },
   {
@@ -357,6 +577,10 @@
         "title": "The Lasting Legacy Of Redlining",
         "url": "https://projects.fivethirtyeight.com/redlining/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/redlining/metro-grades.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/redlining/zone-block-matches.csv"
     ]
   },
   {
@@ -369,6 +593,9 @@
         "title": "The Big Lie’s Long Shadow",
         "url": "https://fivethirtyeight.com/features/the-big-lie-voting-laws/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/the-big-lies-long-shadow/bills.csv"
     ]
   },
   {
@@ -447,6 +674,9 @@
         "title": "Inside The Political Donation History Of Wealthy Sports Owners",
         "url": "https://fivethirtyeight.com/features/inside-the-political-donation-history-of-wealthy-sports-owners/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/sports-political-donations/sports-political-donations.csv"
     ]
   },
   {
@@ -459,6 +689,9 @@
         "title": "Why Millions Of Americans Don’t Vote",
         "url": "https://projects.fivethirtyeight.com/non-voters-poll-2020-election/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/non-voters/nonvoters_data.csv"
     ]
   },
   {
@@ -471,6 +704,9 @@
         "title": "Voter Registrations Are Way, Way Down During The Pandemic",
         "url": "https://fivethirtyeight.com/features/voter-registrations-are-way-way-down-during-the-pandemic"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/voter-registration/new-voter-registrations.csv"
     ]
   },
   {
@@ -483,6 +719,9 @@
         "title": "How One High-Risk Community In Rural South Carolina Is Bracing For COVID-19",
         "url": "https://fivethirtyeight.com/features/how-one-high-risk-community-in-rural-south-carolina-is-bracing-for-covid-19/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/covid-geography/mmsa-icu-beds.csv"
     ]
   },
   {
@@ -495,6 +734,10 @@
         "title": "How Urban Or Rural Is Your State? And What Does That Mean For The 2020 Election?",
         "url": "https://fivethirtyeight.com/features/how-urban-or-rural-is-your-state-and-what-does-that-mean-for-the-2020-election/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/urbanization-index/urbanization-census-tract.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/urbanization-index/urbanization-state.csv"
     ]
   },
   {
@@ -522,6 +765,10 @@
         "title": "Do Americans Support Impeaching Trump?",
         "url": "https://projects.fivethirtyeight.com/impeachment-polls/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/impeachment-polls/impeachment_polls.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/impeachment-polls/impeachment_topline.csv"
     ]
   },
   {
@@ -534,6 +781,9 @@
         "title": "The Democratic Presidential Candidates Are Becoming Less Popular",
         "url": "https://fivethirtyeight.com/features/the-democratic-presidential-candidates-are-becoming-less-popular/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/presidential-candidate-favorables-2019/favorability_polls_rv_2019.csv"
     ]
   },
   {
@@ -546,6 +796,10 @@
         "title": "The Media Frenzy Around Biden Is Fading",
         "url": "https://fivethirtyeight.com/features/the-media-frenzy-around-biden-is-fading/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/media-mentions-2020/cable_weekly.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/media-mentions-2020/online_weekly.csv"
     ]
   },
   {
@@ -558,6 +812,9 @@
         "title": "Our Guide To The Exuberant Nonsense Of College Fight Songs",
         "url": "https://projects.fivethirtyeight.com/college-fight-song-lyrics/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/fight-songs/fight-songs.csv"
     ]
   },
   {
@@ -589,6 +846,13 @@
         "rowspan": 0,
         "url": "https://fivethirtyeight.com/features/can-you-rule-riddler-nation/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/riddler-castles/castle-solutions-2.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/riddler-castles/castle-solutions-3.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/riddler-castles/castle-solutions-4.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/riddler-castles/castle-solutions-5.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/riddler-castles/castle-solutions.csv"
     ]
   },
   {
@@ -601,6 +865,9 @@
         "title": "We Watched 906 Foul Balls To Find Out Where The Most Dangerous Ones Land",
         "url": "https://fivethirtyeight.com/features/we-watched-906-foul-balls-to-find-out-where-the-most-dangerous-ones-land/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/foul-balls/foul-balls.csv"
     ]
   },
   {
@@ -613,6 +880,9 @@
         "title": "A Better Way To Evaluate NBA Defense",
         "url": "https://fivethirtyeight.com/features/a-better-way-to-evaluate-nba-defense/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-draymond/draymond.csv"
     ]
   },
   {
@@ -641,6 +911,10 @@
         "title": "The State Of The State Of The States",
         "url": "https://fivethirtyeight.com/features/what-americas-governors-are-talking-about/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/state-of-the-state/index.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/state-of-the-state/words.csv"
     ]
   },
   {
@@ -690,6 +964,9 @@
         "rowspan": 0,
         "url": "https://fivethirtyeight.com/features/what-trumps-legal-battles-tell-us-about-presidential-power/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/trump-lawsuits/trump-lawsuits.csv"
     ]
   },
   {
@@ -702,6 +979,9 @@
         "title": "Both Parties Think The Mueller Report Was Fair. They Just Completely Disagree On What It Says.",
         "url": "https://fivethirtyeight.com/features/both-parties-think-the-mueller-report-was-fair-they-just-disagree-on-what-it-says/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/mueller-polls/mueller-approval-polls.csv"
     ]
   },
   {
@@ -714,6 +994,9 @@
         "title": "Is The Russia Investigation Really Another Watergate?",
         "url": "https://projects.fivethirtyeight.com/russia-investigation/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/russia-investigation/russia-investigation.csv"
     ]
   },
   {
@@ -726,6 +1009,9 @@
         "title": "The Rise And Fall of Women’s College Basketball Dynasties",
         "url": "https://fivethirtyeight.com/features/louisiana-tech-was-the-uconn-of-the-80s/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/ncaa-womens-basketball-tournament/ncaa-womens-basketball-tournament-history.csv"
     ]
   },
   {
@@ -738,6 +1024,9 @@
         "title": "Two Years In, Turnover In Trump’s Cabinet Is Still Historically High",
         "url": "https://fivethirtyeight.com/features/two-years-in-turnover-in-trumps-cabinet-is-still-historically-high/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/cabinet-turnover/cabinet-turnover.csv"
     ]
   },
   {
@@ -750,6 +1039,9 @@
         "title": "How FiveThirtyEight’s 2018 Midterm Forecasts Did",
         "url": "https://fivethirtyeight.com/features/how-fivethirtyeights-2018-midterm-forecasts-did/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/forecast-review/forecast_results_2018.csv"
     ]
   },
   {
@@ -775,6 +1067,10 @@
         "rowspan": 0,
         "url": "https://projects.fivethirtyeight.com/2018-midterm-election-forecast/governor/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/partisan-lean/fivethirtyeight_partisan_lean_DISTRICTS.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/partisan-lean/fivethirtyeight_partisan_lean_STATES.csv"
     ]
   },
   {
@@ -848,6 +1144,10 @@
         "rowspan": 0,
         "url": "https://fivethirtyeight.com/features/democrats-primaries-candidates-demographics/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/primary-candidates-2018/dem_candidates.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/primary-candidates-2018/rep_candidates.csv"
     ]
   },
   {
@@ -860,6 +1160,10 @@
         "title": "Election Update: The Most (And Least) Elastic States And Districts",
         "url": "https://fivethirtyeight.com/features/election-update-the-house-districts-that-swing-the-most-and-least-with-the-national-mood/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/political-elasticity-scores/elasticity-by-district.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/political-elasticity-scores/elasticity-by-state.csv"
     ]
   },
   {
@@ -872,6 +1176,9 @@
         "title": "How Much Trouble Is Ted Cruz Really In?",
         "url": "https://fivethirtyeight.com/features/how-much-trouble-is-ted-cruz-really-in/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/august-senate-polls/august_senate_polls.csv"
     ]
   },
   {
@@ -939,6 +1246,26 @@
         "title": "What Do Men Think It Means To Be A Man?",
         "url": "https://fivethirtyeight.com/features/what-do-men-think-it-means-to-be-a-man/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/masculinity-survey/masculinity-survey.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/masculinity-survey/raw-responses.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/classic-rock",
+    "name": "classic-rock",
+    "displayName": "classic-<span class=\"lastword\">rock</span>",
+    "articles": [
+      {
+        "url": "https://fivethirtyeight.com/features/why-classic-rock-isnt-what-it-used-to-be/",
+        "title": "Why Classic Rock Isn’t What It Used To Be",
+        "date": "2018-06-15T18:29:53Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/classic-rock/classic-rock-raw-data.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/classic-rock/classic-rock-song-list.csv"
     ]
   },
   {
@@ -966,6 +1293,9 @@
         "title": "Be Skeptical Of Anyone Who Tells You They Know How Democrats Can Win In November",
         "url": "https://fivethirtyeight.com/features/be-skeptical-of-anyone-who-tells-you-they-know-how-democrats-can-win-in-november/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/special-elections/special-elections.csv"
     ]
   },
   {
@@ -978,6 +1308,9 @@
         "title": "Do You Know Where America Stands On Guns?",
         "url": "https://projects.fivethirtyeight.com/guns-parkland-polling-quiz/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/poll-quiz-guns/guns-polls.csv"
     ]
   },
   {
@@ -1009,6 +1342,9 @@
         "rowspan": 0,
         "url": "https://fivethirtyeight.com/features/reluctant-trump-voters-swung-the-election-heres-how-they-think-hes-doing/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/reluctant-trump/february_2018_rawdata.csv"
     ]
   },
   {
@@ -1021,6 +1357,59 @@
         "title": "People Are Paying Thousands Of Dollars To Own Pictures Of Pepe The Frog",
         "url": "https://fivethirtyeight.com/features/pepe-the-frog-symbolism-cryptoart-blockchain/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/rare-pepes/blocks_timestamps.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/rare-pepes/ordermatches_all.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/rare-pepes/pepecash_prices.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/rare-pepes/xcp_prices.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/cousin-marriage",
+    "name": "cousin-marriage",
+    "displayName": "cousin-<span class=\"lastword\">marriage</span>",
+    "articles": [
+      {
+        "url": "https://fivethirtyeight.com/features/how-many-americans-are-married-to-their-cousins/",
+        "title": "Dear Mona: How Many Americans Are Married To Their Cousins?",
+        "date": "2018-02-09T19:19:32Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/cousin-marriage/cousin-marriage-data.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/love-actually",
+    "name": "love-actually",
+    "displayName": "love-<span class=\"lastword\">actually</span>",
+    "articles": [
+      {
+        "url": "https://fivethirtyeight.com/features/the-definitive-analysis-of-love-actually-the-greatest-christmas-movie-of-our-time/",
+        "title": "The Definitive Analysis Of ‘Love Actually,’ The Greatest Christmas Movie Of Our Time",
+        "date": "2018-02-09T18:10:46Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/love-actually/love_actually_adjacencies.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/love-actually/love_actually_appearances.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/mlb-allstar-teams",
+    "name": "mlb-allstar-teams",
+    "displayName": "mlb-allstar-<span class=\"lastword\">teams</span>",
+    "articles": [
+      {
+        "url": "https://fivethirtyeight.com/features/the-best-mlb-all-star-teams-ever/",
+        "title": "The Best MLB All-Star Teams Ever",
+        "date": "2018-02-09T18:10:46Z"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/mlb-allstar-teams/allstar_player_talent.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/mlb-allstar-teams/allstar_team_talent.csv"
     ]
   },
   {
@@ -1033,6 +1422,9 @@
         "title": "We’ve Never Seen Congressional Resignations Like This Before",
         "url": "https://fivethirtyeight.com/features/more-people-are-resigning-from-congress-than-at-any-time-in-recent-history/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/congress-resignations/congressional_resignations.csv"
     ]
   },
   {
@@ -1045,6 +1437,11 @@
         "title": "Creating The Next Bechdel Test",
         "url": "https://projects.fivethirtyeight.com/next-bechdel/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/next-bechdel/nextBechdel_allTests.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/next-bechdel/nextBechdel_castGender.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/next-bechdel/nextBechdel_crewGender.csv"
     ]
   },
   {
@@ -1064,6 +1461,9 @@
         "rowspan": 0,
         "url": "https://fivethirtyeight.com/features/goose-egg-new-save-stat-relief-pitchers/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/goose/goose_rawdata.csv"
     ]
   },
   {
@@ -1076,6 +1476,9 @@
         "title": "The Ultimate Halloween Candy Power Ranking",
         "url": "http://fivethirtyeight.com/features/the-ultimate-halloween-candy-power-ranking/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/candy-power-ranking/candy-data.csv"
     ]
   },
   {
@@ -1088,6 +1491,11 @@
         "title": "The Worst Tweeter In Politics Isn’t Trump",
         "url": "https://fivethirtyeight.com/features/the-worst-tweeter-in-politics-isnt-trump/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/twitter-ratio/BarackObama.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/twitter-ratio/realDonaldTrump.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/twitter-ratio/senators.csv"
     ]
   },
   {
@@ -1107,6 +1515,16 @@
         "rowspan": 0,
         "url": "https://fivethirtyeight.com/features/the-media-really-has-neglected-puerto-rico/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/puerto-rico-media/google_trends.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/puerto-rico-media/mediacloud_hurricanes.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/puerto-rico-media/mediacloud_states.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/puerto-rico-media/mediacloud_top_online_news.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/puerto-rico-media/mediacloud_trump.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/puerto-rico-media/tv_hurricanes.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/puerto-rico-media/tv_hurricanes_by_network.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/puerto-rico-media/tv_states.csv"
     ]
   },
   {
@@ -1119,6 +1537,10 @@
         "title": "How Every NFL Team’s Fans Lean Politically",
         "url": "https://fivethirtyeight.com/features/how-every-nfl-teams-fans-lean-politically/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nfl-fandom/NFL_fandom_data-google_trends.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nfl-fandom/NFL_fandom_data-surveymonkey.csv"
     ]
   },
   {
@@ -1131,6 +1553,9 @@
         "title": "The (Very) Long Tail Of Hurricane Recovery",
         "url": "https://projects.fivethirtyeight.com/sandy-311/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/sandy-311-calls/sandy-311-calls-by-day.csv"
     ]
   },
   {
@@ -1143,6 +1568,15 @@
         "title": "What The World Thinks Of Trump",
         "url": "https://fivethirtyeight.com/features/what-the-world-thinks-of-trump/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/trump-world-trust/TRUMPWORLD-issue-1.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/trump-world-trust/TRUMPWORLD-issue-2.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/trump-world-trust/TRUMPWORLD-issue-3.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/trump-world-trust/TRUMPWORLD-issue-4.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/trump-world-trust/TRUMPWORLD-issue-5.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/trump-world-trust/TRUMPWORLD-pres.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/trump-world-trust/TRUMPWORLD-us.csv"
     ]
   },
   {
@@ -1155,6 +1589,9 @@
         "title": "Al Gore’s New Movie Exposes The Big Flaw In Online Movie Ratings",
         "url": "https://fivethirtyeight.com/features/al-gores-new-movie-exposes-the-big-flaw-in-online-movie-ratings/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/inconvenient-sequel/ratings.csv"
     ]
   },
   {
@@ -1167,6 +1604,24 @@
         "title": "The Mayweather-McGregor Fight, As Told Through Emojis",
         "url": "https://fivethirtyeight.com/features/the-mayweather-mcgregor-fight-as-told-through-emojis/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/mayweather-mcgregor/tweets.csv"
+    ]
+  },
+  {
+    "url": "https://github.com/fivethirtyeight/data/tree/master/undefeated-boxers",
+    "name": "undefeated-boxers",
+    "displayName": "undefeated-<span class=\"lastword\">boxers</span>",
+    "articles": [
+      {
+        "date": "2017-08-18T18:47:32.000Z",
+        "title": "Mayweather Is Defined By The Zero Next To His Name",
+        "url": "https://fivethirtyeight.com/features/mayweather-is-defined-by-the-zero-next-to-his-name/"
+      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/undefeated-boxers/undefeated.csv"
     ]
   },
   {
@@ -1179,6 +1634,9 @@
         "title": "American Chess Is Great Again",
         "url": "https://fivethirtyeight.com/features/american-chess-is-great-again/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/chess-transfers/transfers.csv"
     ]
   },
   {
@@ -1191,6 +1649,9 @@
         "title": "Rachel’s Season Is Fitting Neatly Into ‘Bachelorette’ History",
         "url": "https://fivethirtyeight.com/features/rachels-season-is-fitting-neatly-into-bachelorette-history/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/bachelorette/bachelorette.csv"
     ]
   },
   {
@@ -1203,6 +1664,9 @@
         "title": "Why The GOP Is So Hell-Bent On Passing An Unpopular Health Care Bill",
         "url": "https://fivethirtyeight.com/features/why-the-gop-is-so-hell-bent-on-passing-an-unpopular-health-care-bill/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/ahca-polls/ahca_polls.csv"
     ]
   },
   {
@@ -1215,6 +1679,9 @@
         "title": "Trump Might Be The First President To Scrap A National Monument",
         "url": "https://fivethirtyeight.com/features/trump-might-be-the-first-president-to-scrap-a-national-monument/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/antiquities-act/actions_under_antiquities_act.csv"
     ]
   },
   {
@@ -1227,6 +1694,9 @@
         "title": "When Scientists Donate To Politicians, It’s Usually To Democrats",
         "url": "https://fivethirtyeight.com/features/when-scientists-donate-to-politicians-its-usually-to-democrats/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/science-giving/science_federal_giving.csv"
     ]
   },
   {
@@ -1239,6 +1709,9 @@
         "title": "How ‘Qi’ And ‘Za’ Changed Scrabble",
         "url": "https://fivethirtyeight.com/features/how-qi-and-za-changed-scrabble/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/scrabble-games/scrabble_games.csv"
     ]
   },
   {
@@ -1251,6 +1724,9 @@
         "title": "For A Trump Nominee, Neil Gorsuch’s Record Is Surprisingly Moderate On Immigration",
         "url": "https://fivethirtyeight.com/features/for-a-trump-nominee-neil-gorsuchs-record-is-surprisingly-moderate-on-immigration/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/tenth-circuit/tenth-circuit.csv"
     ]
   },
   {
@@ -1275,6 +1751,9 @@
         "title": "Higher Rates Of Hate Crimes Are Tied To Income Inequality",
         "url": "https://fivethirtyeight.com/features/higher-rates-of-hate-crimes-are-tied-to-income-inequality/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/hate-crimes/hate_crimes.csv"
     ]
   },
   {
@@ -1287,6 +1766,9 @@
         "title": "Obama Granted Clemency Unlike Any Other President In History",
         "url": "https://fivethirtyeight.com/features/obama-granted-clemency-unlike-any-other-president-in-history/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/obama-commutations/obama_commutations.csv"
     ]
   },
   {
@@ -1299,6 +1781,10 @@
         "title": "The Last 10 Weeks Of 2016 Campaign Stops In One Handy Gif",
         "url": "http://fivethirtyeight.com/features/the-last-10-weeks-of-2016-campaign-stops-in-one-handy-gif/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/presidential-campaign-trail/clinton.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/presidential-campaign-trail/trump.csv"
     ]
   },
   {
@@ -1311,6 +1797,10 @@
         "title": "A Handful Of Cities Are Driving 2016’s Rise In Murders",
         "url": "http://fivethirtyeight.com/features/a-handful-of-cities-are-driving-2016s-rise-in-murders/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/murder_2016/murder_2015_final.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/murder_2016/murder_2016_prelim.csv"
     ]
   },
   {
@@ -1323,6 +1813,9 @@
         "title": "When Does Praying In Public Make Others Uncomfortable?",
         "url": "http://fivethirtyeight.com/features/when-does-praying-in-public-make-others-uncomfortable/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/religion-survey/religion-survey-results.csv"
     ]
   },
   {
@@ -1335,6 +1828,9 @@
         "title": "The Rams Are Dead To Me, So I Answered 3,352 Questions To Find A New NFL Team",
         "url": "http://fivethirtyeight.com/features/the-rams-are-dead-to-me-so-i-answered-3352-questions-to-find-a-new-team/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nfl-favorite-team/team-picking-categories.csv"
     ]
   },
   {
@@ -1347,6 +1843,9 @@
         "title": "Hip-Hop Is Turning On Donald Trump",
         "url": "https://projects.fivethirtyeight.com/clinton-trump-hip-hop-lyrics/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/hip-hop-candidate-lyrics/genius_hip_hop_lyrics.csv"
     ]
   },
   {
@@ -1359,6 +1858,10 @@
         "title": "Some People Are Too Superstitious To Have A Baby On Friday The 13th",
         "url": "http://fivethirtyeight.com/features/some-people-are-too-superstitious-to-have-a-baby-on-friday-the-13th/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/births/US_births_1994-2003_CDC_NCHS.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/births/US_births_2000-2014_SSA.csv"
     ]
   },
   {
@@ -1371,6 +1874,9 @@
         "title": "Sitting Presidents Give Way More Commencement Speeches Than They Used To",
         "url": "http://fivethirtyeight.com/features/sitting-presidents-give-way-more-commencement-speeches-than-they-used-to/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/presidential-commencement-speeches/commencement_speeches.csv"
     ]
   },
   {
@@ -1383,6 +1889,9 @@
         "title": "How Trump Hacked The Media",
         "url": "http://fivethirtyeight.com/features/how-donald-trump-hacked-the-media/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/trump-news/trump_news_data.csv"
     ]
   },
   {
@@ -1450,6 +1959,10 @@
         "title": "You Can’t Trust What You Read About Nutrition",
         "url": "http://fivethirtyeight.com/features/you-cant-trust-what-you-read-about-nutrition"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nutrition-studies/p_values_analysis.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nutrition-studies/raw_anonymized_data.csv"
     ]
   },
   {
@@ -1462,6 +1975,9 @@
         "title": "A Complete Catalog Of Every Time Someone Cursed Or Bled Out In A Quentin Tarantino Movie",
         "url": "http://fivethirtyeight.com/features/complete-catalog-curses-deaths-quentin-tarantino-films"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/tarantino/tarantino.csv"
     ]
   },
   {
@@ -1474,6 +1990,9 @@
         "title": "The Complete History Of The NBA",
         "url": "https://projects.fivethirtyeight.com/complete-history-of-the-nba/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-elo/nbaallelo.csv"
     ]
   },
   {
@@ -1486,6 +2005,9 @@
         "title": "Here’s What Your Part Of America Eats On Thanksgiving",
         "url": "http://fivethirtyeight.com/features/heres-what-your-part-of-america-eats-on-thanksgiving"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/thanksgiving-2015/thanksgiving-2015-poll-data.csv"
     ]
   },
   {
@@ -1498,6 +2020,12 @@
         "title": "The Rise Of Terrorism Inspired By Religion In France",
         "url": "http://fivethirtyeight.com/features/the-rise-of-religiously-inspired-terrorism-in-france/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/terrorism/country_stats_1993_appendix2.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/terrorism/eu_terrorism_fatalities_by_country.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/terrorism/eu_terrorism_fatalities_by_year.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/terrorism/france_terrorism_fatalities_by_year.csv"
     ]
   },
   {
@@ -1522,6 +2050,10 @@
         "title": "Be Suspicious Of Online Movie Ratings, Especially Fandango’s",
         "url": "http://fivethirtyeight.com/features/fandango-movies-ratings/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/fandango/fandango_score_comparison.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/fandango/fandango_scrape.csv"
     ]
   },
   {
@@ -1534,6 +2066,9 @@
         "title": "‘Straight Outta Compton’ Is The Rare Biopic Not About White Dudes",
         "url": "http://fivethirtyeight.com/features/straight-outta-compton-is-the-rare-biopic-not-about-white-dudes"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/biopics/biopics.csv"
     ]
   },
   {
@@ -1546,6 +2081,9 @@
         "title": "Every Guest Jon Stewart Ever Had On ‘The Daily Show’",
         "url": "http://fivethirtyeight.com/features/every-guest-jon-stewart-ever-had-on-the-daily-show/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/daily-show-guests/daily_show_guests.csv"
     ]
   },
   {
@@ -1570,6 +2108,18 @@
         "title": "What 12 Months Of Record-Setting Temperatures Looks Like Across The U.S.",
         "url": "http://fivethirtyeight.com/features/what-12-months-of-record-setting-temperatures-looks-like-across-the-u-s/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KCLT.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KCQT.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KHOU.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KIND.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KJAX.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KMDW.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KNYC.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KPHL.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KPHX.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/us-weather-history/KSEA.csv"
     ]
   },
   {
@@ -1582,6 +2132,9 @@
         "title": "Projecting The Top 50 Players In The 2015 NBA Draft Class",
         "url": "http://fivethirtyeight.com/features/projecting-the-top-50-players-in-the-2015-nba-draft-class/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-draft-2015/historical_projections.csv"
     ]
   },
   {
@@ -1594,6 +2147,10 @@
         "title": "The Most Common Unisex Names In America: Is Yours One Of Them?",
         "url": "http://fivethirtyeight.com/features/there-are-922-unisex-names-in-america-is-yours-one-of-them"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/unisex-names/aging_curve.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/unisex-names/unisex_names_table.csv"
     ]
   },
   {
@@ -1606,6 +2163,9 @@
         "title": "Blatter’s Reign At FIFA Hasn’t Helped Soccer’s Poor",
         "url": "http://fivethirtyeight.com/features/blatters-reign-at-fifa-hasnt-helped-soccers-poor/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/elo-blatter/elo_blatter.csv"
     ]
   },
   {
@@ -1618,6 +2178,11 @@
         "title": "Why Some Tennis Matches Take Forever",
         "url": "http://fivethirtyeight.com/features/why-some-tennis-matches-take-forever/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/tennis-time/events_time.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/tennis-time/players_time.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/tennis-time/serve_times.csv"
     ]
   },
   {
@@ -1630,6 +2195,9 @@
         "title": "Where Police Have Killed Americans In 2015",
         "url": "http://fivethirtyeight.com/features/where-police-have-killed-americans-in-2015"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv"
     ]
   },
   {
@@ -1649,6 +2217,96 @@
         "rowspan": 0,
         "url": "https://projects.fivethirtyeight.com/womens-world-cup/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150602-093000.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150606-200029.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150606-230045.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150607-150137.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150607-180420.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150608-175420.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150608-210138.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150608-212619.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150608-235509.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150609-145605.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150609-175933.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150609-205725.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150611-182114.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150611-200059.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150611-210229.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150611-232844.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150612-185329.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150612-205525.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150612-215533.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150612-235650.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150613-145639.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150613-175552.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150613-205441.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150615-175745.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150615-213540.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150616-190139.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150616-220036.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150617-175941.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150617-210614.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150620-180614.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150620-213513.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150621-145724.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150621-175918.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150621-213134.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150622-185345.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150622-215702.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150623-235546.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150626-184421.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150626-212544.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150627-180119.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150627-213532.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150630-210243.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150701-205548.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-forecast-20150705-205539.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150602-093000.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150606-200029.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150606-230045.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150607-150137.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150607-180420.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150608-175420.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150608-210138.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150608-212619.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150608-235509.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150609-145605.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150609-175933.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150609-205725.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150611-182114.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150611-200059.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150611-210229.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150611-232844.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150612-185329.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150612-205525.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150612-215533.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150612-235650.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150613-145639.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150613-175552.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150613-205441.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150615-175745.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150615-213540.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150616-190139.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150616-220036.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150617-175941.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150617-210614.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150620-180614.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150620-213513.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150621-145724.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150621-175918.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150621-213134.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150622-185345.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150622-215702.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150623-235546.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150626-184421.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150626-212544.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150627-180119.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150627-213532.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150630-210243.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150701-205548.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/womens-world-cup-predictions/wwc-matches-20150705-205539.csv"
     ]
   },
   {
@@ -1661,6 +2319,9 @@
         "title": "The Rock Isn’t Alone: Lots Of People Are Worried About ‘The Big One’",
         "url": "http://fivethirtyeight.com/features/the-rock-isnt-alone-lots-of-people-are-worried-about-the-big-one"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/san-andreas/earthquake_data.csv"
     ]
   },
   {
@@ -1673,6 +2334,9 @@
         "title": "How To Break FIFA",
         "url": "http://fivethirtyeight.com/features/how-to-break-fifa/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/fifa/fifa_countries_audience.csv"
     ]
   },
   {
@@ -1685,6 +2349,9 @@
         "title": "Evangelical Protestants Are The Biggest Winners When People Change Faiths",
         "url": "http://fivethirtyeight.com/features/evangelical-protestants-are-the-biggest-winners-when-people-change-faiths/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/pew-religions/current.csv"
     ]
   },
   {
@@ -1697,6 +2364,10 @@
         "title": "‘Mad Men’ Is Ending. What’s Next For The Cast?",
         "url": "http://fivethirtyeight.com/features/mad-men-is-ending-whats-next-for-the-cast/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/mad-men/performer-scores.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/mad-men/show-data.csv"
     ]
   },
   {
@@ -1709,6 +2380,9 @@
         "title": "Joining The Avengers Is As Deadly As Jumping Off A Four-Story Building",
         "url": "http://fivethirtyeight.com/features/avengers-death-comics-age-of-ultron"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/avengers/avengers.csv"
     ]
   },
   {
@@ -1721,6 +2395,9 @@
         "title": "How Baby Boomers Get High",
         "url": "http://fivethirtyeight.com/features/how-baby-boomers-get-high/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/drug-use-by-age/drug-use-by-age.csv"
     ]
   },
   {
@@ -1733,6 +2410,9 @@
         "title": "Where People Go To Check The Weather",
         "url": "http://fivethirtyeight.com/features/weather-forecast-news-app-habits/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/weather-check/weather-check.csv"
     ]
   },
   {
@@ -1788,6 +2468,11 @@
         "title": "Who Goes To Meaningless NFL Games And Why?",
         "url": "http://fivethirtyeight.com/features/who-goes-to-meaningless-nfl-games-and-why/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nfl-ticket-prices/2014-average-ticket-price.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nfl-ticket-prices/jets-buyer.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nfl-ticket-prices/national-average.csv"
     ]
   },
   {
@@ -1800,6 +2485,17 @@
         "title": "Dear Mona, What’s The Most Common Name In America?",
         "url": "http://fivethirtyeight.com/features/whats-the-most-common-name-in-america/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/most-common-name/adjusted-name-combinations-list.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/most-common-name/adjusted-name-combinations-matrix.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/most-common-name/adjustments.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/most-common-name/aging-curve.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/most-common-name/independent-name-combinations-by-pop.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/most-common-name/new-top-firstNames.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/most-common-name/new-top-surnames.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/most-common-name/state-pop.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/most-common-name/surnames.csv"
     ]
   },
   {
@@ -1812,6 +2508,10 @@
         "title": "Comic Books Are Still Made By Men, For Men And About Men",
         "url": "http://fivethirtyeight.com/features/women-in-comic-books/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/comic-characters/dc-wikia-data.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/comic-characters/marvel-wikia-data.csv"
     ]
   },
   {
@@ -1836,6 +2536,12 @@
         "title": "Marriage Isn’t Dead — Yet",
         "url": "http://fivethirtyeight.com/features/marriage-isnt-dead-yet/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/marriage/both_sexes.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/marriage/divorce.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/marriage/men.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/marriage/women.csv"
     ]
   },
   {
@@ -1848,6 +2554,9 @@
         "title": "How The FiveThirtyEight Senate Forecast Model Works",
         "url": "http://fivethirtyeight.com/features/how-the-fivethirtyeight-senate-forecast-model-works/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/forecast-methodology/historical-senate-predictions.csv"
     ]
   },
   {
@@ -1860,6 +2569,13 @@
         "title": "The Economic Guide To Picking A College Major",
         "url": "http://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/all-ages.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/grad-students.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/majors-list.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/recent-grads.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/women-stem.csv"
     ]
   },
   {
@@ -1872,6 +2588,9 @@
         "title": "41 Percent Of Fliers Think You’re Rude If You Recline Your Seat",
         "url": "http://fivethirtyeight.com/features/airplane-etiquette-recline-seat/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/flying-etiquette-survey/flying-etiquette.csv"
     ]
   },
   {
@@ -1884,6 +2603,9 @@
         "title": "The NFL’s Uneven History Of Punishing Domestic Violence",
         "url": "http://fivethirtyeight.com/features/nfl-domestic-violence-policy-suspensions/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nfl-suspensions/nfl-suspensions-data.csv"
     ]
   },
   {
@@ -1896,6 +2618,9 @@
         "title": "Most Police Don’t Live In The Cities They Serve",
         "url": "http://fivethirtyeight.com/features/most-police-dont-live-in-the-cities-they-serve/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/police-locals/police-locals.csv"
     ]
   },
   {
@@ -1908,6 +2633,9 @@
         "title": "Dear Mona Followup: Where Do People Drink The Most Beer, Wine And Spirits?",
         "url": "http://fivethirtyeight.com/features/dear-mona-followup-where-do-people-drink-the-most-beer-wine-and-spirits/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv"
     ]
   },
   {
@@ -1920,6 +2648,10 @@
         "title": "The Football Hall Of Fame Has A Receiver Problem",
         "url": "http://fivethirtyeight.com/features/the-football-hall-of-fame-has-a-receiver-problem/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nfl-wide-receivers/advanced-historical.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nfl-wide-receivers/try-per-game-aging-curve.csv"
     ]
   },
   {
@@ -1932,6 +2664,9 @@
         "title": "Dear Mona, How Many Couples Sleep in Separate Beds?",
         "url": "http://fivethirtyeight.com/features/dear-mona-how-many-couples-sleep-in-separate-beds/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/sleeping-alone-data/sleeping-alone-data.csv"
     ]
   },
   {
@@ -1944,6 +2679,9 @@
         "title": "America’s Favorite ‘Star Wars’ Movies (And Least Favorite Characters)",
         "url": "http://fivethirtyeight.com/features/americas-favorite-star-wars-movies-and-least-favorite-characters/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/star-wars-survey/StarWars.csv"
     ]
   },
   {
@@ -1956,6 +2694,9 @@
         "title": "Should Travelers Avoid Flying Airlines That Have Had Crashes in the Past?",
         "url": "http://fivethirtyeight.com/features/should-travelers-avoid-flying-airlines-that-have-had-crashes-in-the-past/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/airline-safety/airline-safety.csv"
     ]
   },
   {
@@ -1968,6 +2709,9 @@
         "title": "The FiveThirtyEight International Food Association’s 2014 World Cup",
         "url": "http://fivethirtyeight.com/features/the-fivethirtyeight-international-food-associations-2014-world-cup/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/food-world-cup/food-world-cup-data.csv"
     ]
   },
   {
@@ -1980,6 +2724,92 @@
         "title": "2014 World Cup Predictions",
         "url": "http://fivethirtyeight.com/interactives/world-cup/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140609-140000.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140611-132709.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140612-094254.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140612-220228.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140613-091928.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140613-180212.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140613-205820.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140614-000045.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140614-091756.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140614-180027.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140614-210740.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140615-001554.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140615-030217.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140615-092237.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140615-180820.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140615-210736.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140616-100604.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140616-182949.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140616-185551.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140616-205307.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140617-000315.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140617-091836.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140617-175702.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140617-205249.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140617-235154.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140618-100110.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140618-175722.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140618-210231.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140618-235413.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140619-091907.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140619-180248.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140619-205931.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140619-235903.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140620-094015.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140620-175706.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140620-205534.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140620-235753.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140621-092639.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140621-175630.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140621-205738.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140621-235521.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140622-091255.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140622-175429.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140622-205351.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140622-235721.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140623-095120.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140623-175427.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140623-220333.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140624-100611.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140624-181518.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140625-091929.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140625-180355.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140625-220012.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140626-095930.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140626-180150.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140626-221022.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140627-100126.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140628-094211.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140628-185951.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140628-215357.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140629-091813.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140629-180901.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140629-225940.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140630-095330.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140630-175910.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140630-223910.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140701-092605.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140701-184332.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140701-224103.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140702-094046.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140703-094053.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140704-180211.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140704-220110.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140705-093245.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140705-225331.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140706-091537.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140707-100337.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140708-092538.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140708-215459.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140709-095047.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140709-231617.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140710-164509.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140711-102258.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/world-cup-predictions/wc-20140713-113900.csv"
     ]
   },
   {
@@ -1992,6 +2822,9 @@
         "title": "What Ethan Swan Learned From Tracking Every Tattoo in the NBA",
         "url": "http://fivethirtyeight.com/features/what-ethan-swan-learned-from-tracking-every-tattoo-in-the-nba/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/nba-tattoos/nba-tattoos-data.csv"
     ]
   },
   {
@@ -2004,6 +2837,9 @@
         "title": "Using ‘Infrastructure Jobs’ as a Measuring Stick For State-Level Spending",
         "url": "http://fivethirtyeight.com/features/using-infrastructure-jobs-as-a-measuring-stick-for-state-level-spending/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/infrastructure-jobs/payroll-states.csv"
     ]
   },
   {
@@ -2016,6 +2852,9 @@
         "title": "How Americans Like Their Steak",
         "url": "https://fivethirtyeight.com/features/how-americans-like-their-steak/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/steak-survey/steak-risk-survey.csv"
     ]
   },
   {
@@ -2041,6 +2880,10 @@
         "rowspan": 0,
         "url": "http://fivethirtyeight.com/features/what-states-are-in-the-midwest/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/region-survey/MIDWEST.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/region-survey/SOUTH.csv"
     ]
   },
   {
@@ -2053,6 +2896,9 @@
         "title": "Both Republicans And Democrats Have an Age Problem",
         "url": "http://fivethirtyeight.com/features/both-republicans-and-democrats-have-an-age-problem/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/congress-age/congress-terms.csv"
     ]
   },
   {
@@ -2065,6 +2911,9 @@
         "title": "Early Senate Polls Have Plenty to Tell Us About November",
         "url": "http://fivethirtyeight.com/features/early-senate-polls-have-plenty-to-tell-us-about-november/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/early-senate-polls/early-senate-polls.csv"
     ]
   },
   {
@@ -2077,6 +2926,9 @@
         "title": "Do Pulitzers Help Newspapers Keep Readers?",
         "url": "http://fivethirtyeight.com/features/do-pulitzers-help-newspapers-keep-readers"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/pulitzer/pulitzer-circulation-data.csv"
     ]
   },
   {
@@ -2089,6 +2941,9 @@
         "title": "A Statistical Analysis of the Work of Bob Ross",
         "url": "http://fivethirtyeight.com/features/a-statistical-analysis-of-the-work-of-bob-ross"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/bob-ross/elements-by-episode.csv"
     ]
   },
   {
@@ -2101,6 +2956,9 @@
         "title": "Where Are America’s Librarians?",
         "url": "http://fivethirtyeight.com/features/where-are-americas-librarians"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/librarians/librarians-by-msa.csv"
     ]
   },
   {
@@ -2113,6 +2971,9 @@
         "title": "The Dollar-And-Cents Case Against Hollywood’s Exclusion of Women",
         "url": "http://fivethirtyeight.com/features/the-dollar-and-cents-case-against-hollywoods-exclusion-of-women"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/bechdel/movies.csv"
     ]
   },
   {
@@ -2125,18 +2986,9 @@
         "title": "The NCAA Bracket: Checking Our Work",
         "url": "http://fivethirtyeight.com/features/the-ncaa-bracket-checking-our-work"
       }
-    ]
-  },
-  {
-    "url": "https://github.com/fivethirtyeight/data/tree/master/undefeated-boxers",
-    "name": "undefeated-boxers",
-    "displayName": "undefeated-<span class=\"lastword\">boxers</span>",
-    "articles": [
-      {
-        "date": "2017-08-18T18:47:32.000Z",
-        "title": "Mayweather Is Defined By The Zero Next To His Name",
-        "url": "https://fivethirtyeight.com/features/mayweather-is-defined-by-the-zero-next-to-his-name/"
-      }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/historical-ncaa-forecasts/historical-538-ncaa-tournament-model-results.csv"
     ]
   },
   {
@@ -2149,6 +3001,70 @@
         "title": "2014 NCAA Tournament Predictions",
         "url": "https://fivethirtyeight.com/interactives/march-madness-predictions/"
       }
+    ],
+    "files": [
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-00.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-01.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-02.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-03.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-04.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-05.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-06.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-07.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-08.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-09.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-10.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-11.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-12.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-13.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-14.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-15.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-16.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-17.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-18.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-19.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-20.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-21.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-22.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-23.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-24.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-25.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-26.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-27.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-28.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-29.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-30.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-31.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-32.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-33.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-34.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-35.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-36.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-37.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-38.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-39.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-40.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-41.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-42.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-43.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-44.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-45.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-46.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-47.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-48.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-49.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-50.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-51.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-52.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-53.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-54.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-55.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-56.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-57.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-58.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-59.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-60.csv",
+      "https://raw.githubusercontent.com/fivethirtyeight/data/master/march-madness-predictions/bracket-61.csv"
     ]
   }
 ]
