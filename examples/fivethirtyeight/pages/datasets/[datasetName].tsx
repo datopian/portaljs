@@ -1,7 +1,6 @@
 import { NextSeo } from 'next-seo';
 import { promises as fs } from 'fs';
 import path from 'path';
-import getConfig from 'next/config';
 import { getProjectReadme, GithubProject } from '@/lib/octokit';
 import remarkGfm from 'remark-gfm';
 import extract from 'remark-extract-frontmatter';
@@ -197,7 +196,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const dataset: Dataset | undefined = datasets.find(
     (_dataset) => _dataset.name === params?.datasetName
   );
-  const github_pat = getConfig().serverRuntimeConfig.github_pat;
+  const github_pat = process.env.GITHUB_PAT || process.env.GITHUB_TOKEN;
   const readmes = await Promise.all(
     ['/README.md', '/readme.md', '/Readme.md'].map(
       async (readme) =>
