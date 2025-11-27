@@ -38,6 +38,9 @@ https://github.com/datopian/portaljs-mcp-server
 
 Use it, fork it, deploy your own version, or just read through it to understand how MCP can sit cleanly on top of a data portal.
 
+[![Architecture diagram](https://mermaid.ink/img/pako:eNpNjl9PgzAUxb9Kc580YYQxKLQxJhs8GU0WF19c91Dt3VgClJTWqITvbhm6eJ_un_M75w7wrhUCh5ORXUUen0VLfK33Lz2aA1ks7slmL6CopCXrruvJDZ4CUtTSKbwVcJjlm4uw2D8VW7JD8-HR-dC7t9l4q42V9cPOo9qp-ThV8a8ld5NL6eNKaeUvcs3AVkHg3zwr4NY4DKBB08hphGGSCLAVNiiA-1bhUbraChDt6LFOtq9aN3-k0e5UAT_KuveT65S0WJ6lf7W5bo0PRFNo11rgaXbxAD7AJ3DGQrqiGY3yPMnSnAXwBXxJozBKknQV53FMo4iNAXxfMqOQspwtaZzSJM4ymrDxBwREbd4?type=png)](https://mermaid.live/edit#pako:eNpNjl9PgzAUxb9Kc580YYQxKLQxJhs8GU0WF19c91Dt3VgClJTWqITvbhm6eJ_un_M75w7wrhUCh5ORXUUen0VLfK33Lz2aA1ks7slmL6CopCXrruvJDZ4CUtTSKbwVcJjlm4uw2D8VW7JD8-HR-dC7t9l4q42V9cPOo9qp-ThV8a8ld5NL6eNKaeUvcs3AVkHg3zwr4NY4DKBB08hphGGSCLAVNiiA-1bhUbraChDt6LFOtq9aN3-k0e5UAT_KuveT65S0WJ6lf7W5bo0PRFNo11rgaXbxAD7AJ3DGQrqiGY3yPMnSnAXwBXxJozBKknQV53FMo4iNAXxfMqOQspwtaZzSJM4ymrDxBwREbd4)
+_Figure 1: Architecture diagram._
+
 ## Why MCP Is a Game-Changer for Data Portals
 
 AI chats are powerful, but without structured access they’re basically guessing. MCP fixes that by giving models secure, predictable tools to interact with real systems — including your data portal.
