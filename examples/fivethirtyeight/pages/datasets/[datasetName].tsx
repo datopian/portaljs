@@ -210,7 +210,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         )
     )
   );
-  const readme = readmes.find((item) => item !== null);
+  const readme = readmes.find((item) => item !== null) || null;
   if (!readme) console.log('Readme not found for ' + dataset?.name);
   return {
     props: {
