@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:datasets": "node scripts/build-datasets.js",
     "start": "next start",
     "lint": "next lint"
   },

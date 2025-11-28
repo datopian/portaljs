@@ -1,6 +1,9 @@
 const fs = require('fs').promises;
 const path = require('path');
 const { Octokit } = require('octokit');
+const { loadEnvConfig } = require('@next/env');
+
+loadEnvConfig(path.join(__dirname, '..'));
 
 async function parseIndexCsv(filePath) {
   const content = await fs.readFile(filePath, 'utf-8');
