@@ -161,7 +161,44 @@ describe("micromark-extension-wiki-link", () => {
         '<p><img src="My Image.jpg" alt="My Image.jpg" class="internal" width="200" height="200" /></p>'
       );
     });
-
+    // CSV tests
+    test("parses a CSV file embed of supported file format", () => {
+      const serialized = micromark("![[data.csv]]", "ascii", {
+          extensions: [syntax()],
+          htmlExtensions: [html() as any], // TODO type fix
+      });
+      expect(serialized).toBe(
+          '<FlatUiTable data={{ url: "data.csv" }} />'
+      );
+  });
+  
+    test("leaves a CSV file embed of unsupported file format as plain text", () => {
+        const serialized = micromark("![[data.xyz]]", "ascii", {
+            extensions: [syntax()],
+            htmlExtensions: [html() as any], // TODO type fix
+        });
+        expect(serialized).toBe('<p>![[data.xyz]]</p>');
+    });
+    
+    test("parses a CSV file embed with a matching permalink", () => {
+        const serialized = micromark("![[data.csv]]", "ascii", {
+            extensions: [syntax()],
+            htmlExtensions: [html({ permalinks: ["data.csv"] }) as any], // TODO type fix
+        });
+        expect(serialized).toBe(
+            '<FlatUiTable data={{ url: "data.csv" }} />'
+        );
+    });
+    // Ignore the table alias test
+    // test("parses a CSV file embed with an alias", () => {
+    //     const serialized = micromark("![[data.csv|My CSV File]]", "ascii", {
+    //         extensions: [syntax()],
+    //         htmlExtensions: [html() as any], // TODO type fix
+    //     });
+    //     expect(serialized).toBe(
+    //         '<FlatUiTable data={{ url: "data.csv" }} />'
+    //     );
+    // });
     // TODO: Fix alt attribute
     test("Can identify the dimensions of the image if exists", () => {
       const serialized = micromark("![[My Image.jpg|200x200]]", "ascii", {

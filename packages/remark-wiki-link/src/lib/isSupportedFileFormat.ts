@@ -11,6 +11,7 @@ export const supportedFileFormats = [
   "avif",
   "ico",
   "pdf",
+  "csv",
 ];
 
 export const isSupportedFileFormat = (filePath: string): [boolean, string] => {

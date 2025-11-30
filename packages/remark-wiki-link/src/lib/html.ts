@@ -127,6 +127,11 @@ function html(opts: HtmlOptions = {}) {
             link
           )}#toolbar=0" class="${classNames}" />`
         );
+      } else if (format === 'csv') {
+        // CSV support
+        this.tag(
+          `<FlatUiTable data={{ url: "${hrefTemplate(link)}" }} />`
+        );
       } else {
         const hasDimensions = alias && /^\d+(x\d+)?$/.test(alias);
         // Take the target as alt text except if alt name was provided [[target|alt text]]

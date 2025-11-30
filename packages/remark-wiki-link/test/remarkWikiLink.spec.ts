@@ -381,6 +381,23 @@ describe("remark-wiki-link", () => {
         );
       });
     });
+
+    test("parses a CSV embed", () => {
+      const processor = unified().use(markdown).use(wikiLinkPlugin);
+
+      let ast = processor.parse("![[My Data.csv]]");
+      ast = processor.runSync(ast);
+
+      expect(select("wikiLink", ast)).not.toEqual(null);
+
+      visit(ast, "wikiLink", (node: Node) => {
+        expect(node.data?.isEmbed).toEqual(true);
+        expect(node.data?.target).toEqual("My Data.csv");
+        expect(node.data?.permalink).toEqual("My Data.csv");
+        expect(node.data?.hName).toEqual("FlatUiTable");
+        expect((node.data?.hProperties as any).data).toEqual({ url: "My Data.csv" });
+      });
+    });
   });
 
   describe("Links with special characters", () => {
