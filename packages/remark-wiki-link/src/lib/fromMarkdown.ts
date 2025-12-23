@@ -83,10 +83,11 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
   }
 
   function exitWikiLink(token) {
-    const wikiLink = this.exit(token);
+    const wikiLink = top(this.stack)
     const {
-      data: { isEmbed, target, alias },
+        data: {isEmbed, target, alias},
     } = wikiLink;
+    this.exit(token);
     // eslint-disable-next-line no-useless-escape
     const wikiLinkWithHeadingPattern = /^(.*?)(#.*)?$/u;
     const [, path, heading = ''] = target.match(wikiLinkWithHeadingPattern);
@@ -162,19 +163,19 @@ function fromMarkdown(opts: FromMarkdownOptions = {}) {
         // Take the target as alt text except if alt name was provided [[target|alt text]]
         const altText = hasDimensions || !alias ? target : alias;
 
-        wikiLink.data.hName = 'img';  
-        wikiLink.data.hProperties = {  
-            className: classNames,  
-            src: hrefTemplate(link),  
+        wikiLink.data.hName = 'img';
+        wikiLink.data.hProperties = {
+            className: classNames,
+            src: hrefTemplate(link),
             alt: altText
-        };  
+        };
 
-        if (hasDimensions) {  
-          const { width, height } = getImageSize(alias as string);  
-          Object.assign(wikiLink.data.hProperties, {  
-            width,  
-            height,  
-          }); 
+        if (hasDimensions) {
+          const { width, height } = getImageSize(alias as string);
+          Object.assign(wikiLink.data.hProperties, {
+            width,
+            height,
+          });
         }
       }
     } else {
