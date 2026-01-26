@@ -343,6 +343,78 @@ resource_delete_result = resource_delete_response.json()
 print(resource_delete_result)
 ```
 
+## Full End-to-End Script
+
+If you want a single copy-paste file with all the steps (create dataset, create resource, upload, finalize), use this:
+
+```python
+import requests
+
+PORTAL = "datopian"
+API_KEY = "your-api-key"
+API_BASE = f"https://api.cloud.portaljs.com/@{PORTAL}/api/3/action"
+
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": API_KEY,
+}
+
+dataset_response = requests.post(
+    f"{API_BASE}/package_create",
+    headers=headers,
+    json={
+        "name": "automated-dataset",
+        "title": "Automated Dataset",
+        "notes": "This dataset is created and updated via the PortalJS Cloud API",
+        "owner_org": PORTAL,
+    },
+)
+
+dataset_result = dataset_response.json()
+dataset_id = dataset_result["result"]["id"]
+
+resource_response = requests.post(
+    f"{API_BASE}/resource_create",
+    headers=headers,
+    json={
+        "package_id": dataset_id,
+        "name": "latest-data",
+        "description": "Latest version of the dataset",
+        "format": "CSV",
+    },
+)
+
+resource_result = resource_response.json()
+resource_id = resource_result["result"]["id"]
+
+filename = "data.csv"
+with open(filename, "w", encoding="utf-8") as file_handle:
+    file_handle.write("id,name\n1,Example row\n")
+
+upload_response = requests.post(
+    f"{API_BASE}/resource_upload",
+    headers=headers,
+    json={
+        "id": resource_id,
+        "filename": filename,
+    },
+)
+
+upload_result = upload_response.json()
+upload_url = upload_result["result"]["presigned_url"]
+
+with open(filename, "rb") as file_handle:
+    requests.put(upload_url, data=file_handle)
+
+requests.post(
+    f"{API_BASE}/resource_upload_finalize",
+    headers=headers,
+    json={
+        "id": resource_id,
+    },
+)
+```
+
 ## Conclusion and Next Steps
 
 Using the PortalJS Cloud API, you can move from manual uploads to a fully automated, reliable data publishing workflow.
