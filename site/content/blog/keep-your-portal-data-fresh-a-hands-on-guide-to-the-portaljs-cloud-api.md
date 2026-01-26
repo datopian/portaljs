@@ -1,6 +1,6 @@
 ---
 title: "Keep Your Portal Data Fresh: A Hands-On Guide to the PortalJS Cloud API"
-description: "This guide walks through using the PortalJS Cloud API to automatically create datasets, add resources, upload and replace data files, and update metadata—showing how to build reliable, repeatable data update pipelines with real-world code examples."
+description: "This guide walks through using the PortalJS Cloud API to programatically create datasets, add resources, upload and replace data files, and update metadata—showing how to build repeatable data update pipelines with code examples."
 created: 2026-01-22
 authors: ['João Demenech']
 tags:
