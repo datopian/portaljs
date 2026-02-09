@@ -1,36 +1,38 @@
-import '@/styles/global.css'
-import '@/styles/prism.css'
-import '@/styles/docsearch.css'
-import 'tailwindcss/tailwind.css'
-import Script from 'next/script'
-import { DefaultSeo } from 'next-seo'
-import { NavGroup, NavItem, pageview, ThemeProvider } from '@portaljs/core'
-import siteConfig from '../config/siteConfig'
-import { useEffect } from 'react'
-import { useRouter } from 'next/dist/client/router'
-import { Noto_Sans as Roboto_Condensed } from 'next/font/google'
+import '@/styles/global.css';
+import '@/styles/prism.css';
+import '@/styles/docsearch.css';
+import 'tailwindcss/tailwind.css';
+import Script from 'next/script';
+import { DefaultSeo } from 'next-seo';
+import { NavGroup, NavItem, pageview, ThemeProvider } from '@portaljs/core';
+import siteConfig from '../config/siteConfig';
+import { useEffect } from 'react';
+import { useRouter } from 'next/dist/client/router';
+import { Noto_Sans as Roboto_Condensed } from 'next/font/google';
+import posthog from 'posthog-js';
+import { PostHogProvider } from 'posthog-js/react';
 
 export interface CustomAppProps {
   meta: {
-    showToc: boolean
-    showEditLink: boolean
-    showSidebar: boolean
-    showComments: boolean
-    urlPath: string // not sure what's this for
-    editUrl?: string
-    [key: string]: any
-  }
-  siteMap?: Array<NavItem | NavGroup>
-  [key: string]: any
+    showToc: boolean;
+    showEditLink: boolean;
+    showSidebar: boolean;
+    showComments: boolean;
+    urlPath: string; // not sure what's this for
+    editUrl?: string;
+    [key: string]: any;
+  };
+  siteMap?: Array<NavItem | NavGroup>;
+  [key: string]: any;
 }
 
 const RobotoCondensed = Roboto_Condensed({
   subsets: ['latin'],
   weight: ['300', '400', '600', '700'], // Include all desired weights
   variable: '--font-roco',
-})
+});
 function MyApp({ Component, pageProps }) {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (siteConfig.analytics) {
@@ -38,18 +40,28 @@ function MyApp({ Component, pageProps }) {
         if (typeof window.gtag === 'function') {
           window.gtag('config', siteConfig.analytics, {
             page_path: url,
-          })
+          });
         } else {
-          console.warn('gtag function is not available')
+          console.warn('gtag function is not available');
         }
-      }
+      };
 
-      router.events.on('routeChangeComplete', handleRouteChange)
+      router.events.on('routeChangeComplete', handleRouteChange);
       return () => {
-        router.events.off('routeChangeComplete', handleRouteChange)
-      }
+        router.events.off('routeChangeComplete', handleRouteChange);
+      };
     }
-  }, [router.events])
+  }, [router.events]);
+
+  useEffect(() => {
+    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
+      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+      defaults: '2025-11-30',
+      loaded: (posthog) => {
+        if (process.env.NODE_ENV === 'development') posthog.debug();
+      },
+    });
+  }, []);
 
   return (
     <ThemeProvider
@@ -95,11 +107,13 @@ function MyApp({ Component, pageProps }) {
           />
         </>
       )}
-      <main className={` font-sans`}>
-        <Component {...pageProps} />
-      </main>
+      <PostHogProvider client={posthog}>
+        <main className={` font-sans`}>
+          <Component {...pageProps} />
+        </main>
+      </PostHogProvider>
     </ThemeProvider>
-  )
+  );
 }
 
-export default MyApp
+export default MyApp;

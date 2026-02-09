@@ -45,6 +45,7 @@
     "next-sitemap": "^4.2.2",
     "next-themes": "^0.2.1",
     "nuka-carousel": "^5.4.1",
+    "posthog-js": "^1.343.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-globe.gl": "^2.22.10",
