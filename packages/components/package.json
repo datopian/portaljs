@@ -36,7 +36,6 @@
     "chroma-js": "^2.4.2",
     "flexsearch": "0.7.21",
     "leaflet": "^1.9.4",
-    "next-mdx-remote": "^4.4.1",
     "ol": "^7.4.0",
     "papaparse": "^5.4.1",
     "pdfjs-dist": "2.15.349",
