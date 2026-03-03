@@ -1,8 +1,13 @@
 import Layout from '@/components/Layout';
 import { NextSeo, LogoJsonLd } from 'next-seo';
 import ButtonLink from '@/components/ButtonLink';
-import { Player } from '@lottiefiles/react-lottie-player';
+import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
+
+const Player = dynamic(
+  () => import('@lottiefiles/react-lottie-player').then((mod) => mod.Player),
+  { ssr: false }
+)
 
 export default function Partners() {
   const { theme } = useTheme();

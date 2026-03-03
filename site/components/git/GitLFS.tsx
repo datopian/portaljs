@@ -1,7 +1,12 @@
-import { Player } from '@lottiefiles/react-lottie-player'
+import dynamic from 'next/dynamic'
 import { H2, H3 } from '../custom/header'
 import { useTheme } from 'next-themes'
 import ButtonLink from '../ButtonLink'
+
+const Player = dynamic(
+  () => import('@lottiefiles/react-lottie-player').then((mod) => mod.Player),
+  { ssr: false }
+)
 
 export const GitLFS = () => {
   const { theme } = useTheme()
