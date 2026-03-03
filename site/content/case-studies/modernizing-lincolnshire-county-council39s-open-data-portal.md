@@ -2,7 +2,7 @@
 filetype: 'casestudy'
 created: 2026-03-03
 title: Modernizing Lincolnshire County Council / From Dedicated CKAN Instance to Managed PortalJS Cloud Service
-description: 'Discover how Lincolnshire County Council migrated from a dedicated CKAN instance to PortalJS Cloud, preserving their catalogue while reducing operational overhead and improving the admin and publishing experience.'
+description: 'Discover how Lincolnshire County Council transformed their data publishing approach, migrating from a dedicated CKAN instance to PortalJS Cloud. Reduced operational costs, simplified administration, and delivered a modern user experience without compromising their established catalogue.'
 image: /images/casestudies/linconshire0.jpg
 images: ['/images/casestudies/lincolnshire1.png', '/images/casestudies/lincolnshire2.png', '/images/casestudies/lincolnshire3.png', '/images/casestudies/lincolnshire4.png']
 authors: ['popovayoana']
