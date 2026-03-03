@@ -1,8 +1,13 @@
+import dynamic from 'next/dynamic'
 import { ArrowRightIcon, CheckIcon } from '@heroicons/react/24/solid'
 import { H2, H3 } from '../custom/header'
-import { Player } from '@lottiefiles/react-lottie-player'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
+
+const Player = dynamic(
+  () => import('@lottiefiles/react-lottie-player').then((mod) => mod.Player),
+  { ssr: false }
+)
 
 export default function NoVendorLockIn() {
   const { theme } = useTheme()

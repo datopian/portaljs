@@ -4,7 +4,6 @@ import howtosAnimation from '../components/icons/animations/guide.json'
 import cloudAnimation from '../components/icons/animations/cloud.json'
 import docsAnimation from '../components/icons/animations/book.json'
 const iconClass = "animate-float inline-block"
-import Lottie from 'react-lottie-player';
 import dynamic from "next/dynamic";
 
 const LottiePlayer = dynamic(() => import("react-lottie-player"), { ssr: false });

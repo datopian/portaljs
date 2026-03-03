@@ -1,7 +1,11 @@
 import dynamic from 'next/dynamic'
 import { H2, H3 } from '../custom/header'
-import { Player } from '@lottiefiles/react-lottie-player'
 import { CheckIcon } from '@heroicons/react/24/solid'
+
+const Player = dynamic(
+  () => import('@lottiefiles/react-lottie-player').then((mod) => mod.Player),
+  { ssr: false }
+)
 const FeatureOverview = () => {
   return (
     <>
