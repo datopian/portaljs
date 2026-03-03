@@ -82,6 +82,8 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
     highlight,
     longRead = true,
     longReadLink,
+    longReadTitle,
+    longReadSummary,
     fullCaseStudy = false,
     faqs
   } = frontMatter
@@ -542,18 +544,31 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
       <Cta />
       {longRead && !fullCaseStudy && (longReadLink ? (
         <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
-          <div className="text-start text-base font-medium">
-            <p className="text-sm font-bold text-blue-400">LONG READ</p>
-            <div className="mt-6">
-              <a
-                href={longReadLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-2xl text-blue-500 font-semibold hover:underline"
-              >
-                Read the full case study →
-              </a>
+          <div className="px-8 py-12 sm:px-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+            <div>
+              <p className="text-xs font-semibold tracking-widest uppercase text-blue-400 mb-2.5">
+                Full Case Study
+              </p>
+              <h3 className="text-xl sm:text-[22px] font-bold text-slate-900 dark:text-white leading-snug max-w-sm">
+                {longReadTitle || 'Read the full case study'}
+              </h3>
+              {longReadSummary && (
+                <p className="mt-2.5 text-sm text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed">
+                  {longReadSummary}
+                </p>
+              )}
             </div>
+            <a
+              href={longReadLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-[#111] text-sm font-semibold px-6 py-3.5 rounded-lg hover:bg-slate-700 dark:hover:bg-slate-100 transition-colors shrink-0"
+            >
+              Read the full story
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                <path d="M3 8h10M9 4l4 4-4 4"/>
+              </svg>
+            </a>
           </div>
         </main>
       ) : (

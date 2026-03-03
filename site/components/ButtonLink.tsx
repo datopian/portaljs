@@ -1,10 +1,10 @@
-import { AnchorHTMLAttributes } from "react";
+import { AnchorHTMLAttributes, ReactNode } from "react";
 import * as gtag from '@/lib/gtag';
 import siteConfig from '@/config/siteConfig';
 
 type ButtonLinkProps = {
   style?: "primary" | "secondary" | "tertiary";
-  children: string;
+  children: ReactNode;
   className?: string;
   title?: string;
   href?: string;

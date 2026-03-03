@@ -52,4 +52,6 @@ portal: [
 ]
 table: default
 longReadLink: 'https://www.datopian.com/showcase/case-studies/lincolnshire-county-council-portaljs-cloud-migration'
+longReadTitle: 'How Lincolnshire County Council Modernised Its Open Data Portal with PortalJS Cloud'
+longReadSummary: 'Read the complete breakdown of architecture, migration approach, and outcomes — from dedicated CKAN instance to fully managed PortalJS Cloud.'
 ---
