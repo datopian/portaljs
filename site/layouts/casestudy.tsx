@@ -81,6 +81,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
     table,
     highlight,
     longRead = true,
+    longReadLink,
     fullCaseStudy = false,
     faqs
   } = frontMatter
@@ -539,46 +540,64 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
     <article>
       <Header />
       <Cta />
-      {longRead && !fullCaseStudy && <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
-        <Disclosure>
-          {({ open }) => (
-            <>
-              <Disclosure.Button className="text-start text-base font-medium">
-                {open ? (
-                  <div>
-                    <p className="text-sm font-bold text-blue-400">LONG READ</p>
-                    <div className="flex items-center gap-2">
-                      <p className="text-2xl">Hide</p>
-                      <FaIcons.FaAngleDoubleUp className="text-blue-400 mt-1 " />
+      {longRead && !fullCaseStudy && (longReadLink ? (
+        <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
+          <div className="text-start text-base font-medium">
+            <p className="text-sm font-bold text-blue-400">LONG READ</p>
+            <div className="mt-6">
+              <a
+                href={longReadLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-2xl text-blue-500 font-semibold hover:underline"
+              >
+                Read the full case study →
+              </a>
+            </div>
+          </div>
+        </main>
+      ) : (
+        <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
+          <Disclosure>
+            {({ open }) => (
+              <>
+                <Disclosure.Button className="text-start text-base font-medium">
+                  {open ? (
+                    <div>
+                      <p className="text-sm font-bold text-blue-400">LONG READ</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-2xl">Hide</p>
+                        <FaIcons.FaAngleDoubleUp className="text-blue-400 mt-1 " />
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-sm font-bold text-blue-400">LONG READ</p>
+                      <div className="flex items-center gap-2 transition blink">
+                        <p className="text-start text-5xl sm:text-7xl max-w-lg sm:mb-16 tracking-tight">
+                          Click to read the detailed case study{' '}
+                          <FaIcons.FaAngleDoubleDown className=" inline text-blue-400 -ml-3 mt-1 sm:h-16 sm:w-16 " />
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </Disclosure.Button>
+                <Disclosure.Panel>
+                  <div className="text-center text-3xl font-semibold mt-8 mb-6 max-w-l">
+                    A Detailed Case Study for a Deep Dive
+                  </div>
+                  <div className="flex justify-center">
+                    {' '}
+                    <div className="max-w-4xl docs mt-6 prose prose-headings:font-headings dark:prose-invert prose-a:break-word ">
+                      {children}
                     </div>
                   </div>
-                ) : (
-                  <div>
-                    <p className="text-sm font-bold text-blue-400">LONG READ</p>
-                    <div className="flex items-center gap-2 transition blink">
-                      <p className="text-start text-5xl sm:text-7xl max-w-lg sm:mb-16 tracking-tight">
-                        Click to read the detailed case study{' '}
-                        <FaIcons.FaAngleDoubleDown className=" inline text-blue-400 -ml-3 mt-1 sm:h-16 sm:w-16 " />
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </Disclosure.Button>
-              <Disclosure.Panel>
-                <div className="text-center text-3xl font-semibold mt-8 mb-6 max-w-l">
-                  A Detailed Case Study for a Deep Dive
-                </div>
-                <div className="flex justify-center">
-                  {' '}
-                  <div className="max-w-4xl docs mt-6 prose prose-headings:font-headings dark:prose-invert prose-a:break-word ">
-                    {children}
-                  </div>
-                </div>
-              </Disclosure.Panel>
-            </>
-          )}
-        </Disclosure>
-      </main>}
+                </Disclosure.Panel>
+              </>
+            )}
+          </Disclosure>
+        </main>
+      ))}
       <Stats />
       <FAQ faqItems={faqs || questions} />
     </article>
