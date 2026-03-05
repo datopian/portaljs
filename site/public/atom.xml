@@ -5,13 +5,1013 @@
   <id>https://portaljs.com/</id>
   <link href="https://portaljs.com" />
   <link href="https://portaljs.com/atom.xml" rel="self" />
-  <updated>2025-07-08T00:00:00.000Z</updated>
+  <updated>2026-01-22T00:00:00.000Z</updated>
   <author>
     <name>Datopian</name>
     <email>contact@datopian.com</email>
   </author>
-  <rights>Copyright 2025 Datopian</rights>
+  <rights>Copyright 2026 Datopian</rights>
   <generator uri="https://portaljs.com" version="1.0">PortalJS</generator>
+  <entry>
+    <title>Keep Your Portal Data Fresh: A Hands-On Guide to the PortalJS Cloud API</title>
+    <id>https://portaljs.com/blog/keep-your-portal-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api</id>
+    <link href="https://portaljs.com/blog/keep-your-portal-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api" />
+    <updated>2026-01-22T00:00:00.000Z</updated>
+    <published>2026-01-22T00:00:00.000Z</published>
+    <author>
+      <name>João Demenech</name>
+    </author>
+    <content type="html">
+Keeping data portals up to date is harder than it looks. Files change, metadata drifts, and manual uploads don’t scale once updates become frequent or automated.
+
+PortalJS Cloud solves this by exposing a powerful API that lets you manage datasets, resources, and data files programmatically. In this guide, we’ll walk through how to use the **PortalJS Cloud API** to automatically create datasets, upload data, and keep both data and metadata in sync—using real Python code.
+
+By the end, you’ll have all the pieces needed to build a repeatable, automated data publishing pipeline.
+
+## The Problem with Manual Data Updates
+
+Many portals start with a simple workflow:
+
+- Upload a CSV through the UI
+- Update the description
+- Repeat next week
+
+Over time, this approach breaks down:
+
+- Files are updated, but metadata isn’t
+- Uploads become repetitive and error-prone
+- Data refreshes depend on someone remembering to do them
+
+What we want instead is:
+
+- A fully automated flow
+- Consistent dataset and resource metadata
+- The ability to update data on a schedule
+
+That’s exactly what the PortalJS Cloud API enables.
+
+## Finding Your PortalJS Cloud API
+
+Every PortalJS Cloud portal comes with its **own API**.
+
+You can access your portal’s API documentation using the following pattern:
+
+```
+https://api.cloud.portaljs.com/{your-portal}/api/3/docs
+```
+
+For example, for the Datopian portal:
+
+```
+https://api.cloud.portaljs.com/@datopian/api/3/docs
+```
+
+![Interactive API docs](/static/img/blog/2026-01-22-keep-your-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api/api-docs.png)
+
+This interactive documentation lets you:
+
+- Explore all available endpoints
+- See required parameters and response schemas
+- Test requests directly from the browser
+
+&gt; **Tip:** Bookmark this page—you’ll use it constantly when building and debugging integrations.
+
+## Authentication and API Keys
+
+### Public access (no API key)
+
+Without an API key, anyone can:
+
+- Read public datasets
+- Access public resources and data files
+
+For example, a simple public read request:
+
+```python
+import requests
+
+response = requests.get(
+    &quot;https://api.cloud.portaljs.com/@datopian/api/3/action/package_search&quot;
+)
+
+result = response.json()
+print(result)
+```
+
+### Authenticated access (API key required)
+
+To create or update data, you’ll need an API key. Authenticated actions include:
+
+- Creating datasets
+- Creating resources
+- Uploading or replacing data files
+- Updating dataset and resource metadata
+
+#### Generating an API key
+
+To generate an API key:
+
+1. Log in to the [**PortalJS Cloud dashboard**](https://cloud.portaljs.com/auth/signin)
+2. Navigate to [**your user profile**](https://cloud.portaljs.com/profile/api-keys)
+3. Create a new API key
+
+Treat API keys like passwords and store them securely.
+
+![Interactive API docs](/static/img/blog/2026-01-22-keep-your-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api/api-token.png)
+
+### Using the API key in requests
+
+Include the API key in the `Authorization` header.
+
+#### Common Python setup
+
+We’ll use Python 3.10+ and the `requests` package. Set your portal slug and API key once and reuse them everywhere.
+
+```python
+import requests
+
+PORTAL = &quot;datopian&quot;
+API_KEY = &quot;your-api-key&quot;
+API_BASE = f&quot;https://api.cloud.portaljs.com/@{PORTAL}/api/3/action&quot;
+
+headers = {
+    &quot;Content-Type&quot;: &quot;application/json&quot;,
+    &quot;Authorization&quot;: API_KEY,
+}
+```
+
+## Creating a Dataset via the API
+
+In PortalJS, a **dataset** is the top-level container for related data and resources.
+
+To create one programmatically, use the `package_create` endpoint.
+
+```python
+response = requests.post(
+    f&quot;{API_BASE}/package_create&quot;,
+    headers=headers,
+    json={
+        &quot;name&quot;: &quot;automated-dataset&quot;,
+        &quot;title&quot;: &quot;Automated Dataset&quot;,
+        &quot;notes&quot;: &quot;This dataset is created and updated via the PortalJS Cloud API&quot;,
+        &quot;owner_org&quot;: PORTAL,
+    },
+)
+
+result = response.json()
+print(result)
+
+dataset_id = result[&quot;result&quot;][&quot;id&quot;]
+```
+
+&gt; The `owner_org` field should be set to the organization that owns the dataset.  
+&gt; You can find the organization identifier in the PortalJS Cloud dashboard.
+
+---
+
+## Creating a Resource for the Dataset
+
+A **resource** represents a specific data file (CSV, JSON, etc.) attached to a dataset.
+
+Create a resource using `resource_create`:
+
+```python
+response = requests.post(
+    f&quot;{API_BASE}/resource_create&quot;,
+    headers=headers,
+    json={
+        &quot;package_id&quot;: &quot;automated-dataset&quot;,
+        &quot;name&quot;: &quot;latest-data&quot;,
+        &quot;description&quot;: &quot;Latest version of the dataset&quot;,
+        &quot;format&quot;: &quot;CSV&quot;,
+    },
+)
+
+result = response.json()
+print(result)
+
+resource_id = result[&quot;result&quot;][&quot;id&quot;]
+```
+
+Resources are typically created once and updated repeatedly.
+
+## Uploading Data Using Pre-Signed URLs
+
+PortalJS Cloud uses **pre-signed URLs** for uploads. This allows large files to be uploaded directly to storage without passing through the API server.
+
+The upload flow is:
+
+1. Request an upload URL
+2. Upload the file using `PUT`
+3. Finalize the upload so the resource metadata is updated
+
+### Step 1: Request an upload URL
+
+```python
+upload_response = requests.post(
+    f&quot;{API_BASE}/resource_upload&quot;,
+    headers=headers,
+    json={
+        &quot;id&quot;: resource_id,
+        &quot;filename&quot;: &quot;data.csv&quot;,
+    },
+)
+
+upload_result = upload_response.json()
+upload_url = upload_result[&quot;result&quot;][&quot;presigned_url&quot;]
+print(upload_url)
+```
+
+### Step 2: Upload the file
+
+Create a minimal CSV file locally first, for example `data.csv`:
+
+```csv
+id,name
+1,Example row
+```
+
+Then upload the file:
+
+```python
+with open(&quot;./data.csv&quot;, &quot;rb&quot;) as file_handle:
+    requests.put(upload_url, data=file_handle)
+```
+
+### Step 3: Finalize the upload
+
+```python
+requests.post(
+    f&quot;{API_BASE}/resource_upload_finalize&quot;,
+    headers=headers,
+    json={
+        &quot;id&quot;: resource_id,
+    },
+)
+```
+
+At this point, the resource is updated and consumers will see the new data.
+
+## Updating Resource Data Automatically
+
+This same upload flow can be reused every time your data changes:
+- Daily refreshes
+- Weekly exports
+- Data generated from upstream systems
+
+You do **not** need to create a new resource each time. Updating the existing resource ensures:
+- Stable URLs
+- Consistent metadata
+- A clean dataset structure
+
+## Putting It All Together: End-to-End Automation
+
+A typical automation flow looks like this:
+
+**One-time**
+- Create dataset
+- Create resource
+
+**On every run**
+- Generate or fetch new data
+- Request upload URL
+- Upload file
+- Finalize the upload
+
+## Common Dataset and Resource Operations
+
+Here are a few additional calls you’ll use often once your pipeline is in place.
+
+### Search datasets
+
+```python
+search_response = requests.get(
+    f&quot;{API_BASE}/package_search&quot;,
+    params={&quot;q&quot;: &quot;climate&quot;, &quot;rows&quot;: 5},
+)
+
+search_result = search_response.json()
+print(search_result)
+```
+
+### Patch a dataset
+
+```python
+dataset_patch_response = requests.post(
+    f&quot;{API_BASE}/package_patch&quot;,
+    headers=headers,
+    json={
+        &quot;id&quot;: dataset_id,
+        &quot;notes&quot;: &quot;Updated description from automation.&quot;,
+    },
+)
+
+dataset_patch_result = dataset_patch_response.json()
+print(dataset_patch_result)
+```
+
+### Delete a dataset
+
+```python
+dataset_delete_response = requests.post(
+    f&quot;{API_BASE}/package_delete&quot;,
+    headers=headers,
+    json={&quot;id&quot;: dataset_id},
+)
+
+dataset_delete_result = dataset_delete_response.json()
+print(dataset_delete_result)
+```
+
+### Patch a resource
+
+```python
+resource_patch_response = requests.post(
+    f&quot;{API_BASE}/resource_patch&quot;,
+    headers=headers,
+    json={
+        &quot;id&quot;: resource_id,
+        &quot;description&quot;: &quot;Updated resource description.&quot;,
+    },
+)
+
+resource_patch_result = resource_patch_response.json()
+print(resource_patch_result)
+```
+
+### Delete a resource
+
+```python
+resource_delete_response = requests.post(
+    f&quot;{API_BASE}/resource_delete&quot;,
+    headers=headers,
+    json={&quot;id&quot;: resource_id},
+)
+
+resource_delete_result = resource_delete_response.json()
+print(resource_delete_result)
+```
+
+## Full End-to-End Script
+
+If you want a single copy-paste file with all the steps (create dataset, create resource, upload, finalize), use this:
+
+```python
+import requests
+
+PORTAL = &quot;datopian&quot;
+API_KEY = &quot;your-api-key&quot;
+API_BASE = f&quot;https://api.cloud.portaljs.com/@{PORTAL}/api/3/action&quot;
+
+headers = {
+    &quot;Content-Type&quot;: &quot;application/json&quot;,
+    &quot;Authorization&quot;: API_KEY,
+}
+
+dataset_response = requests.post(
+    f&quot;{API_BASE}/package_create&quot;,
+    headers=headers,
+    json={
+        &quot;name&quot;: &quot;automated-dataset&quot;,
+        &quot;title&quot;: &quot;Automated Dataset&quot;,
+        &quot;notes&quot;: &quot;This dataset is created and updated via the PortalJS Cloud API&quot;,
+        &quot;owner_org&quot;: PORTAL,
+    },
+)
+
+dataset_result = dataset_response.json()
+dataset_id = dataset_result[&quot;result&quot;][&quot;id&quot;]
+
+resource_response = requests.post(
+    f&quot;{API_BASE}/resource_create&quot;,
+    headers=headers,
+    json={
+        &quot;package_id&quot;: dataset_id,
+        &quot;name&quot;: &quot;latest-data&quot;,
+        &quot;description&quot;: &quot;Latest version of the dataset&quot;,
+        &quot;format&quot;: &quot;CSV&quot;,
+    },
+)
+
+resource_result = resource_response.json()
+resource_id = resource_result[&quot;result&quot;][&quot;id&quot;]
+
+filename = &quot;data.csv&quot;
+with open(filename, &quot;w&quot;, encoding=&quot;utf-8&quot;) as file_handle:
+    file_handle.write(&quot;id,name\n1,Example row\n&quot;)
+
+upload_response = requests.post(
+    f&quot;{API_BASE}/resource_upload&quot;,
+    headers=headers,
+    json={
+        &quot;id&quot;: resource_id,
+        &quot;filename&quot;: filename,
+    },
+)
+
+upload_result = upload_response.json()
+upload_url = upload_result[&quot;result&quot;][&quot;presigned_url&quot;]
+
+with open(filename, &quot;rb&quot;) as file_handle:
+    requests.put(upload_url, data=file_handle)
+
+requests.post(
+    f&quot;{API_BASE}/resource_upload_finalize&quot;,
+    headers=headers,
+    json={
+        &quot;id&quot;: resource_id,
+    },
+)
+```
+
+## Conclusion and Next Steps
+
+Using the PortalJS Cloud API, you can move from manual uploads to a fully automated, reliable data publishing workflow.
+
+You’ve seen how to:
+
+- Discover your portal’s API
+- Authenticate with API keys
+- Create datasets and resources
+- Upload and update data programmatically
+- Search, update, and delete datasets and resources
+
+Explore your portal’s API documentation to go further and tailor automation to your data workflows.
+</content>
+    <summary type="html">This guide walks through using the PortalJS Cloud API to programatically create datasets, add resources, upload and replace data files, and update metadata—showing how to build repeatable data update pipelines with code examples.</summary>
+  </entry>
+  <entry>
+    <title>Turning OpenMetadata into a User-Friendly Data Portal with PortalJS</title>
+    <id>https://portaljs.com/blog/turning-openmetadata-into-a-user-friendly-data-portal-with-portaljs</id>
+    <link href="https://portaljs.com/blog/turning-openmetadata-into-a-user-friendly-data-portal-with-portaljs" />
+    <updated>2026-01-09T00:00:00.000Z</updated>
+    <published>2026-01-09T00:00:00.000Z</published>
+    <author>
+      <name>João Demenech</name>
+    </author>
+    <content type="html">
+OpenMetadata is a strong foundation for modern data governance. It excels at managing metadata, lineage, ownership, and data quality, and it is clearly designed for data engineers, platform teams, and governance practitioners.
+
+Its user interface reflects that focus. Concepts such as database services, schemas, and assets are exposed directly, assuming users understand how data infrastructure works. This is effective for power users, but it creates friction when OpenMetadata is used by a broader audience.
+
+Many organizations want researchers, analysts, partners, or other non-technical users to explore their data. For them, how data is stored matters far less than what the data represents and how it can be used.
+
+## Making OpenMetadata easier to explore with PortalJS
+
+PortalJS helps solve this by turning OpenMetadata into a data portal that is easier to browse and understand. It keeps all the existing metadata, but presents it in a simpler way, so people can focus on datasets and their contents instead of technical details.
+
+A ready-to-use, open-source template powered by Next.js and Tailwind CSS is available to get started quickly:
+
+👉 https://github.com/datopian/portaljs-frontend-starter-omd
+
+&lt;img style={{&quot;marginBottom&quot;: 0}} src=&quot;/static/img/blog/2026-01-09-turning-openmetadata-into-a-user-friendly-data-portal-with-portaljs/from.png&quot; /&gt;
+&lt;div style={{textAlign: &quot;center&quot;}}&gt;
+*OpenMetadata explore page, where users navigate metadata through infrastructure concepts*
+&lt;/div&gt;
+
+&lt;img style={{&quot;marginBottom&quot;: 0}} src=&quot;/static/img/blog/2026-01-09-turning-openmetadata-into-a-user-friendly-data-portal-with-portaljs/to.png&quot; /&gt;
+&lt;div style={{textAlign: &quot;center&quot;}}&gt;
+*PortalJS dataset search page, focused on helping users quickly find datasets*
+&lt;/div&gt;
+
+## Why discovery is hard for non-technical users
+
+In OpenMetadata, navigation mirrors how data is stored:
+
+- database services  
+- databases  
+- schemas  
+- tables and assets  
+
+This structure makes sense from an engineering point of view, but it forces users to understand internal architecture before they can answer a simpler question: *what data exists that is relevant to me?*
+
+Most data consumers think in terms of datasets, domains, topics, and documentation. When finding data requires understanding storage layers, many users struggle to get value from the catalog.
+
+This is not a limitation of OpenMetadata’s metadata model. It is a mismatch between a governance-focused interface and a discovery-focused use case.
+
+## Access and sharing add another layer of friction
+
+OpenMetadata is designed as an authenticated system. Requiring users to sign in is often the right choice for governance workflows, but it limits how metadata can be shared.
+
+This makes it harder to:
+- Share data with external collaborators  
+- Build lightweight data portals  
+- Expose selected metadata to broader audiences  
+
+OpenMetadata is not intended to be a flexible, audience-facing data portal, which is why many teams look for an additional interface focused on exploration and reading.
+
+## PortalJS as a data portal for OpenMetadata
+
+PortalJS provides that interface.
+
+It is an open-source framework for building data portals on top of systems like OpenMetadata. OpenMetadata continues to manage metadata, ownership, and lineage, while PortalJS focuses on helping people find and understand data more easily.
+
+This separation allows teams to keep the full power of OpenMetadata, while offering a much simpler experience to data consumers.
+
+![PortalJS Search Page](/static/img/blog/2026-01-09-turning-openmetadata-into-a-user-friendly-data-portal-with-portaljs/portaljs-search-page.png)
+
+## A simpler mental model for data discovery
+
+The PortalJS OpenMetadata template reshapes how metadata is presented, using concepts that are easier for most users to understand:
+
+- **Data Product → Dataset**  
+- **Domain → Organization**  
+- **Asset → Resource**  
+
+Nothing is removed or simplified in the metadata itself. The difference is how that information is organized and displayed, making it easier to browse, search, and explore.
+
+## What the template provides out of the box
+
+The open-source PortalJS OpenMetadata template includes:
+
+- A dataset search page  
+- Domain (organization) browsing  
+- A glossary page  
+- A dataset details page where users can understand the dataset metadata and browse available resources  
+- Resource detail pages  
+
+All pages are designed for read-only, exploration-first use. Metadata is fetched directly from OpenMetadata, with no duplication or manual syncing.
+
+![PortalJS Dataset Details Page](/static/img/blog/2026-01-09-turning-openmetadata-into-a-user-friendly-data-portal-with-portaljs/portaljs-dataset-details-page.png)
+
+## Open source, flexible by design
+
+The template is built with **Next.js** and **Tailwind CSS**, making it easy to customize, extend, and brand.
+
+Because it is fully open source, teams retain control over:
+- The codebase  
+- How and where it is deployed  
+- Who can access which data  
+
+PortalJS can be adapted to different audiences and access requirements.
+
+## Not just for open data
+
+While PortalJS can power open data portals, the template is not limited to public use cases.
+
+It can be customized to:
+- Add authentication  
+- Restrict access to specific datasets or domains  
+- Expose data conditionally based on users, roles, or custom properties  
+
+This makes it suitable for internal catalogs, research portals, partner-facing experiences, and fully public portals alike.
+
+## From governance to exploration
+
+OpenMetadata is built for managing metadata. PortalJS is built for helping people explore and understand data.
+
+Together, they allow organizations to turn existing metadata into a user-friendly data portal that serves more people, without replacing governance tooling.
+
+**We’ve used this approach and the PortalJS OpenMetadata template with many different clients, across a range of data platforms and use cases. In practice, it has proven to be a flexible and reliable way to make OpenMetadata easier to explore, without changing how metadata is managed underneath.**
+
+For a concrete example of how this approach has worked in practice, check out our case study: 
+
+👉 [Helping Researchers Find The Right Data Faster — With A Simple Frontend For OpenMetadata](https://www.datopian.com/showcase/case-studies/simple-frontend-for-openmetadata-with-portaljs).
+
+If you are already using OpenMetadata and want to improve data discovery, the open-source PortalJS OpenMetadata template is a practical place to start.
+
+👉 https://github.com/datopian/portaljs-frontend-starter-omd
+
+</content>
+    <summary type="html">OpenMetadata is excellent for governance and power users, but difficult for broader audiences. Learn how PortalJS turns OpenMetadata into a user-friendly data portal focused on discovery and navigation.</summary>
+  </entry>
+  <entry>
+    <title>Supercharging Data Portals with the PortalJS MCP Server</title>
+    <id>https://portaljs.com/blog/supercharging-data-portals-with-the-portaljs-mcp-server</id>
+    <link href="https://portaljs.com/blog/supercharging-data-portals-with-the-portaljs-mcp-server" />
+    <updated>2025-11-25T00:00:00.000Z</updated>
+    <published>2025-11-25T00:00:00.000Z</published>
+    <author>
+      <name>anuveyatsu</name>
+    </author>
+    <content type="html">
+Back in September this year, we published [our first look at using MCP (Model Context Protocol) servers](/blog/mcp-server-ai-assistants-to-improve-data-portals) to give AI assistants structured access to data portals.
+
+Now the implementation is live and fully open source.
+
+PortalJS MCP runs in production on Cloudflare’s MCP SDK, which gives us a fast, global, edge-native runtime. It comes with low latency, high reliability, and no “AI integration infra tax” for you to pay.
+
+The PortalJS MCP server is publicly available at:
+
+```
+mcp.portaljs.com
+```
+
+If your data portal runs on PortalJS Cloud, connecting it is dead simple. Your MCP endpoint is:
+
+```
+mcp.portaljs.com/@org-name/sse
+```
+
+Paste that into ChatGPT, Claude, or any MCP-capable client, and your AI assistant immediately gains structured access to your datasets, metadata, and previews.
+
+And because we think this should be a standard building block for modern data portals, we’ve open sourced the whole implementation here:
+
+https://github.com/datopian/portaljs-mcp-server
+
+Use it, fork it, deploy your own version, or just read through it to understand how MCP can sit cleanly on top of a data portal.
+
+[![Architecture diagram](https://mermaid.ink/img/pako:eNpNjl9PgzAUxb9Kc580YYQxKLQxJhs8GU0WF19c91Dt3VgClJTWqITvbhm6eJ_un_M75w7wrhUCh5ORXUUen0VLfK33Lz2aA1ks7slmL6CopCXrruvJDZ4CUtTSKbwVcJjlm4uw2D8VW7JD8-HR-dC7t9l4q42V9cPOo9qp-ThV8a8ld5NL6eNKaeUvcs3AVkHg3zwr4NY4DKBB08hphGGSCLAVNiiA-1bhUbraChDt6LFOtq9aN3-k0e5UAT_KuveT65S0WJ6lf7W5bo0PRFNo11rgaXbxAD7AJ3DGQrqiGY3yPMnSnAXwBXxJozBKknQV53FMo4iNAXxfMqOQspwtaZzSJM4ymrDxBwREbd4?type=png)](https://mermaid.live/edit#pako:eNpNjl9PgzAUxb9Kc580YYQxKLQxJhs8GU0WF19c91Dt3VgClJTWqITvbhm6eJ_un_M75w7wrhUCh5ORXUUen0VLfK33Lz2aA1ks7slmL6CopCXrruvJDZ4CUtTSKbwVcJjlm4uw2D8VW7JD8-HR-dC7t9l4q42V9cPOo9qp-ThV8a8ld5NL6eNKaeUvcs3AVkHg3zwr4NY4DKBB08hphGGSCLAVNiiA-1bhUbraChDt6LFOtq9aN3-k0e5UAT_KuveT65S0WJ6lf7W5bo0PRFNo11rgaXbxAD7AJ3DGQrqiGY3yPMnSnAXwBXxJozBKknQV53FMo4iNAXxfMqOQspwtaZzSJM4ymrDxBwREbd4)
+_Figure 1: Architecture diagram._
+
+## Why MCP Is a Game-Changer for Data Portals
+
+AI chats are powerful, but without structured access they’re basically guessing. MCP fixes that by giving models secure, predictable tools to interact with real systems — including your data portal.
+
+In practice, this unlocks:
+
+* **Reliable dataset discovery** backed by actual portal data search
+* **Accurate metadata exploration** without hallucination risk
+* **On-demand previews** (rows, schema, field types)
+* **One clean integration** that works across multiple AI clients
+
+This effectively turns your AI assistant into a precision data navigator — not just a polite autocomplete engine.
+
+## What’s Available in the MCP Today
+
+The initial toolset focuses on high-value workflows for discovery and exploration:
+
+### Search tool enables data discovery
+
+* List datasets
+* Keyword search
+* Metadata filtering
+* Dataset summaries
+
+### Get tool for metadata exploration
+
+* Resource lists
+* Field definitions
+* Schema inspection
+* Full metadata extraction
+
+### Table preview
+
+* First N rows
+* Column summaries
+* Type inference
+* Lightweight profiling
+
+These tools are designed to be **fast, bounded, and safe**. The model doesn’t pull full datasets — it gets structured previews that are ideal for reasoning and analysis.
+
+## Works with ChatGPT, Claude, VS Code, and More
+
+Our MCP server is model-agnostic by default:
+
+* Claude — native MCP support
+* ChatGPT Desktop — native MCP support
+* VS Code MCP clients — plug-and-play
+* Future MCP-enabled tools — automatically compatible
+
+Wherever your team uses AI, your portal can now show up *as a first-class, tool-based data source*.
+
+## Why Cloudflare’s MCP SDK?
+
+We chose Cloudflare’s SDK because MCP should feel like infrastructure you **never have to think about**.
+
+Using Cloudflare gives us:
+
+* **Edge deployment by default** → fast globally, no region bottlenecks
+* **Battle-tested SSE support** → stable streaming tool calls
+* **Simple scaling model** → no infra babysitting as usage grows
+
+This matters because AI tooling isn’t forgiving. If your MCP endpoint is slow or flaky, your user’s trust evaporates instantly. Cloudflare’s runtime lets us keep it sharp.
+
+## What’s Coming Next
+
+This is only the first layer. We’re already expanding the MCP toolbox, including:
+
+* Write-back tools (tags, notes, curation workflows)
+* Automated metadata enrichment
+* Data quality checks
+* Permission-aware exploration
+* Semantic search
+* Lineage and observability integration
+
+The direction is clear: your data portal becomes an intelligent interface, not a static catalog.
+
+## Try It Today
+
+If your portal runs on PortalJS Cloud, your MCP endpoint is:
+
+```
+https://mcp.portaljs.com/@org-name/sse
+```
+
+Plug it into your AI assistant and start exploring your data conversationally — with real structure, real metadata, and real previews.
+
+Want help rolling this out to your team or customers? Reach out. We’re building this to make data portals genuinely useful in an AI-first world.
+</content>
+    <summary type="html">Explore how the PortalJS MCP server unlocks AI-native discovery, metadata exploration, and data previews for modern portals — now open sourced and easy to integrate.</summary>
+  </entry>
+  <entry>
+    <title>Introducing Visualizations in PortalJS Cloud: Publish and Share Insights Alongside Your Datasets</title>
+    <id>https://portaljs.com/blog/introducing-visualizations-in-portaljs-cloud</id>
+    <link href="https://portaljs.com/blog/introducing-visualizations-in-portaljs-cloud" />
+    <updated>2025-10-13T00:00:00.000Z</updated>
+    <published>2025-10-13T00:00:00.000Z</published>
+    <author>
+      <name>João Demenech</name>
+    </author>
+    <content type="html">
+## Introduction
+
+PortalJS Cloud now treats visualizations as first-class citizens in your data portal — discoverable and searchable, just like your datasets.
+
+This feature allows users to publish external dashboards, reports, and data stories alongside their datasets, regardless of which tool they use — from Power BI to Tableau or custom-built data apps.
+
+## Why Visualizations Matter
+
+Data portals are great for publishing and discovering datasets, but raw data rarely tells the full story. 
+
+Visualizations bridge that gap by helping users:
+
+- Quickly grasp insights and trends
+- Lower the barrier for non-technical audiences
+- Combine narrative and analysis into data-driven storytelling
+- Share interactive dashboards directly with stakeholders
+
+![Data to Insight](/static/img/blog/introducing-visualizations-in-portaljs-cloud/spreadsheet-to-viz.png)
+
+## Tool-Agnostic by Design
+
+A core design goal for this feature was flexibility.
+
+PortalJS doesn’t restrict you to one visualization framework. Instead, you can publish and catalog visualizations created with any external tool, such as:
+
+- Power BI
+- Observable
+- Superset
+- Tableau
+- Custom-built dashboards or apps
+
+When you publish a visualization in PortalJS Cloud, it becomes:
+
+- A dedicated entry in your PortalJS instance (with metadata, tags, and ownership)
+- Linked to the relevant groups and organizations
+- Browsable and searchable, just like datasets
+
+This means your portal can now serve as both a catalog of datasets and a catalog of insights built on top of them.
+
+## Optional Add-On: Managed Data App Powered By Observable Framework
+
+For users who prefer a code-driven workflow, PortalJS offers an optional Observable Framework Data App Add-on integration.
+
+![Code to Insight](/static/img/blog/introducing-visualizations-in-portaljs-cloud/code-to-viz.png)
+
+[Observable Framework](https://observablehq.com/framework/) is an open-source JavaScript framework for building interactive data applications, dashboards, and reports. It was created by the team behind ObservableHQ, with the goal of making it easier for developers and analysts to turn data into live, shareable, and interactive visualizations using standard web technologies.
+
+Data apps powered by the Observable Framework are static sites that can be built, deployed, and hosted anywhere — including platforms like Vercel. This makes them fast, portable, and easy to integrate into modern web stacks such as PortalJS.
+
+The data app addon works similarly to the main data portal: once enabled on PortalJS Cloud, a dedicated GitHub repository and deployment will be created for your data app.
+
+&lt;iframe src=&quot;https://drive.google.com/file/d/1Y6g89nMq3YjVGLXkaUP5VFQDxls6TZe-/preview&quot; width=&quot;569&quot; height=&quot;308&quot; allow=&quot;autoplay; fullscreen&quot;&gt;&lt;/iframe&gt;
+
+The GitHub repository is created based on the [PortalJS Data App Starter template](https://github.com/datopian/portaljs-data-app-starter). You can then clone it locally for development and raise PRs to deploy changes to your data app, such as the creation of new dashboards or branding.
+
+## Publishing Visualizations
+
+Once your dashboards and reports are deployed to the data app (or any other tool), you can then publish them in PortalJS Cloud by creating corresponding visualizations.
+
+&lt;iframe src=&quot;https://drive.google.com/file/d/170GaJd8WK6_wEna2gR-dbgR-Z0krTVSt/preview&quot; width=&quot;569&quot; height=&quot;308&quot; allow=&quot;autoplay; fullscreen&quot;&gt;&lt;/iframe&gt;
+
+## Browsable and Searchable Like Datasets
+
+Finally, users will be able to explore the visualizations published to your portal and access the dashboards and reports created on the data app. 
+
+Just like with datasets, users can search visualizations by organization, groups, and tags.
+
+&lt;iframe src=&quot;https://drive.google.com/file/d/1zYJaz2HOCinVRFokrxooAWqQbvOpoPJ-/preview&quot; width=&quot;569&quot; height=&quot;308&quot; allow=&quot;autoplay; fullscreen&quot;&gt;&lt;/iframe&gt;
+
+On the visualization details page, the full metadata for the visualization can be found, along with a link to access it.
+
+## What’s Next
+
+This release is just the beginning of a series of improvements focused on data visualizations.
+
+In the next iterations, we aim to make creating and publishing visualizations as intuitive as exploring them, introducing simple, guided tools that allow non-technical users to build and customize visualizations directly within PortalJS Cloud, without needing to write code or manage external apps.
+
+With these enhancements, we aim to make PortalJS Cloud not just a catalog of datasets and dashboards, but a platform where any user — technical or not — can explore, create, and share meaningful insights.
+
+</content>
+    <summary type="html">Empower your data portal with an insights catalog — a new way to explore, share, and communicate findings alongside your datasets.</summary>
+  </entry>
+  <entry>
+    <title>MCP Server: A better way to connect AI assistants to data portals</title>
+    <id>https://portaljs.com/blog/mcp-server-ai-assistants-to-improve-data-portals</id>
+    <link href="https://portaljs.com/blog/mcp-server-ai-assistants-to-improve-data-portals" />
+    <updated>2025-09-17T00:00:00.000Z</updated>
+    <published>2025-09-17T00:00:00.000Z</published>
+    <author>
+      <name>Theo Bertol</name>
+    </author>
+    <content type="html">
+## Introduction
+
+The world of AI assistants is rapidly evolving, but there&apos;s been a persistent challenge: how do we connect these powerful tools to the vast repositories of data that organizations maintain? Enter the **Model Context Protocol (MCP)** - Anthropic&apos;s groundbreaking open standard that&apos;s revolutionizing how AI systems interact with data sources.
+
+## What is the Model Context Protocol?
+
+![MCP to LLM Connection](/static/img/blog/mcp-server-ai-assistants-to-improve-data-portals/mcp-llm.png)
+
+Before diving into our MCP Data Portal implementation, let&apos;s understand what makes MCP so revolutionary. Announced by Anthropic in November 2024, the Model Context Protocol is quickly becoming the universal standard for connecting AI assistants to data systems.
+
+### The Problem MCP Solves
+
+Traditional AI assistants are often overwhelmed by unnecessary, copy-pasted context (JSON, CSV, etc.). We end up pasting a lot of information before having a good conversation or solving the problem, burning a lot of tokens, and still not solving the problem because the signal is buried in noise.
+
+- How can I make this conversation more straight to the point?
+- Why does my AI chat keep storing useless information?
+- When did I ask for this?
+- Where is this chat&apos;s context going?
+
+All of these questions point to the core issue: managing context. How do we fix it?
+
+### The MCP Solution
+
+MCP replaces these fragmented integrations with a single, open protocol. Think of it as the &quot;USB standard&quot; for AI-data connections - any MCP-compliant data source can serve context to any MCP-enabled AI client, and vice versa.
+
+Think of it as simple: instead of copy/pasting, contextualizing, and rephrasing, an MCP server provides direct, permissioned access to the right sources (APIs, databases, datasets, connectors).
+
+With an MCP server, the assistant knows which tools to call to answer your question. No more pasting 10,000-line CSVs.
+
+### Why Connect Data Portals to AI Assistants?
+
+Imagine being able to:
+
+- **Ask natural language questions** about datasets: &quot;Show me environmental datasets from 2020&quot;
+- **Get instant summaries** of complex data without browsing through catalogs
+- **Discover relationships** between datasets across different organizations
+- **Access metadata** and resources through conversational interfaces
+- **Integrate data discovery** into your existing AI workflows
+
+This is exactly what the MCP Server enables for data portals.
+
+## How It Works:
+
+The MCP Server acts as a bridge between MCP-compatible AI clients and data portal APIs. Here&apos;s the flow:
+
+1. **AI Assistant** sends a request through MCP protocol
+2. **MCP Server** translates the request to data portal API calls
+3. **Data Portal** returns data and metadata
+4. **Server processes and formats** the response for the AI
+5. **AI Assistant** receives structured data to provide intelligent responses
+
+### Government Open Data
+Government agencies can enable citizens and researchers to interact with public datasets using natural language. Instead of navigating complex data portals, users can simply ask: &quot;What environmental data is available for my city?&quot;
+
+### Research Institutions
+Researchers can quickly discover relevant datasets across multiple repositories, understand data provenance, and identify potential collaborations through AI-powered data exploration.
+
+### Enterprise Data Discovery
+Organizations can connect their internal data portals to AI assistants, enabling employees to find and understand corporate data assets without specialized knowledge of data catalogs.
+
+### Data Journalism
+Journalists can rapidly identify story-relevant datasets, understand their context, and explore connections between different data sources through conversational interfaces.
+
+## The Future of AI-Powered Data Discovery
+
+The MCP Server for data portals represents more than just a technical integration - it&apos;s a glimpse into the future of how we&apos;ll interact with data. As MCP becomes the standard protocol for AI-data connections, we&apos;re moving toward a world where:
+
+- **Data discovery is conversational**, not navigational
+- **AI assistants understand context** from your organization&apos;s data
+- **Complex data relationships** are explained in natural language
+- **Data democratization** happens through familiar AI interfaces
+
+## Conclusion
+
+The Model Context Protocol is transforming how AI systems access and interact with data. The MCP Server for data portals makes this connection seamless, secure, and scalable.
+
+By bridging data portals with AI assistants, we&apos;re not just enabling new technical capabilities - we&apos;re fundamentally changing how people discover, understand, and work with data. The barriers between human curiosity and data insights are dissolving, replaced by natural, conversational interfaces that make data accessible to everyone.</content>
+    <summary type="html">How an MCP server bridges AI assistants and data portals, enabling seamless, efficient data discovery for ChatGPT, Claude, and other AI tools.</summary>
+  </entry>
+  <entry>
+    <title>How We Rebuilt a Legacy CKAN Portal into a Static, Read-Only Site with PortalJS</title>
+    <id>https://portaljs.com/blog/how-we-rebuilt-a-legacy-ckan-portal-into-a-static-read-only-site-with-portaljs</id>
+    <link href="https://portaljs.com/blog/how-we-rebuilt-a-legacy-ckan-portal-into-a-static-read-only-site-with-portaljs" />
+    <updated>2025-07-29T00:00:00.000Z</updated>
+    <published>2025-07-29T00:00:00.000Z</published>
+    <author>
+      <name>baglanadaskhan</name>
+    </author>
+    <content type="html">
+## Background
+
+[DataHub v1](https://old.datahub.io/) was originally built as a CKAN 2.6-based data portal, hosting thousands of open datasets from organizations across the world. For many years, it served as a reliable place to discover, download, and share data. But like many long-running platforms, it started to show its age.
+
+Over time, the maintenance burden grew increasingly difficult to justify:
+
+* CKAN 2.6 was outdated and lacked long-term support
+* The portal depended on numerous legacy plugins, some of which were custom and unmaintained
+* Upgrades became risky and time-consuming
+* Day-to-day stability relied on manual patching and workarounds
+
+At the same time, the **value of the data remained high** — historical records, research outputs, and public datasets that people still searched for and used. We didn’t want to lose that. But we also didn’t want to keep investing in heavy infrastructure just to preserve read-only access.
+
+So the idea emerged: **what if we turned the portal into a fully static site — no backend, no databases, just fast, reliable, and simple?**
+
+## The Goal
+
+We wanted to preserve:
+
+* Access to all datasets
+* Dataset metadata (title, description, tags, license, resources)
+* Basic search and navigation
+* A clean and consistent UI
+
+And we wanted to remove:
+
+* The need for CKAN backend services (PostgreSQL, Solr, extensions)
+* Admin/user accounts and dynamic features
+* Any part of the system that required manual ops or upgrades
+
+Our target was a **read-only static portal**, built on modern tooling and served entirely over CDN.
+
+## From Legacy to Lightweight
+
+### Stabilizing the CKAN Instance
+
+Before migrating, we had to ensure the old CKAN site was stable enough to extract data from. We:
+
+* Disabled login and registration
+* Made the instance read-only
+* Removed unused and broken plugins like `disqus`, `datapub`, and `validation`
+
+This left us with a clean, static snapshot of the portal’s content that could be safely extracted.
+
+### Extracting Metadata
+
+We needed a format that was both machine-readable and flexible. We chose the [Frictionless Data Package](https://specs.frictionlessdata.io/data-package/) spec — a widely used standard in the open data world.
+
+Each dataset was exported as a datapackage.json file. For better structure and clarity, we organized them semantically by publisher:
+
+```bash
+/datasets/
+  └── organization-name/
+        └── dataset-name/
+              ├── datapackage.json
+        └── organization.json
+```
+
+This simple hierarchy helped mirror how CKAN groups datasets by organization, and allowed for clear URL routing and static page generation.
+
+All metadata files and downloadable resources were uploaded to Cloudflare R2 — an S3-compatible object storage with global CDN support.
+
+### Building the Frontend
+
+We chose [PortalJS](https://portaljs.com/) — an open-source, React/Next.js-based framework designed for data portals. It allowed us to build:
+
+* A homepage with basic intro and quick search
+* A dataset listing page
+* A dataset detail page rendered directly from datapackage.json
+
+Everything is statically rendered at build time, including SEO metadata, resource tables, and file links.
+
+We also customized layout components using TailwindCSS and React, giving the new portal a clean and responsive interface.
+
+### Implementing Search Without a Backend
+
+CKAN uses Solr for powerful search, but it’s a server-side dependency. We replaced it with [Lunr.js](https://lunrjs.com/), a client-side search engine that indexes documents in the browser.
+
+We wrote a script that scans all `datapackage.json` files and builds a Lunr index at deploy time. The result is a fast, compact index (\~1MB) bundled with the frontend and loaded entirely in-browser.
+
+For our use case — static data and a finite number of datasets — Lunr was the perfect fit.
+
+### CI/CD and Deployment
+
+We automated everything with GitHub Actions:
+
+* Build the PortalJS frontend
+* Pull latest metadata and generate search index
+* Deploy to Vercel
+
+There’s no server, no database, and nothing to monitor. The site is regenerated automatically when content changes.
+
+## What We Removed — By Design
+
+This wasn’t a downgrade — it was a conscious shift toward minimalism. We removed:
+
+* CKAN’s web UI and admin panel
+* Solr search engine
+* Login, registration, and permissions
+
+What remained was what mattered most: **the data itself**, presented clearly and accessibly.
+
+## Results
+
+* Over **1,000 datasets** preserved and discoverable
+* Site loads in milliseconds — no waiting for backend queries
+* Infrastructure costs nearly eliminated
+* Maintenance reduced to a few GitHub workflows
+
+The new [old.datahub.io](https://old.datahub.io/) is not just faster — it&apos;s also cleaner, safer, and easier to evolve.
+
+---
+
+Thanks for reading\! Want to explore more? Check out [PortalJS](https://portaljs.com/), or reach out if you’re thinking of giving your legacy data portal a second life — static, searchable, and serverless.
+</content>
+    <summary type="html">Migrating from a heavy CKAN 2.6 portal to a fast, fully static frontend — and the technical journey behind it.</summary>
+  </entry>
   <entry>
     <title>The Metadata Standards Landscape: Making Data Discoverable Across Organizations</title>
     <id>https://portaljs.com/blog/the-metadata-standards-landscape-making-data-discoverable-across-organizations</id>
@@ -33,6 +1033,8 @@ This is where metadata standards come in—providing the consistent structure th
 ## The Major Players: Core Metadata Standards
 
 The metadata standards landscape might seem overwhelming at first, but it&apos;s built around a few foundational standards that work together rather than compete. Let&apos;s explore the key players and how they complement each other.
+
+![Metadata standards landscape illustration](/static/img/blog/the-metadata-standards-landscape-making-data-discoverable-across-organizations/metadata-standards-landscape-illustration.png)
 
 ### Dublin Core: The Universal Foundation
 
@@ -2798,8 +3800,8 @@ Check out the source on GitHub: https://github.com/datopian/markdowndb
     <title>What We Shipped in Jul-Aug 2023</title>
     <id>https://portaljs.com/blog/summer-updates-2023</id>
     <link href="https://portaljs.com/blog/summer-updates-2023" />
-    <updated>2023-09-01T18:00:00.000Z</updated>
-    <published>2023-09-01T18:00:00.000Z</published>
+    <updated>2023-09-01T23:00:00.000Z</updated>
+    <published>2023-09-01T23:00:00.000Z</published>
     <author>
       <name>ola-rubaj</name>
     </author>
@@ -4499,7 +5501,7 @@ Check out a list of core datasets that are updated on a regular basis. From fina
 
 * [Population growth estimates and projections](/core/population-growth-estimates-and-projections) :clock1: updated annually
 
-There will be more automated datasets on :datahub: so join our [community chat on :discord: Discord](https://discord.gg/krmj5HM6He) and our Newsletter (insert link) to receive the latest news!
+There will be more automated datasets on :datahub: so join our [community chat on :discord: Discord](https://discord.gg/KrRzMKU) and our Newsletter (insert link) to receive the latest news!
 </content>
     <summary type="html">Read more...</summary>
   </entry>
