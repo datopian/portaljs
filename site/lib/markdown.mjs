@@ -7,7 +7,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkSmartypants from "remark-smartypants";
 import remarkToc from "remark-toc";
-import remarkWikiLink, { getPermalinks } from "@portaljs/remark-wiki-link";
+import remarkWikiLink from "@flowershow/remark-wiki-link";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
@@ -26,8 +26,6 @@ import siteConfig from "../config/siteConfig";
  */
 const parse = async function (source, format, scope) {
   const { content, data } = matter(source);
-  const permalinks = getPermalinks(siteConfig.content);
-
   const mdxSource = await serialize(
     { value: content, path: format },
     {
@@ -39,7 +37,7 @@ const parse = async function (source, format, scope) {
           [remarkSmartypants, { quotes: false, dashes: "oldschool" }],
           remarkMath,
           remarkCallouts,
-          [remarkWikiLink, { permalinks, pathFormat: "obsidian-short" }],
+          [remarkWikiLink],
           [
             remarkToc,
             {
@@ -67,7 +65,7 @@ const parse = async function (source, format, scope) {
                   .filter((child) => child.type === "text")
                   .map((child) => child.value)
                   .join(" ");
-          
+
                 return [
                   h("a", {
                     href: `#${node.properties?.id}`,
@@ -93,7 +91,7 @@ const parse = async function (source, format, scope) {
               },
             },
           ],
-          
+
           [rehypeKatex, { output: "mathml" }],
           [rehypePrismPlus, { ignoreMissing: true }],
         ],
