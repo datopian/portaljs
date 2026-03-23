@@ -41,7 +41,7 @@ features: [
   { title: "Simplified Customization", text: "Frontend updates, branding changes, and feature additions can be implemented directly by the council team without specialist development resources.", icon: "paint-roller" },
 ]
 quote: [
-  '"PortalJS Cloud allowed us to maintain our data publishing commitments while working within our budget constraints. The migration was seamless and the ongoing operational savings have been significant."',
+  '"Datopian have given us a refined and professional webpage with smoother navigation and improved usability.  It is easier to maintain compared to our previous solution and is an improvement in all regards."',
   '/images/casestudies/lincon.svg',
   'Lincolnshire County Council Representative',
 ]
