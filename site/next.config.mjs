@@ -3,6 +3,16 @@ export default {
 
     return [
       {
+        source: '/blog/create-a-website-from-scratch',
+        destination: 'https://flowershow.app/blog/create-a-website-from-scratch',
+        permanent: true,
+      },
+      {
+        source: '/blog/edit-a-website-locally',
+        destination: 'https://flowershow.app/blog/edit-a-website-locally',
+        permanent: true,
+      },
+      {
         source: '/showcases',
         has: [
           {
