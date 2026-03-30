@@ -1,4 +1,4 @@
-<p align="center">
+<p align="center"> 
   Bugs, issues and suggestions re PortalJS framework
   <br />
   <br /><a href="https://discord.gg/krmj5HM6He"><img src="https://dcbadge.limes.pink/api/server/krmj5HM6He" alt="Join our Discord server"/></a>
