@@ -1,4 +1,4 @@
-This demo data portal is designed for https://hatespeechdata.com. It catalogs datasets annotated for hate speech, online abuse, and offensive language which are useful for training a natural language processing system to detect this online abuse.
+This demo d ata portal is designed for https://hatespeechdata.com. It catalogs datasets annotated for hate speech, online abuse, and offensive language which are useful for training a natural language processing system to detect this online abuse.
 
 The site is built on top of [PortalJS](https://portaljs.com/). It catalogs datasets and lists of offensive keywords. It also includes static pages. All of these are stored as markdown files inside the `content` folder.
 
