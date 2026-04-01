@@ -7,7 +7,8 @@
     "types": ["node"],
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx"
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts"],
   "include": ["src/**/*.ts"]
