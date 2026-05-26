@@ -1,0 +1,66 @@
+[
+  {
+    "title": "Getting Started",
+    "links": [
+      {
+        "title": "Introduction",
+        "href": "/cloud/docs"
+      },
+      {
+        "title": "Getting started",
+        "href": "/cloud/docs/getting-started"
+      },
+      {
+        "title": "Portal",
+        "href": "/cloud/docs/portal"
+      }
+    ]
+  },
+  {
+    "title": "Managing content",
+    "links": [
+      {
+        "title": "Datasets",
+        "href": "/cloud/docs/datasets"
+      },
+      {
+        "title": "Visualizations",
+        "href": "/cloud/docs/visualizations"
+      },
+      {
+        "title": "Groups",
+        "href": "/cloud/docs/groups"
+      }
+    ]
+  },
+  {
+    "title": "Administration",
+    "links": [
+      {
+        "title": "Organizations",
+        "href": "/cloud/docs/organizations"
+      },
+      {
+        "title": "Users",
+        "href": "/cloud/docs/users"
+      },
+      {
+        "title": "Account",
+        "href": "/cloud/docs/account"
+      }
+    ]
+  },
+  {
+    "title": "Integrations",
+    "links": [
+      {
+        "title": "Harvesters",
+        "href": "/cloud/docs/harvesters"
+      },
+      {
+        "title": "MCP Server",
+        "href": "/cloud/docs/mcp-server"
+      }
+    ]
+  }
+]

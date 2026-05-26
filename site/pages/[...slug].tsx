@@ -127,6 +127,11 @@ export const getStaticProps: GetStaticProps = async ({
     frontMatter.showSidebar = true
     frontMatter.sidebarTreeFile = 'content/assets/sidebar.json'
   }
+
+  if (dbFile.url_path.startsWith('cloud/docs')) {
+    frontMatter.showSidebar = true
+    frontMatter.sidebarTreeFile = 'content/assets/cloud-sidebar.json'
+  }
   const source = fs.readFileSync(filePath, { encoding: 'utf-8' })
   const { mdxSource } = await parse(source, 'mdx', {})
 
