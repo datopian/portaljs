@@ -36,7 +36,7 @@ If your account is on a trial or paid plan, the **Plan Details** panel appears a
 
 ![placeholder: plan details panel](/static/img/cloud-docs/profile-plan-details.png)
 
-To cancel your account, email <portaljs@datopian.com> — there is no in-app cancel button.
+To cancel your account, email [portaljs@datopian.com](mailto:portaljs@datopian.com) — there is no in-app cancel button.
 
 ## API keys
 
