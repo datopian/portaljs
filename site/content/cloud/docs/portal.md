@@ -1,6 +1,6 @@
 ---
-title: Portal
-description: Deploy your public PortalJS Cloud portal, customize its repository, and understand what visitors see.
+title: "Portal"
+description: "Deploy your public PortalJS Cloud portal, customize its repository, and understand what visitors see."
 ---
 
 

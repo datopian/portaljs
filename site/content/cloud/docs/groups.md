@@ -1,6 +1,6 @@
 ---
-title: Groups
-description: Create and manage groups to categorize datasets in PortalJS Cloud.
+title: "Groups"
+description: "Create and manage groups to categorize datasets in PortalJS Cloud."
 ---
 
 

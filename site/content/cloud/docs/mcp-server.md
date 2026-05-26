@@ -1,6 +1,6 @@
 ---
-title: MCP Server
-description: Connect AI chatbots to your PortalJS Cloud portal through the MCP server.
+title: "MCP Server"
+description: "Connect AI chatbots to your PortalJS Cloud portal through the MCP server."
 ---
 
 

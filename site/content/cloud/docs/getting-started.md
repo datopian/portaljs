@@ -1,6 +1,6 @@
 ---
-title: Getting started
-description: Create your PortalJS Cloud account, sign in, and find your way around the admin dashboard.
+title: "Getting started"
+description: "Create your PortalJS Cloud account, sign in, and find your way around the admin dashboard."
 ---
 
 

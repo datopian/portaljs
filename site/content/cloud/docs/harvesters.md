@@ -1,6 +1,6 @@
 ---
-title: Harvesters
-description: Automatically sync datasets from external sources into PortalJS Cloud.
+title: "Harvesters"
+description: "Automatically sync datasets from external sources into PortalJS Cloud."
 ---
 
 

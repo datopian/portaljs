@@ -1,6 +1,6 @@
 ---
-title: Datasets
-description: Browse, create, edit, and delete datasets and resources in PortalJS Cloud, including the DCAT metadata schema and table schema.
+title: "Datasets"
+description: "Browse, create, edit, and delete datasets and resources in PortalJS Cloud, including the DCAT metadata schema and table schema."
 ---
 
 

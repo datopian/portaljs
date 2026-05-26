@@ -1,6 +1,6 @@
 ---
-title: Organizations
-description: Manage organizations, members, roles, and sysadmins in PortalJS Cloud.
+title: "Organizations"
+description: "Manage organizations, members, roles, and sysadmins in PortalJS Cloud."
 ---
 
 

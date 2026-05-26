@@ -1,6 +1,6 @@
 ---
-title: Visualizations
-description: Publish and manage visualizations and data apps in PortalJS Cloud.
+title: "Visualizations"
+description: "Publish and manage visualizations and data apps in PortalJS Cloud."
 ---
 
 

@@ -1,6 +1,6 @@
 ---
-title: PortalJS Cloud — Admin Documentation
-description: Administrator guide for PortalJS Cloud: manage datasets, organizations, users, visualizations, and your public portal.
+title: "PortalJS Cloud — Admin Documentation"
+description: "Administrator guide for PortalJS Cloud: manage datasets, organizations, users, visualizations, and your public portal."
 ---
 
 

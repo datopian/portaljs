@@ -1,6 +1,6 @@
 ---
-title: Users
-description: Invite, edit, and remove users in your PortalJS Cloud portal.
+title: "Users"
+description: "Invite, edit, and remove users in your PortalJS Cloud portal."
 ---
 
 

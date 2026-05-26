@@ -1,6 +1,6 @@
 ---
-title: Account
-description: Manage your PortalJS Cloud profile, password, plan, and API keys.
+title: "Account"
+description: "Manage your PortalJS Cloud profile, password, plan, and API keys."
 ---
 
 
