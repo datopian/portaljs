@@ -19,7 +19,9 @@ export default function DebouncedInput({
   useEffect(() => {
     const timeout = setTimeout(() => onChange(value), debounce)
     return () => clearTimeout(timeout)
-  }, [value])
+  // onChange is intentionally excluded — callers must stabilize it with useCallback if needed
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, debounce])
 
   return <input {...props} value={value} onChange={(e) => setValue(e.target.value)} />
 }

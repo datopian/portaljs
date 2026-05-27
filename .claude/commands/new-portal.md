@@ -49,15 +49,24 @@ ERROR: [new-portal] TEMPLATE_NOT_FOUND examples/portaljs-template not found — 
 
 ### 3. Copy the template
 
+First, check the destination does not already exist:
 ```bash
-cp -r "$TEMPLATE_DIR" "./$PROJECT_SLUG"
-# Remove build artifacts that must not be copied
-rm -rf "./$PROJECT_SLUG/node_modules" "./$PROJECT_SLUG/.next"
+if [ -d "./$PROJECT_SLUG" ] && [ "$(ls -A "./$PROJECT_SLUG" 2>/dev/null)" ]; then
+  echo "ERROR: [new-portal] DIR_EXISTS ./$PROJECT_SLUG already exists — choose a different name or remove the existing directory."
+  exit 1
+fi
 ```
 
-If the destination already exists and is non-empty:
+If the directory is non-empty, stop and report:
 ```
 ERROR: [new-portal] DIR_EXISTS ./$PROJECT_SLUG already exists — choose a different name or remove the existing directory.
+```
+
+Then copy:
+```bash
+cp -rP "$TEMPLATE_DIR" "./$PROJECT_SLUG"
+# Remove build artifacts that must not be copied
+rm -rf "./$PROJECT_SLUG/node_modules" "./$PROJECT_SLUG/.next"
 ```
 
 ### 4. Substitute placeholder tokens
@@ -70,15 +79,21 @@ Replace all occurrences of the placeholder tokens in every file under `./$PROJEC
 | `__PROJECT_SLUG__` | `PROJECT_SLUG` |
 | `__DESCRIPTION__` | `DESCRIPTION` |
 
-```bash
-find "./$PROJECT_SLUG" -type f \( -name "*.tsx" -o -name "*.ts" -o -name "*.json" -o -name "*.js" -o -name "*.css" -o -name "*.md" \) \
-  | xargs sed -i '' \
-      -e "s/__PROJECT_NAME__/$PROJECT_NAME/g" \
-      -e "s/__PROJECT_SLUG__/$PROJECT_SLUG/g" \
-      -e "s/__DESCRIPTION__/$DESCRIPTION/g"
-```
+Use `perl -pi` (portable across macOS and Linux). Escape values first so that `/`, `\`, and `&` in the inputs don't break substitution:
 
-Note: on Linux use `sed -i` (no argument after `-i`).
+```bash
+# Escape any / or \ in values for use as perl replacement strings
+esc() { printf '%s' "$1" | perl -pe 's{([/\\])}{\\$1}g'; }
+NAME_ESC=$(esc "$PROJECT_NAME")
+SLUG_ESC=$(esc "$PROJECT_SLUG")
+DESC_ESC=$(esc "$DESCRIPTION")
+
+find "./$PROJECT_SLUG" -type f \( -name "*.tsx" -o -name "*.ts" -o -name "*.json" -o -name "*.js" -o -name "*.css" -o -name "*.md" \) \
+  | xargs perl -pi -e "
+      s/__PROJECT_NAME__/$NAME_ESC/g;
+      s/__PROJECT_SLUG__/$SLUG_ESC/g;
+      s/__DESCRIPTION__/$DESC_ESC/g"
+```
 
 ### 5. Install dependencies
 
@@ -95,11 +110,16 @@ ERROR: [new-portal] INSTALL_FAILED npm install failed — check Node.js >=18 and
 
 ### 6. Verify scaffold-ready
 
+Capture build output and exit code separately so a failure is never silently missed:
+
 ```bash
-cd "./$PROJECT_SLUG" && npx next build 2>&1 | tail -10
+cd "./$PROJECT_SLUG"
+npx next build > /tmp/next-build.log 2>&1
+BUILD_EXIT=$?
+tail -20 /tmp/next-build.log
 ```
 
-If the build fails with an import or type error, read the error, fix it in the scaffolded project, then re-run the build before reporting success.
+If `BUILD_EXIT` is non-zero, print the full log and fix the error before reporting success. Do not report `✓ Portal scaffolded` while the build is still failing.
 
 ### 7. Report success
 

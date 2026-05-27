@@ -64,7 +64,7 @@ Standard data portal page:
 
 ```tsx
 // pages/datasets/[slug].tsx
-import { Table } from '@portaljs/components'
+import { Table } from '../../components/Table'
 import Head from 'next/head'
 
 export default function DatasetPage() {
@@ -80,9 +80,8 @@ export default function DatasetPage() {
 }
 ```
 
-**`_app.tsx` — always import component styles:**
+**`_app.tsx`:**
 ```tsx
-import '@portaljs/components/styles.css'
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 
@@ -109,7 +108,6 @@ Dataset slug: lowercase, hyphenated. Derived from filename: `country-codes.csv` 
 ## Styling
 
 - Tailwind CSS everywhere. Always include `@tailwindcss/typography` for prose content.
-- `tailwind.config.js` must include `node_modules/@portaljs/components/**/*.{js,ts,jsx,tsx}` in `content` array so component classes are not purged.
 - Do not use inline styles. Do not use CSS modules unless the project already uses them.
 
 Standard `tailwind.config.js`:
@@ -118,7 +116,6 @@ module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
-    './node_modules/@portaljs/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: { extend: {} },
   plugins: [require('@tailwindcss/typography')],
@@ -131,10 +128,12 @@ Minimal portal:
 ```json
 {
   "dependencies": {
-    "@portaljs/components": "latest",
     "next": "^14.0.0",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "@tanstack/react-table": "^8.0.0",
+    "papaparse": "^5.0.0",
+    "@heroicons/react": "^2.0.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.0",
@@ -144,12 +143,13 @@ Minimal portal:
     "typescript": "^5.0.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0"
+    "@types/react-dom": "^18.0.0",
+    "@types/papaparse": "^5.0.0"
   }
 }
 ```
 
-Add `@portaljs/core` only if using Layout/Nav/Sidebar. Add `@portaljs/ckan` only if connecting to a CKAN backend.
+Add `@portaljs/ckan` only if connecting to a CKAN backend.
 
 ## Environment variables
 
@@ -162,8 +162,12 @@ Simple CSV portals need no environment variables.
 
 ## Key components — quick reference
 
-### `<Table />`
+All components live in `components/` inside the portal project (copied from `examples/portaljs-template/components/`).
+
+### `<Table />` — `components/Table.tsx`
 ```tsx
+import { Table } from '../components/Table'
+
 // From CSV file in /public/
 <Table url="/data/file.csv" />
 
@@ -177,31 +181,18 @@ Simple CSV portals need no environment variables.
 <Table url="/data/file.csv" fullWidth />
 ```
 
-### `<FlatUiTable />`
-Richer table UI with column resizing. Same props as `Table`.
+### Charts
+Add a chart library directly — e.g. `npm install recharts`. No chart component is bundled in the template.
 
-### `<LineChart />`
-```tsx
-<LineChart data={[{x:1,y:2},{x:2,y:4}]} xAxis="x" yAxis="y" />
-```
-
-### `<VegaLite />`
-```tsx
-<VegaLite spec={vegaLiteSpec} data={data} />
-```
-
-### `<Map />`
-```tsx
-<Map center={[51.5, -0.1]} zoom={10} />
-```
-GeoJSON layers added via props. See `packages/components/src/components/Map.tsx`.
+### Maps (GeoJSON)
+Add `npm install react-leaflet leaflet @types/leaflet` and import directly. No map component is bundled in the template.
 
 ## Common mistakes
 
-- **Missing component CSS:** forgetting `import '@portaljs/components/styles.css'` in `_app.tsx` breaks Table styling.
-- **Tailwind purging component classes:** forgetting `node_modules/@portaljs/components/**/*` in `tailwind.config.js` content array makes components unstyled in production.
+- **Importing from `@portaljs/components`:** do not install or import from this package. Use `components/Table.tsx` from the local template. The package bundles leaflet, vega, ag-grid, and pdf.js — 1.9 MB compressed.
+- **Wrong import path for Table:** use `import { Table } from '../../components/Table'` (relative path), not a package import.
 - **Using `/public/` paths in `getStaticProps`:** `fs.readFile` does not work in client components. For server-side data loading, use `getStaticProps`. For client-side, use `<Table url="..." />`.
-- **Importing from internal package paths:** always import from `@portaljs/components`, never from `../../packages/components/src/...`.
+- **Tailwind content array too narrow:** if custom component classes are missing in production, ensure `'./components/**/*.{js,ts,jsx,tsx}'` is in `tailwind.config.js` content.
 
 ## Skills
 

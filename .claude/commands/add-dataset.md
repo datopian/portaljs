@@ -57,7 +57,7 @@ To add a dataset I need:
 **Format detection rules:**
 - `.csv` or `text/csv` → CSV
 - `.tsv` or `text/tab-separated-values` → TSV
-- `.geojson` or `application/geo+json` or first char is `{` with `"type":"FeatureCollection"` → GeoJSON
+- `.geojson` or `application/geo+json` or (JSON-parseable and `parsed.type === "FeatureCollection"`) → GeoJSON
 - `.json` or `application/json` → JSON array
 - Anything else:
   ```
@@ -137,7 +137,7 @@ Note: update `tsconfig.json` to include `"resolveJsonModule": true` if not alrea
 
 **For GeoJSON:**
 
-Extract feature properties from the GeoJSON file and render as a table. Read the file to get `features[0].properties` keys for column headers.
+Extract feature properties from the GeoJSON file and render as a table. Read the file to get `features[0].properties` keys for column headers. Guard against empty feature collections.
 
 ```tsx
 import { Table } from '../../components/Table'
@@ -147,7 +147,7 @@ import geojson from '../../public/data/DATASET_SLUG.geojson'
 type GeoJSON = { features: { properties: Record<string, string> }[] }
 
 const gj = geojson as GeoJSON
-const rows = gj.features.map((f) => f.properties)
+const rows = Array.isArray(gj.features) ? gj.features.map((f) => f.properties) : []
 const cols = Object.keys(rows[0] ?? {}).map((k) => ({ key: k, name: k }))
 
 export default function DatasetPage() {
@@ -214,7 +214,6 @@ Use separate files per dataset (not dynamic `[slug].tsx`) for v1. This avoids th
   - Home page: updated
 
 Next: run `npm run dev` and visit http://localhost:3000/datasets/DATASET_SLUG to verify.
-If the data looks wrong, run /add-chart to add a visualization.
 ```
 
 ## Notes

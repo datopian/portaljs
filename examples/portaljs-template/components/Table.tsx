@@ -40,31 +40,48 @@ const globalFilterFn: FilterFn<Row> = (row, columnId, filterValue: string) => {
 
 export function Table({ data: initialData = [], cols: initialCols = [], csv = '', url = '', fullWidth = false }: TableProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [globalFilter, setGlobalFilter] = useState('')
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 })
 
-  let rows = initialData
-  let cols = initialCols
+  const [data, setData] = useState<Row[]>(() => {
+    if (csv) return parseCsv(csv).rows
+    return initialData
+  })
+  const [columns, setColumns] = useState<Col[]>(() => {
+    if (csv) return parseCsv(csv).fields
+    return initialCols
+  })
 
-  if (csv) {
-    const parsed = parseCsv(csv)
-    rows = parsed.rows
-    cols = parsed.fields
-  }
-
-  const [data, setData] = useState<Row[]>(rows)
-  const [columns, setColumns] = useState<Col[]>(cols)
+  // Keep state in sync when non-URL props change
+  useEffect(() => {
+    if (url) return
+    if (csv) {
+      const parsed = parseCsv(csv)
+      setData(parsed.rows)
+      setColumns(parsed.fields)
+    } else {
+      setData(initialData)
+      setColumns(initialCols)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [csv, url, JSON.stringify(initialData), JSON.stringify(initialCols)])
 
   useEffect(() => {
     if (!url) return
     setIsLoading(true)
+    setError(null)
     fetch(url)
-      .then((r) => r.text())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status} — ${r.statusText}`)
+        return r.text()
+      })
       .then((text) => {
         const { rows, fields } = parseCsv(text)
         setData(rows)
         setColumns(fields)
       })
+      .catch((err: Error) => setError(err.message))
       .finally(() => setIsLoading(false))
   }, [url])
 
@@ -91,6 +108,14 @@ export function Table({ data: initialData = [], cols: initialCols = [], csv = ''
     return (
       <div className="flex items-center justify-center min-h-[200px]">
         <LoadingSpinner />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 text-sm text-red-700 bg-red-50 rounded-md">
+        Failed to load data: {error}
       </div>
     )
   }
