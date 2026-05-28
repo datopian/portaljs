@@ -3,6 +3,38 @@ import ShowcasesItem from './ShowcasesItem'
 
 export const dataPortals = [
   {
+    title: 'Espai de Dades',
+    subtitle: 'Social Sector Data Portal',
+    href: 'https://espaidedades.tercersector.cat/',
+    image: '/static/img/showcases/espai-de-dades.png',
+    description:
+      "Helps Catalonia's social sector find, share, and use open data for day-to-day social action.",
+  },
+  {
+    title: 'Culture Data Commons',
+    subtitle: 'Arts and Culture Data Portal',
+    href: 'https://data.culturedata.io/',
+    image: '/static/img/showcases/culture-data-commons.png',
+    description:
+      'Makes arts and culture data accessible, reliable, and reusable through shared stewardship.',
+  },
+  {
+    title: 'Winnipeg Metropolitan Region',
+    subtitle: 'Regional Planning Data Portal',
+    href: 'https://wmr.portaljs.com/',
+    image: '/static/img/showcases/wmr.png',
+    description:
+      'Shares regional data and information that support planning and collaborative decision-making across the Winnipeg Metropolitan Region.',
+  },
+  {
+    title: 'Stamford Open Data',
+    subtitle: 'Municipal Open Data Portal',
+    href: 'https://stamfordct.portaljs.com/',
+    image: '/static/img/showcases/stamford-ct.png',
+    description:
+      'Helps users search, explore, and reuse public datasets published across Stamford services, departments, and initiatives.',
+  },
+  {
     title: 'City of Ann Arbor',
     subtitle: 'Municipal Data Portal',
     href: 'https://data.a2gov.org/',
