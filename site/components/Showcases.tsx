@@ -3,6 +3,13 @@ import ShowcasesItem from './ShowcasesItem'
 
 export const dataPortals = [
   {
+    title: 'City of Malmo',
+    subtitle: 'Municipal Open Data Portal',
+    href: 'https://opendata.malmo.se/en',
+    image: '/static/img/showcases/malmo-open-data.png',
+    description: 'Find open data from the City of Malmo.',
+  },
+  {
     title: 'Espai de Dades',
     subtitle: 'Social Sector Data Portal',
     href: 'https://espaidedades.tercersector.cat/',
@@ -18,22 +25,22 @@ export const dataPortals = [
     description:
       'Makes arts and culture data accessible, reliable, and reusable through shared stewardship.',
   },
-  {
-    title: 'Winnipeg Metropolitan Region',
-    subtitle: 'Regional Planning Data Portal',
-    href: 'https://wmr.portaljs.com/',
-    image: '/static/img/showcases/wmr.png',
-    description:
-      'Shares regional data and information that support planning and collaborative decision-making across the Winnipeg Metropolitan Region.',
-  },
-  {
-    title: 'Stamford Open Data',
-    subtitle: 'Municipal Open Data Portal',
-    href: 'https://stamfordct.portaljs.com/',
-    image: '/static/img/showcases/stamford-ct.png',
-    description:
-      'Helps users search, explore, and reuse public datasets published across Stamford services, departments, and initiatives.',
-  },
+  // {
+  //   title: 'Winnipeg Metropolitan Region',
+  //   subtitle: 'Regional Planning Data Portal',
+  //   href: 'https://wmr.portaljs.com/',
+  //   image: '/static/img/showcases/wmr.png',
+  //   description:
+  //     'Shares regional data and information that support planning and collaborative decision-making across the Winnipeg Metropolitan Region.',
+  // },
+  // {
+  //   title: 'Stamford Open Data',
+  //   subtitle: 'Municipal Open Data Portal',
+  //   href: 'https://stamfordct.portaljs.com/',
+  //   image: '/static/img/showcases/stamford-ct.png',
+  //   description:
+  //     'Helps users search, explore, and reuse public datasets published across Stamford services, departments, and initiatives.',
+  // },
   {
     title: 'City of Ann Arbor',
     subtitle: 'Municipal Data Portal',
