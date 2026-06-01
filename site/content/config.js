@@ -104,12 +104,8 @@ const config = {
           href: '/faq',
         },
         {
-          name: 'Cloud Docs',
-          href: '/cloud/docs',
-        },
-        {
           name: 'Docs',
-          href: '/opensource/docs',
+          href: '/cloud/docs',
         },
         {
           name: 'Learn',

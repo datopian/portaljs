@@ -24,8 +24,6 @@ This page walks you through creating your PortalJS Cloud account, signing in, an
    - Creates a GitHub repository for your portal frontend.
    - Deploys your public portal.
 
-   ![placeholder: post-signup dashboard with "Building your portal" indicator](/static/img/cloud-docs/signup-page.png)
-
 You can keep working in the admin dashboard while the portal builds in the background.
 
 ## Sign in

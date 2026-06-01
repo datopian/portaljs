@@ -1,5 +1,5 @@
 ---
-title: "PortalJS Cloud — Admin Documentation"
+title: "PortalJS Cloud Documentation"
 description: "Administrator guide for PortalJS Cloud: manage datasets, organizations, users, visualizations, and your public portal."
 ---
 
