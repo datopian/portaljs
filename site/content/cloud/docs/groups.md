@@ -38,6 +38,8 @@ Users without sysadmin privileges do not see the **Add group**, **Edit**, or **D
 
 3. Click **Create group**. The new group appears in the list.
 
+   ![placeholder: create group form](/static/img/cloud-docs/group-creatd.png)
+
 ## Edit a group
 
 1. From the **Groups** list, click **Edit** on the group's row. The edit form opens in a modal.

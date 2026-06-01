@@ -73,7 +73,7 @@ You can delete one or many datasets at once.
 
 1. On the **Datasets** list, tick the checkbox to the left of each dataset you want to delete. Use the header checkbox to select all.
 
-   ![placeholder: select datasets for deletion](/static/img/cloud-docs/datasets-bulk-select.png)
+   ![placeholder: select datasets for deletion](/static/img/cloud-docs/delete-dataset.png)
 
 2. Click **Delete all** in the toolbar that appears above the table.
 
@@ -83,7 +83,7 @@ You can delete one or many datasets at once.
 
 Resources are the files (or URLs) attached to a dataset. Open a dataset's resources by clicking the **Resources** link on its row.
 
-![placeholder: resources of a dataset](/static/img/cloud-docs/resources-list.png)
+![placeholder: resources of a dataset](/static/img/cloud-docs/resourcepage.png)
 
 ### Add a resource
 
@@ -106,9 +106,11 @@ Resources are the files (or URLs) attached to a dataset. Open a dataset's resour
 1. On the resources page, click **Sort Resources**.
 2. Drag rows up and down to change the order in which resources appear on the public dataset page.
 
-   ![placeholder: sortable resource list](/static/img/cloud-docs/resource-sort.png)
+   ![placeholder: sortable resource list](/static/img/cloud-docs/sort-start.png)
 
 3. Save the new order. Click **Cancel** to discard.
+
+ ![placeholder: sortable resource list](/static/img/cloud-docs/sort-end.png)
 
 ### Delete a resource
 

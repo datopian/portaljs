@@ -38,7 +38,7 @@ For a walkthrough, see the demo video embedded on the **MCP server** page.
 ### Example: connect with Claude (web)
 
 1. Copy your MCP URL from the **MCP server** page (see [Find your MCP URL](#find-your-mcp-url)).
-2. In Claude on the web, open **Settings → Connectors**.
+2. In Claude on the web, open **Customize → Connectors**.
 3. Click **Add custom connector**.
 
    ![placeholder: Claude add custom connector](/static/img/cloud-docs/mcp-claude-add-connector.png)
@@ -46,9 +46,10 @@ For a walkthrough, see the demo video embedded on the **MCP server** page.
 4. Give it a name (for example, *My Data Portal*) and paste your MCP URL into the **Remote MCP server URL** field, then confirm.
 
    ![placeholder: Claude connector URL field](/static/img/cloud-docs/mcp-claude-connector-url.png)
+   ![placeholder: Claude connector URL field](/static/img/cloud-docs/mcp-claude-funcs.png)
 
 5. Start a new chat. Open the tools/attachments menu and make sure your connector is enabled.
-6. Ask a question about your data, for example: *"What datasets are in my portal? Show me the first 5 rows of the budget dataset."* Claude calls the MCP server and answers using your portal's data.
+6. Ask a question about your data, for example: *"What datasets are in my portal? Show me the first 5 rows of the dataset."* Claude calls the MCP server and answers using your portal's data.
 
    ![placeholder: Claude querying portal data](/static/img/cloud-docs/mcp-claude-query.png)
 

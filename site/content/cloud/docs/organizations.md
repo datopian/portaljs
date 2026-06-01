@@ -72,9 +72,9 @@ Members of an organization can create, edit, and (depending on role) delete data
 
 1. From the organization edit page, click the **Members** tab.
 
-   ![placeholder: members tab](/static/img/cloud-docs/organization-members.png)
-
 2. The table lists current members and their roles.
+
+   ![placeholder: members tab](/static/img/cloud-docs/organization-members.png)
 
 ### Roles
 

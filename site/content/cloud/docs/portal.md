@@ -65,7 +65,7 @@ The public site is the frontend that visitors browse. Anything you mark **Privat
 
 ### Homepage
 
-![placeholder: example public portal homepage](/static/img/cloud-docs/public-portal-home.png)
+![placeholder: example public portal homepage](/static/img/cloud-docs/homepage.png)
 
 - A **hero section** with portal statistics: the number of datasets, groups, and organizations.
 - Below the hero, the **most recently updated datasets**.
@@ -80,13 +80,13 @@ Visitors search the catalog by keyword. By default they can filter results by:
 - **Tags**
 - **Resource format**
 
-![placeholder: public search page with filters](/static/img/cloud-docs/public-search.png)
+![placeholder: public search page with filters](/static/img/cloud-docs/search.png)
 
 ### Dataset page
 
 Shows the dataset's metadata along with its list of **resources**. Each resource can be **downloaded** or **previewed**.
 
-![placeholder: public dataset page](/static/img/cloud-docs/public-dataset.png)
+![placeholder: public dataset page](/static/img/cloud-docs/dataset.png)
 
 ### Organizations page
 

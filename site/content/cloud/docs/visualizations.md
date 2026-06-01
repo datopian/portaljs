@@ -37,6 +37,9 @@ A visualization is owned by an organization (the **Organization** field is requi
 
 3. Click **Create Visualization**. The visualization appears in the table and, if public, on the portal.
 
+![placeholder: publish form](/static/img/cloud-docs/viz-list.png)
+
+
 ## Edit a visualization
 
 1. From the **Visualizations** list, click **Edit** on the visualization's row. This opens the edit page.

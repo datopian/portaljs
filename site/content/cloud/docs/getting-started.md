@@ -10,7 +10,7 @@ This page walks you through creating your PortalJS Cloud account, signing in, an
 
 1. Open the PortalJS Cloud sign-up page.
 
-   ![placeholder: sign-up page](/static/img/cloud-docs/signup-page.png)
+   ![placeholder: sign-up page](/static/img/cloud-docs/signup.png)
 
 2. Fill in the form:
    - **Email address** — used to sign in.
@@ -24,7 +24,7 @@ This page walks you through creating your PortalJS Cloud account, signing in, an
    - Creates a GitHub repository for your portal frontend.
    - Deploys your public portal.
 
-   ![placeholder: post-signup dashboard with "Building your portal" indicator](/static/img/cloud-docs/post-signup-building.png)
+   ![placeholder: post-signup dashboard with "Building your portal" indicator](/static/img/cloud-docs/signup-page.png)
 
 You can keep working in the admin dashboard while the portal builds in the background.
 
@@ -44,13 +44,13 @@ You can keep working in the admin dashboard while the portal builds in the backg
 2. Enter your email and submit. You will receive a reset email.
 3. Click the link in the email and set a new password on the reset page.
 
-   ![placeholder: forgot-password page](/static/img/cloud-docs/forgot-password.png)
+   ![placeholder: forgot-password page](/static/img/cloud-docs/forgotpassword.png)
 
 ## Tour of the admin dashboard
 
 After signing in, you see the admin shell. The sidebar on the left is the main navigation.
 
-![placeholder: full dashboard layout](/static/img/cloud-docs/dashboard-tour.png)
+![placeholder: full dashboard layout](/static/img/cloud-docs/tour.png)
 
 ### Sidebar — top
 
@@ -85,7 +85,7 @@ The main **Dashboard** page shows:
 - **Recently updated datasets** — quick links to your latest work.
 - **Activity stream** — chronological log of changes in the portal.
 
-![placeholder: dashboard widgets](/static/img/cloud-docs/dashboard-widgets.png)
+![placeholder: dashboard widgets](/static/img/cloud-docs/activitystream.png)
 
 ## Next steps
 
