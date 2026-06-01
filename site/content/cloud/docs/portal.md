@@ -22,7 +22,7 @@ You manage data in the admin dashboard; visitors browse it on the public portal.
 
 The button at the top of the sidebar reflects the current state of your portal deployment.
 
-![placeholder: sidebar portal button — three states](/static/img/cloud-docs/portal-button-states.png)
+
 
 | Button label | What it means | What clicking does |
 |--------------|---------------|--------------------|
@@ -37,7 +37,6 @@ The button auto-refreshes every 10 seconds while a build is in progress.
 1. Click the button.
 2. Wait for the state to change to **Building your portal…** and then to **Visit my portal**. This typically takes a few minutes.
 
-   ![placeholder: building state](/static/img/cloud-docs/portal-building.png)
 
 3. Once it shows **Visit my portal**, click to open your live site.
 

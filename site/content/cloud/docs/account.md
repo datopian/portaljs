@@ -16,19 +16,6 @@ The **Profile** tab shows your name, email, and profile picture.
 
 ![placeholder: profile page view mode](/static/img/cloud-docs/profile-view.png)
 
-### Edit your profile
-
-In edit mode you can update two things: your **profile picture** and your **password**. Your name and email are displayed but cannot be changed here.
-
-1. Click **Edit** on the profile page.
-
-2. Update either:
-   - **Profile picture** — upload a new image.
-   - **Password** — enter your current **Password**, then a **New Password**, and **Confirm Password**.
-
-   ![placeholder: profile edit form](/static/img/cloud-docs/profile-edit.png)
-
-3. Click **Save** to apply, or **Cancel** to discard.
 
 ### Plan details
 
