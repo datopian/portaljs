@@ -200,5 +200,6 @@ See `.claude/commands/` for available slash commands:
 - `/new-portal` — scaffold a new PortalJS data portal from a brief
 - `/add-dataset` — add a dataset (CSV/TSV/JSON/GeoJSON) to an existing portal
 - `/add-chart` — add a chart (line/bar/area/pie/scatter) to a dataset page via recharts
+- `/add-map` — render a GeoJSON dataset on an interactive Leaflet map
 
 See `.claude/AUTHORING.md` to write new skills.
