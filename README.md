@@ -27,7 +27,26 @@ Built and maintained in the open by [Datopian](https://www.datopian.com/) and th
 
 ## Build a portal with your AI assistant
 
-PortalJS ships [Claude Code](https://claude.com/claude-code) skills that turn a brief into a working portal:
+PortalJS ships [Claude Code](https://claude.com/claude-code) skills that turn a brief into a working portal.
+
+### Setup
+
+The skills live in this repo under [`.claude/commands/`](.claude/commands/) and currently run **from inside a clone of the PortalJS repo** (the scaffolding skill copies the template from `examples/`). To use them:
+
+```bash
+# 1. Clone the repo and open Claude Code inside it
+git clone https://github.com/datopian/portaljs
+cd portaljs
+claude
+```
+
+Claude Code auto-discovers the slash commands from `.claude/commands/` — no install step. Type `/` in the session to see `/new-portal` and `/add-dataset`.
+
+> **Note:** these are repo-local skills today — run them from inside the cloned repo. Making them installable anywhere (e.g. via `~/.claude/commands/` or a Claude Code plugin) is on the [roadmap](VISION.md).
+
+### Use
+
+In the Claude Code session:
 
 ```text
 /new-portal  "Auckland Council open data portal"

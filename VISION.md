@@ -26,6 +26,12 @@ The work moves from writing boilerplate to describing intent. The framework stay
 - [x] Canonical lightweight template (`examples/portaljs-template`)
 - [x] AI development guide (`CLAUDE.md`) and skill authoring guide (`.claude/AUTHORING.md`)
 
+### Next — make skills installable anywhere
+Today the skills are **repo-local**: they run from inside a clone of this repo because `/new-portal` resolves the template via `git rev-parse --show-toplevel`. To let users run them from any project:
+- [ ] Fetch the template remotely (e.g. `degit` / `create-next-app -e` / pinned tarball) instead of from the local checkout, so `/new-portal` works outside this repo
+- [ ] Support installing the commands into `~/.claude/commands/` (personal scope), with docs
+- [ ] Package the skills + template as a distributable Claude Code plugin
+
 ### Next — complete the skill set
 - [ ] `/add-chart` — add a visualization to a dataset page
 - [ ] `/add-map` — render GeoJSON on an interactive map
