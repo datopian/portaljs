@@ -13,9 +13,7 @@ Structure:
   - **dataset-frictionless**: Example utilizing a frictionless dataset as an example
 - **site**: the website for the project, with a landing page and the docs
 - **packages**:
-  - **components** (`@portaljs/components`): the library of components for creating a data portal
-  - **core** (`@portaljs/core`): layout/UI components
-  - **ckan** (`@portaljs/ckan`): CKAN backend integration
+  - **portaljs-components**: the library of components for creating a data portal
 
 ## How to contribute
 

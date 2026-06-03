@@ -28,9 +28,9 @@ The work moves from writing boilerplate to describing intent. The framework stay
 
 ### Next — make skills installable anywhere
 Today the skills are **repo-local**: they run from inside a clone of this repo because `/new-portal` resolves the template via `git rev-parse --show-toplevel`. To let users run them from any project:
-- [x] Fetch the template remotely (`npx degit`) instead of from the local checkout, so `/new-portal` works outside this repo
-- [x] Support installing the commands into `~/.claude/commands/` (personal scope), with docs ([`.claude/INSTALL.md`](.claude/INSTALL.md))
-- [x] Package the skills + template as a distributable Claude Code plugin (`.claude-plugin/`)
+- [ ] Fetch the template remotely (e.g. `degit` / `create-next-app -e` / pinned tarball) instead of from the local checkout, so `/new-portal` works outside this repo
+- [ ] Support installing the commands into `~/.claude/commands/` (personal scope), with docs
+- [ ] Package the skills + template as a distributable Claude Code plugin
 
 ### Next — complete the skill set
 - [ ] `/add-chart` — add a visualization to a dataset page
@@ -39,7 +39,7 @@ Today the skills are **repo-local**: they run from inside a clone of this repo b
 - [ ] `/deploy` — one-shot deploy to Vercel or static hosting
 
 ### Next — template variants
-- [x] Catalog template with dynamic dataset routes (`[slug].tsx` + `getStaticPaths`) for portals with many datasets (`examples/portaljs-catalog`)
+- [ ] Catalog template with dynamic dataset routes (`[slug].tsx` + `getStaticPaths`) for portals with many datasets
 - [ ] Modernized CKAN-backed and GitHub-backed catalog templates
 
 ### Later — skill composition (v2)

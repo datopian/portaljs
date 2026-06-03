@@ -1,12 +1,11 @@
-import Layout from '@/components/Layout'
-import LandingHero from '@/components/home/LandingHero'
-import AgentWorkflow from '@/components/home/AgentWorkflow'
-import ValueProps from '@/components/home/ValueProps'
-import Backends from '@/components/home/Backends'
-import Showcase from '@/components/home/Showcase'
-import Skills from '@/components/home/Skills'
+import Hero from '@/components/home/Hero'
 import SocialProof from '@/components/home/SocialProof'
-import Community from '@/components/home/community'
+import Schedule from '@/components/home/Schedule'
+import Layout from '@/components/Layout'
+import { KeyFeatures } from '@/components/home/KeyFeatures'
+import { ShowcaseHighlight } from '@/components/home/ShowcaseHighlight'
+import UseCases from '@/components/home/UseCases'
+import FAQ from '@/components/home/FAQ'
 import { HomePageStructuredData } from '@/components/schema/HomePageStructuredData'
 
 export default function Homepage() {
@@ -15,18 +14,17 @@ export default function Homepage() {
       <HomePageStructuredData />
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
-          <LandingHero />
+          <Hero />
         </div>
       </div>
       <SocialProof />
-      <AgentWorkflow />
-      <ValueProps />
-      <Backends />
-      <Showcase />
-      <Skills />
+      <KeyFeatures />
+      <UseCases />
+      <ShowcaseHighlight />
+      <Schedule />
       <div className="flex justify-center w-full">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
-          <Community homePage={false} />
+          <FAQ />
         </div>
       </div>
     </Layout>
