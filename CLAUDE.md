@@ -202,6 +202,7 @@ See `.claude/commands/` for available slash commands:
 - `/add-chart` — add a chart (line/bar/area/pie/scatter) to a dataset page via recharts
 - `/add-map` — render a GeoJSON dataset on an interactive Leaflet map
 - `/deploy` — one-shot deploy to Vercel or static hosting
+- `/connect-ckan` — wire a portal to a CKAN backend over its API (decoupled / any backend)
 
 These skills run from any project, not just a clone of this repo — see
 [`.claude/INSTALL.md`](.claude/INSTALL.md) for the three install paths (run-from-clone,
