@@ -39,7 +39,7 @@ Today the skills are **repo-local**: they run from inside a clone of this repo b
 - [ ] `/deploy` — one-shot deploy to Vercel or static hosting
 
 ### Next — template variants
-- [ ] Catalog template with dynamic dataset routes (`[slug].tsx` + `getStaticPaths`) for portals with many datasets
+- [x] Catalog template with dynamic dataset routes (`[slug].tsx` + `getStaticPaths`) for portals with many datasets (`examples/portaljs-catalog`)
 - [ ] Modernized CKAN-backed and GitHub-backed catalog templates
 
 ### Later — skill composition (v2)

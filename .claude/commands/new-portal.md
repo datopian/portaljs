@@ -42,6 +42,18 @@ To scaffold a portal I need:
 TEMPLATE_DIR=$(git rev-parse --show-toplevel)/examples/portaljs-template
 ```
 
+**Variant selection:** if the brief describes a portal with **many datasets** (dozens or
+more), or the user asks for a manifest-driven catalog, use the dynamic-routes variant
+instead:
+
+```bash
+TEMPLATE_DIR=$(git rev-parse --show-toplevel)/examples/portaljs-catalog
+```
+
+This variant renders all datasets through one `pages/datasets/[slug].tsx` route from a
+`datasets.json` manifest, so adding a dataset is a JSON entry plus a data file — no new
+page. Both variants use the same tokens and the same `npm install` / build steps below.
+
 If the template directory does not exist:
 ```
 ERROR: [new-portal] TEMPLATE_NOT_FOUND examples/portaljs-template not found — run this skill from inside the portaljs repo.
