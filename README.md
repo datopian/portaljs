@@ -1,55 +1,107 @@
-<p align="center"> 
-  Bugs, issues and suggestions re PortalJS framework
-  <br />
-  <br /><a href="https://discord.gg/krmj5HM6He"><img src="https://dcbadge.limes.pink/api/server/krmj5HM6He" alt="Join our Discord server"/></a>
+<p align="center">
+  <img src="assets/portaljs-logo.svg" alt="PortalJS" width="96" height="96" />
+  <h1 align="center">PortalJS</h1>
+  <p align="center">
+    <b>The AI-native framework for building data portals.</b>
+    <br />
+    Describe the portal you want — your agent scaffolds it and loads your data in minutes.
+    <br />
+    <br />
+    <a href="https://www.portaljs.com/opensource">Docs</a>
+    ·
+    <a href="https://github.com/datopian/portaljs/discussions">Discussions</a>
+    ·
+    <a href="https://github.com/datopian/portaljs/issues/new">Report a bug</a>
+    <br />
+    <br />
+    <a href="https://discord.gg/krmj5HM6He"><img src="https://dcbadge.limes.pink/api/server/krmj5HM6He" alt="Join our Discord server"/></a>
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/>
+  </p>
 </p>
 
-## PortalJS framework
+---
 
-This repo and issue tracker are for
+PortalJS is an **open-source** framework for building data portals and catalogs. It pairs a lightweight, customizable site with a set of **agentic skills** — commands your AI assistant runs to scaffold a portal, add datasets, and wire up a backend, without you writing boilerplate.
 
-- PortalJS 🌀 - https://www.portaljs.com/
-- DataHub Cloud ☁️ - https://datahub.io/
+Built and maintained in the open by [Datopian](https://www.datopian.com/) and the PortalJS community.
 
-### Issues
+## Build a portal with your AI assistant
 
-Found a bug: 👉 https://github.com/datopian/portaljs/issues/new
+PortalJS ships [Claude Code](https://claude.com/claude-code) skills that turn a brief into a working portal.
 
-### Discussions
+### Setup
 
-Got a suggestion, a question, want some support or just want to shoot the breeze 🙂
+The skills live in this repo under [`.claude/commands/`](.claude/commands/) and currently run **from inside a clone of the PortalJS repo** (the scaffolding skill copies the template from `examples/`). To use them:
 
-Head to the discussion forum: 👉 https://github.com/datopian/portaljs/discussions
+```bash
+# 1. Clone the repo and open Claude Code inside it
+git clone https://github.com/datopian/portaljs
+cd portaljs
+claude
+```
 
-### Chat on Discord
+Claude Code auto-discovers the slash commands from `.claude/commands/` — no install step. Type `/` in the session to see `/new-portal` and `/add-dataset`.
 
-If you would prefer to get help via live chat check out our discord 👉
+> **Note:** these are repo-local skills today — run them from inside the cloned repo. Making them installable anywhere (e.g. via `~/.claude/commands/` or a Claude Code plugin) is on the [roadmap](VISION.md).
 
-[Discord](https://discord.gg/krmj5HM6He)
+### Use
 
-### Docs
+In the Claude Code session:
 
-- For PortalJS go to https://www.portaljs.com/opensource
-- For DataHub Cloud – https://datahub.io/docs
+```text
+/new-portal  "Auckland Council open data portal"
+/add-dataset ./data/air-quality.csv
+/add-dataset https://example.com/parks.geojson
+```
 
-## PortalJS Cloud 🌀
+That scaffolds the site, copies your data in, generates dataset pages, and registers everything on the catalog home page. Run `npm run dev` and you have a portal.
 
-PortalJS Cloud 🌀 is a platform for rapidly creating rich data portal and publishing systems using a modern frontend approach. PortalJS Cloud can be used to publish a single dataset or build a full-scale data catalog/portal.
+**Prefer to start from a template?** Clone the canonical example and build by hand — the skills are a convenience, not a requirement:
 
-PortalJS Cloud is built in JavaScript and React on top of the popular [Next.js](https://nextjs.org) framework. PortalJS Cloud assumes a "decoupled" approach where the frontend is a separate service from the backend and interacts with backend(s) via an API. It can be used with any backend and has out of the box support for [CKAN](https://ckan.org/), GitHub, Frictionless Data Packages and more.
+```bash
+npx create-next-app -e https://github.com/datopian/portaljs/tree/main/examples/portaljs-template my-portal
+```
 
-### Features
+### Available skills
 
-- 🗺️ Unified sites: present data and content in one seamless site, pulling datasets from a DMS (e.g. CKAN) and content from a CMS (e.g. Wordpress) with a common internal API.
-- 👩‍💻 Developer friendly: built with familiar frontend tech (JavaScript, React, Next.js).
-- 🔋 Batteries included: full set of portal components out of the box e.g. catalog search, dataset showcase, blog, etc.
-- 🎨 Easy to theme and customize: installable themes, use standard CSS and React+CSS tooling. Add new routes quickly.
-- 🧱 Extensible: quickly extend and develop/import your own React components
-- 📝 Well documented: full set of documentation plus the documentation of Next.js.
+| Skill | What it does |
+|-------|--------------|
+| [`/new-portal`](.claude/commands/new-portal.md) | Scaffold a new portal from a brief |
+| [`/add-dataset`](.claude/commands/add-dataset.md) | Add a CSV, TSV, JSON, or GeoJSON dataset and register it |
 
-### For developers
+More skills (charts, maps, deploy, CKAN connect) are on the [roadmap](VISION.md). Write your own — see [`.claude/AUTHORING.md`](.claude/AUTHORING.md).
 
-- 🏗 Build with modern, familiar frontend tech such as JavaScript and React.
-- 🚀 Next.js framework: so everything in Next.js for free: Server Side Rendering, Static Site Generation, huge number of examples and integrations, etc.
-  - Server Side Rendering (SSR) => Unlimited number of pages, SEO and more whilst still using React.
-  - Static Site Generation (SSG) => Ultra-simple deployment, great performance, great lighthouse scores and more (good for small sites)
+## Why PortalJS
+
+- 🌱 **Open source, MIT licensed** — no lock-in, fork it, ship it, own it.
+- 🤖 **AI-native** — agentic skills do the assembly so you focus on the data, not the scaffolding.
+- 🧩 **Decoupled, any backend** — the frontend is independent from your backend and talks to it over an API. Out-of-the-box support for [CKAN](https://ckan.org/), [DKAN](https://getdkan.org/), [OpenMetadata](https://open-metadata.org/), [Microsoft Purview](https://www.microsoft.com/en-us/security/business/microsoft-purview), [DataHub](https://datahubproject.io/), GitHub, [Frictionless Data Packages](https://frictionlessdata.io/), plain JSON/static files — or your own custom backend.
+- 🎨 **Bring your own stack** — start from the default template or adapt it to the frontend tooling and design system your team already uses.
+- 👥 **Community-driven** — active [Discord](https://discord.gg/krmj5HM6He) and [discussion forum](https://github.com/datopian/portaljs/discussions); contributions welcome.
+
+## Examples
+
+Reference implementations live in [`examples/`](examples/):
+
+| Example | Backend |
+|---------|---------|
+| [`portaljs-template`](examples/portaljs-template/) | Static / local files — the canonical starting point |
+| [`ckan`](examples/ckan/) · [`ckan-ssg`](examples/ckan-ssg/) | CKAN |
+| [`github-backed-catalog`](examples/github-backed-catalog/) | GitHub |
+| [`dataset-frictionless`](examples/dataset-frictionless/) | Frictionless Data Package |
+| [`fivethirtyeight`](examples/fivethirtyeight/) · [`openspending`](examples/openspending/) · [`turing`](examples/turing/) | Real-world portals |
+
+## Community & support
+
+- 💬 **Discord** — live chat and help: [join the server](https://discord.gg/krmj5HM6He)
+- 🗣️ **Discussions** — questions, ideas, show-and-tell: [github.com/datopian/portaljs/discussions](https://github.com/datopian/portaljs/discussions)
+- 🐛 **Issues** — bugs and feature requests: [open an issue](https://github.com/datopian/portaljs/issues/new)
+- 📖 **Docs** — [portaljs.com/opensource](https://www.portaljs.com/opensource)
+
+## Contributing
+
+PortalJS is built in the open and we welcome contributions of all sizes — new skills, examples, docs, and fixes. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started, and read [VISION.md](VISION.md) for where the project is headed.
+
+## License
+
+[MIT](license) © [Datopian](https://www.datopian.com/)
