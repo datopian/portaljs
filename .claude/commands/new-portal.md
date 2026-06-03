@@ -36,30 +36,36 @@ To scaffold a portal I need:
 3. Any datasets to add? (file paths or URLs — you can also add them later with /add-dataset)
 ```
 
-### 2. Find the template
+### 2. Resolve the template source
+
+This skill works **both inside a clone of the portaljs repo and from any other project**.
+It prefers a local checkout (fast, offline, matches your working tree) and otherwise
+fetches the template remotely from GitHub.
+
+First pick the **variant**. Default is `examples/portaljs-template`. If the brief
+describes a portal with **many datasets** (dozens or more), or the user asks for a
+manifest-driven catalog, use the dynamic-routes variant `examples/portaljs-catalog`
+instead. This variant renders all datasets through one `pages/datasets/[slug].tsx` route
+from a `datasets.json` manifest, so adding a dataset is a JSON entry plus a data file — no
+new page. Both variants use the same tokens and the same `npm install` / build steps below.
 
 ```bash
-TEMPLATE_DIR=$(git rev-parse --show-toplevel)/examples/portaljs-template
+# Pick one — default template, or the catalog variant for many datasets:
+TEMPLATE_VARIANT="examples/portaljs-template"
+# TEMPLATE_VARIANT="examples/portaljs-catalog"
+
+# Prefer a local checkout; fall back to remote fetch from GitHub.
+if GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -d "$GIT_ROOT/$TEMPLATE_VARIANT" ]; then
+  TEMPLATE_MODE="local"
+  TEMPLATE_DIR="$GIT_ROOT/$TEMPLATE_VARIANT"
+else
+  TEMPLATE_MODE="remote"
+  # Override the ref (branch, tag, or commit) with PORTALJS_TEMPLATE_REF; defaults to main.
+  PORTALJS_TEMPLATE_REF="${PORTALJS_TEMPLATE_REF:-main}"
+fi
 ```
 
-**Variant selection:** if the brief describes a portal with **many datasets** (dozens or
-more), or the user asks for a manifest-driven catalog, use the dynamic-routes variant
-instead:
-
-```bash
-TEMPLATE_DIR=$(git rev-parse --show-toplevel)/examples/portaljs-catalog
-```
-
-This variant renders all datasets through one `pages/datasets/[slug].tsx` route from a
-`datasets.json` manifest, so adding a dataset is a JSON entry plus a data file — no new
-page. Both variants use the same tokens and the same `npm install` / build steps below.
-
-If the template directory does not exist:
-```
-ERROR: [new-portal] TEMPLATE_NOT_FOUND examples/portaljs-template not found — run this skill from inside the portaljs repo.
-```
-
-### 3. Copy the template
+### 3. Materialize the template
 
 First, check the destination does not already exist:
 ```bash
@@ -74,11 +80,27 @@ If the directory is non-empty, stop and report:
 ERROR: [new-portal] DIR_EXISTS ./$PROJECT_SLUG already exists — choose a different name or remove the existing directory.
 ```
 
-Then copy:
+Then materialize, depending on the resolved mode:
+
 ```bash
-cp -rP "$TEMPLATE_DIR" "./$PROJECT_SLUG"
-# Remove build artifacts that must not be copied
-rm -rf "./$PROJECT_SLUG/node_modules" "./$PROJECT_SLUG/.next"
+if [ "$TEMPLATE_MODE" = "local" ]; then
+  cp -rP "$TEMPLATE_DIR" "./$PROJECT_SLUG"
+  # Remove build artifacts that must not be copied
+  rm -rf "./$PROJECT_SLUG/node_modules" "./$PROJECT_SLUG/.next"
+else
+  # degit fetches a subdirectory of a repo with no git history or node_modules.
+  npx --yes degit "datopian/portaljs/$TEMPLATE_VARIANT#$PORTALJS_TEMPLATE_REF" "./$PROJECT_SLUG"
+fi
+```
+
+If the remote fetch fails (bad ref, network, or degit unavailable):
+```
+ERROR: [new-portal] FETCH_FAILED Could not fetch datopian/portaljs/$TEMPLATE_VARIANT#$PORTALJS_TEMPLATE_REF — check network access and that the ref exists, then retry. (Requires Node.js >=18 so `npx degit` is available.)
+```
+
+If running locally and the variant directory is missing:
+```
+ERROR: [new-portal] TEMPLATE_NOT_FOUND $TEMPLATE_VARIANT not found in the local checkout — update the repo or unset the local checkout to fetch remotely.
 ```
 
 ### 4. Substitute placeholder tokens
