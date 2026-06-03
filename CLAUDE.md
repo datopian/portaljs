@@ -201,5 +201,10 @@ See `.claude/commands/` for available slash commands:
 - `/add-dataset` — add a dataset (CSV/TSV/JSON/GeoJSON) to an existing portal
 - `/add-chart` — add a chart (line/bar/area/pie/scatter) to a dataset page via recharts
 - `/add-map` — render a GeoJSON dataset on an interactive Leaflet map
+- `/deploy` — one-shot deploy to Vercel or static hosting
+
+These skills run from any project, not just a clone of this repo — see
+[`.claude/INSTALL.md`](.claude/INSTALL.md) for the three install paths (run-from-clone,
+personal `~/.claude/commands/`, or Claude Code plugin).
 
 See `.claude/AUTHORING.md` to write new skills.
