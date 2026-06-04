@@ -58,7 +58,45 @@ Card grid, icon + one line each:
 - Discord, GitHub Discussions, Issues, Docs.
 - CTA repeat: get started / star / join.
 
+## Brand foundations
+
+The shared brand layer for every PortalJS surface (site, docs, components). Light background, technical and trustworthy. The page-level [Visual direction](#visual-direction) below implements these tokens.
+
+### Color tokens (OKLch)
+
+```css
+:root {
+  --bg:      oklch(99% 0.004 240);   /* near-white canvas */
+  --surface: oklch(100% 0 0);        /* card white */
+  --fg:      oklch(22% 0.02 250);    /* slate ink, ~#1e293b */
+  --muted:   oklch(52% 0.02 250);    /* gray body */
+  --border:  oklch(92% 0.008 250);   /* hairline */
+  --accent:  oklch(55% 0.19 256);    /* #2563eb primary blue */
+
+  /* cyclone gradient stops */
+  --c-sky:   #7dd3fc;
+  --c-blue:  #38bdf8;
+  --c-deep:  #2563eb;
+  --c-core:  #1e3a8a;
+}
+```
+
+### Type
+
+- **Display + body:** Inter / system sans. One family — weight contrast carries hierarchy.
+- **Mono:** ui-monospace / JetBrains Mono — for the terminal, commands, and IDs.
+
+### Layout posture
+
+1. Generous whitespace, light canvas. Not flashy.
+2. Hairline borders (1px `--border`), radius 12–16px on cards, no heavy shadows.
+3. One accent (blue); gradient used only on the logo, the hero moment, and the primary CTA.
+4. Real commands and real portal screenshots over abstract marketing copy.
+5. One focused motion: the hero terminal agent-flow. No gratuitous motion elsewhere.
+
 ## Visual direction
+
+Page-level application of the [Brand foundations](#brand-foundations) above.
 
 - **Logo / brand mark:** cyclone spiral, two arms, blue gradient (`#7dd3fc → #38bdf8 → #2563eb`) with a deep-blue core (`#1e3a8a`). Light background.
 - **Palette:** blues from the logo gradient as primary; neutral grays for text; generous whitespace. Clean, technical, trustworthy — not flashy.
@@ -72,8 +110,13 @@ Card grid, icon + one line each:
 - Generic "Next.js / SSR / SSG" feature lists as headline material — these are implementation details, not the value proposition. Bring-your-own-stack supersedes locking the message to one toolchain.
 - "This repo is an issue tracker" framing — the site should sell the framework, not apologize for the repo.
 
+## Decisions
+
+- **Headline:** "The AI-native framework for data portals."
+- **Hero:** custom animated agent-flow terminal (typed `/new-portal → /add-dataset → /deploy`, then a live preview card) — not a recorded clip.
+- **Showcase:** Malmö, Ann Arbor, Transport Data Commons, Open Data Nepal.
+
 ## Open questions
 
-- Final headline wording — "Build data portals with AI." vs "The AI-native framework for data portals."
-- Whether to feature a live/interactive demo vs a recorded animation in the hero.
-- Which production portals we have permission to showcase by name.
+- Whether to feature a live/interactive demo vs the current animated terminal in the hero.
+- Confirm naming permission for each showcased production portal.
