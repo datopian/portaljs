@@ -1,5 +1,4 @@
 import AgentFlow from './AgentFlow'
-import DiscordIcon from '../icons/DiscordIcon'
 
 export default function LandingHero() {
   return (
@@ -28,8 +27,8 @@ export default function LandingHero() {
       <div className="grid items-center gap-12 py-16 sm:py-20 lg:grid-cols-[1.02fr_1.1fr] lg:gap-14">
         {/* left: message + CTAs */}
         <div className="text-center lg:text-left">
-          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
-            Open source · MIT · AI-native
+          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
+            Open source
           </span>
 
           <h1 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-900 dark:text-white sm:text-5xl xl:text-6xl">
@@ -40,9 +39,9 @@ export default function LandingHero() {
             framework for data portals.
           </h1>
 
-          <p className="mx-auto mt-5 max-w-[33ch] text-lg text-slate-600 dark:text-slate-300 sm:text-xl lg:mx-0">
+          <p className="mx-auto mt-5 max-w-[34ch] text-lg text-slate-600 sm:text-xl lg:mx-0">
             Describe the portal you want — your AI assistant scaffolds it and
-            loads your data in minutes. Open source, no lock-in.
+            loads your data. Open source, no lock-in.
           </p>
 
           <div className="mt-9 flex flex-wrap justify-center gap-3.5 lg:justify-start">
@@ -50,22 +49,28 @@ export default function LandingHero() {
               href="https://portaljs.com/docs"
               target="_blank"
               rel="noopener noreferrer"
-              title="Get started with PortalJS"
+              title="Get started with the open-source framework"
               className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
             >
               Get started
             </a>
             <a
-              href="https://discord.gg/portaljs"
+              href="https://cloud.portaljs.com"
               target="_blank"
               rel="noopener noreferrer"
-              title="Join the PortalJS Discord"
-              className="inline-flex items-center gap-2 rounded-[10px] border border-slate-200 bg-white px-[18px] py-2.5 text-[14.5px] font-semibold text-slate-700 transition-all duration-150 hover:-translate-y-px hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+              title="PortalJS Cloud — fully managed hosting"
+              className="inline-flex items-center gap-1.5 rounded-[10px] border border-slate-300 bg-white px-[18px] py-2.5 text-[14.5px] font-semibold text-slate-700 transition-all duration-150 hover:-translate-y-px hover:border-blue-400 hover:text-blue-600"
             >
-              <DiscordIcon className="h-[17px] w-[17px]" />
-              Join Discord
+              PortalJS Cloud
+              <span aria-hidden="true">→</span>
             </a>
           </div>
+
+          <p className="mx-auto mt-3.5 max-w-[42ch] text-sm text-slate-500 lg:mx-0">
+            Self-host the open-source framework, or skip the setup with{' '}
+            <span className="font-medium text-slate-700">PortalJS Cloud</span> —
+            fully managed.
+          </p>
 
           <div className="mt-7 flex flex-wrap items-center justify-center gap-4 text-[13.5px] text-slate-500 dark:text-slate-400 lg:justify-start">
             <span>

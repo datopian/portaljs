@@ -220,7 +220,7 @@ export default function AgentFlow() {
           portaljs — agent
         </span>
       </div>
-      <div className="min-h-[330px] px-[18px] pb-5 pt-[18px] text-[13.5px] leading-[1.85] text-[#cdd9ec]">
+      <div className="h-[480px] overflow-hidden px-[18px] pb-5 pt-[18px] text-[13.5px] leading-[1.85] text-[#cdd9ec]">
         {lines.map((line, i) => {
           if (line.kind === 'preview') {
             return <PreviewCard key={`pv-${i}`} show={previewShow} />

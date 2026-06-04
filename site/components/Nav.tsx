@@ -142,12 +142,12 @@ export default function Nav() {
             </div>
           )}
           <ButtonLink
-            href="https://cloud.portaljs.com/auth/signup"
-            title="Get started with PortalJS Cloud"
+            href="https://cloud.portaljs.com"
+            title="PortalJS Cloud — fully managed hosting"
             className="text-sm !py-2 hidden lg:block"
             trackConversion={true}
           >
-            Get started free
+            PortalJS Cloud
           </ButtonLink>
         </div>
       </div>
