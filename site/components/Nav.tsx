@@ -41,7 +41,7 @@ export function NavbarTitle() {
         <img
           src={siteConfig.navbarTitle.logo}
           alt={siteConfig.navbarTitle.text}
-          className="w-32 h-16 fill-white"
+          className="mr-2 h-8 w-8"
         />
       )}
       <span className="text-primary dark:text-white">

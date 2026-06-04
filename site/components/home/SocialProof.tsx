@@ -116,10 +116,10 @@ export default function SocialProof() {
             Leading governments, enterprises, and research institutions trust PortalJS
           </h2>
         </div>
-        <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-8 sm:gap-x-14">
           {logos.map((logo, index) => (
             <Link
-              className="flex items-center justify-center p-4 opacity-75 transition hover:-translate-y-0.5 hover:opacity-100"
+              className="flex basis-[40%] items-center justify-center p-2 opacity-75 transition hover:-translate-y-0.5 hover:opacity-100 sm:basis-[26%] lg:basis-[14%]"
               key={logo.srcDark + index}
               title={logo.name}
               href={logo.url}

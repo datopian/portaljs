@@ -3,10 +3,11 @@ const config = {
   description:
     'PortalJS Cloud is the easiest way to get started with Open Data. Perfect for governments, non-profits, academics, and companies of all sizes.',
   navbarTitle: {
-    text: '🌀 PortalJS',
+    logo: '/static/img/portaljs-logo.svg',
+    text: 'PortalJS',
   },
   theme: {
-    default: 'dark',
+    default: 'light',
   },
   contentExclude: ['data-literate-demo.md'],
   author: 'Datopian',
@@ -25,10 +26,6 @@ const config = {
           href: '/data-portals',
         },
       ],
-    },
-    {
-      name: 'Solutions',
-      href: '/#solutions',
     },
     {
       name: 'Integrations',
