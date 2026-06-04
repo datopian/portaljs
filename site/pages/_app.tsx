@@ -69,8 +69,8 @@ function MyApp({ Component, pageProps }) {
       attribute="class"
       // defaultTheme={siteConfig.theme.default}
       // forcedTheme={siteConfig.theme.default ? null : 'light'}
-      defaultTheme="dark"
-      forcedTheme="dark"
+      defaultTheme="light"
+      forcedTheme="light"
     >
       <DefaultSeo
         defaultTitle={siteConfig.title}
