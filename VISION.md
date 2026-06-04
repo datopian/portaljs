@@ -13,7 +13,7 @@ The work moves from writing boilerplate to describing intent. The framework stay
 ## Principles
 
 1. **AI-native, not AI-only.** Skills are the fast path, but every skill produces plain, readable code you can clone, fork, and edit by hand. No magic runtime, no lock-in.
-2. **Open source first.** MIT licensed, built in the open, community-driven. The OSS framework is the product.
+2. **Open source first.** MIT licensed, built in the open, community-driven. The OSS framework is the product. A managed option (**PortalJS Cloud**) exists for teams that would rather not self-host, but it is strictly secondary: the open-source framework is always the primary path and is never feature-gated to push the hosted product.
 3. **Decoupled by default.** The frontend is independent from the backend and talks to it over an API — CKAN, DKAN, OpenMetadata, Microsoft Purview, DataHub, GitHub, Frictionless, plain JSON/static files, or a custom backend.
 4. **Bring your own stack.** Ship a sensible default template, but never force a frontend toolchain or design system on teams that already have one.
 5. **Skills are first-class.** Skills live in the repo, are documented, tested end-to-end, and composable. Anyone can author one — see [`.claude/AUTHORING.md`](.claude/AUTHORING.md).

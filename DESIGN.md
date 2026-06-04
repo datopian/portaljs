@@ -16,18 +16,19 @@ Secondary: **developers** who want a flexible, no-lock-in framework, and **decis
 What the page must land, in order of priority:
 
 1. **What it is** — open-source, AI-native framework for building data portals.
-2. **The new way to build** — describe a portal, your AI assistant scaffolds it and loads data in minutes.
+2. **The new way to build** — describe a portal, your AI assistant scaffolds it and loads data.
 3. **No lock-in, your stack, any backend** — MIT, decoupled, works with the catalog/metadata system you already run.
 4. **It's real and supported** — active community, examples, used in production.
+5. **Two ways to run it** — self-host the open-source framework (primary), or use **PortalJS Cloud**, the managed option (secondary). Never let the hosted product overshadow or gate the OSS path.
 
 ## Page sections
 
 ### 1. Hero
 - **Logo** — the cyclone mark (`assets/portaljs-logo.svg`), blue gradient on light background.
-- **Headline:** "Build data portals with AI." (or: "The AI-native framework for data portals.")
-- **Subhead:** Describe the portal you want — your AI assistant scaffolds it and loads your data in minutes. Open source, no lock-in.
-- **Primary CTA:** "Get started" → docs quickstart.
-- **Secondary CTA:** "Star on GitHub" / "Join Discord".
+- **Headline:** "The AI-native framework for data portals."
+- **Subhead:** Describe the portal you want — your AI assistant scaffolds it and loads your data. Open source, no lock-in.
+- **Primary CTA:** "Get started" → docs quickstart (self-host the OSS framework).
+- **Secondary CTA:** "PortalJS Cloud" → the managed option. Followed by a caption clarifying the two paths (self-host vs managed). OSS stays the dominant, filled CTA; managed is the outline/secondary.
 - **Visual:** terminal-style animation of the agent flow (`/new-portal …` → `/add-dataset …` → live portal). This is the hero moment — show, don't tell.
 
 ### 2. The agent workflow (how it works)
@@ -106,7 +107,7 @@ Page-level application of the [Brand foundations](#brand-foundations) above.
 
 ## What to drop from the current site
 
-- Heavy "Cloud / hosted platform" framing on the OSS landing page — keep the homepage focused on the open-source framework.
+- Heavy "Cloud / hosted platform" framing as the homepage's main story — the open-source framework leads. A single, clearly-secondary managed entry point (PortalJS Cloud, in the nav and as the hero's secondary CTA) is fine; it must never outshine or gate the OSS path.
 - Generic "Next.js / SSR / SSG" feature lists as headline material — these are implementation details, not the value proposition. Bring-your-own-stack supersedes locking the message to one toolchain.
 - "This repo is an issue tracker" framing — the site should sell the framework, not apologize for the repo.
 
