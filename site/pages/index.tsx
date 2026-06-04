@@ -5,6 +5,7 @@ import ValueProps from '@/components/home/ValueProps'
 import Backends from '@/components/home/Backends'
 import Showcase from '@/components/home/Showcase'
 import Skills from '@/components/home/Skills'
+import CtaBand from '@/components/home/CtaBand'
 import SocialProof from '@/components/home/SocialProof'
 import Community from '@/components/home/community'
 import { HomePageStructuredData } from '@/components/schema/HomePageStructuredData'
@@ -24,6 +25,7 @@ export default function Homepage() {
       <Backends />
       <Showcase />
       <Skills />
+      <CtaBand />
       <div className="flex justify-center w-full">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
           <Community homePage={false} />

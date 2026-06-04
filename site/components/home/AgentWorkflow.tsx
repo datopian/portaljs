@@ -2,58 +2,67 @@ const steps = [
   {
     n: '01',
     title: 'Describe',
-    command: '/new-portal',
     body: 'Tell your AI assistant the portal you want — the audience, the data, the look. Plain language, no boilerplate.',
+    code: { cmd: '/new-portal', rest: ' "Malmö Open Data"' },
   },
   {
     n: '02',
     title: 'Scaffold',
-    command: '/add-dataset',
     body: 'Skills assemble a real Next.js project: pages, tables, charts, and maps wired to your data. The output is plain, editable code.',
+    code: { cmd: '/add-dataset', rest: ' traffic-2024.csv' },
   },
   {
     n: '03',
     title: 'Publish',
-    command: '/deploy',
     body: 'Ship a fast static site or connect a live backend. Own every file — there is no magic runtime to lock you in.',
+    code: { cmd: '/deploy', rest: ' → malmo.portaljs.app' },
   },
 ]
 
 export default function AgentWorkflow() {
   return (
-    <section className="w-full py-20">
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-blue-500">
+    <section id="how" className="w-full scroll-mt-32 py-20 sm:py-[88px]">
+      <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-12">
+        <div className="max-w-[680px]">
+          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
             How it works
-          </p>
-          <h2 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900 dark:text-white">
+          </span>
+          <h2 className="mt-3.5 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
             Describe → Scaffold → Publish
           </h2>
-          <p className="mt-4 text-lg text-slate-600 dark:text-slate-300">
-            Three steps from an idea to a live portal. Each one is a documented
-            skill your AI assistant runs for you.
+          <p className="mt-3.5 text-[17px] text-slate-600 dark:text-slate-300">
+            Three steps from an idea to a live portal — skills do the assembly,
+            and the output is plain, editable code.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {steps.map((step) => (
+        <div className="mt-11 grid gap-[22px] md:grid-cols-3">
+          {steps.map((step, i) => (
             <div
               key={step.n}
-              className="relative flex flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-7 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400/60 hover:shadow-lg hover:shadow-blue-500/10"
+              className="relative rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60"
             >
-              <span className="text-5xl font-bold text-slate-200 dark:text-slate-700">
+              <span className="font-mono text-xs font-semibold tracking-[0.12em] text-blue-600 dark:text-blue-400">
                 {step.n}
               </span>
-              <h3 className="mt-4 text-xl font-semibold text-slate-900 dark:text-white">
+              <h3 className="mb-2 mt-3.5 text-lg font-semibold text-slate-900 dark:text-white">
                 {step.title}
               </h3>
-              <code className="mt-2 inline-block w-fit rounded-md bg-slate-100 dark:bg-slate-800 px-2.5 py-1 font-mono text-sm text-blue-600 dark:text-blue-300">
-                {step.command}
-              </code>
-              <p className="mt-4 text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p className="text-[14.5px] text-slate-600 dark:text-slate-300">
                 {step.body}
               </p>
+              <div className="mt-4 overflow-x-auto rounded-[9px] bg-[#0a1424] px-[13px] py-[11px] font-mono text-[12.5px] font-medium leading-[1.5] text-[#cdd9ec]">
+                <span className="text-[#5eead4]">{step.code.cmd}</span>
+                {step.code.rest}
+              </div>
+              {i < steps.length - 1 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute right-[-17px] top-1/2 z-10 hidden -translate-y-1/2 text-xl text-slate-300 dark:text-slate-600 md:block"
+                >
+                  →
+                </span>
+              )}
             </div>
           ))}
         </div>
