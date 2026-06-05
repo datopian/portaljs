@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 /**
- * The hero terminal: types the PortalJS agent flow — scaffold a portal, load a
- * dataset, deploy — then reveals a mini live-portal preview card. Pure
+ * The hero terminal: types the PortalJS agent flow — scaffold a portal, load
+ * two datasets, deploy — narrating each step so a visitor can read along, then
+ * reveals a catalog-style live-portal preview that holds on screen. Pure
  * CSS/JS, no recording asset, no animation library.
  *
  * Honors prefers-reduced-motion by rendering the final state statically.
- * Ported from the standalone landing design (rotateY perspective, dark
- * terminal, blue gradient cursor, light preview card).
+ * Content is bottom-anchored and clipped (justify-end + overflow-hidden), so
+ * the newest activity and the final catalog preview are always fully visible.
  */
 
 type CmdStep = { t: 'cmd'; text: string }
@@ -17,23 +18,33 @@ type OkStep = { t: 'ok'; text: string }
 type PreviewStep = { t: 'preview' }
 type Step = CmdStep | OutStep | OkStep | PreviewStep
 
+// Mirrors the README example brief. More intermediate `out` lines = more for
+// the visitor to read between commands.
 const SEQ: Step[] = [
-  { t: 'cmd', text: '/new-portal "Malmö Open Data"' },
-  { t: 'out', text: '◐ scaffolding · Next.js + Frictionless' },
-  { t: 'ok', text: '✓ portal ready in 8.2s' },
-  { t: 'cmd', text: '/add-dataset traffic-2024.csv' },
-  { t: 'out', text: '◐ profiling columns · loading rows' },
-  { t: 'ok', text: '✓ **12,403 rows** · 9 fields · indexed' },
+  { t: 'cmd', text: '/new-portal "Auckland Council open data portal"' },
+  { t: 'out', text: '◐ reading brief · planning structure' },
+  { t: 'out', text: '◐ scaffolding Next.js app · Tailwind + Frictionless' },
+  { t: 'ok', text: '✓ portal ready · **14 files** generated' },
+  { t: 'cmd', text: '/add-dataset ./data/air-quality.csv' },
+  { t: 'out', text: '◐ reading air-quality.csv · 8,742 rows' },
+  { t: 'out', text: '◐ profiling columns · inferring types' },
+  { t: 'ok', text: '✓ added **Air quality** · 6 fields · table + chart' },
+  { t: 'cmd', text: '/add-dataset https://example.com/parks.geojson' },
+  { t: 'out', text: '◐ fetching GeoJSON · 312 features' },
+  { t: 'out', text: '◐ rendering interactive map' },
+  { t: 'ok', text: '✓ added **Parks & reserves** · GeoJSON · mapped' },
   { t: 'cmd', text: '/deploy' },
-  { t: 'ok', text: '✓ deployed → malmo.portaljs.app' },
+  { t: 'out', text: '◐ building static catalog · optimizing' },
+  { t: 'out', text: '◐ uploading to Vercel' },
+  { t: 'ok', text: '✓ live → **auckland.portaljs.app**' },
   { t: 'preview' },
 ]
 
-const TYPE_MS = 34
-const CMD_PAUSE = 260
-const OUT_PAUSE = 620
-const OK_PAUSE = 420
-const LOOP_PAUSE = 4200
+const TYPE_MS = 36 // per-character typing speed
+const CMD_PAUSE = 480 // lead time after a command finishes typing
+const OUT_PAUSE = 880 // each narrated step lingers so it can be read
+const OK_PAUSE = 720 // success line holds before the next command
+const HOLD_FINAL = 9500 // keep the finished catalog on screen to read
 
 // One rendered terminal line.
 type RenderLine =
@@ -83,11 +94,27 @@ function CycMark({ size = 15 }: { size?: number }) {
   )
 }
 
-function PreviewCard({ show }: { show: boolean }) {
-  const rows = [
-    { name: 'Traffic counts 2024', tag: 'CSV · 12.4k' },
-    { name: 'Air quality sensors', tag: 'JSON · 3.1k' },
-    { name: 'Cycling network', tag: 'GeoJSON' },
+// Catalog-style preview of the finished portal (header + search + dataset cards).
+function CatalogPreview({ show }: { show: boolean }) {
+  const datasets = [
+    {
+      name: 'Air quality',
+      desc: 'Hourly readings from monitoring stations',
+      meta: 'CSV · 8,742 rows',
+      tag: 'Environment',
+    },
+    {
+      name: 'Parks & reserves',
+      desc: 'Boundaries and amenities for council parks',
+      meta: 'GeoJSON · 312 features',
+      tag: 'Recreation',
+    },
+    {
+      name: 'Building consents',
+      desc: 'Monthly consents issued by the council',
+      meta: 'CSV · 2,180 rows',
+      tag: 'Planning',
+    },
   ]
   return (
     <div
@@ -95,32 +122,51 @@ function PreviewCard({ show }: { show: boolean }) {
         show ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
       }`}
     >
+      {/* browser chrome */}
       <div className="flex items-center gap-[7px] border-b border-[#e2e8f0] bg-[#eef2f8] px-2.5 py-[7px]">
         <span className="h-[9px] w-[9px] rounded-full bg-[#ff5f57]" />
         <span className="h-[9px] w-[9px] rounded-full bg-[#febc2e]" />
         <span className="h-[9px] w-[9px] rounded-full bg-[#28c840]" />
         <span className="flex-1 rounded-[5px] border border-[#e2e8f0] bg-white px-2 py-1 font-mono text-[10.5px] font-medium text-[#64748b]">
-          malmo.portaljs.app
+          auckland.portaljs.app
         </span>
       </div>
-      <div className="px-[13px] py-3 font-sans">
+      {/* portal header + search */}
+      <div className="px-[13px] pt-3 font-sans">
         <div className="flex items-center gap-[7px] text-[12.5px] font-bold text-[#0f172a]">
           <CycMark />
-          Malmö Open Data
+          Auckland Council open data portal
         </div>
-        <div className="mt-[9px] flex flex-col gap-[5px]">
-          {rows.map((r) => (
-            <div
-              key={r.name}
-              className="flex items-center justify-between rounded-md border border-[#eef1f6] px-[9px] py-[6px] text-[11px] text-[#475569]"
-            >
-              <b className="font-semibold text-[#0f172a]">{r.name}</b>
-              <span className="rounded bg-[#eff5ff] px-[6px] py-[3px] font-mono text-[9.5px] font-semibold text-[#2563eb]">
-                {r.tag}
+        <div className="mt-2 flex items-center gap-[6px] rounded-md border border-[#e7ebf2] bg-[#f7f9fc] px-2 py-[5px] text-[10.5px] text-[#94a3b8]">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" strokeLinecap="round" />
+          </svg>
+          Search datasets…
+          <span className="ml-auto font-mono text-[9.5px] text-[#b2bccc]">3 datasets</span>
+        </div>
+      </div>
+      {/* dataset catalog */}
+      <div className="flex flex-col gap-[6px] px-[13px] pb-3 pt-[9px] font-sans">
+        {datasets.map((d) => (
+          <div
+            key={d.name}
+            className="rounded-md border border-[#eef1f6] px-[10px] py-[7px]"
+          >
+            <div className="flex items-center justify-between">
+              <b className="text-[11.5px] font-semibold text-[#0f172a]">{d.name}</b>
+              <span className="rounded bg-[#eff5ff] px-[6px] py-[2px] font-mono text-[9px] font-semibold text-[#2563eb]">
+                {d.tag}
               </span>
             </div>
-          ))}
-        </div>
+            <div className="mt-[2px] text-[10px] leading-snug text-[#64748b]">
+              {d.desc}
+            </div>
+            <div className="mt-[3px] font-mono text-[9.5px] text-[#94a3b8]">
+              {d.meta}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -163,22 +209,21 @@ export default function AgentFlow() {
         for (let i = 0; i < SEQ.length && !cancelled; i++) {
           const s = SEQ[i]
           if (s.t === 'cmd') {
-            // Append the typing cmd line; its index in the list is the count of
-            // non-preview steps already rendered (= i here, since preview is last).
-            const idx = i
+            // Append the typing cmd line, then fill it character by character.
+            // The line being typed is always the last one in the list.
             setLines((prev) => [...prev, { kind: 'cmd', text: '', typing: true }])
             for (let c = 1; c <= s.text.length && !cancelled; c++) {
               const partial = s.text.slice(0, c)
               setLines((prev) => {
                 const next = [...prev]
-                next[idx] = { kind: 'cmd', text: partial, typing: true }
+                next[next.length - 1] = { kind: 'cmd', text: partial, typing: true }
                 return next
               })
               await wait(TYPE_MS)
             }
             setLines((prev) => {
               const next = [...prev]
-              next[idx] = { kind: 'cmd', text: s.text, typing: false }
+              next[next.length - 1] = { kind: 'cmd', text: s.text, typing: false }
               return next
             })
             await wait(CMD_PAUSE)
@@ -192,10 +237,9 @@ export default function AgentFlow() {
             setLines((prev) => [...prev, { kind: 'preview' }])
             await wait(60)
             if (!cancelled) setPreviewShow(true)
-            await wait(50)
+            await wait(HOLD_FINAL)
           }
         }
-        await wait(LOOP_PAUSE)
       }
     }
 
@@ -220,10 +264,10 @@ export default function AgentFlow() {
           portaljs — agent
         </span>
       </div>
-      <div className="h-[480px] overflow-hidden px-[18px] pb-5 pt-[18px] text-[13.5px] leading-[1.85] text-[#cdd9ec]">
+      <div className="flex h-[500px] flex-col justify-end overflow-hidden px-[18px] pb-5 pt-[18px] text-[13.5px] leading-[1.85] text-[#cdd9ec]">
         {lines.map((line, i) => {
           if (line.kind === 'preview') {
-            return <PreviewCard key={`pv-${i}`} show={previewShow} />
+            return <CatalogPreview key={`pv-${i}`} show={previewShow} />
           }
           if (line.kind === 'cmd') {
             return (
