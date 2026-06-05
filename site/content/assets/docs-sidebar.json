@@ -1,0 +1,37 @@
+[
+  {
+    "title": "Get started",
+    "links": [
+      {
+        "title": "Introduction",
+        "href": "/docs"
+      },
+      {
+        "title": "Quickstart — the AI path",
+        "href": "/docs/quickstart"
+      },
+      {
+        "title": "Manual setup — build by hand",
+        "href": "/docs/manual-setup"
+      }
+    ]
+  },
+  {
+    "title": "Core concepts",
+    "links": [
+      {
+        "title": "Core concepts",
+        "href": "/docs/core-concepts"
+      }
+    ]
+  },
+  {
+    "title": "More",
+    "links": [
+      {
+        "title": "Open-source framework docs",
+        "href": "/opensource"
+      }
+    ]
+  }
+]
