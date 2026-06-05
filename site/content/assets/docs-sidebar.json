@@ -26,6 +26,39 @@
     ]
   },
   {
+    "title": "Skills",
+    "links": [
+      {
+        "title": "Skills reference",
+        "href": "/docs/skills"
+      },
+      {
+        "title": "/new-portal",
+        "href": "/docs/skills/new-portal"
+      },
+      {
+        "title": "/add-dataset",
+        "href": "/docs/skills/add-dataset"
+      },
+      {
+        "title": "/add-chart",
+        "href": "/docs/skills/add-chart"
+      },
+      {
+        "title": "/add-map",
+        "href": "/docs/skills/add-map"
+      },
+      {
+        "title": "/connect-ckan",
+        "href": "/docs/skills/connect-ckan"
+      },
+      {
+        "title": "/deploy",
+        "href": "/docs/skills/deploy"
+      }
+    ]
+  },
+  {
     "title": "More",
     "links": [
       {
