@@ -31,7 +31,7 @@ PortalJS ships [Claude Code](https://claude.com/claude-code) skills that turn a 
 
 ### Setup
 
-The skills live in this repo under [`.claude/commands/`](.claude/commands/) and currently run **from inside a clone of the PortalJS repo** (the scaffolding skill copies the template from `examples/`). To use them:
+The skills live in this repo under [`.claude/commands/`](.claude/commands/). The quickest way to try them is from a clone of the repo:
 
 ```bash
 # 1. Clone the repo and open Claude Code inside it
@@ -40,9 +40,9 @@ cd portaljs
 claude
 ```
 
-Claude Code auto-discovers the slash commands from `.claude/commands/` — no install step. Type `/` in the session to see `/new-portal` and `/add-dataset`.
+Claude Code auto-discovers the slash commands from `.claude/commands/` — no install step. Type `/` in the session to see `/new-portal`, `/add-dataset`, and the rest.
 
-> **Note:** these are repo-local skills today — run them from inside the cloned repo. Making them installable anywhere (e.g. via `~/.claude/commands/` or a Claude Code plugin) is on the [roadmap](VISION.md).
+> **Install anywhere:** the skills and template are also packaged as a Claude Code plugin and can be installed into `~/.claude/commands/` so you can run them from any project. See [`.claude/INSTALL.md`](.claude/INSTALL.md).
 
 ### Use
 
@@ -68,8 +68,12 @@ npx create-next-app -e https://github.com/datopian/portaljs/tree/main/examples/p
 |-------|--------------|
 | [`/new-portal`](.claude/commands/new-portal.md) | Scaffold a new portal from a brief |
 | [`/add-dataset`](.claude/commands/add-dataset.md) | Add a CSV, TSV, JSON, or GeoJSON dataset and register it |
+| [`/add-chart`](.claude/commands/add-chart.md) | Add a chart to a dataset page |
+| [`/add-map`](.claude/commands/add-map.md) | Render GeoJSON on an interactive map |
+| [`/connect-ckan`](.claude/commands/connect-ckan.md) | Wire a portal to a CKAN backend |
+| [`/deploy`](.claude/commands/deploy.md) | Deploy to Vercel or static hosting |
 
-More skills (charts, maps, deploy, CKAN connect) are on the [roadmap](VISION.md). Write your own — see [`.claude/AUTHORING.md`](.claude/AUTHORING.md).
+More skill families — data ingestion/migration, wrangling and transforms, richer visualization, and metadata — are on the [roadmap](VISION.md). Write your own — see [`.claude/AUTHORING.md`](.claude/AUTHORING.md).
 
 ## Why PortalJS
 
