@@ -277,3 +277,18 @@ pre[class*="language-"] > code[class*="language-"] {
   box-shadow: inset 5px 0 0 #f7d87c;
   z-index: 0;
 }
+
+/*
+ * Fenced code blocks with NO language (```) get a `code-highlight` class but
+ * no `language-*` class, so they miss the theme rule above and inherit the
+ * prose dark code color on the prose dark <pre> background — i.e. dark text on
+ * dark, invisible. Force the theme's light base color (and a consistent dark
+ * background) for these untagged blocks.
+ */
+pre code:not([class*='language-']),
+pre code:not([class*='language-']) .token {
+  color: #d4d4d4;
+}
+pre:not([class*='language-']) {
+  background: #1e1e1e;
+}
