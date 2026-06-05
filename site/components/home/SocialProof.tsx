@@ -43,10 +43,10 @@ const logos = [
     },
     {
       name: 'IDPO (University of Sydney)',
-      srcDark: '/static/img/social-proof/usyd-dark.svg',
-      srcLight: '/static/img/social-proof/UNIOFSY.png',
+      srcDark: '/static/img/social-proof/UNIOFSY.png',
+      srcLight: '/static/img/social-proof/usyd-dark.svg',
       url: 'https://www.idpo.org.au',
-      style: '',
+      style: 'grayscale',
       width: 115,
     },
     {
@@ -92,10 +92,10 @@ const logos = [
     },
   {
     name: 'Hounslow',
-    srcDark: '/static/img/social-proof/hounslow-light.svg',
-    srcLight: '/static/img/social-proof/hounslow.svg',
+    srcDark: '/static/img/social-proof/hounslow.svg',
+    srcLight: '/static/img/social-proof/hounslow-light.svg',
     url: 'https://data.hounslow.gov.uk',
-    style: 'grayscale  dark:invert-0 opacity-80',
+    style: 'grayscale opacity-80',
     width: 200,
   },
 ] as const
