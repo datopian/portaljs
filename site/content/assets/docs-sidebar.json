@@ -59,11 +59,65 @@
     ]
   },
   {
+    "title": "Guides",
+    "links": [
+      {
+        "title": "Guides",
+        "href": "/docs/guides"
+      },
+      {
+        "title": "Add tabular data",
+        "href": "/docs/guides/add-tabular-data"
+      },
+      {
+        "title": "Add a chart",
+        "href": "/docs/guides/add-a-chart"
+      },
+      {
+        "title": "Render a map",
+        "href": "/docs/guides/render-a-map"
+      },
+      {
+        "title": "Connect a CKAN backend",
+        "href": "/docs/guides/connect-a-ckan-backend"
+      },
+      {
+        "title": "Deploy",
+        "href": "/docs/guides/deploy"
+      },
+      {
+        "title": "Theming",
+        "href": "/docs/guides/theming"
+      }
+    ]
+  },
+  {
+    "title": "Templates & extending",
+    "links": [
+      {
+        "title": "Templates",
+        "href": "/docs/templates"
+      },
+      {
+        "title": "Authoring skills",
+        "href": "/docs/authoring-skills"
+      },
+      {
+        "title": "Backends",
+        "href": "/docs/backends"
+      }
+    ]
+  },
+  {
     "title": "More",
     "links": [
       {
         "title": "Open-source framework docs",
         "href": "/opensource"
+      },
+      {
+        "title": "PortalJS Cloud (managed)",
+        "href": "/cloud/docs"
       }
     ]
   }

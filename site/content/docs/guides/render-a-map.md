@@ -1,0 +1,79 @@
+---
+metatitle: Render a Map in PortalJS – Interactive GeoJSON Maps
+metadescription: Render a GeoJSON dataset on an interactive Leaflet map in your PortalJS portal — with /add-map, or by hand with react-leaflet and a client-only Map component.
+title: Render a map
+description: Put a GeoJSON dataset on an interactive map — with /add-map, or by hand with react-leaflet.
+---
+
+**Goal:** render a GeoJSON dataset (points, lines, or polygons) on an interactive map
+on its own page, linked from the home page catalog.
+
+> [!info] Before you start
+> You need a portal scaffolded with [`/new-portal`](/docs/skills/new-portal). The
+> source must be **GeoJSON** — a `Feature`, `FeatureCollection`, or geometry object.
+> For tabular data, see [Add tabular data](/docs/guides/add-tabular-data).
+
+## The AI path — `/add-map`
+
+Point [`/add-map`](/docs/skills/add-map) at a local file or a public URL:
+
+```
+/add-map ./data/regions.geojson — Auckland region boundaries
+```
+
+It validates the GeoJSON, copies it into `/public/data/`, installs
+`react-leaflet`/`leaflet` (once), generates a reusable client-only `Map` component,
+creates a map page under `pages/datasets/`, and registers it on the home page. It
+runs a full `next build` before reporting success.
+
+> [!note] Map and table of the same file
+> `/add-dataset` renders GeoJSON as a properties table; `/add-map` renders it on a
+> map. Run both on the same file to offer both views — `/add-map` adds a `-map` suffix
+> to keep the routes distinct.
+
+## The by-hand path
+
+Drop the file into `/public/data/`, then install Leaflet directly:
+
+```bash
+npm install react-leaflet@^4 leaflet@^1.9 && npm install -D @types/leaflet
+```
+
+> [!note] Why react-leaflet v4
+> v4 targets React 18 (the template's React). Don't install v5 (React 19) unless
+> you've upgraded the portal to React 19.
+
+Leaflet touches `window` at module load, so it **must not** be server-rendered. Split
+the component in two: a `MapView.tsx` holding the Leaflet code, and a thin `Map.tsx`
+wrapper that loads it with `dynamic(() => import('./MapView'), { ssr: false })`. Only
+the prop type is imported across the boundary, so Leaflet never reaches the server
+bundle.
+
+The map page passes the GeoJSON as a `url` so the component fetches it client-side
+(the file is served statically from `/public/data/`), which sidesteps `.geojson`
+import quirks:
+
+```tsx
+import Map from '../../components/Map';
+// …
+<Map url="/data/regions.geojson" />
+```
+
+Then add a link from your home page catalog (`pages/index.tsx`).
+
+## Notes
+
+- **Coordinate order:** GeoJSON is `[longitude, latitude]`. Leaflet's `GeoJSON` layer
+  handles this — don't pre-swap.
+- **CRS:** Leaflet assumes WGS84 (EPSG:4326). Reproject projected data first or it
+  lands in the wrong place.
+- **Large files (>5MB):** thousands of features render slowly — simplify geometries
+  (e.g. with `mapshaper`) first.
+
+## Where to go next
+
+- **[Connect a CKAN backend](/docs/guides/connect-a-ckan-backend)** — serve datasets
+  from a live catalog instead of static files.
+- **[Deploy](/docs/guides/deploy)** — publish the portal.
+
+<DocsPagination prev="/docs/guides/add-a-chart" next="/docs/guides/connect-a-ckan-backend" />

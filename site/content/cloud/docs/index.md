@@ -3,6 +3,10 @@ title: "PortalJS Cloud Documentation"
 description: "Administrator guide for PortalJS Cloud: manage datasets, organizations, users, visualizations, and your public portal."
 ---
 
+> [!info] These are the PortalJS Cloud (managed) docs
+> This guide covers **PortalJS Cloud, the managed option** — a hosted portal you
+> administer from a dashboard. If you're building and self-hosting the open-source
+> framework instead, see the [PortalJS docs at /docs](/docs).
 
 User guide for PortalJS Cloud portal administrators. Each page walks through one feature area with step-by-step instructions and screenshots.
 
