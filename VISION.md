@@ -10,10 +10,12 @@ For years, building a data portal meant wiring up a heavy component library, fig
 
 The work moves from writing boilerplate to describing intent. The framework stays small and easy to own; the agent does the repetitive assembly.
 
+And scaffolding is only the start. The same model — describe intent, get plain editable code/artifacts — extends across the **whole data-portal lifecycle**: ingest and migrate existing catalogs, wrangle and transform data, visualize it, describe it with metadata, build and brand the frontend, and publish. PortalJS is becoming a composable **library of agentic skills** for that lifecycle, not just a portal scaffolder. See [The bigger picture](#the-bigger-picture--a-skill-library-for-the-whole-data-lifecycle).
+
 ## Principles
 
 1. **AI-native, not AI-only.** Skills are the fast path, but every skill produces plain, readable code you can clone, fork, and edit by hand. No magic runtime, no lock-in.
-2. **Open source first.** MIT licensed, built in the open, community-driven. The OSS framework is the product.
+2. **Open source first.** MIT licensed, built in the open, community-driven. The OSS framework is the product. A managed option (**PortalJS Cloud**) exists for teams that would rather not self-host, but it is strictly secondary: the open-source framework is always the primary path and is never feature-gated to push the hosted product.
 3. **Decoupled by default.** The frontend is independent from the backend and talks to it over an API — CKAN, DKAN, OpenMetadata, Microsoft Purview, DataHub, GitHub, Frictionless, plain JSON/static files, or a custom backend.
 4. **Bring your own stack.** Ship a sensible default template, but never force a frontend toolchain or design system on teams that already have one.
 5. **Skills are first-class.** Skills live in the repo, are documented, tested end-to-end, and composable. Anyone can author one — see [`.claude/AUTHORING.md`](.claude/AUTHORING.md).
@@ -28,18 +30,18 @@ The work moves from writing boilerplate to describing intent. The framework stay
 
 ### Next — make skills installable anywhere
 Today the skills are **repo-local**: they run from inside a clone of this repo because `/new-portal` resolves the template via `git rev-parse --show-toplevel`. To let users run them from any project:
-- [ ] Fetch the template remotely (e.g. `degit` / `create-next-app -e` / pinned tarball) instead of from the local checkout, so `/new-portal` works outside this repo
-- [ ] Support installing the commands into `~/.claude/commands/` (personal scope), with docs
-- [ ] Package the skills + template as a distributable Claude Code plugin
+- [x] Fetch the template remotely (`npx degit`) instead of from the local checkout, so `/new-portal` works outside this repo
+- [x] Support installing the commands into `~/.claude/commands/` (personal scope), with docs ([`.claude/INSTALL.md`](.claude/INSTALL.md))
+- [x] Package the skills + template as a distributable Claude Code plugin (`.claude-plugin/`)
 
-### Next — complete the skill set
-- [ ] `/add-chart` — add a visualization to a dataset page
-- [ ] `/add-map` — render GeoJSON on an interactive map
-- [ ] `/connect-ckan` — wire a portal to a CKAN backend (the headline "decoupled" path)
-- [ ] `/deploy` — one-shot deploy to Vercel or static hosting
+### Now — core skill set
+- [x] `/add-chart` — add a visualization to a dataset page
+- [x] `/add-map` — render GeoJSON on an interactive map
+- [x] `/connect-ckan` — wire a portal to a CKAN backend (the headline "decoupled" path)
+- [x] `/deploy` — one-shot deploy to Vercel or static hosting
 
 ### Next — template variants
-- [ ] Catalog template with dynamic dataset routes (`[slug].tsx` + `getStaticPaths`) for portals with many datasets
+- [x] Catalog template with dynamic dataset routes (`[slug].tsx` + `getStaticPaths`) for portals with many datasets (`examples/portaljs-catalog`)
 - [ ] Modernized CKAN-backed and GitHub-backed catalog templates
 
 ### Later — skill composition (v2)
@@ -49,6 +51,39 @@ Today the skills are **repo-local**: they run from inside a clone of this repo b
 ### Ongoing — keep the repo honest
 - [ ] Retire legacy heavy components and dead code paths
 - [ ] Keep `CLAUDE.md`, examples, and skills in sync as the canonical reference
+
+## The bigger picture — a skill library for the whole data lifecycle
+
+Scaffolding a portal and dropping in a CSV is the *first* skill family, not the whole product. The longer-term vision is a composable library of agentic skills spanning the full lifecycle of a data portal — each producing plain, inspectable code or data artifacts, each usable on its own or chained into a pipeline.
+
+### Ingest & migrate
+Pull existing catalogs and datasets into a PortalJS **static catalog** from the systems teams already run:
+- Sources: CKAN, DKAN, Socrata, OpenDataSoft (ODS), ArcGIS Open Data / Hub, and more.
+- A multi-step, preference-driven flow: pick catalog / organizations / datasets, choose what to materialize (metadata only vs. full data), map fields, and write out a static catalog. This is the headline migration path *off* a legacy DMS and *onto* PortalJS.
+
+### Wrangle & transform
+Prepare data without leaving the assistant:
+- **Data quality & validation** — the existing `skills/check-data-quality`, to be relocated into its proper home in the skill library.
+- **CSV wrangling** — common operations: clean headers, fix types, dedupe, filter, sort, join, reshape, split/merge columns.
+- **Format transforms** — CSV ⇄ TSV ⇄ JSON ⇄ Parquet, plus Excel (xlsx), XML, and other tabular sources.
+- **SQL over files** (e.g. DuckDB) for slicing and aggregating before publish.
+
+### Visualize
+Charts as a first-class skill family, standardized on **Observable Plot / Framework** wherever possible:
+- Generate a wide range of chart types from a dataset + intent, emitted as editable code.
+- Strong defaults, with an escape hatch to hand-tune.
+
+### Describe (metadata)
+Metadata management as skills:
+- Define and edit schemas; author and validate against **JSON Schema** (and Frictionless / Table Schema).
+- Adapt to existing metadata profiles (DCAT, schema.org, custom) rather than imposing one.
+
+### Build & brand the frontend
+Keep frontend assembly straightforward, and make branding trivial:
+- **Bring your own `DESIGN.md`** — point a skill at a brand/design spec (see [`DESIGN.md`](DESIGN.md) and its Brand foundations) and have the portal themed to match. Branding becomes a single-file input, not a CSS slog.
+
+### How it composes
+These families chain: **ingest → wrangle → describe → visualize → build & brand → deploy**. `/new-portal` becomes the entry point to an orchestrated pipeline, and third-party skills compose with the built-ins through shared conventions (see [`.claude/AUTHORING.md`](.claude/AUTHORING.md)). The framework stays small; the skill library grows.
 
 ## How to help
 

@@ -199,5 +199,13 @@ Add `npm install react-leaflet leaflet @types/leaflet` and import directly. No m
 See `.claude/commands/` for available slash commands:
 - `/new-portal` — scaffold a new PortalJS data portal from a brief
 - `/add-dataset` — add a dataset (CSV/TSV/JSON/GeoJSON) to an existing portal
+- `/add-chart` — add a chart (line/bar/area/pie/scatter) to a dataset page via recharts
+- `/add-map` — render a GeoJSON dataset on an interactive Leaflet map
+- `/deploy` — one-shot deploy to Vercel or static hosting
+- `/connect-ckan` — wire a portal to a CKAN backend over its API (decoupled / any backend)
+
+These skills run from any project, not just a clone of this repo — see
+[`.claude/INSTALL.md`](.claude/INSTALL.md) for the three install paths (run-from-clone,
+personal `~/.claude/commands/`, or Claude Code plugin).
 
 See `.claude/AUTHORING.md` to write new skills.

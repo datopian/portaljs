@@ -41,7 +41,7 @@ export function NavbarTitle() {
         <img
           src={siteConfig.navbarTitle.logo}
           alt={siteConfig.navbarTitle.text}
-          className="w-32 h-16 fill-white"
+          className="mr-2 h-8 w-8"
         />
       )}
       <span className="text-primary dark:text-white">
@@ -142,12 +142,12 @@ export default function Nav() {
             </div>
           )}
           <ButtonLink
-            href="https://cloud.portaljs.com/auth/signup"
-            title="Get started with PortalJS Cloud"
+            href="https://cloud.portaljs.com"
+            title="PortalJS Cloud — fully managed hosting"
             className="text-sm !py-2 hidden lg:block"
             trackConversion={true}
           >
-            Get started free
+            PortalJS Cloud
           </ButtonLink>
         </div>
       </div>
