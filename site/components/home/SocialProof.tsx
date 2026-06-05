@@ -1,5 +1,3 @@
-import { useTheme } from 'next-themes'
-import Image from 'next/image'
 import Link from 'next/link'
 
 const logos = [
@@ -45,10 +43,10 @@ const logos = [
     },
     {
       name: 'IDPO (University of Sydney)',
-      srcDark: '/static/img/social-proof/usyd-dark.svg',
-      srcLight: '/static/img/social-proof/UNIOFSY.png',
+      srcDark: '/static/img/social-proof/UNIOFSY.png',
+      srcLight: '/static/img/social-proof/usyd-dark.svg',
       url: 'https://www.idpo.org.au',
-      style: '',
+      style: 'grayscale',
       width: 115,
     },
     {
@@ -94,48 +92,96 @@ const logos = [
     },
   {
     name: 'Hounslow',
-    srcDark: '/static/img/social-proof/hounslow-light.svg',
-    srcLight: '/static/img/social-proof/hounslow.svg',
+    srcDark: '/static/img/social-proof/hounslow.svg',
+    srcLight: '/static/img/social-proof/hounslow-light.svg',
     url: 'https://data.hounslow.gov.uk',
-    style: 'grayscale  dark:invert-0 opacity-80',
+    style: 'grayscale opacity-80',
     width: 200,
+  },
+  {
+    name: 'City of Ann Arbor',
+    srcDark: '/static/img/social-proof/ann-arbor-city.svg',
+    srcLight: '/static/img/social-proof/ann-arbor-city.svg',
+    url: 'https://www.a2gov.org',
+    style: 'grayscale',
+    width: 150,
+  },
+  {
+    name: 'Winnipeg Metropolitan Region',
+    srcDark: '/static/img/social-proof/winnipeg-metro.svg',
+    srcLight: '/static/img/social-proof/winnipeg-metro.svg',
+    url: 'https://winnipegmetroregion.ca',
+    style: 'grayscale',
+    width: 150,
   },
 ] as const
 
 export default function SocialProof() {
-  const { resolvedTheme } = useTheme()
-  const currentTheme = resolvedTheme ?? 'light'
+  // Duplicate the row so the marquee can loop seamlessly (translateX -50%
+  // lands the second copy exactly where the first began).
+  const track = [...logos, ...logos]
   return (
-    <section className="py-20 bg-slate-50 dark:bg-slate-900/40 w-full">
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-12">
+    <section className="w-full bg-slate-50 py-20">
+      <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-12">
         <div className="flex flex-col gap-4">
           <p className="text-sm font-semibold uppercase tracking-widest text-blue-500">
             Trusted by data leaders worldwide
           </p>
-          <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+          <h2 className="text-3xl font-semibold tracking-tight text-slate-900">
             Leading governments, enterprises, and research institutions trust PortalJS
           </h2>
         </div>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-8 sm:gap-x-14">
-          {logos.map((logo, index) => (
+      </div>
+
+      {/* Infinite single-line logo carousel. Edges fade out via mask. */}
+      <div className="marquee mt-12 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
+        <div className="marquee-track flex w-max items-center gap-16 pr-16">
+          {track.map((logo, index) => (
             <Link
-              className="flex basis-[40%] items-center justify-center p-2 opacity-75 transition hover:-translate-y-0.5 hover:opacity-100 sm:basis-[26%] lg:basis-[14%]"
-              key={logo.srcDark + index}
+              className="flex flex-none items-center justify-center opacity-70 transition hover:opacity-100"
+              key={logo.name + index}
               title={logo.name}
               href={logo.url}
+              aria-hidden={index >= logos.length ? true : undefined}
+              tabIndex={index >= logos.length ? -1 : undefined}
             >
-              <Image
-                className={`h-auto ${logo.style}`}
-                src={currentTheme === 'light' ? logo.srcLight : logo.srcDark}
-                alt={`${logo.name} Logo`}
+              {/* Plain img: uniform height + width cap, natural aspect, no
+                  fixed-width box (next/image's width prop was the source of the
+                  oversized logos and the trailing whitespace). */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                className={`h-8 w-auto max-w-[140px] object-contain ${logo.style}`}
+                src={logo.srcLight}
+                alt={`${logo.name} logo`}
                 title={logo.name}
-                height={70}
-                width={logo.width}
+                loading="lazy"
               />
             </Link>
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        .marquee-track {
+          animation: marquee-scroll 55s linear infinite;
+        }
+        .marquee:hover .marquee-track {
+          animation-play-state: paused;
+        }
+        @keyframes marquee-scroll {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-50%);
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .marquee-track {
+            animation: none;
+          }
+        }
+      `}</style>
     </section>
   )
 }

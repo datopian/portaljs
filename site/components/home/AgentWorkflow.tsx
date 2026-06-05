@@ -3,19 +3,19 @@ const steps = [
     n: '01',
     title: 'Describe',
     body: 'Tell your AI assistant the portal you want — the audience, the data, the look. Plain language, no boilerplate.',
-    code: { cmd: '/new-portal', rest: ' "Malmö Open Data"' },
+    code: { cmd: '/new-portal', rest: ' "Auckland Council open data portal"' },
   },
   {
     n: '02',
     title: 'Scaffold',
     body: 'Skills assemble a real Next.js project: pages, tables, charts, and maps wired to your data. The output is plain, editable code.',
-    code: { cmd: '/add-dataset', rest: ' traffic-2024.csv' },
+    code: { cmd: '/add-dataset', rest: ' ./data/air-quality.csv' },
   },
   {
     n: '03',
     title: 'Publish',
     body: 'Ship a fast static site or connect a live backend. Own every file — there is no magic runtime to lock you in.',
-    code: { cmd: '/deploy', rest: ' → malmo.portaljs.app' },
+    code: { cmd: '/deploy', rest: ' → auckland.portaljs.app' },
   },
 ]
 
