@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 
 const logos = [
@@ -130,13 +129,16 @@ export default function SocialProof() {
               aria-hidden={index >= logos.length ? true : undefined}
               tabIndex={index >= logos.length ? -1 : undefined}
             >
-              <Image
-                className={`h-auto w-auto max-h-12 object-contain ${logo.style}`}
+              {/* Plain img: uniform height + width cap, natural aspect, no
+                  fixed-width box (next/image's width prop was the source of the
+                  oversized logos and the trailing whitespace). */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                className={`h-8 w-auto max-w-[140px] object-contain ${logo.style}`}
                 src={logo.srcLight}
                 alt={`${logo.name} logo`}
                 title={logo.name}
-                height={48}
-                width={logo.width}
+                loading="lazy"
               />
             </Link>
           ))}

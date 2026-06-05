@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * The hero terminal: types the PortalJS agent flow — scaffold a portal, load
@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react'
  * CSS/JS, no recording asset, no animation library.
  *
  * Honors prefers-reduced-motion by rendering the final state statically.
- * Content is bottom-anchored and clipped (justify-end + overflow-hidden), so
- * the newest activity and the final catalog preview are always fully visible.
+ * Content reads top-down and auto-scrolls to the newest line (overflow-hidden
+ * + scrollTop), so the latest activity and the final catalog stay in view.
  */
 
 type CmdStep = { t: 'cmd'; text: string }
@@ -251,9 +251,17 @@ export default function AgentFlow() {
     }
   }, [])
 
+  // Keep the newest line (and the final catalog) in view as content grows, so
+  // the terminal reads top-down like a real one but never overflows its box.
+  const bodyRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = bodyRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [lines, previewShow])
+
   return (
     <div
-      className="overflow-hidden rounded-[14px] bg-[#0a1424] font-mono shadow-[0_30px_70px_-24px_rgba(15,23,42,0.5),0_0_0_1px_rgba(148,163,184,0.12)] lg:[transform:perspective(1400px)_rotateY(-3deg)]"
+      className="overflow-hidden rounded-[14px] bg-[#0a1424] font-mono shadow-[0_30px_70px_-24px_rgba(15,23,42,0.5),0_0_0_1px_rgba(148,163,184,0.12)]"
       aria-label="Agent workflow demo"
     >
       <div className="flex items-center gap-2 border-b border-[rgba(148,163,184,0.13)] px-4 py-[13px]">
@@ -264,7 +272,10 @@ export default function AgentFlow() {
           portaljs — agent
         </span>
       </div>
-      <div className="flex h-[500px] flex-col justify-end overflow-hidden px-[18px] pb-5 pt-[18px] text-[13.5px] leading-[1.85] text-[#cdd9ec]">
+      <div
+        ref={bodyRef}
+        className="h-[500px] overflow-hidden px-[18px] pb-5 pt-[18px] text-[13.5px] leading-[1.85] text-[#cdd9ec]"
+      >
         {lines.map((line, i) => {
           if (line.kind === 'preview') {
             return <CatalogPreview key={`pv-${i}`} show={previewShow} />
