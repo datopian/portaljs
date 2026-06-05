@@ -101,7 +101,7 @@ const config = {
           href: '/faq',
         },
         {
-          name: 'Docs',
+          name: 'PortalJS Cloud docs (managed)',
           href: '/cloud/docs',
         },
         {
@@ -116,6 +116,20 @@ const config = {
         {
           name: 'Partners',
           href: '/partners',
+        },
+      ],
+    },
+    {
+      name: 'Docs',
+      href: '/docs',
+      subItems: [
+        {
+          name: 'PortalJS (AI-native)',
+          href: '/docs',
+        },
+        {
+          name: 'Classic',
+          href: '/opensource',
         },
       ],
     },
