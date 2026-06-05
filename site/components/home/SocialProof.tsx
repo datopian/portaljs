@@ -98,6 +98,38 @@ const logos = [
     style: 'grayscale opacity-80',
     width: 200,
   },
+  {
+    name: 'City of Malmö',
+    srcDark: '/static/img/social-proof/malmo-stad.svg',
+    srcLight: '/static/img/social-proof/malmo-stad.svg',
+    url: 'https://malmo.se',
+    style: 'grayscale',
+    width: 90,
+  },
+  {
+    name: 'Lincolnshire County Council',
+    srcDark: '/static/img/social-proof/lincolnshire-council.svg',
+    srcLight: '/static/img/social-proof/lincolnshire-council.svg',
+    url: 'https://www.lincolnshire.gov.uk',
+    style: 'grayscale',
+    width: 150,
+  },
+  {
+    name: 'City of Ann Arbor',
+    srcDark: '/static/img/social-proof/ann-arbor-city.svg',
+    srcLight: '/static/img/social-proof/ann-arbor-city.svg',
+    url: 'https://www.a2gov.org',
+    style: 'grayscale',
+    width: 150,
+  },
+  {
+    name: 'Winnipeg Metropolitan Region',
+    srcDark: '/static/img/social-proof/winnipeg-metro.svg',
+    srcLight: '/static/img/social-proof/winnipeg-metro.svg',
+    url: 'https://winnipegmetroregion.ca',
+    style: 'grayscale',
+    width: 150,
+  },
 ] as const
 
 export default function SocialProof() {
