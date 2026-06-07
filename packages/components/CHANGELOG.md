@@ -1,5 +1,11 @@
 # @portaljs/components
 
+## 1.2.4
+
+### Patch Changes
+
+- [#1486](https://github.com/datopian/portaljs/pull/1486) [`5f8207849e3e8d655992473a987d050da2296466`](https://github.com/datopian/portaljs/commit/5f8207849e3e8d655992473a987d050da2296466) Thanks [@demenech](https://github.com/demenech)! - Remove an unused `next-mdx-remote` dependency from `@portaljs/components`.
+
 ## 1.2.3
 
 ### Patch Changes
