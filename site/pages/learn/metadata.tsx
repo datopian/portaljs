@@ -1,6 +1,7 @@
 import React from "react";
 import { FaArrowLeft, FaBook } from "react-icons/fa";
-import { NextSeo } from "next-seo";
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import Link from "next/link";
 import Layout from "@/components/Layout";
 import LearnPostCard from "@/components/LearnPostCard";
@@ -33,21 +34,23 @@ const metadataPosts = [
 const MetadataLearnPage = () => {
   return (
     <Layout>
-      <NextSeo
-        title="Metadata Fundamentals | Learn Data Management"
-        description="Master the fundamentals of metadata—what it is, how it works, and why it's essential for data discovery and management. Learn about metadata schemas, standards, and best practices."
-        canonical="https://portaljs.com/learn/metadata"
-        openGraph={{
+      <Head>
+        {generateNextSeo({
+          title: "Metadata Fundamentals | Learn Data Management",
+          description: "Master the fundamentals of metadata—what it is, how it works, and why it's essential for data discovery and management. Learn about metadata schemas, standards, and best practices.",
+          canonical: "https://portaljs.com/learn/metadata",
+          openGraph: {
           url: 'https://portaljs.com/learn/metadata',
           title: 'Metadata Fundamentals | Learn Data Management',
           description: 'Master the fundamentals of metadata—what it is, how it works, and why it\'s essential for data discovery and management. Learn about metadata schemas, standards, and best practices.',
           site_name: 'PortalJS',
-        }}
-        twitter={{
+        },
+          twitter: {
           cardType: 'summary_large_image',
           site: '@PortalJS_',
-        }}
-      />
+        },
+        })}
+      </Head>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <div className="mb-8">

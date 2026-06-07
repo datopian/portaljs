@@ -1,7 +1,8 @@
 import Layout from '@/components/Layout'
 import computeFields from '@/lib/computeFields'
 import clientPromise from '@/lib/mddb'
-import { NextSeo } from 'next-seo'
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import fs from 'fs'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -11,11 +12,13 @@ import { CaseStudiesStructuredData } from '@/components/schema/CaseStudiesStruct
 export default function CaseStudiesPage(casestudies) {
   return (
     <Layout>
-      <NextSeo
-        title="Case Studies | PortalJS"
-        description="Discover how organizations worldwide build powerful data portals with PortalJS. Real client stories, implementations, and success stories."
-        canonical="https://portaljs.org/case-studies"
-      />
+      <Head>
+        {generateNextSeo({
+          title: "Case Studies | PortalJS",
+          description: "Discover how organizations worldwide build powerful data portals with PortalJS. Real client stories, implementations, and success stories.",
+          canonical: "https://portaljs.org/case-studies",
+        })}
+      </Head>
       <CaseStudiesStructuredData casestudies={casestudies.casestudies} />
       <section className="">
         <div>

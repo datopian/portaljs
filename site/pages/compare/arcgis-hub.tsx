@@ -1,6 +1,8 @@
 import Layout from '@/components/Layout'
 import Schedule from '@/components/home/Schedule'
-import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd } from 'next-seo'
+import { OrganizationJsonLd, BreadcrumbJsonLd } from 'next-seo';
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import ButtonLink from '@/components/ButtonLink'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -189,15 +191,16 @@ export default function PortalJSvsArcGISHub() {
   return (
     <Layout isHomePage={true}>
       {/* SEO */}
-      <LogoJsonLd
+      <OrganizationJsonLd
         url="https://portaljs.com"
         logo="https://portaljs.com/icon.png"
       />
-      <NextSeo
-        title="PortalJS vs ArcGIS Hub | Open Source Data Portal Comparison"
-        description="Compare PortalJS with ArcGIS Hub: See how our open source data portal platform offers more flexibility, better cost control, and freedom from vendor lock-in."
-        canonical="https://portaljs.com/compare/arcgis-hub"
-        openGraph={{
+      <Head>
+        {generateNextSeo({
+          title: "PortalJS vs ArcGIS Hub | Open Source Data Portal Comparison",
+          description: "Compare PortalJS with ArcGIS Hub: See how our open source data portal platform offers more flexibility, better cost control, and freedom from vendor lock-in.",
+          canonical: "https://portaljs.com/compare/arcgis-hub",
+          openGraph: {
           url: 'https://portaljs.com/compare/arcgis-hub',
           title: 'PortalJS vs ArcGIS Hub | Open Source Data Portal Comparison',
           description: 'Compare PortalJS with ArcGIS Hub: See how our open source data portal platform offers more flexibility, better cost control, and freedom from vendor lock-in.',
@@ -211,28 +214,20 @@ export default function PortalJSvsArcGISHub() {
           ],
           siteName: 'PortalJS',
           type: 'website'
-        }}
-      />
-      <WebPageJsonLd
-        id="https://portaljs.com/compare/arcgis-hub#webpage"
-        url="https://portaljs.com/compare/arcgis-hub"
-        name="PortalJS vs ArcGIS Hub | Open Source Data Portal Comparison"
-        description="Compare PortalJS with ArcGIS Hub: See how our open source data portal platform offers more flexibility, better cost control, and freedom from vendor lock-in."
-      />
+        },
+        })}
+      </Head>
       <BreadcrumbJsonLd
-        itemListElements={[
+        items={[
           {
-            position: 1,
             name: 'Home',
             item: 'https://portaljs.com',
           },
           {
-            position: 2,
             name: 'Compare',
             item: 'https://portaljs.com/compare',
           },
           {
-            position: 3,
             name: 'ArcGIS Hub',
             item: 'https://portaljs.com/compare/arcgis-hub',
           }

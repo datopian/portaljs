@@ -1,7 +1,9 @@
 import Hero from '@/components/openmetadata/Hero'
 import { KeyFeatures } from '@/components/openmetadata/KeyFeatures'
 import Schedule from '@/components/home/Schedule'
-import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd, FAQPageJsonLd } from 'next-seo'
+import { OrganizationJsonLd, BreadcrumbJsonLd, FAQJsonLd } from 'next-seo';
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import Layout from '@/components/Layout'
 import { CommonUseCases } from '@/components/openmetadata/CommonUseCases'
 import { FAQ } from '@/components/FAQ'
@@ -29,48 +31,41 @@ export default function OpenMetadata() {
 
   return (
     <Layout isHomePage={true}>
-      <FAQPageJsonLd
-        mainEntity={faqItems.map(item => ({
-          questionName: item.question,
-          acceptedAnswerText: item.answer
+      <FAQJsonLd
+        questions={faqItems.map(item => ({
+          question: item.question,
+          answer: item.answer
         }))}
       />
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           {/* 1. Your logo structured data */}
-          <LogoJsonLd
+          <OrganizationJsonLd
             url="https://portaljs.com"
             logo="https://portaljs.com/icon.png"
           />
           {/* 2. Base SEO tags */}
-          <NextSeo
-            title="Turn OpenMetadata into a Business-Friendly Data Catalog"
-            description="Transform OpenMetadata's technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single OpenMetadata instance."
-            canonical="https://portaljs.com/openmetadata"
-            openGraph={{
+          <Head>
+            {generateNextSeo({
+              title: "Turn OpenMetadata into a Business-Friendly Data Catalog",
+              description: "Transform OpenMetadata's technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single OpenMetadata instance.",
+              canonical: "https://portaljs.com/openmetadata",
+              openGraph: {
               url: 'https://portaljs.com/openmetadata',
               title: 'Turn OpenMetadata into a Business-Friendly Data Catalog',
               description: 'Transform OpenMetadata\'s technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single OpenMetadata instance.',
               site_name: 'PortalJS',
-            }}
-          />
-          {/* 3. WebPage schema */}
-          <WebPageJsonLd
-            id="https://portaljs.com/openmetadata#webpage"
-            url="https://portaljs.com/openmetadata"
-            title="Turn OpenMetadata into a Business-Friendly Data Catalog"
-            description="Transform OpenMetadata's technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single OpenMetadata instance."
-          />
+            },
+            })}
+          </Head>
           {/* 4. Breadcrumb schema */}
           <BreadcrumbJsonLd
-            itemListElements={[
+            items={[
               {
-                position: 1,
                 name: 'Home',
                 item: 'https://portaljs.com',
               },
               {
-                position: 2,
                 name: 'OpenMetadata',
                 item: 'https://portaljs.com/openmetadata',
               },

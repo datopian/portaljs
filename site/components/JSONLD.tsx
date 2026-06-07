@@ -39,24 +39,24 @@ export default function JSONLD({
   if (isBlog) {
     Component = (
       <ArticleJsonLd
-        title={meta.metatitle || meta.title}
+        headline={meta.metatitle || meta.title}
         description={meta.metadescription || meta.description}
         type="BlogPosting"
         url={pageUrl}
         datePublished={meta.date}
-        authorName={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
-        images={images}
+        author={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
+        image={images}
       />
     );
   } else if (isDoc) {
     Component = (
       <ArticleJsonLd
         url={pageUrl}
-        title={meta.title}
-        images={images}
+        headline={meta.title}
+        image={images}
         datePublished={meta.date}
         dateModified={meta.date}
-        authorName={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
+        author={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
         description={meta.description}
       />
     );
@@ -64,12 +64,12 @@ export default function JSONLD({
   else if (isCaseStudy) {
     Component = (
       <ArticleJsonLd
-        title={meta.metatitle || meta.title}
+        headline={meta.metatitle || meta.title}
         description={meta.metadescription || meta.description}
         url={pageUrl}
         datePublished={meta.date}
-        authorName={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
-        images={meta.images}
+        author={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
+        image={meta.images}
         type="Article"
       />
     )

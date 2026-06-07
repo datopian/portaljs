@@ -1,5 +1,4 @@
 import siteConfig from '@/config/siteConfig'
-import { NextSeo } from 'next-seo'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'

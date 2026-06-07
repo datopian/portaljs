@@ -1,5 +1,7 @@
 import Layout from '@/components/Layout'
-import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd } from 'next-seo'
+import { OrganizationJsonLd, BreadcrumbJsonLd } from 'next-seo';
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import ButtonLink from '@/components/ButtonLink'
 import Link from 'next/link'
 import Schedule from '@/components/home/Schedule'
@@ -70,15 +72,16 @@ export default function CompareIndex() {
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           {/* SEO */}
-          <LogoJsonLd
+          <OrganizationJsonLd
             url="https://portaljs.com"
             logo="https://portaljs.com/icon.png"
           />
-          <NextSeo
-            title={title}
-            description={description}
-            canonical={canonical}
-            openGraph={{
+          <Head>
+            {generateNextSeo({
+              title: title,
+              description: description,
+              canonical: canonical,
+              openGraph: {
               url: 'https://portaljs.com/compare',
               title,
               description,
@@ -92,23 +95,16 @@ export default function CompareIndex() {
               ],
               siteName: 'PortalJS',
               type: 'website'
-            }}
-          />
-          <WebPageJsonLd
-            id="https://portaljs.com/compare#webpage"
-            url="https://portaljs.com/compare"
-            name={title}
-            description={description}
-          />
+            },
+            })}
+          </Head>
           <BreadcrumbJsonLd
-            itemListElements={[
+            items={[
               {
-                position: 1,
                 name: 'Home',
                 item: 'https://portaljs.com',
               },
               {
-                position: 2,
                 name: 'Compare',
                 item: 'https://portaljs.com/compare',
               }

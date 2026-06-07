@@ -11,7 +11,9 @@ import { CustomAppProps } from './_app.jsx'
 import computeFields from '@/lib/computeFields'
 import { getAuthorsDetails } from '@/lib/getAuthorsDetails'
 import JSONLD from '@/components/JSONLD'
-import { BreadcrumbJsonLd, FAQPageJsonLd, NextSeo } from 'next-seo'
+import { BreadcrumbJsonLd, FAQJsonLd } from 'next-seo';
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import siteConfig from '@/config/siteConfig'
 
 export default function Page({ source, meta, sidebarTree }) {
@@ -30,7 +32,6 @@ export default function Page({ source, meta, sidebarTree }) {
   const urlSegments = meta.urlPath.split('/')
   const breadcrumbs = urlSegments.map((segment, i) => {
     return {
-      position: i + 1,
       name: i == urlSegments.length - 1 ? meta.title || segment : segment,
       item: '/' + urlSegments.slice(0, i + 1).join('/'),
     }
@@ -43,11 +44,12 @@ export default function Page({ source, meta, sidebarTree }) {
 
   return (
     <>
-      <NextSeo
-        title={title}
-        description={description}
-        canonical={canonicalUrl}
-        openGraph={{
+      <Head>
+        {generateNextSeo({
+          title: title,
+          description: description,
+          canonical: canonicalUrl,
+          openGraph: {
           url: canonicalUrl,
           title,
           description,
@@ -62,19 +64,20 @@ export default function Page({ source, meta, sidebarTree }) {
               alt: title,
             },
           ],
-        }}
-        twitter={{
+        },
+          twitter: {
           cardType: 'summary_large_image',
           site: '@PortalJS_',
-        }}
-      />
-      <BreadcrumbJsonLd itemListElements={breadcrumbs} />
+        },
+        })}
+      </Head>
+      <BreadcrumbJsonLd items={breadcrumbs} />
       <JSONLD meta={meta} source={source.compiledSource} />
       {meta.faqs && meta.faqs.length > 0 && (
-        <FAQPageJsonLd
-          mainEntity={meta.faqs.map(faq => ({
-            questionName: faq.question,
-            acceptedAnswerText: faq.answer
+        <FAQJsonLd
+          questions={meta.faqs.map(faq => ({
+            question: faq.question,
+            answer: faq.answer
           }))}
         />
       )}

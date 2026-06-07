@@ -1,6 +1,8 @@
 import Layout from '@/components/Layout'
 import Schedule from '@/components/home/Schedule'
-import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd } from 'next-seo'
+import { OrganizationJsonLd, BreadcrumbJsonLd } from 'next-seo';
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import ButtonLink from '@/components/ButtonLink'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -164,15 +166,16 @@ export default function PortalJSvsOpenDataSoft() {
   return (
     <Layout isHomePage={true}>
       {/* SEO */}
-      <LogoJsonLd
+      <OrganizationJsonLd
         url="https://portaljs.com"
         logo="https://portaljs.com/icon.png"
       />
-      <NextSeo
-        title="PortalJS vs OpenDataSoft | Open Source Data Portal Comparison"
-        description="Compare PortalJS with OpenDataSoft: See how our open source data portal platform stacks up against proprietary solutions in features, flexibility, and cost."
-        canonical="https://portaljs.com/compare/opendatasoft"
-        openGraph={{
+      <Head>
+        {generateNextSeo({
+          title: "PortalJS vs OpenDataSoft | Open Source Data Portal Comparison",
+          description: "Compare PortalJS with OpenDataSoft: See how our open source data portal platform stacks up against proprietary solutions in features, flexibility, and cost.",
+          canonical: "https://portaljs.com/compare/opendatasoft",
+          openGraph: {
           url: 'https://portaljs.com/compare/opendatasoft',
           title: 'PortalJS vs OpenDataSoft | Open Source Data Portal Comparison',
           description: 'Compare PortalJS with OpenDataSoft: See how our open source data portal platform stacks up against proprietary solutions in features, flexibility, and cost.',
@@ -186,28 +189,20 @@ export default function PortalJSvsOpenDataSoft() {
           ],
           siteName: 'PortalJS',
           type: 'website'
-        }}
-      />
-      <WebPageJsonLd
-        id="https://portaljs.com/compare/opendatasoft#webpage"
-        url="https://portaljs.com/compare/opendatasoft"
-        name="PortalJS vs OpenDataSoft | Open Source Data Portal Comparison"
-        description="Compare PortalJS with OpenDataSoft: See how our open source data portal platform stacks up against proprietary solutions in features, flexibility, and cost."
-      />
+        },
+        })}
+      </Head>
       <BreadcrumbJsonLd
-        itemListElements={[
+        items={[
           {
-            position: 1,
             name: 'Home',
             item: 'https://portaljs.com',
           },
           {
-            position: 2,
             name: 'Compare',
             item: 'https://portaljs.com/compare',
           },
           {
-            position: 3,
             name: 'OpenDataSoft',
             item: 'https://portaljs.com/compare/opendatasoft',
           }

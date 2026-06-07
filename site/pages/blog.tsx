@@ -3,7 +3,6 @@ import computeFields from "@/lib/computeFields";
 import clientPromise from "@/lib/mddb";
 import { BlogsList, SimpleLayout } from "@portaljs/core";
 import * as fs from "fs";
-import { NextSeo } from "next-seo";
 import { H1, H2 } from "@/components/custom/header";
 import { BlogStructuredData } from "@/components/schema/BlogStructuredData";
 export default function Blog({ blogs }) {

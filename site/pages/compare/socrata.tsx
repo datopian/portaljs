@@ -1,6 +1,8 @@
 import Layout from '@/components/Layout'
 import Schedule from '@/components/home/Schedule'
-import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd } from 'next-seo'
+import { OrganizationJsonLd, BreadcrumbJsonLd } from 'next-seo';
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import ButtonLink from '@/components/ButtonLink'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -189,15 +191,16 @@ export default function PortalJSvsSocrata() {
   return (
     <Layout isHomePage={true}>
       {/* SEO */}
-      <LogoJsonLd
+      <OrganizationJsonLd
         url="https://portaljs.com"
         logo="https://portaljs.com/icon.png"
       />
-      <NextSeo
-        title="PortalJS vs Socrata | Open Source Data Portal Comparison"
-        description="Compare PortalJS with Socrata: See how our open source data portal platform delivers more flexibility, control, and cost savings than Socrata's proprietary solution."
-        canonical="https://portaljs.com/compare/socrata"
-        openGraph={{
+      <Head>
+        {generateNextSeo({
+          title: "PortalJS vs Socrata | Open Source Data Portal Comparison",
+          description: "Compare PortalJS with Socrata: See how our open source data portal platform delivers more flexibility, control, and cost savings than Socrata's proprietary solution.",
+          canonical: "https://portaljs.com/compare/socrata",
+          openGraph: {
           url: 'https://portaljs.com/compare/socrata',
           title: 'PortalJS vs Socrata | Open Source Data Portal Comparison',
           description: 'Compare PortalJS with Socrata: See how our open source data portal platform delivers more flexibility, control, and cost savings than Socrata\'s proprietary solution.',
@@ -211,28 +214,20 @@ export default function PortalJSvsSocrata() {
           ],
           siteName: 'PortalJS',
           type: 'website'
-        }}
-      />
-      <WebPageJsonLd
-        id="https://portaljs.com/compare/socrata#webpage"
-        url="https://portaljs.com/compare/socrata"
-        name="PortalJS vs Socrata | Open Source Data Portal Comparison"
-        description="Compare PortalJS with Socrata: See how our open source data portal platform delivers more flexibility, control, and cost savings than Socrata's proprietary solution."
-      />
+        },
+        })}
+      </Head>
       <BreadcrumbJsonLd
-        itemListElements={[
+        items={[
           {
-            position: 1,
             name: 'Home',
             item: 'https://portaljs.com',
           },
           {
-            position: 2,
             name: 'Compare',
             item: 'https://portaljs.com/compare',
           },
           {
-            position: 3,
             name: 'Socrata',
             item: 'https://portaljs.com/compare/socrata',
           }
