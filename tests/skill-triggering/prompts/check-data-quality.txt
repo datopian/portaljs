@@ -1,0 +1,1 @@
+Before I publish this dataset, can you audit ./data/trash-collection.csv for data quality problems like missing values, duplicates, and weird columns?

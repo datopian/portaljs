@@ -1,0 +1,1 @@
+I want to set up an open data portal for the City of Auckland to publish its public datasets. Can you get the site scaffolded for me?

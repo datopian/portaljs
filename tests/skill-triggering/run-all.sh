@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Run every skill-triggering test and summarize. See run-test.sh for details.
+# Usage: ./run-all.sh
+set -uo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROMPTS="$SCRIPT_DIR/prompts"
+
+# One entry per shipped skill (.claude/commands/*.md).
+SKILLS=(
+  new-portal
+  add-dataset
+  add-chart
+  add-map
+  connect-ckan
+  deploy
+  check-data-quality
+)
+
+echo "=== PortalJS skill-triggering tests ==="
+PASS=0; FAIL=0; FAILED=()
+for skill in "${SKILLS[@]}"; do
+  prompt="$PROMPTS/${skill}.txt"
+  if [ ! -f "$prompt" ]; then
+    echo "⚠️  SKIP $skill (no prompt file)"; continue
+  fi
+  if "$SCRIPT_DIR/run-test.sh" "$skill" "$prompt"; then
+    PASS=$((PASS+1))
+  else
+    FAIL=$((FAIL+1)); FAILED+=("$skill")
+  fi
+  echo ""
+done
+
+echo "=== Summary: $PASS passed, $FAIL failed ==="
+[ "$FAIL" -gt 0 ] && { echo "Failed: ${FAILED[*]}"; exit 1; }
+exit 0

@@ -1,0 +1,1 @@
+My portal currently uses local files, but we run a CKAN instance at https://data.example.org. Wire the portal up to pull datasets from CKAN instead.
