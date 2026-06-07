@@ -9,21 +9,6 @@ export function getDaysAgo(date: string) {
   return (+today - +createdOn) / msInDay;
 }
 
-export default async function fetchRetry(
-  url: string,
-  n: number,
-  opts: Partial<RequestInit> = {}
-): Promise<any> {
-  const abortController = new AbortController();
-  const id = setTimeout(() => abortController.abort(), 30000);
-  const res = await fetch(url, { signal: abortController.signal, ...opts });
-  clearTimeout(id);
-  if (!res.ok && n && n > 0) {
-    return await fetchRetry(url, n - 1);
-  }
-  return res;
-}
-
 export function removeTag(tag?: string) {
   if (tag === '{{description}}' || !tag) {
     return undefined;
