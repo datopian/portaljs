@@ -94,14 +94,5 @@
         "href": "/opensource/howtos/comments"
       }
     ]
-  },
-  {
-    "title": "Components",
-    "links": [
-      {
-        "title": "Storybook",
-        "href": "https://storybook.portaljs.org"
-      }
-    ]
   }
 ]
