@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import { ArticleJsonLd } from "next-seo";
 import { useRouter } from "next/router";
 

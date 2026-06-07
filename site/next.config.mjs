@@ -1,4 +1,14 @@
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const projectRoot = dirname(fileURLToPath(import.meta.url));
+
 export default {
+  // Pin the workspace root so Turbopack doesn't infer it from the parent
+  // monorepo lockfile (Next 16 warns when multiple lockfiles are found).
+  turbopack: {
+    root: projectRoot,
+  },
   async redirects() {
 
     return [
@@ -53,11 +63,5 @@ export default {
   },
   eslint: {
     ignoreDuringBuilds: true,
-  },
-  webpack: (config) => {
-    config.infrastructureLogging = {
-      level: "error",
-    };
-    return config;
   },
 };
