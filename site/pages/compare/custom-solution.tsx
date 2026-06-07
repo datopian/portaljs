@@ -1,6 +1,8 @@
 import Layout from '@/components/Layout'
 import Schedule from '@/components/home/Schedule'
-import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd } from 'next-seo'
+import { OrganizationJsonLd, BreadcrumbJsonLd } from 'next-seo';
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import ButtonLink from '@/components/ButtonLink'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -189,15 +191,16 @@ export default function PortalJSvsCustomSolution() {
   return (
     <Layout isHomePage={true}>
       {/* SEO */}
-      <LogoJsonLd
+      <OrganizationJsonLd
         url="https://portaljs.com"
         logo="https://portaljs.com/icon.png"
       />
-      <NextSeo
-        title="PortalJS vs Custom Data Portal Development | Build vs Buy Comparison"
-        description="Compare PortalJS with building a custom data portal from scratch: See how our platform delivers faster time-to-market, lower costs, and reduced risk vs custom development."
-        canonical="https://portaljs.com/compare/custom-solution"
-        openGraph={{
+      <Head>
+        {generateNextSeo({
+          title: "PortalJS vs Custom Data Portal Development | Build vs Buy Comparison",
+          description: "Compare PortalJS with building a custom data portal from scratch: See how our platform delivers faster time-to-market, lower costs, and reduced risk vs custom development.",
+          canonical: "https://portaljs.com/compare/custom-solution",
+          openGraph: {
           url: 'https://portaljs.com/compare/custom-solution',
           title: 'PortalJS vs Custom Data Portal Development | Build vs Buy Comparison',
           description: 'Compare PortalJS with building a custom data portal from scratch: See how our platform delivers faster time-to-market, lower costs, and reduced risk vs custom development.',
@@ -211,28 +214,20 @@ export default function PortalJSvsCustomSolution() {
           ],
           siteName: 'PortalJS',
           type: 'website'
-        }}
-      />
-      <WebPageJsonLd
-        id="https://portaljs.com/compare/custom-solution#webpage"
-        url="https://portaljs.com/compare/custom-solution"
-        name="PortalJS vs Custom Data Portal Development | Build vs Buy Comparison"
-        description="Compare PortalJS with building a custom data portal from scratch: See how our platform delivers faster time-to-market, lower costs, and reduced risk vs custom development."
-      />
+        },
+        })}
+      </Head>
       <BreadcrumbJsonLd
-        itemListElements={[
+        items={[
           {
-            position: 1,
             name: 'Home',
             item: 'https://portaljs.com',
           },
           {
-            position: 2,
             name: 'Compare',
             item: 'https://portaljs.com/compare',
           },
           {
-            position: 3,
             name: 'Custom Solution',
             item: 'https://portaljs.com/compare/custom-solution',
           }

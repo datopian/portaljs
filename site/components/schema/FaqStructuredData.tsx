@@ -1,5 +1,7 @@
 import { questions } from "@/pages/faq";
-import { BreadcrumbJsonLd, FAQPageJsonLd, LogoJsonLd, NextSeo } from "next-seo";
+import { BreadcrumbJsonLd, FAQJsonLd, OrganizationJsonLd } from "next-seo";
+import { generateNextSeo } from "next-seo/pages";
+import Head from "next/head";
 
 export function FaqStructuredData() {
   function markdownToPlainText(md: string) {
@@ -16,15 +18,16 @@ export function FaqStructuredData() {
 
   return (
     <>
-      <LogoJsonLd
+      <OrganizationJsonLd
         url="https://www.portaljs.com"
         logo="https://www.portaljs.com/icon.png"
       />
-      <NextSeo
-        title="FAQ"
-        description="Frequently Asked Questions about PortalJS Cloud. Get answers about pricing, features, deployment, and more."
-        canonical="https://www.portaljs.com/faq"
-        openGraph={{
+      <Head>
+        {generateNextSeo({
+          title: "FAQ",
+          description: "Frequently Asked Questions about PortalJS Cloud. Get answers about pricing, features, deployment, and more.",
+          canonical: "https://www.portaljs.com/faq",
+          openGraph: {
           url: 'https://www.portaljs.com/faq',
           title: 'FAQ',
           description: 'Frequently Asked Questions about PortalJS Cloud. Get answers about pricing, features, deployment, and more.',
@@ -39,31 +42,30 @@ export function FaqStructuredData() {
               type: 'image/webp',
             },
           ],
-        }}
-        twitter={{
+        },
+          twitter: {
           cardType: 'summary_large_image',
           site: '@PortalJS_',
-        }}
-      />
+        },
+        })}
+      </Head>
       <BreadcrumbJsonLd
-        itemListElements={[
+        items={[
           {
-            position: 1,
             name: 'Home',
             item: 'https://www.portaljs.com',
           },
           {
-            position: 2,
             name: 'FAQ',
             item: 'https://www.portaljs.com/faq',
           },
         ]}
       />
-      <FAQPageJsonLd
-        mainEntity={questions.flatMap(category =>
+      <FAQJsonLd
+        questions={questions.flatMap(category =>
           category.items.map(({ question, answer }) => ({
-            questionName: question,
-            acceptedAnswerText: markdownToPlainText(answer),
+            question,
+            answer: markdownToPlainText(answer),
           }))
         )}
       />

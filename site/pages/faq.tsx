@@ -3,7 +3,8 @@ import ReactMarkdown from 'react-markdown'
 import { H1 } from 'components/custom/header'
 import Layout from '@/components/Layout'
 import React from 'react'
-import { NextSeo } from 'next-seo'
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import { FaqStructuredData } from '@/components/schema/FaqStructuredData'
 
 export const questions = [
@@ -238,10 +239,12 @@ See more details on our [pricing page](https://portaljs.com/pricing).`,
 export default function FAQ() {
   return (
     <Layout>
-      <NextSeo
-        title="FAQ"
-        description="Frequently Asked Questions about PortalJS Cloud."
-      />
+      <Head>
+        {generateNextSeo({
+          title: "FAQ",
+          description: "Frequently Asked Questions about PortalJS Cloud.",
+        })}
+      </Head>
       <FaqStructuredData />
       <Tab.Group>
         <div className="mx-auto lg:my-20">

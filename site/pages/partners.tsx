@@ -1,5 +1,7 @@
 import Layout from '@/components/Layout';
-import { NextSeo, LogoJsonLd } from 'next-seo';
+import { OrganizationJsonLd } from 'next-seo';
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import ButtonLink from '@/components/ButtonLink';
 import { Player } from '@lottiefiles/react-lottie-player';
 import { useTheme } from 'next-themes';
@@ -96,11 +98,12 @@ export default function Partners() {
 
   return (
     <Layout isHomePage={true}>
-      <NextSeo
-        title="PortalJS Partnership Program | Collaborate on Open Data Portals"
-        description="Join the PortalJS Partnership Program to deliver innovative open data solutions across governments, non-profits, academia, and businesses."
-        canonical="https://portaljs.com/partners"
-        openGraph={{
+      <Head>
+        {generateNextSeo({
+          title: "PortalJS Partnership Program | Collaborate on Open Data Portals",
+          description: "Join the PortalJS Partnership Program to deliver innovative open data solutions across governments, non-profits, academia, and businesses.",
+          canonical: "https://portaljs.com/partners",
+          openGraph: {
           url: 'https://portaljs.com/partners',
           title: 'PortalJS Partnership Program | Collaborate on Open Data Portals',
           description: 'Join the PortalJS Partnership Program to deliver innovative open data solutions across governments, non-profits, academia, and businesses.',
@@ -113,9 +116,10 @@ export default function Partners() {
             }
           ],
           siteName: 'PortalJS',
-        }}
-      />
-      <LogoJsonLd
+        },
+        })}
+      </Head>
+      <OrganizationJsonLd
         url="https://portaljs.com"
         logo="https://portaljs.com/icon.png"
       />

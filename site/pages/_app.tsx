@@ -3,7 +3,8 @@ import '@/styles/prism.css';
 import '@/styles/docsearch.css';
 import 'tailwindcss/tailwind.css';
 import Script from 'next/script';
-import { DefaultSeo } from 'next-seo';
+import { generateDefaultSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import { NavGroup, NavItem, pageview, ThemeProvider } from '@portaljs/core';
 import siteConfig from '../config/siteConfig';
 import { useEffect } from 'react';
@@ -72,17 +73,18 @@ function MyApp({ Component, pageProps }) {
       defaultTheme="light"
       forcedTheme="light"
     >
-      <DefaultSeo
-        defaultTitle={siteConfig.title}
-        titleTemplate={'%s | ' + siteConfig.title}
-        description={siteConfig.description}
-        //titleTemplate="PortalJS - %s"
-        additionalMetaTags={[
+      <Head>
+        {generateDefaultSeo({
+          defaultTitle: siteConfig.title,
+          titleTemplate: '%s | ' + siteConfig.title,
+          description: siteConfig.description,
+          additionalMetaTags: [
           { name: 'author', content: siteConfig.author },
           { name: 'publisher', content: siteConfig.author },
-        ]}
-        {...siteConfig.nextSeo}
-      />
+        ],
+          ...siteConfig.nextSeo,
+        })}
+      </Head>
 
       {/* Global Site Tag (gtag.js) - Google Analytics */}
       {siteConfig.analytics && (

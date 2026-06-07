@@ -1,17 +1,20 @@
 import Layout from '@/components/Layout'
 import PricingPlans from '@/components/PricingPlans'
 import AddOns from '@/components/AddOns'
-import { NextSeo } from 'next-seo'
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import { H1, H3 } from '@/components/custom/header'
 import { H2 } from '@/components/custom/header'
 
 export default function Pricing() {
   return (
     <Layout>
-      <NextSeo
-        title="Pricing"
-        description="Find the best plan for you, our plans cover all ranges of budgets and needs. Leverage your Open Data Portal with optional add-ons."
-      />
+      <Head>
+        {generateNextSeo({
+          title: "Pricing",
+          description: "Find the best plan for you, our plans cover all ranges of budgets and needs. Leverage your Open Data Portal with optional add-ons.",
+        })}
+      </Head>
       <div className="overflow-hidden">
         <div className="">
           <div className="mx-auto ">

@@ -1,19 +1,21 @@
-import { BreadcrumbJsonLd, LogoJsonLd, NextSeo, WebPageJsonLd } from "next-seo";
+import { BreadcrumbJsonLd, OrganizationJsonLd } from "next-seo";
+import { generateNextSeo } from "next-seo/pages";
+import Head from "next/head";
 
 export function CaseStudiesStructuredData({ casestudies }) {
 
   return (
     <>
-      <LogoJsonLd
+      <OrganizationJsonLd
         url="https://www.portaljs.com"
         logo="https://www.portaljs.com/icon.png"
       />
-      <NextSeo
-        title="Showcase of Case Studies"
-        description="See our client stories."
-        canonical="https://www.portaljs.com/showcase"
-        openGraph={
-          {
+      <Head>
+        {generateNextSeo({
+          title: "Showcase of Case Studies",
+          description: "See our client stories.",
+          canonical: "https://www.portaljs.com/showcase",
+          openGraph: {
             url: 'https://www.portaljs.com/showcase',
             title: 'Showcase of Case Studies',
             description: 'See our client stories.',
@@ -28,32 +30,24 @@ export function CaseStudiesStructuredData({ casestudies }) {
                 type: 'image/webp',
               },
             ],
-          }
-        }
-        twitter={{
+          },
+          twitter: {
           cardType: 'summary_large_image',
           site: '@PortalJS_',
-        }}
-      />
+        },
+        })}
+      </Head>
       <BreadcrumbJsonLd
-        itemListElements={[
+        items={[
           {
-            position: 1,
             name: 'Home',
             item: 'https://www.portaljs.com',
           },
           {
-            position: 2,
             name: 'Showcase',
             item: 'https://www.portaljs.com/showcase',
           },
         ]}
-      />
-      <WebPageJsonLd
-        id="https://www.portaljs.com/showcase#webpage"
-        url="https://www.portaljs.com/showcase"
-        name="Showcase of Case Studies"
-        description="See our client stories."
       />
     </>
   )

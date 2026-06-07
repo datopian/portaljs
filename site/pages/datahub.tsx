@@ -1,7 +1,9 @@
 import Hero from '@/components/openmetadata/Hero'
 import { KeyFeatures } from '@/components/openmetadata/KeyFeatures'
 import Schedule from '@/components/home/Schedule'
-import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd, FAQPageJsonLd } from 'next-seo'
+import { OrganizationJsonLd, BreadcrumbJsonLd, FAQJsonLd } from 'next-seo';
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import Layout from '@/components/Layout'
 import { CommonUseCases } from '@/components/openmetadata/CommonUseCases'
 import { FAQ } from '@/components/FAQ'
@@ -28,44 +30,38 @@ export default function DataHub() {
 
   return (
     <Layout isHomePage={true}>
-      <FAQPageJsonLd
-        mainEntity={faqItems.map(item => ({
-          questionName: item.question,
-          acceptedAnswerText: item.answer
+      <FAQJsonLd
+        questions={faqItems.map(item => ({
+          question: item.question,
+          answer: item.answer
         }))}
       />
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
-          <LogoJsonLd
+          <OrganizationJsonLd
             url="https://portaljs.com"
             logo="https://portaljs.com/icon.png"
           />
-          <NextSeo
-            title="Turn DataHub into a Business-Friendly Data Catalog"
-            description="Transform DataHub's technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single DataHub instance."
-            canonical="https://portaljs.com/datahub"
-            openGraph={{
+          <Head>
+            {generateNextSeo({
+              title: "Turn DataHub into a Business-Friendly Data Catalog",
+              description: "Transform DataHub's technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single DataHub instance.",
+              canonical: "https://portaljs.com/datahub",
+              openGraph: {
               url: 'https://portaljs.com/datahub',
               title: 'Turn DataHub into a Business-Friendly Data Catalog',
               description: 'Transform DataHub\'s technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single DataHub instance.',
               site_name: 'PortalJS',
-            }}
-          />
-          <WebPageJsonLd
-            id="https://portaljs.com/datahub#webpage"
-            url="https://portaljs.com/datahub"
-            title="Turn DataHub into a Business-Friendly Data Catalog"
-            description="Transform DataHub's technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single DataHub instance."
-          />
+            },
+            })}
+          </Head>
           <BreadcrumbJsonLd
-            itemListElements={[
+            items={[
               {
-                position: 1,
                 name: 'Home',
                 item: 'https://portaljs.com',
               },
               {
-                position: 2,
                 name: 'DataHub',
                 item: 'https://portaljs.com/datahub',
               },

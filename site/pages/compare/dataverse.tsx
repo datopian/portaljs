@@ -1,6 +1,8 @@
 import Layout from '@/components/Layout'
 import Schedule from '@/components/home/Schedule'
-import { LogoJsonLd, NextSeo, WebPageJsonLd, BreadcrumbJsonLd } from 'next-seo'
+import { OrganizationJsonLd, BreadcrumbJsonLd } from 'next-seo';
+import { generateNextSeo } from 'next-seo/pages';
+import Head from 'next/head';
 import ButtonLink from '@/components/ButtonLink'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -189,15 +191,16 @@ export default function PortalJSvsDataverse() {
   return (
     <Layout isHomePage={true}>
       {/* SEO */}
-      <LogoJsonLd
+      <OrganizationJsonLd
         url="https://portaljs.com"
         logo="https://portaljs.com/icon.png"
       />
-      <NextSeo
-        title="PortalJS vs Dataverse | Open Data Portal vs Research Data Repository"
-        description="Compare PortalJS with Dataverse research data repository: See how our open data portal approach delivers better public engagement and user experience for sharing research data."
-        canonical="https://portaljs.com/compare/dataverse"
-        openGraph={{
+      <Head>
+        {generateNextSeo({
+          title: "PortalJS vs Dataverse | Open Data Portal vs Research Data Repository",
+          description: "Compare PortalJS with Dataverse research data repository: See how our open data portal approach delivers better public engagement and user experience for sharing research data.",
+          canonical: "https://portaljs.com/compare/dataverse",
+          openGraph: {
           url: 'https://portaljs.com/compare/dataverse',
           title: 'PortalJS vs Dataverse | Open Data Portal vs Research Data Repository',
           description: 'Compare PortalJS with Dataverse research data repository: See how our open data portal approach delivers better public engagement and user experience for sharing research data.',
@@ -211,28 +214,20 @@ export default function PortalJSvsDataverse() {
           ],
           siteName: 'PortalJS',
           type: 'website'
-        }}
-      />
-      <WebPageJsonLd
-        id="https://portaljs.com/compare/dataverse#webpage"
-        url="https://portaljs.com/compare/dataverse"
-        name="PortalJS vs Dataverse | Open Data Portal vs Research Data Repository"
-        description="Compare PortalJS with Dataverse research data repository: See how our open data portal approach delivers better public engagement and user experience for sharing research data."
-      />
+        },
+        })}
+      </Head>
       <BreadcrumbJsonLd
-        itemListElements={[
+        items={[
           {
-            position: 1,
             name: 'Home',
             item: 'https://portaljs.com',
           },
           {
-            position: 2,
             name: 'Compare',
             item: 'https://portaljs.com/compare',
           },
           {
-            position: 3,
             name: 'Dataverse',
             item: 'https://portaljs.com/compare/dataverse',
           }
