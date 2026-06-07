@@ -1,1 +1,0 @@
-export { getPermalinks } from "./getPermalinks";

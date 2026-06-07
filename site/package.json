@@ -24,7 +24,6 @@
     "@portaljs/core": "^1.0.6",
     "@portaljs/remark-callouts": "^1.0.5",
     "@portaljs/remark-embed": "^1.0.4",
-    "@portaljs/remark-wiki-link": "^1.0.4",
     "@silvenon/remark-smartypants": "^1.0.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.2",
