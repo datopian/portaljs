@@ -1,13 +1,15 @@
 ---
 metatitle: /add-dataset – Add a CSV, TSV, JSON, or GeoJSON Dataset to PortalJS
-metadescription: The /add-dataset skill copies your data into the portal, generates a dataset page with a Table, and registers it on the home page catalog — all as plain, editable code.
+metadescription: The /add-dataset skill copies your data into the portal and appends an entry to datasets.json, so the dataset's showcase renders automatically at /@<namespace>/<slug> — all as plain, editable code.
 title: /add-dataset
-description: Add a CSV, TSV, JSON, or GeoJSON dataset — copies the data in, generates a dataset page, and registers it on the home page.
+description: Add a CSV, TSV, JSON, or GeoJSON dataset — copies the data in and appends a datasets.json entry, so its showcase renders automatically.
 ---
 
 `/add-dataset` adds a dataset to an existing PortalJS portal. It copies the data
-into `/public/data/`, generates a dataset page that renders the data as a table,
-and registers the dataset on the home page catalog.
+into `/public/data/` and appends an entry to the `datasets.json` manifest. The
+showcase page then renders automatically at `/@<namespace>/<slug>` and the dataset
+appears in the `/search` catalog — both are driven by the manifest, so no new page
+file is created.
 
 ## When to use it
 
@@ -22,7 +24,8 @@ publish. For geographic data you'd rather show on a map, use
 | Source | Yes | A local file path (`./data/file.csv`) or a public URL. |
 | Portal directory | No | Path to the portal project. Defaults to the current directory. |
 | Dataset name | No | Human-readable name. Defaults to the filename. |
-| Description | No | Optional one-line description shown on the page. |
+| Description | No | Optional one-line description shown on the showcase. |
+| Namespace | No | The `@`-prefixed namespace the dataset lives under (theme or owner). Defaults to a sensible value for the portal. |
 
 **Supported formats:** CSV, TSV, JSON (array), and GeoJSON. Anything else is
 rejected with a clear message to convert it first.
@@ -47,28 +50,27 @@ From a public URL:
 
 ## What it produces
 
-- The data file copied to `public/data/<slug>.<ext>`.
-- A dataset page at `pages/datasets/<slug>.tsx` — plain React that renders the data
-  through the template's `Table` component (one file per dataset, so no dynamic
-  routing is required).
-- A new entry in the `datasets` array on the home page (`pages/index.tsx`) so the
-  dataset appears in the catalog. Existing entries are preserved.
+- The data file copied to `public/data/<file>`.
+- A new entry appended to the `datasets.json` manifest: `{ slug, name, description,
+  file, format, namespace }`. Existing entries are preserved.
 
-If the home page has been heavily customized and the catalog array can't be found,
-the skill still creates the page and tells you to link it manually.
+No page file is created. The template's showcase route (`pages/[owner]/[slug].tsx`)
+renders every manifest entry automatically at `/@<namespace>/<slug>`, with a `Table`
+preview for tabular data, and the `/search` catalog picks it up from the same
+manifest.
 
 When it finishes:
 
 ```
 ✓ Dataset added: Air quality monitoring
   - Data file: public/data/air-quality.csv
-  - Page: pages/datasets/air-quality.tsx → http://localhost:3000/datasets/air-quality
-  - Home page: updated
+  - Manifest: datasets.json (entry appended)
+  - Showcase: http://localhost:3000/@environment/air-quality
 ```
 
 ## Where to go next
 
-- **[`/add-chart`](/docs/skills/add-chart)** — add a chart to the dataset page.
+- **[`/add-chart`](/docs/skills/add-chart)** — add a chart to the dataset's showcase.
 - **[`/add-map`](/docs/skills/add-map)** — show geographic data on a map.
 
 <DocsPagination prev="/docs/skills/new-portal" next="/docs/skills/add-chart" />

@@ -1,15 +1,16 @@
 ---
 metatitle: /connect-ckan – Wire a PortalJS Portal to a CKAN Backend over its API
-metadescription: The /connect-ckan skill installs @portaljs/ckan, generates a CKAN-backed catalog home and dynamic dataset pages as plain editable code, and verifies the build — the decoupled, any-backend path.
+metadescription: The /connect-ckan skill installs @portaljs/ckan, feeds the catalog at /search and dataset showcases at /@<namespace>/<slug> from CKAN as plain editable code, and verifies the build — the decoupled, any-backend path.
 title: /connect-ckan
 description: Wire a portal to a CKAN backend over its API instead of static files — the decoupled, any-backend path.
 ---
 
 `/connect-ckan` connects an existing PortalJS portal to a live [CKAN](/ckan)
-backend. The portal stops reading static files from `/public/data/` and instead
-lists and renders datasets straight from a CKAN instance's REST API
-(`package_search` / `package_show`) using the `@portaljs/ckan` client. The output
-is plain, editable Next.js code — no opaque framework wiring.
+backend. The portal stops reading the static `datasets.json` manifest and
+`/public/data/` files, and instead feeds both surfaces — the catalog at `/search`
+and the dataset showcases at `/@<namespace>/<slug>` — straight from a CKAN
+instance's REST API (`package_search` / `package_show`) using the `@portaljs/ckan`
+client. The output is plain, editable Next.js code — no opaque framework wiring.
 
 ## When to use it
 
@@ -50,18 +51,18 @@ Restricted to specific organizations:
 - `lib/ckan.ts` — a small, editable client module. The CKAN URL is the default,
   overridable at deploy time via the `DMS` env var; org/group filters and a
   build-time page cap (`MAX_DATASETS`) are plain constants you can edit.
-- `pages/index.tsx` rewritten to list datasets from `package_search`.
-- `pages/datasets/[slug].tsx` — a dynamic route that pre-renders one page per
-  dataset via `package_show`, previewing CSV/TSV resources through the template's
-  `Table`.
+- `pages/search.tsx` rewritten so the catalog lists datasets from `package_search`.
+- `pages/[owner]/[slug].tsx` — the showcase route, repointed to pre-render one
+  showcase per dataset at `/@<namespace>/<slug>` via `package_show`, previewing
+  CSV/TSV resources through the template's `Table`.
 
 It verifies the build before reporting success. When it finishes:
 
 ```
 ✓ Connected to CKAN: https://demo.dev.datopian.com
   - Client:    lib/ckan.ts (DMS overridable via env var)
-  - Home:      pages/index.tsx → lists datasets from package_search
-  - Dataset:   pages/datasets/[slug].tsx → package_show, CSV/TSV preview via <Table>
+  - Catalog:   pages/search.tsx → lists datasets from package_search
+  - Showcase:  pages/[owner]/[slug].tsx → package_show at /@<namespace>/<slug>, CSV/TSV preview via <Table>
 ```
 
 > The default is static generation (data fixed at build time — rebuild to pick up

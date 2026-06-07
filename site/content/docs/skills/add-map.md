@@ -1,21 +1,22 @@
 ---
 metatitle: /add-map – Render a GeoJSON Dataset on an Interactive Map in PortalJS
-metadescription: The /add-map skill installs react-leaflet, generates a reusable Map component, creates a map page, and registers it on the home page — rendering GeoJSON on an interactive Leaflet map.
+metadescription: The /add-map skill installs react-leaflet, generates a reusable Map component, and adds a map view to a dataset's showcase — rendering GeoJSON on an interactive Leaflet map.
 title: /add-map
-description: Render a GeoJSON dataset on an interactive Leaflet map and register it on the home page catalog.
+description: Render a GeoJSON dataset on an interactive Leaflet map as a view on its showcase.
 ---
 
-`/add-map` adds an interactive map of a GeoJSON dataset to an existing PortalJS
+`/add-map` adds an interactive map view of a GeoJSON dataset to an existing PortalJS
 portal. It copies the GeoJSON into `/public/data/`, installs `react-leaflet` /
-`leaflet` (once), generates a reusable `Map` component, creates a map page, and
-registers it on the home page catalog.
+`leaflet` (once), generates a reusable `Map` component, and adds a map view into the
+**Views** section of the dataset's showcase (`pages/[owner]/[slug].tsx`).
 
 ## When to use it
 
 Use it when your data is geographic (points, lines, polygons) and you want a map
-rather than the properties table that [`/add-dataset`](/docs/skills/add-dataset)
-produces for GeoJSON. You can run both on the same file to offer both views — the
-map page gets a `-map` suffix so the routes don't collide.
+view of it. If the GeoJSON isn't yet in the portal, add it first with
+[`/add-dataset`](/docs/skills/add-dataset); the map is added as a view alongside the
+dataset's other views, so a single showcase can offer both a properties table and a
+map.
 
 ## Inputs
 
@@ -46,12 +47,15 @@ From a public URL with a name:
 
 - The GeoJSON copied to `public/data/<slug>.geojson`.
 - `react-leaflet` and `leaflet` added to `package.json` (installed once).
+- The GeoJSON copied to `public/data/<file>` and, if not already present, a
+  `datasets.json` entry appended for it (so the showcase route renders it).
 - A reusable `components/Map.tsx` plus `components/MapView.tsx` — split so Leaflet
   is loaded with `dynamic(..., { ssr: false })` and never reaches the server
   bundle. Every feature's `properties` become a click popup automatically.
-- A map page at `pages/datasets/<slug>.tsx` that fetches the GeoJSON client-side.
-- A new entry on the home page catalog (`pages/index.tsx`), preserving existing
-  entries.
+- A `<Map />` view added to the **Views** section of the showcase route
+  (`pages/[owner]/[slug].tsx`), rendered for the chosen dataset's `(namespace, slug)`
+  and fetching the GeoJSON client-side. No separate page is created and nothing is
+  registered on the home page.
 
 It runs the build before reporting success. When it finishes:
 
@@ -59,8 +63,8 @@ It runs the build before reporting success. When it finishes:
 ✓ Map added: Auckland suburbs
   - Data file: public/data/auckland-suburbs.geojson
   - Component: components/Map.tsx (+ MapView.tsx)
-  - Page: pages/datasets/auckland-suburbs.tsx → http://localhost:3000/datasets/auckland-suburbs
-  - Home page: updated
+  - View: pages/[owner]/[slug].tsx — <Map> for @auckland-council/auckland-suburbs
+  - Showcase: http://localhost:3000/@auckland-council/auckland-suburbs
 ```
 
 ## Where to go next

@@ -16,67 +16,68 @@ the same project by hand. This page shows how.
 
 ## 1. Get the template
 
-Grab the canonical lightweight template with [degit](https://github.com/Rich-Harris/degit)
+Grab the canonical catalog template with [degit](https://github.com/Rich-Harris/degit)
 (no git history, just the files):
 
 ```bash
-npx degit datopian/portaljs/examples/portaljs-template my-portal
+npx degit datopian/portaljs/examples/portaljs-catalog my-portal
 cd my-portal
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). You now have a running portal
-with a sample dataset.
+Open [http://localhost:3000](http://localhost:3000). You now have a running portal —
+a home page (`/`), a search catalog at `/search`, and per-dataset showcase pages — with
+a few sample datasets.
 
-> [!note] Many datasets?
-> For a catalog with dozens of datasets, use the dynamic-routes variant
-> `examples/portaljs-catalog` instead — it renders every dataset through one
-> `pages/datasets/[slug].tsx` route from a `datasets.json` manifest, so adding a
-> dataset is a JSON entry plus a data file.
+> [!note] Just a landing page?
+> If you only want a single home page with no catalog or dataset pages, use the
+> minimal variant `examples/portaljs-template` instead and build up from there. See
+> [Templates](/docs/templates).
 
 ## 2. Add a dataset
 
-Drop your file into `/public/data/`:
+Datasets are driven by a `datasets.json` manifest — there's no per-dataset page file
+to write. Drop your file into `/public/data/`:
 
 ```bash
 cp ~/Downloads/population.csv public/data/population.csv
 ```
 
-Create a dataset page at `pages/datasets/population.tsx`:
+Then append an entry to `datasets.json`:
 
-```tsx
-import { Table } from '../../components/Table';
-import Head from 'next/head';
-
-export default function PopulationDataset() {
-  return (
-    <>
-      <Head>
-        <title>Population by area</title>
-      </Head>
-      <main className="max-w-5xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Population by area</h1>
-        <Table url="/data/population.csv" />
-      </main>
-    </>
-  );
+```json
+{
+  "slug": "population",
+  "name": "Population by area",
+  "description": "Resident population by area.",
+  "file": "population.csv",
+  "format": "csv",
+  "namespace": "reference"
 }
 ```
 
-The `Table` component (in `components/Table.tsx`) fetches the CSV in the browser
-with `papaparse` and renders it with `@tanstack/react-table`. No server code
-needed — Next.js serves `/public/` statically.
+That's it — the dataset now renders at **`/@reference/population`** through the
+existing `pages/[owner]/[slug].tsx` showcase route, and shows up in the `/search`
+catalog. The showcase previews the file with the `Table` component (in
+`components/Table.tsx`), which fetches the CSV in the browser with `papaparse` and
+renders it with `@tanstack/react-table` — no server code needed, since Next.js serves
+`/public/` statically.
 
-Then add a link to the new page from your home page catalog (`pages/index.tsx`).
+Every dataset carries a `namespace`. A portal uses **one** namespace mode —
+`theme` (group by subject) or `owner` (group by publisher) — set via `NAMESPACE_TYPE`
+in `lib/datasets.ts`. It only changes the showcase's metadata label; the URL is always
+`/@<namespace>/<slug>`. See [Core concepts](/docs/core-concepts) for why dataset URLs
+start with `@`.
 
 ## 3. Add charts, maps, and backends
 
 Everything the skills do, you can do by hand:
 
-- **Charts** — `npm install recharts` and add a chart component to the dataset
-  page.
-- **Maps** — `npm install react-leaflet leaflet` and render a GeoJSON file.
+- **Charts** — `npm install recharts` and add a chart as a view in the dataset's
+  showcase (`pages/[owner]/[slug].tsx`).
+- **Maps** — `npm install react-leaflet leaflet` and render a GeoJSON file as a view
+  in the showcase.
 - **CKAN** — `npm install @portaljs/ckan` and pass a `datastoreConfig` to `Table`,
   or build a catalog against the CKAN API. See [CKAN integration](/ckan).
 
