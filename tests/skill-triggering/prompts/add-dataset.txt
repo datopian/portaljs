@@ -1,0 +1,1 @@
+I have a file ./data/air-quality.csv with sensor readings. Add it to my PortalJS portal so it shows up as a dataset page in the catalog.

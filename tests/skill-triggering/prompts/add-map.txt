@@ -1,0 +1,1 @@
+I've got a parks.geojson with park boundaries. I want it shown on an interactive map in my portal.
