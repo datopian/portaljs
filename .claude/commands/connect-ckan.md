@@ -1,14 +1,16 @@
 ---
-description: Wire a scaffolded PortalJS portal to a CKAN backend over its API. Installs @portaljs/ckan, generates a CKAN-backed catalog home and dynamic dataset pages as plain editable code, and verifies the build.
+description: Wire a scaffolded PortalJS portal to a CKAN backend over its API. Installs @portaljs/ckan and feeds the /search catalog and /@<namespace>/<slug> showcases from CKAN instead of datasets.json.
 allowed-tools: Read, Write, Edit, Bash, WebFetch
 ---
 
 # /connect-ckan
 
-Connect an existing PortalJS portal to a live CKAN backend. The portal stops reading
-static files from `/public/data/` and instead lists and renders datasets straight from a
-CKAN instance's REST API (`package_search` / `package_show`) using the `@portaljs/ckan`
-client. Output is plain, editable Next.js code — no opaque framework wiring.
+Connect an existing `portaljs-catalog` portal to a live CKAN backend. The portal stops
+reading the static `datasets.json` manifest (and files in `/public/data/`) and instead
+feeds its two data surfaces — the **`/search` catalog** and the **`/@<namespace>/<slug>`
+showcases** — straight from a CKAN instance's REST API (`package_search` / `package_show`)
+using the `@portaljs/ckan` client. Output is plain, editable Next.js code — no opaque
+framework wiring.
 
 Use this for the "decoupled / any backend" path: the user has a CKAN data management
 system (their own or a public one) and wants a browseable portal in front of it.
@@ -17,7 +19,7 @@ The generated pages fetch CKAN **server-side** in `getStaticProps`/`getStaticPat
 the `@portaljs/ckan` bundle never reaches the browser — the client stays lean and the
 site can be statically deployed.
 
-## Required input
+## Required input — ask, don't error
 
 - **CKAN base URL** (required) — e.g. `https://demo.dev.datopian.com`. The root of the
   CKAN instance; the skill appends `/api/3/action/...` itself. Must be publicly reachable.
@@ -25,14 +27,12 @@ site can be statically deployed.
 - **Group filter** (optional) — one or more CKAN group names to restrict the catalog to.
 - **Portal directory** (optional) — path to the portal project (default: current directory).
 
-If the CKAN base URL is missing:
-```
-ERROR: [connect-ckan] MISSING_INPUT No CKAN base URL provided — pass the root URL of a CKAN instance, e.g. https://demo.dev.datopian.com.
-```
+**If the CKAN base URL is missing, ask for it (and the optional org/group filter) — never
+dead-end with a missing-input error.**
 
 ## Steps
 
-### 1. Parse arguments from `$ARGUMENTS`
+### 1. Gather input from `$ARGUMENTS` (interview if thin)
 
 Extract:
 - `CKAN_URL` — base URL, with any trailing slash stripped.
@@ -40,22 +40,22 @@ Extract:
 - `GROUP_FILTER` — list of group names (default: empty = all groups).
 - `PORTAL_DIR` — portal directory (default: `.`).
 
-If `$ARGUMENTS` is empty, ask once and stop:
+If the CKAN base URL is missing, **ask** and wait for the answer:
 ```
 To connect a CKAN backend I need:
-1. CKAN base URL (e.g. https://demo.dev.datopian.com)
-2. Optional org filter (press Enter for all organizations)
-3. Optional group filter (press Enter for all groups)
-4. Portal directory (press Enter for current directory)
+1. CKAN base URL (e.g. https://demo.dev.datopian.com)  — required
+2. Optional org filter (Enter for all organizations)
+3. Optional group filter (Enter for all groups)
+4. Portal directory (Enter for current directory)
 ```
 
 ### 2. Validate the portal directory
 
-The target must be a PortalJS portal. Confirm `PORTAL_DIR/package.json` and
-`PORTAL_DIR/pages` exist:
-```
-ERROR: [connect-ckan] NOT_A_PORTAL PORTAL_DIR is not a PortalJS portal (no package.json/pages) — run /new-portal first.
-```
+The target must be a `portaljs-catalog` portal. Confirm `PORTAL_DIR/package.json` and
+`PORTAL_DIR/pages` exist (the catalog template also has `datasets.json`,
+`pages/search.tsx`, and `pages/[owner]/[slug].tsx`, which this skill rewires). If it isn't
+a portal, tell the user and suggest running `/new-portal` first rather than failing
+silently.
 
 ### 3. Verify the CKAN backend is reachable
 
@@ -64,20 +64,17 @@ Hit `package_search` with a tiny page to confirm the URL is a working CKAN API:
 curl -s -m 20 "CKAN_URL/api/3/action/package_search?rows=1"
 ```
 The response must be JSON with `"success": true`. If the request fails, times out, or
-`success` is not `true`:
-```
-ERROR: [connect-ckan] CKAN_UNREACHABLE Could not reach a CKAN API at CKAN_URL (api/3/action/package_search) — check the URL is a CKAN root and is publicly accessible.
-```
+`success` is not `true`, tell the user the URL didn't resolve to a working CKAN API and
+ask them to confirm it's a CKAN root that's publicly accessible, then retry — don't
+dead-end.
 
 If `ORG_FILTER` is set, validate each org exists:
 ```bash
 curl -s -m 20 "CKAN_URL/api/3/action/organization_show?id=ORG"
 ```
-If any returns `success: false`, warn the user and list valid orgs from
-`organization_list`, then stop:
-```
-ERROR: [connect-ckan] ORG_NOT_FOUND Organization 'ORG' not found on CKAN_URL — check the org name (see api/3/action/organization_list).
-```
+If any returns `success: false`, tell the user that org wasn't found, list the valid orgs
+from `organization_list`, and ask which one they meant (or to drop the filter) before
+continuing.
 
 ### 4. Install `@portaljs/ckan` (once)
 
@@ -87,10 +84,7 @@ Tell the user first: `Installing @portaljs/ckan...`
 cd PORTAL_DIR && npm install @portaljs/ckan@^0.1.0
 ```
 
-If install fails:
-```
-ERROR: [connect-ckan] INSTALL_FAILED npm install failed — check Node.js >=18 and network access, then retry.
-```
+If install fails, tell the user (check Node.js >=18 and network access) and retry.
 
 ### 5. Patch `tsconfig.json` so TypeScript resolves the CKAN types
 
@@ -133,6 +127,22 @@ export const MAX_DATASETS = 200
 // Shared client. Used ONLY in getStaticProps/getStaticPaths (server side),
 // so the @portaljs/ckan bundle never reaches the browser.
 export const ckan = new CKAN(DMS)
+
+// A card is the serializable shape passed to client components from the
+// server-side data functions (never pass the raw CKAN client across this seam).
+export type DatasetCard = {
+  slug: string
+  namespace: string
+  name: string
+  description?: string
+}
+
+// Canonical showcase URL — keeps the template's /@<namespace>/<slug> structure.
+// The CKAN organization name is the namespace (it groups datasets by publisher,
+// i.e. the 'owner' namespace mode); falls back to 'dataset' when an org is absent.
+export function datasetHref(d: { namespace: string; slug: string }): string {
+  return `/@${d.namespace}/${d.slug}`
+}
 ```
 
 Substitute `CKAN_URL` with the real URL and fill `ORG_FILTER`/`GROUP_FILTER` with quoted
@@ -143,18 +153,19 @@ org/group names (e.g. `['my-org']`), or leave them as `[]` if no filter was give
 > the whole `@portaljs/ckan` package into the client. Pass plain serializable props to
 > components instead.
 
-### 7. Generate the catalog home page
+### 7. Generate the CKAN-backed catalog at `/search`
 
-Overwrite `PORTAL_DIR/pages/index.tsx`. It lists datasets from `package_search` and links
-each to `/datasets/[slug]` (slug = CKAN package `name`).
+The home page (`pages/index.tsx`) stays the search-first landing — its search box and chips
+already navigate to `/search`. Wire the **catalog list** at `PORTAL_DIR/pages/search.tsx`
+to read from CKAN instead of `datasets.json`. It lists datasets from `package_search` and
+links each to its showcase at `/@<namespace>/<slug>` via `datasetHref` (namespace = CKAN
+org name; slug = CKAN package `name`).
 
 ```tsx
 import Head from 'next/head'
 import Link from 'next/link'
 import type { GetStaticProps } from 'next'
-import { ckan, ORG_FILTER, GROUP_FILTER, MAX_DATASETS } from '../lib/ckan'
-
-type DatasetCard = { slug: string; name: string; description?: string; org?: string }
+import { ckan, datasetHref, ORG_FILTER, GROUP_FILTER, MAX_DATASETS, type DatasetCard } from '../lib/ckan'
 
 export const getStaticProps: GetStaticProps<{ datasets: DatasetCard[]; count: number }> = async () => {
   const { datasets, count } = await ckan.packageSearch({
@@ -166,21 +177,25 @@ export const getStaticProps: GetStaticProps<{ datasets: DatasetCard[]; count: nu
   })
   const cards: DatasetCard[] = datasets.map((d) => ({
     slug: d.name,
+    namespace: d.organization?.name || 'dataset',
     name: d.title || d.name,
     description: d.notes ? d.notes.slice(0, 200) : '',
-    org: d.organization?.title || d.organization?.name || '',
   }))
   return { props: { datasets: cards, count } }
 }
 
-export default function Home({ datasets, count }: { datasets: DatasetCard[]; count: number }) {
+export default function Search({ datasets, count }: { datasets: DatasetCard[]; count: number }) {
   return (
     <>
-      <Head><title>__PROJECT_NAME__</title></Head>
+      <Head><title>Search — __PROJECT_NAME__</title></Head>
       <main className="max-w-5xl mx-auto px-4 py-12">
-        <header className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900">__PROJECT_NAME__</h1>
-          <p className="mt-3 text-lg text-gray-500">__DESCRIPTION__</p>
+        <header className="mb-8">
+          <nav className="mb-4 text-sm text-gray-500">
+            <Link href="/" className="hover:text-gray-700">Home</Link>
+            <span className="mx-2">/</span>
+            <span>Search</span>
+          </nav>
+          <h1 className="text-3xl font-bold text-gray-900">Datasets</h1>
           <p className="mt-1 text-sm text-gray-400">{count} datasets in catalog</p>
         </header>
 
@@ -193,12 +208,12 @@ export default function Home({ datasets, count }: { datasets: DatasetCard[]; cou
           <div className="grid gap-4">
             {datasets.map((ds) => (
               <Link
-                key={ds.slug}
-                href={`/datasets/${ds.slug}`}
+                key={`${ds.namespace}/${ds.slug}`}
+                href={datasetHref(ds)}
                 className="block rounded-lg border border-gray-200 p-6 hover:border-blue-400 hover:shadow-sm transition-all"
               >
                 <h2 className="text-xl font-semibold text-gray-900">{ds.name}</h2>
-                {ds.org && <p className="mt-1 text-xs uppercase tracking-wide text-gray-400">{ds.org}</p>}
+                <p className="mt-1 text-xs uppercase tracking-wide text-gray-400">@{ds.namespace}</p>
                 {ds.description && <p className="mt-2 text-gray-500">{ds.description}</p>}
               </Link>
             ))}
@@ -210,17 +225,21 @@ export default function Home({ datasets, count }: { datasets: DatasetCard[]; cou
 }
 ```
 
-Substitute `__PROJECT_NAME__` and `__DESCRIPTION__` with the portal's real values if the
-existing `index.tsx` had them (read it before overwriting). If the home page was heavily
-customised, preserve the layout and only swap the data source — do not blindly clobber a
-hand-edited home page; tell the user what you changed.
+Substitute `__PROJECT_NAME__` if the existing file still has the token. The CKAN list is
+pre-rendered server-side, so the template's client-side `useMemo` filter is replaced — if
+you want live text filtering over the CKAN results, keep a client-side filter over the
+`datasets` prop (same pattern the static `search.tsx` uses) or wire it to
+`package_search?q=` later. Leave `pages/index.tsx` as-is (it's the static search landing);
+only swap the catalog's data source. Tell the user what you changed.
 
-### 8. Generate the dynamic dataset page
+### 8. Generate the CKAN-backed showcase at `/@<namespace>/<slug>`
 
-Create `PORTAL_DIR/pages/datasets/[slug].tsx` (make the `pages/datasets/` directory if
-needed). It pre-renders one page per dataset via `getStaticPaths` and fetches full details
-with `package_show` in `getStaticProps`. Tabular resources (CSV/TSV) preview through the
-template's local `Table` component, which fetches the resource URL client-side.
+Overwrite `PORTAL_DIR/pages/[owner]/[slug].tsx` (the template's showcase route). It
+pre-renders one page per dataset via `getStaticPaths` and fetches full details with
+`package_show` in `getStaticProps`. The `owner` segment carries the `@` prefix so the URL
+stays `/@<namespace>/<slug>` (namespace = CKAN org name). Tabular resources (CSV/TSV)
+preview through the template's local `Table` component, which fetches the resource URL
+client-side.
 
 ```tsx
 import Head from 'next/head'
@@ -230,7 +249,7 @@ import { Table } from '../../components/Table'
 import { ckan, ORG_FILTER, GROUP_FILTER, MAX_DATASETS } from '../../lib/ckan'
 
 type ResourceView = { id: string; name: string; format: string; url: string; isTabular: boolean }
-type DatasetView = { slug: string; title: string; notes: string; org: string; resources: ResourceView[] }
+type DatasetView = { slug: string; namespace: string; title: string; notes: string; org: string; resources: ResourceView[] }
 
 const TABULAR = ['csv', 'tsv']
 
@@ -243,7 +262,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
     groups: GROUP_FILTER,
   })
   return {
-    paths: datasets.map((d) => ({ params: { slug: d.name } })),
+    // owner carries the leading `@`; slug is the CKAN package name. namespace = org name.
+    paths: datasets.map((d) => ({
+      params: { owner: '@' + (d.organization?.name || 'dataset'), slug: d.name },
+    })),
     // false: only datasets present at build time are served. Rebuild to pick up new ones.
     // Switch to 'blocking' if you deploy to a Node server and want new datasets on demand.
     fallback: false,
@@ -251,11 +273,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps<{ dataset: DatasetView }> = async ({ params }) => {
+  const namespace = String(params?.owner ?? '').replace(/^@/, '')
   const slug = String(params?.slug)
   try {
     const d = await ckan.getDatasetDetails(slug)
     const dataset: DatasetView = {
       slug: d.name,
+      namespace,
       title: d.title || d.name,
       notes: d.notes || '',
       org: d.organization?.title || d.organization?.name || '',
@@ -283,6 +307,8 @@ export default function DatasetPage({ dataset }: { dataset: DatasetView }) {
       <main className="max-w-5xl mx-auto px-4 py-8">
         <nav className="mb-6 text-sm text-gray-500">
           <Link href="/" className="hover:text-gray-700">Home</Link>
+          <span className="mx-2">/</span>
+          <Link href="/search" className="hover:text-gray-700">Datasets</Link>
           <span className="mx-2">/</span>
           <span>{dataset.title}</span>
         </nav>
@@ -323,9 +349,11 @@ export default function DatasetPage({ dataset }: { dataset: DatasetView }) {
 }
 ```
 
-> If the portal already has a static `pages/datasets/[slug].tsx` (from the
-> `portaljs-catalog` template or `/add-dataset`), this overwrites it — CKAN becomes the
-> single source of truth. Tell the user the static dataset route was replaced.
+> This overwrites the static showcase route `pages/[owner]/[slug].tsx` so CKAN becomes the
+> single source of truth (the static `datasets.json` / `lib/datasets.ts` path is no longer
+> read). Tell the user the static dataset route was replaced. The `/add-chart` and
+> `/add-map` skills target the static showcase's Views section, so they don't apply to the
+> CKAN-backed route as-is.
 
 ### 9. Verify the build
 
@@ -350,8 +378,9 @@ not report success while the build is failing. Common cause: missing tsconfig `p
 ```
 ✓ Connected to CKAN: CKAN_URL
   - Client:    lib/ckan.ts (DMS overridable via env var)
-  - Home:      pages/index.tsx → lists datasets from package_search
-  - Dataset:   pages/datasets/[slug].tsx → package_show, CSV/TSV preview via <Table>
+  - Home:      pages/index.tsx → unchanged search landing (search box → /search)
+  - Catalog:   pages/search.tsx → lists datasets from package_search, links to /@<ns>/<slug>
+  - Showcase:  pages/[owner]/[slug].tsx → package_show, CSV/TSV preview via <Table>
   - Filters:   orgs=[...]  groups=[...]   (edit lib/ckan.ts to change)
   - Build:     N static dataset pages generated (catalog has M)
 
@@ -370,8 +399,9 @@ Next: run `npm run dev` and visit http://localhost:3000, or run /deploy to publi
 - **DMS env var.** `lib/ckan.ts` reads `process.env.DMS` first, falling back to the URL you
   provided. Set `DMS` in the deploy environment to point at a different CKAN instance without
   editing code.
-- **Slugs are CKAN package `name`s** — already lowercase and URL-safe and unique, so they map
-  cleanly to a single `[slug]` route segment.
+- **Slugs are CKAN package `name`s** — already lowercase, URL-safe, and unique. The CKAN
+  organization name becomes the `@<namespace>` segment, giving the template's
+  `/@<namespace>/<slug>` URLs. Datasets with no org fall back to the `@dataset` namespace.
 - **CORS for resource previews.** The `<Table>` preview fetches resource URLs from the
   browser. If a CKAN resource host blocks cross-origin requests, the table shows a load
   error while the Download link still works. Datastore-backed resources are the most reliable.
