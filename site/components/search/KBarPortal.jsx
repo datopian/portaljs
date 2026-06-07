@@ -80,7 +80,7 @@ export function Portal({ searchDocumentsPath }) {
                   />
                 </svg>
               </span>
-              <KBarSearch className="h-8 w-full bg-transparent text-slate-600 placeholder-slate-400 focus:outline-none dark:text-slate-200 dark:placeholder-slate-500" />
+              <KBarSearch className="h-8 w-full bg-transparent text-slate-600 placeholder-slate-400 focus:outline-hidden dark:text-slate-200 dark:placeholder-slate-500" />
               <span className="inline-block whitespace-nowrap rounded border border-slate-400/70 px-1.5 align-middle font-medium leading-4 tracking-wide text-slate-500 [font-size:10px] dark:border-slate-600 dark:text-slate-400">
                 ESC
               </span>

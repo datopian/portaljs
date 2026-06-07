@@ -1,4 +1,18 @@
+@import 'tailwindcss';
 @import 'remark-callouts/styles.css';
+@config '../tailwind.config.js';
+
+/* Tailwind 4 defaults the border color to currentColor; restore the v3
+   default (gray-200) so existing borderless-color utilities keep their look. */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 html,
 body {

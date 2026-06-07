@@ -26,7 +26,7 @@ const LearnPostCard: FC<LearnPostCardProps> = ({
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
           {title}
         </h3>
-        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed flex-grow">
+        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed grow">
           {description}
         </p>
         {(date || readTime) && (

@@ -51,3 +51,4 @@ Thumbs.db
 *.db
 **/*.db
 .gstack/
+*.tmp

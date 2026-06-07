@@ -26,7 +26,7 @@ export default function FAQ() {
             <Disclosure key={question.question} as="div" className="max-w-2xl">
               {({ open }) => (
                 <>
-                  <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-lg font-medium text-left dark:text-white  focus:outline-none focus-visible:ring focus-visible:ring-primary-500 focus-visible:ring-opacity-75 text-2xl  p-10 group ">
+                  <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-lg font-medium text-left dark:text-white  focus:outline-hidden focus-visible:ring focus-visible:ring-primary-500/75 text-2xl  p-10 group ">
                     <span className="group-hover:text-blue-400 transition">
                       {question.question}
                     </span>

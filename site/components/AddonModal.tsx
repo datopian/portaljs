@@ -55,7 +55,7 @@ export default forwardRef<AddonModalHandle, AddonModalProps>(
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-gray-900 bg-opacity-50 transition-opacity" />
+            <div className="fixed inset-0 bg-gray-900/50 transition-opacity" />
           </Transition.Child>
 
           <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -73,7 +73,7 @@ export default forwardRef<AddonModalHandle, AddonModalProps>(
                   <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                     <button
                       type="button"
-                      className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={() => setIsOpen(false)}
                     >
                       <span className="sr-only">Close</span>
@@ -81,7 +81,7 @@ export default forwardRef<AddonModalHandle, AddonModalProps>(
                     </button>
                   </div>
                   <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-neutral-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <div className="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-neutral-100 sm:mx-0 sm:h-10 sm:w-10">
                       <PuzzlePieceIcon
                         className="h-6 w-6 text-neutral-600"
                         aria-hidden="true"
