@@ -193,7 +193,7 @@ function classNames(...classes) {
 export default function PricingPlans() {
   const [frequency, setFrequency] = useState(frequencies[1])
   const [showAnnualMessage, setShowAnnualMessage] = useState(false)
-  const addonModalRef = useRef<AddonModalHandle>()
+  const addonModalRef = useRef<AddonModalHandle>(null)
 
   useEffect(() => {
     if (frequency.value === 'annually') {
