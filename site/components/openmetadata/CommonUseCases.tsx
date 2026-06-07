@@ -45,7 +45,7 @@ export const CommonUseCases = ({ productName }: CommonUseCasesProps) => {
               key={feature.title}
               className="relative flex flex-col rounded-xl dark:bg-slate-900 dark:hover:bg-slate-800 hover:bg-slate-100 transition-all duration-300 ring-1 ring-slate-200 dark:ring-slate-800 p-7 shadow-lg overflow-hidden"
             >
-              <div className="flex-shrink-0 w-full flex items-start -ml-2">
+              <div className="shrink-0 w-full flex items-start -ml-2">
                 <Player
                   autoplay
                   loop

@@ -286,7 +286,7 @@ export default function PortalJSvsOpenDataSoft() {
                 </div>
                 <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
                   <div className="flex items-center gap-x-4">
-                    <div className="flex-shrink-0 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white w-12 h-12 flex items-center justify-center font-semibold">
+                    <div className="shrink-0 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white w-12 h-12 flex items-center justify-center font-semibold">
                       {testimonial.author.split(' ').map(word => word[0]).join('')}
                     </div>
                     <div>
@@ -344,7 +344,7 @@ export default function PortalJSvsOpenDataSoft() {
                             </td>
                             <td className="px-4 py-5 text-base text-slate-700 dark:text-slate-300">
                               <div className="flex items-center">
-                                <svg className="w-5 h-5 mr-3 text-green-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <svg className="w-5 h-5 mr-3 text-green-500 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                 </svg>
                                 <span>{item.portaljs}</span>

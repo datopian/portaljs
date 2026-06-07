@@ -37,7 +37,7 @@ export const Testimonials = () => {
                 <RiDoubleQuotesL className="w-6 h-6" aria-hidden />
               </div>
               <p className="text-base opacity-75">{t.quote}</p>
-              <div className="flex-shrink-0 w-full mt-auto">
+              <div className="shrink-0 w-full mt-auto">
                 <h3 className="text-lg font-medium ">
                   {t.url ? (
                     <a

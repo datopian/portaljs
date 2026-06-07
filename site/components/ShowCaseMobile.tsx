@@ -26,7 +26,7 @@ export default function ShowCaseMobile({ item }) {
               text-sm
               font-medium
               rounded-full
-              hover:bg-opacity-90
+              hover:bg-primary/90
               transition-all
               duration-300
             "

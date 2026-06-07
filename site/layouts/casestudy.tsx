@@ -464,7 +464,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
           <div className="border-t-4 border-red-500 rounded-t-xl p-8 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-800 rounded-xl shadow-lg">
             <div className="flex gap-4 items-center">
-              <div className="bg-red-900 bg-opacity-10 dark:bg-opacity-40 rounded-full h-14 w-14 p-3">
+              <div className="bg-red-900/10 dark:bg-red-900/40 rounded-full h-14 w-14 p-3">
                 <XCircleIcon className="text-red-500" />
               </div>
 
@@ -477,7 +477,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
           </div>
           <div className="border-t-4 border-blue-500 rounded-t-xl p-8 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-800 rounded-xl shadow-lg">
             <div className="flex gap-4 items-center">
-              <div className="bg-blue-900 bg-opacity-10 dark:bg-opacity-40 rounded-full h-14 w-14 p-3 flex items-center justify-center">
+              <div className="bg-blue-900/10 dark:bg-blue-900/40 rounded-full h-14 w-14 p-3 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -503,7 +503,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
           </div>
           <div className="border-t-4 border-green-500  rounded-t-xl p-8 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-800 rounded-xl shadow-lg">
             <div className="flex gap-4 items-center">
-              <div className="bg-green-900 bg-opacity-10 dark:bg-opacity-40 rounded-full h-14 w-14 p-3 flex items-center justify-center">
+              <div className="bg-green-900/10 dark:bg-green-900/40 rounded-full h-14 w-14 p-3 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

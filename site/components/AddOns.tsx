@@ -92,7 +92,7 @@ export default function Example() {
           )}
         >
           <div>
-            <div title={addOn.title} className="focus:outline-none">
+            <div title={addOn.title} className="focus:outline-hidden">
               <span
                 className={classNames(
                   addOn.iconBackground,
@@ -107,7 +107,7 @@ export default function Example() {
           <div className="mt-8 z-50">
             <div className="flex items-center gap-2">
               <h3 className="text-base font-semibold leading-6 hover:underline">
-                <div title={addOn.title} className="focus:outline-none">
+                <div title={addOn.title} className="focus:outline-hidden">
                   {addOn.title}
                 </div>
               </h3>

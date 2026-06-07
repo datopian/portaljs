@@ -93,7 +93,7 @@ export default function Nav() {
   return (
     <header
       className={`
-        fixed w-full pb-16 top-0 z-50 pt-5 mx-auto bg-gradient-to-b bg-opacity-100 from-background dark:from-background-dark via-background dark:via-background-dark to-transparent flex justify-center
+        fixed w-full pb-16 top-0 z-50 pt-5 mx-auto bg-gradient-to-b from-background dark:from-background-dark via-background dark:via-background-dark to-transparent flex justify-center
       `}
     >
       <div className="flex items-center justify-between w-full pl-7 max-w-8xl xl:pl-11 pr-4  sm:pr-8 xl:pr-12">

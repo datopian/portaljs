@@ -1,7 +1,6 @@
 import '@/styles/global.css';
 import '@/styles/prism.css';
 import '@/styles/docsearch.css';
-import 'tailwindcss/tailwind.css';
 import Script from 'next/script';
 import { generateDefaultSeo } from 'next-seo/pages';
 import Head from 'next/head';

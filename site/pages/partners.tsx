@@ -171,7 +171,7 @@ export default function Partners() {
                 key={benefit.title}
                 className="relative flex flex-col rounded-xl dark:bg-slate-900 dark:hover:bg-slate-800 hover:bg-slate-100 transition-all duration-300 ring-1 ring-slate-200 dark:ring-slate-800 p-7 rounded-lg shadow-lg overflow-hidden"
               >
-                <div className="flex-shrink-0 w-full flex items-start -ml-2">
+                <div className="shrink-0 w-full flex items-start -ml-2">
                   <div className="w-14 h-14">
                     <Player src={`/static/icons/${theme}/${benefit.icon}.json`} autoplay loop className={`w-14 h-14 ${benefit.iconStyle}`} />
                   </div>
@@ -203,7 +203,7 @@ export default function Partners() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               {steps.map((step, index) => (
                 <div key={step.number} className="flex items-start">
-                  <div className={`flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r flex items-center justify-center text-white font-bold mr-4`}>
+                  <div className={`shrink-0 w-12 h-12 rounded-full bg-gradient-to-r flex items-center justify-center text-white font-bold mr-4`}>
                     <Player src={`/static/icons/${theme}/${step.icon}.json`} autoplay loop className={`w-14 h-14 ${step.iconStyle}`} />
                   </div>
 

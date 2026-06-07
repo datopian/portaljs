@@ -259,7 +259,7 @@ export default function FAQ() {
                     {({ selected }) => (
                       <button
                         className={`${selected ? 'text-blue-400' : 'text-gray-500'
-                          } transition lg:text-xl font-semibold focus:outline-none`}
+                          } transition lg:text-xl font-semibold focus:outline-hidden`}
                       >
                         {category.category}
                       </button>
@@ -279,7 +279,7 @@ export default function FAQ() {
                     >
                       {({ open }) => (
                         <>
-                          <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-lg font-medium text-left dark:text-white focus:outline-none focus-visible:ring focus-visible:ring-primary-500 focus-visible:ring-opacity-75 text-2xl p-10 group min-w-full">
+                          <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-lg font-medium text-left dark:text-white focus:outline-hidden focus-visible:ring focus-visible:ring-primary-500/75 text-2xl p-10 group min-w-full">
                             <span className="group-hover:text-blue-400 transition">
                               {question.question}
                             </span>

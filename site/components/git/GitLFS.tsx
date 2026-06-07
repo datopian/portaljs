@@ -43,19 +43,19 @@ export const GitLFS = () => {
 
                   <div className="space-y-4">
                     <div className="flex items-center text-gray-600 dark:text-gray-300">
-                      <div className="w-2 h-2 rounded-full bg-red-500 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 rounded-full bg-red-500 mr-3 shrink-0"></div>
                       <span>100MB file limit on GitHub</span>
                     </div>
                     <div className="flex items-center text-gray-600 dark:text-gray-300">
-                      <div className="w-2 h-2 rounded-full bg-red-500 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 rounded-full bg-red-500 mr-3 shrink-0"></div>
                       <span>Repository size limits don't scale for data projects</span>
                     </div>
                     <div className="flex items-center text-gray-600 dark:text-gray-300">
-                      <div className="w-2 h-2 rounded-full bg-red-500 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 rounded-full bg-red-500 mr-3 shrink-0"></div>
                       <span>Slow clone and fetch operations</span>
                     </div>
                     <div className="flex items-center text-gray-600 dark:text-gray-300">
-                      <div className="w-2 h-2 rounded-full bg-red-500 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 rounded-full bg-red-500 mr-3 shrink-0"></div>
                       <span>Version history bloat with large files</span>
                     </div>
                   </div>
@@ -72,19 +72,19 @@ export const GitLFS = () => {
 
                   <div className="space-y-4">
                     <div className="flex items-center text-gray-600 dark:text-gray-300">
-                      <div className="w-2 h-2 rounded-full bg-green-500 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 rounded-full bg-green-500 mr-3 shrink-0"></div>
                       <span>Unlimited file sizes with external storage</span>
                     </div>
                     <div className="flex items-center text-gray-600 dark:text-gray-300">
-                      <div className="w-2 h-2 rounded-full bg-green-500 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 rounded-full bg-green-500 mr-3 shrink-0"></div>
                       <span>Fast repository operations always</span>
                     </div>
                     <div className="flex items-center text-gray-600 dark:text-gray-300">
-                      <div className="w-2 h-2 rounded-full bg-green-500 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 rounded-full bg-green-500 mr-3 shrink-0"></div>
                       <span>Complete Git workflow compatibility</span>
                     </div>
                     <div className="flex items-center text-gray-600 dark:text-gray-300">
-                      <div className="w-2 h-2 rounded-full bg-green-500 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 rounded-full bg-green-500 mr-3 shrink-0"></div>
                       <span>Automatic file management</span>
                     </div>
                   </div>

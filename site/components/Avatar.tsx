@@ -1,7 +1,7 @@
 export function Avatar({ name, img, href }) {
   const Component = href ? "a" : "div";
   return (
-    <Component href={href} className="group block flex-shrink-0 mt-2">
+    <Component href={href} className="group block shrink-0 mt-2">
       <div className="flex items-center space-x-2 ">
         <div>
           <img
