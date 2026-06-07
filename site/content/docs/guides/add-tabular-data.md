@@ -5,8 +5,8 @@ title: Add tabular data
 description: Add a CSV, TSV, or JSON dataset and render it as a sortable table — with /add-dataset, or by hand.
 ---
 
-**Goal:** add a CSV, TSV, or JSON file to your portal and render it as a table on its
-own dataset page, linked from the home page catalog.
+**Goal:** add a CSV, TSV, or JSON file to your portal and render it as a table in its
+dataset showcase, discoverable from the `/search` catalog.
 
 > [!info] Before you start
 > You need a portal scaffolded with [`/new-portal`](/docs/skills/new-portal). Tabular
@@ -25,9 +25,10 @@ Point [`/add-dataset`](/docs/skills/add-dataset) at a local file or a public URL
 /add-dataset https://example.com/air-quality.csv — Air quality monitoring
 ```
 
-It copies the data into `/public/data/`, generates a dataset page at
-`pages/datasets/<slug>.tsx` with a `<Table />`, and registers the dataset on the home
-page catalog. Run `npm run dev` and visit `/datasets/<slug>` to check it.
+It copies the data into `/public/data/` and appends an entry to `datasets.json`
+(including its `namespace`). The dataset then renders at `/@<namespace>/<slug>` through
+the existing `pages/[owner]/[slug].tsx` showcase — no new page file. Run `npm run dev`
+and visit `/@<namespace>/<slug>` to check it.
 
 ## The by-hand path
 
@@ -37,36 +38,29 @@ Drop the file into `/public/data/`:
 cp ~/Downloads/population.csv public/data/population.csv
 ```
 
-Create `pages/datasets/population.tsx`:
+Then append an entry to `datasets.json`:
 
-```tsx
-import { Table } from '../../components/Table';
-import Head from 'next/head';
-
-export default function PopulationDataset() {
-  return (
-    <>
-      <Head><title>Population by area</title></Head>
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Population by area</h1>
-        <Table url="/data/population.csv" fullWidth />
-      </main>
-    </>
-  );
+```json
+{
+  "slug": "population",
+  "name": "Population by area",
+  "description": "Resident population by area.",
+  "file": "population.csv",
+  "format": "csv",
+  "namespace": "reference"
 }
 ```
 
-The `Table` component (in `components/Table.tsx`) fetches the file in the browser with
-`papaparse` and renders it with `@tanstack/react-table` — no server code, and it works
-under static export. For a **JSON array**, import the file and pass it as `data` with
-`cols` instead of a `url`; set `"resolveJsonModule": true` in `tsconfig.json` first.
+That's all — the dataset now renders at **`/@reference/population`** via the existing
+`pages/[owner]/[slug].tsx` showcase, and appears in the `/search` catalog. The showcase
+previews the file with the `Table` component (in `components/Table.tsx`), which fetches
+it in the browser with `papaparse` and renders it with `@tanstack/react-table` — no
+server code, and it works under static export.
 
-Finally, add a link to the new page from your home page catalog (`pages/index.tsx`).
-
-> [!note] Many datasets?
-> If you'll have dozens of datasets, use the
-> [catalog template](/docs/templates) — one dynamic `[slug].tsx` route driven by a
-> `datasets.json` manifest, so adding a dataset is a JSON entry plus a data file.
+Every entry carries a `namespace`. A portal uses **one** namespace mode — `theme`
+(group by subject) or `owner` (group by publisher) — set via `NAMESPACE_TYPE` in
+`lib/datasets.ts`. See [Core concepts](/docs/core-concepts) for why dataset URLs start
+with `@`.
 
 ## Notes
 

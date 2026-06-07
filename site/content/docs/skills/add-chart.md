@@ -1,26 +1,27 @@
 ---
 metatitle: /add-chart – Add a Line, Bar, Area, Pie, or Scatter Chart to PortalJS
-metadescription: The /add-chart skill installs recharts, writes a reusable Chart component, and embeds a visualization into a dataset page — reading the same data the table already uses.
+metadescription: The /add-chart skill installs recharts, writes a reusable Chart component, and adds a chart view to a dataset's showcase — reading the same data the table already uses.
 title: /add-chart
-description: Add a line, bar, area, pie, or scatter chart to a dataset page, reading the same data the table already uses.
+description: Add a line, bar, area, pie, or scatter chart as a view on a dataset's showcase, reading the same data the table already uses.
 ---
 
-`/add-chart` adds a visualization to an existing dataset page. It installs
+`/add-chart` adds a chart view to an existing dataset's showcase. It installs
 `recharts`, writes a reusable client-side `Chart` component into the portal's
-`components/`, and embeds a `<Chart />` into the target page next to its `<Table />`.
-The chart reads the same `/public/data/*` file the table already uses — no data is
-duplicated.
+`components/`, and adds a `<Chart />` into the **Views** section of the showcase
+route (`pages/[owner]/[slug].tsx`), keyed to the chosen `(namespace, slug)`. The
+chart reads the same `/public/data/*` file the dataset's table already uses — no
+data is duplicated.
 
 ## When to use it
 
-Run it after [`/add-dataset`](/docs/skills/add-dataset) has created the dataset
-page you want to chart.
+Run it after [`/add-dataset`](/docs/skills/add-dataset) has added the dataset
+you want to chart.
 
 ## Inputs
 
 | Input | Required | Notes |
 | ----- | -------- | ----- |
-| Dataset | Yes | The dataset slug or page path (e.g. `country-codes`). The page must already exist. |
+| Dataset | Yes | The dataset slug (e.g. `country-codes`). The dataset must already exist in `datasets.json`. |
 | X axis column | Yes | The column for the category / X axis (e.g. `year`). |
 | Y axis column(s) | Yes | One or more numeric columns to plot (e.g. `population` or `imports,exports`). |
 | Chart type | No | `line` (default), `bar`, `area`, `pie`, or `scatter`. |
@@ -50,8 +51,10 @@ In natural language:
   `@portaljs/components` bundle).
 - A reusable `components/Chart.tsx` (written once; an existing customized component
   is never overwritten).
-- A `<Chart />` block inserted into the dataset page above the `<Table />`, so the
-  visual summary leads and the raw table follows.
+- A `<Chart />` view added to the **Views** section of the showcase route
+  (`pages/[owner]/[slug].tsx`), rendered only for the chosen dataset's
+  `(namespace, slug)`. No separate page is created and nothing is registered on the
+  home page.
 
 It type-checks the project (`tsc --noEmit`) before reporting success. When it
 finishes:
@@ -59,7 +62,7 @@ finishes:
 ```
 ✓ Chart added to country-codes
   - Component: components/Chart.tsx (recharts)
-  - Page: pages/datasets/country-codes.tsx — <Chart type="line" x="year" y="population">
+  - View: pages/[owner]/[slug].tsx — <Chart type="line" x="year" y="population"> for @reference/country-codes
   - Dependency: recharts@^2.12.0 added to package.json
 ```
 

@@ -2,15 +2,24 @@
 
 PortalJS is a Next.js framework for building data portals and catalogs. This file teaches AI assistants the conventions, patterns, and idioms used across this repo.
 
+## Core concepts — three surfaces
+
+Every data portal is built from three surfaces. The template and routes map directly onto them; reason in these terms:
+
+1. **Home** (`/`, `pages/index.tsx`) — what the portal is + a search box that routes to the catalog.
+2. **Catalog** (`/search`, `pages/search.tsx`) — find/browse datasets. Static = full-text filter over `datasets.json`; scales to a search backend (CKAN/Solr) via `/connect-ckan`.
+3. **Showcase** (`/@<namespace>/<slug>`, `pages/[owner]/[slug].tsx`) — one dataset: metadata, a `Table` preview, download/API, and a Views slot for charts/maps.
+
+Datasets are `@`-namespaced so they never collide with content pages. See `docs/core-concepts`.
+
 ## Repo structure
 
 ```
 packages/
-  components/   — data viz React components (@portaljs/components)
-  core/         — layout/UI components (@portaljs/core)
-  ckan/         — CKAN backend integration (@portaljs/ckan)
-  remark-*/     — remark plugins for markdown processing
-examples/       — reference implementations (read these before building)
+  core/                — layout/UI components (@portaljs/core)
+  ckan/                — CKAN catalog UI + React components (@portaljs/ckan)
+  ckan-api-client-js/  — pure CKAN API client (@portaljs/ckan-api-client-js)
+examples/              — reference implementations (read these before building)
 .claude/
   commands/     — Claude Code slash commands (OSS skills)
   datopian/     — Datopian-internal skills (require API keys)
@@ -60,10 +69,10 @@ Use `datastoreConfig` prop — requires a running CKAN backend.
 
 ## Page structure
 
-Standard data portal page:
+Datasets themselves are manifest-driven and render via the showcase route (see Routing). A standalone content page looks like:
 
 ```tsx
-// pages/datasets/[slug].tsx
+// pages/about-the-data.tsx — datasets render via pages/[owner]/[slug].tsx from datasets.json
 import { Table } from '../../components/Table'
 import Head from 'next/head'
 
@@ -99,11 +108,14 @@ export default function App({ Component, pageProps }: AppProps) {
 
 ## Routing conventions
 
-- `/` — catalog/home (list of datasets)
-- `/datasets/[slug]` — individual dataset page
+The three surfaces (see Core concepts):
+
+- `/` — **home** (`pages/index.tsx`): hero + search box → `/search`
+- `/search` — **catalog** (`pages/search.tsx`): full-text list over `datasets.json`
+- `/@<namespace>/<slug>` — **showcase** (`pages/[owner]/[slug].tsx`): one dataset, manifest-driven
 - `/api/` — server-side API routes (avoid for simple portals; use static data in `/public/`)
 
-Dataset slug: lowercase, hyphenated. Derived from filename: `country-codes.csv` → `/datasets/country-codes`.
+Datasets are `@`-namespaced so they never collide with content pages. Pick one mode per portal — `theme` (single publisher, group by subject) or `owner` (multi-publisher, group by who published) — set via `NAMESPACE_TYPE` in `lib/datasets.ts`. Slug: lowercase, hyphenated, from the filename: `country-codes.csv` → `/@reference/country-codes`.
 
 ## Styling
 
@@ -162,7 +174,7 @@ Simple CSV portals need no environment variables.
 
 ## Key components — quick reference
 
-All components live in `components/` inside the portal project (copied from `examples/portaljs-template/components/`).
+All components live in `components/` inside the portal project (copied from `examples/portaljs-catalog/components/`).
 
 ### `<Table />` — `components/Table.tsx`
 ```tsx
@@ -203,8 +215,9 @@ See `.claude/commands/` for available slash commands:
 - `/add-map` — render a GeoJSON dataset on an interactive Leaflet map
 - `/deploy` — one-shot deploy to Vercel or static hosting
 - `/connect-ckan` — wire a portal to a CKAN backend over its API (decoupled / any backend)
+- `/check-data-quality` — audit a dataset for quality issues (schema, nulls, types)
 
-These skills run from any project, not just a clone of this repo — see
+The skills interview you for missing input (rounds of questions) rather than erroring, and build around the three surfaces. These skills run from any project, not just a clone of this repo — see
 [`.claude/INSTALL.md`](.claude/INSTALL.md) for the three install paths (run-from-clone,
 personal `~/.claude/commands/`, or Claude Code plugin).
 

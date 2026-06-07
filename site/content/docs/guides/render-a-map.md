@@ -6,7 +6,7 @@ description: Put a GeoJSON dataset on an interactive map — with /add-map, or b
 ---
 
 **Goal:** render a GeoJSON dataset (points, lines, or polygons) on an interactive map
-on its own page, linked from the home page catalog.
+as a view in the dataset's showcase.
 
 > [!info] Before you start
 > You need a portal scaffolded with [`/new-portal`](/docs/skills/new-portal). The
@@ -22,14 +22,13 @@ Point [`/add-map`](/docs/skills/add-map) at a local file or a public URL:
 ```
 
 It validates the GeoJSON, copies it into `/public/data/`, installs
-`react-leaflet`/`leaflet` (once), generates a reusable client-only `Map` component,
-creates a map page under `pages/datasets/`, and registers it on the home page. It
-runs a full `next build` before reporting success.
+`react-leaflet`/`leaflet` (once), generates a reusable client-only `Map` component, and
+adds the map as a view in the dataset's showcase (`pages/[owner]/[slug].tsx`, in the
+Views section). It runs a full `next build` before reporting success.
 
 > [!note] Map and table of the same file
 > `/add-dataset` renders GeoJSON as a properties table; `/add-map` renders it on a
-> map. Run both on the same file to offer both views — `/add-map` adds a `-map` suffix
-> to keep the routes distinct.
+> map. Run both on the same dataset to offer both views in the same showcase.
 
 ## The by-hand path
 
@@ -49,17 +48,18 @@ wrapper that loads it with `dynamic(() => import('./MapView'), { ssr: false })`.
 the prop type is imported across the boundary, so Leaflet never reaches the server
 bundle.
 
-The map page passes the GeoJSON as a `url` so the component fetches it client-side
-(the file is served statically from `/public/data/`), which sidesteps `.geojson`
-import quirks:
+Render the `Map` as a view in the dataset's showcase (`pages/[owner]/[slug].tsx`),
+passing the GeoJSON as a `url` so the component fetches it client-side (the file is
+served statically from `/public/data/`), which sidesteps `.geojson` import quirks:
 
 ```tsx
 import Map from '../../components/Map';
-// …
+// …in the showcase's Views section:
 <Map url="/data/regions.geojson" />
 ```
 
-Then add a link from your home page catalog (`pages/index.tsx`).
+The dataset itself is registered in `datasets.json`, so it already appears in the
+`/search` catalog — no home-page link to add.
 
 ## Notes
 

@@ -28,8 +28,8 @@ Optionally restrict the catalog to one or more organizations or groups:
 
 [`/connect-ckan`](/docs/skills/connect-ckan) verifies the CKAN API is reachable,
 installs `@portaljs/ckan`, generates a `lib/ckan.ts` client module, and rewrites the
-home page and dataset route to fetch from CKAN. It runs a full `next build` and
-reports how many dataset pages were generated.
+catalog (`/search`) and the dataset showcase route to fetch from CKAN. It runs a full
+`next build` and reports how many dataset pages were generated.
 
 ## How it works — the decoupled model
 
@@ -44,9 +44,10 @@ It writes plain, editable code:
 - `lib/ckan.ts` — a shared `CKAN` client. The base URL defaults to what you passed and
   is overridable at deploy time via the `DMS` env var; org/group filters and a
   build-time `MAX_DATASETS` cap live here as plain constants.
-- `pages/index.tsx` — a catalog home that lists datasets from `package_search`.
-- `pages/datasets/[slug].tsx` — one statically generated page per dataset, with
-  CSV/TSV resources previewed through the template's local `<Table />`.
+- `pages/search.tsx` — the catalog at `/search`, listing datasets from `package_search`.
+- `pages/[owner]/[slug].tsx` — the dataset showcase at `/@<namespace>/<slug>`, one
+  statically generated page per dataset, with CSV/TSV resources previewed through the
+  template's local `<Table />`.
 
 > [!note] Keep CKAN calls server-side
 > Reference `ckan`, `DMS`, and the filters **only** inside
@@ -67,9 +68,9 @@ import { CKAN } from '@portaljs/ckan';
 export const ckan = new CKAN((process.env.DMS || 'https://demo.dev.datopian.com').replace(/\/+$/, ''));
 ```
 
-Then call `ckan.packageSearch(...)` from `getStaticProps` on the home page and
-`ckan.getDatasetDetails(slug)` from a dynamic `pages/datasets/[slug].tsx`, passing the
-results as props.
+Then call `ckan.packageSearch(...)` from `getStaticProps` on the catalog
+(`pages/search.tsx`) and `ckan.getDatasetDetails(slug)` from the dynamic showcase route
+`pages/[owner]/[slug].tsx`, passing the results as props.
 
 > [!note] TypeScript types for @portaljs/ckan
 > Under the template's `moduleResolution: "bundler"`, add a `paths` entry in
