@@ -17,7 +17,9 @@
     "access": "public"
   },
   "scripts": {
-    "prepare": "nx build core"
+    "clean": "rimraf dist",
+    "build": "rollup -c rollup.config.mjs",
+    "prepare": "npm run build"
   },
   "files": [
     "dist"
@@ -53,6 +55,12 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^7.4.6"
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rimraf": "^5.0.7",
+    "rollup": "^4.18.0",
+    "tslib": "^2.6.0",
+    "typescript": "~4.9.5"
   }
 }

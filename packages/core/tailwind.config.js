@@ -1,4 +1,3 @@
-const { createGlobPatternsForDependencies } = require('@nrwl/next/tailwind');
 const { join } = require('path');
 // const defaultTheme = require("tailwindcss/defaultTheme");
 const colors = require("tailwindcss/colors");
@@ -6,7 +5,6 @@ const colors = require("tailwindcss/colors");
 module.exports = {
   content: [
     join(__dirname, './src/**/*.{js,ts,jsx,tsx}'),
-    ...createGlobPatternsForDependencies(__dirname),
   ],
   darkMode: "class",
   theme: {
