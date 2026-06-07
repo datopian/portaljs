@@ -1,80 +1,77 @@
 ---
-description: Add a chart (line, bar, area, pie, or scatter) to a PortalJS dataset page. Installs recharts, writes a reusable Chart component, and embeds the visualization in the page.
+description: Add a chart (line, bar, area, pie, or scatter) to a dataset's showcase in a PortalJS portal. Installs recharts, writes a reusable Chart component, and renders it in the showcase Views section.
 allowed-tools: Read, Write, Edit, Bash
 ---
 
 # /add-chart
 
-Add a visualization to an existing PortalJS dataset page. Installs `recharts` (added
-directly — **not** `@portaljs/components`), writes a reusable client-side `Chart`
-component into the portal's `components/`, and embeds a `<Chart />` into the target
-dataset page next to its `<Table />`.
+Add a visualization to a dataset's **showcase** in a `portaljs-catalog` portal. Installs
+`recharts` (added directly — **not** `@portaljs/components`), writes a reusable
+client-side `Chart` component into the portal's `components/`, and renders a `<Chart />`
+into the **Views** section of the showcase route `pages/[owner]/[slug].tsx` for the chosen
+dataset.
 
-Use this after `/add-dataset` has created a dataset page. The chart reads the same
-`/public/data/*.csv` (or `.json`) the table already uses — no data is duplicated.
+Use this after the dataset is registered in `datasets.json` (e.g. via `/add-dataset`). The
+chart reads the same `/public/data/<file>` the showcase's `<Table />` already uses — no
+data is duplicated.
 
-## Required input
+## Required input — ask, don't error
 
-- **Dataset** — the dataset slug or page path to chart (e.g. `country-codes` or
-  `pages/datasets/country-codes.tsx`). The page must already exist.
+- **Dataset** — which dataset to chart, by **slug** (e.g. `co2-emissions`) or `slug`
+  within a namespace. It must already be an entry in `datasets.json`.
 - **X axis column** — the column name for the category/X axis (e.g. `year`).
 - **Y axis column(s)** — one or more numeric column names to plot (e.g. `population`
   or `imports,exports`).
 - **Portal directory** — path to the portal project (defaults to current directory).
 - **Chart type** — `line` (default), `bar`, `area`, `pie`, or `scatter`.
 
-If the dataset is missing:
-```
-ERROR: [add-chart] MISSING_INPUT No dataset provided — give a dataset slug or page path, plus x and y columns.
-```
+**If the target dataset isn't specified, ask which one (by name/slug) — never dead-end
+with a missing-input error.**
 
 ## Steps
 
-### 1. Parse arguments from `$ARGUMENTS`
+### 1. Gather input from `$ARGUMENTS` (interview if thin)
 
 Extract:
-- `DATASET` — slug or page path (required)
+- `DATASET` — dataset slug (required)
 - `X` — x-axis column name (required)
 - `Y` — comma-separated y-axis column name(s) (required)
 - `TYPE` — chart type, one of `line|bar|area|pie|scatter` (default: `line`)
 - `PORTAL_DIR` — portal directory (default: `.`)
 - `TITLE` — chart heading (default: derived from Y columns, e.g. "Population over Year")
 
-If `$ARGUMENTS` is empty, ask:
+If the dataset (or X/Y) is missing, **ask** and wait. When the user doesn't know the slug,
+read `PORTAL_DIR/datasets.json` and list the available datasets (`name` → `slug`) so they
+can pick one:
 ```
 To add a chart I need:
-1. Dataset: slug or page path (e.g. country-codes)
+1. Which dataset? (slug — your catalog has: <name (slug)>, …)
 2. X axis column (e.g. year)
 3. Y axis column(s), comma-separated (e.g. population or imports,exports)
 4. Chart type [line] (line|bar|area|pie|scatter)
-5. Portal directory (press Enter for current directory)
+5. Portal directory (Enter for current directory)
 ```
 
-Validate `TYPE` is one of the five supported values. Otherwise:
-```
-ERROR: [add-chart] UNSUPPORTED_TYPE TYPE is not supported — use line, bar, area, pie, or scatter.
-```
+Validate `TYPE` is one of the five supported values. If not, tell the user and ask them to
+pick line, bar, area, pie, or scatter.
 
-### 2. Resolve the dataset page and data source
+### 2. Resolve the dataset from the manifest and its data source
 
-- Resolve `PAGE_PATH`: if `DATASET` ends in `.tsx`, use it; else use `PORTAL_DIR/pages/datasets/DATASET.tsx`.
-- If the page does not exist:
-  ```
-  ERROR: [add-chart] PAGE_NOT_FOUND PAGE_PATH does not exist — run /add-dataset first, or check the slug.
-  ```
-- Read the page. Find the data source from the existing `<Table .../>`:
-  - `url="/data/SLUG.csv"` → `DATA_URL = /data/SLUG.csv`, source is CSV-over-URL.
-  - `data={...}` import from `public/data/SLUG.json` → JSON; the chart will import the same JSON.
-- If no `<Table />` and no obvious data source is found, ask the user for the data file path under `/public/data/`.
+- Read `PORTAL_DIR/datasets.json` and find the entry whose `slug` matches `DATASET`
+  (if multiple namespaces share the slug, ask which `namespace`). Capture its
+  `namespace`, `file`, and `format`.
+- If no entry matches, tell the user and list the available slugs (don't error out) — they
+  may have meant a different one or need to run `/add-dataset` first.
+- The data source is the bare file served statically: `DATA_URL = /data/<file>`. The
+  showcase route is `pages/[owner]/[slug].tsx`; the page rendered for this dataset is
+  `/@<namespace>/<slug>`.
 
 ### 3. Validate the requested columns exist
 
-- For CSV: read `PORTAL_DIR/public/data/SLUG.csv` first line for headers.
-- For JSON: read the first object's keys from `PORTAL_DIR/public/data/SLUG.json`.
-- Confirm `X` and every `Y` column is present. If any is missing:
-  ```
-  ERROR: [add-chart] COLUMN_NOT_FOUND Column "COL" not in dataset — available: <comma-separated headers>.
-  ```
+- For CSV/TSV: read `PORTAL_DIR/public/data/<file>` first line for headers.
+- For JSON: read the first object's keys from `PORTAL_DIR/public/data/<file>`.
+- Confirm `X` and every `Y` column is present. If any is missing, tell the user which
+  column wasn't found and list the available headers so they can correct it.
 - Warn (do not fail) if a `Y` column's first non-empty value is non-numeric:
   ```
   Note: column "COL" looks non-numeric — chart values are coerced with Number(); non-numeric cells render as gaps.
@@ -86,10 +83,8 @@ ERROR: [add-chart] UNSUPPORTED_TYPE TYPE is not supported — use line, bar, are
 cd PORTAL_DIR && npm install recharts@^2.12.0
 ```
 
-Do **not** install `@portaljs/components`. If the install fails, report:
-```
-ERROR: [add-chart] INSTALL_FAILED npm install recharts failed — check network and package.json, then retry.
-```
+Do **not** install `@portaljs/components`. If the install fails, tell the user (check
+network and `package.json`) and retry.
 
 ### 5. Write the reusable Chart component
 
@@ -220,38 +215,56 @@ export function Chart({ url = '', data: initialData = [], type = 'line', x, y, h
 
 Note: `Chart` reuses `components/ui/parseCsv.ts`, which ships with the template
 (the same parser `Table` uses). If that file is absent the portal predates the
-current template — copy `parseCsv.ts` from `examples/portaljs-template/components/ui/`.
+current template — copy `parseCsv.ts` from `examples/portaljs-catalog/components/ui/`.
 
-### 6. Embed the chart in the dataset page
+### 6. Render the chart into the showcase's Views section
 
-Edit `PAGE_PATH`:
+The showcase `pages/[owner]/[slug].tsx` renders **every** dataset, so a chart must be
+applied **only for the chosen dataset** — gate it on the dataset's `(namespace, slug)` so
+other datasets' showcases are unaffected. The route already has a **Views placeholder**:
 
-1. Add the import after the `Table` import:
+```tsx
+{/* Views placeholder — charts and maps are added here by the
+    /add-chart and /add-map skills. */}
+<section className="mt-10 border-t border-gray-200 pt-6">
+  <h2 className="text-lg font-semibold text-gray-900">Views</h2>
+  <p className="mt-2 text-sm text-gray-400">
+    No views yet. Charts and maps for this dataset are added here.
+  </p>
+</section>
+```
+
+Edit `PORTAL_DIR/pages/[owner]/[slug].tsx`:
+
+1. Add the import near the top (after the `Table` import):
    ```tsx
    import { Chart } from '../../components/Chart'
    ```
-2. Insert the chart block above the `<Table .../>` (so the visual summary leads, the
-   raw table follows). Build `Y_PROP` as a single string `y="col"` for one column, or
-   `y={['a','b']}` for several.
+2. Replace the Views placeholder `<section>` so it conditionally renders the chart for the
+   target dataset and keeps the "no views yet" message for every other dataset. Build
+   `Y_PROP` as a single string `y="col"` for one column, or `y={['a','b']}` for several.
+   The data URL is the dataset's file served statically (`/data/<file>`):
 
-   **CSV-over-URL source** (matches the existing `<Table url="..." />`):
    ```tsx
-   <section className="mb-10">
-     <h2 className="text-xl font-semibold text-gray-900 mb-4">TITLE</h2>
-     <Chart url="/data/SLUG.csv" type="TYPE" x="X" Y_PROP />
+   <section className="mt-10 border-t border-gray-200 pt-6">
+     <h2 className="text-lg font-semibold text-gray-900">Views</h2>
+     {dataset.namespace === 'NAMESPACE' && dataset.slug === 'SLUG' ? (
+       <div className="mt-4">
+         <h3 className="text-base font-medium text-gray-800 mb-3">TITLE</h3>
+         <Chart url={`/data/${dataset.file}`} type="TYPE" x="X" Y_PROP />
+       </div>
+     ) : (
+       <p className="mt-2 text-sm text-gray-400">
+         No views yet. Charts and maps for this dataset are added here.
+       </p>
+     )}
    </section>
    ```
 
-   **JSON source** (page already imports the array as `data`):
-   ```tsx
-   <section className="mb-10">
-     <h2 className="text-xl font-semibold text-gray-900 mb-4">TITLE</h2>
-     <Chart data={data} type="TYPE" x="X" Y_PROP />
-   </section>
-   ```
-
-If the page has been heavily customized and no `<Table />` anchor is found, insert the
-chart block directly after the `<h1>` heading instead, and tell the user where it landed.
+If a previous `/add-chart` or `/add-map` run already replaced this section with a
+view-dispatch block, **extend** that block with another `dataset.namespace === … &&
+dataset.slug === …` branch rather than overwriting it, so multiple datasets can each have
+their own views.
 
 ### 7. Verify the build
 
@@ -259,20 +272,19 @@ chart block directly after the `<h1>` heading instead, and tell the user where i
 cd PORTAL_DIR && npx tsc --noEmit
 ```
 
-If type-checking fails, report the first error with the `ERROR:` format and stop:
-```
-ERROR: [add-chart] TYPECHECK_FAILED <first tsc error> — fix before running the portal.
-```
+If type-checking fails, tell the user the first `tsc` error and fix it before reporting
+success.
 
 ### 8. Report success
 
 ```
 ✓ Chart added to DATASET
   - Component: components/Chart.tsx (recharts)
-  - Page: PAGE_PATH — <Chart type="TYPE" x="X" y=...>
+  - Showcase:  pages/[owner]/[slug].tsx Views section — <Chart type="TYPE" x="X" y=...>
+  - Renders at: /@NAMESPACE/SLUG
   - Dependency: recharts@^2.12.0 added to package.json
 
-Next: run `npm run dev` and visit http://localhost:3000/datasets/SLUG to verify the chart renders.
+Next: run `npm run dev` and visit http://localhost:3000/@NAMESPACE/SLUG to verify the chart renders.
 ```
 
 ## Notes
@@ -286,6 +298,9 @@ Next: run `npm run dev` and visit http://localhost:3000/datasets/SLUG to verify 
 - **Pie/scatter use the first `y` only.** Pie maps `x` → slice name, `y[0]` → slice
   value. Scatter plots `x` (numeric) against `y[0]` (numeric). Pass extra `y` columns
   only for line/bar/area (multi-series).
+- **One showcase route, many datasets:** `pages/[owner]/[slug].tsx` renders every dataset,
+  so always gate a view on the dataset's `(namespace, slug)` — otherwise the chart would
+  appear on every dataset's showcase.
 - **Client-side rendering:** the chart fetches in the browser like `Table`, so it works
   with static export and needs no server code.
 - **Large datasets:** recharts renders all points to SVG; over ~2,000 points gets

@@ -1,78 +1,99 @@
 ---
-description: Render a GeoJSON dataset on an interactive Leaflet map in an existing PortalJS portal. Installs react-leaflet, generates a Map component, creates a map page, and registers it on the home page.
+description: Render a GeoJSON dataset on an interactive Leaflet map in the Views section of a dataset's showcase. Installs react-leaflet and a Map component, then renders the map for the chosen dataset.
 allowed-tools: Read, Write, Edit, Bash, WebFetch
 ---
 
 # /add-map
 
-Add an interactive map of a GeoJSON dataset to an existing PortalJS portal. Copies the GeoJSON to `/public/data/`, installs `react-leaflet`/`leaflet` (once), generates a reusable `Map` component, creates a map page, and registers it on the home page catalog.
+Add an interactive Leaflet map as a **view on a dataset's showcase** in a
+`portaljs-catalog` portal. Installs `react-leaflet`/`leaflet` (once), generates a reusable
+`Map` component, and renders the map into the **Views** section of the showcase route
+`pages/[owner]/[slug].tsx` for the chosen GeoJSON dataset.
 
-Use this when the data is geographic (points, lines, polygons) and the user wants a map rather than the table that `/add-dataset` produces for GeoJSON.
+Use this when a dataset's data is geographic (points, lines, polygons) and you want a map
+view in addition to the showcase's default metadata + download. The dataset should already
+be registered in `datasets.json` (e.g. via `/add-dataset`) with `format: "geojson"`; if
+it isn't yet, this skill can copy the file and add the entry first.
 
-## Required input
+## Required input — ask, don't error
 
-- **Source** — a local file path (`./data/file.geojson`) or a public URL (`https://example.com/file.geojson`). Must be **GeoJSON** (a `Feature`, `FeatureCollection`, or geometry object).
-- **Portal directory** — path to the portal project (defaults to current directory)
+- **Dataset** — which dataset to map, by **slug**. It should be a `geojson` entry in
+  `datasets.json`. If a source file/URL is given for a not-yet-registered dataset, the
+  skill copies it into `/public/data/` and appends a manifest entry.
+- **Portal directory** — path to the portal project (defaults to current directory).
+- **Source** (only if the dataset isn't registered yet) — a local file path
+  (`./data/file.geojson`) or public URL. Must be **GeoJSON** (a `Feature`,
+  `FeatureCollection`, or geometry object).
 
-If source is missing:
-```
-ERROR: [add-map] MISSING_INPUT No GeoJSON source provided — provide a local file path or public URL.
-```
+**If the target dataset isn't specified, ask which one (by name/slug) — never dead-end
+with a missing-input error.**
 
 ## Steps
 
-### 1. Parse arguments from `$ARGUMENTS`
+### 1. Gather input from `$ARGUMENTS` (interview if thin)
 
 Extract:
-- `SOURCE` — file path or URL
+- `DATASET` — dataset slug (the map target)
+- `SOURCE` — file path or URL (only needed if the dataset isn't already in the manifest)
 - `PORTAL_DIR` — portal directory (default: `.`)
+- `MAP_SLUG` — slug for a new dataset (default: lowercase hyphenated filename)
 - `MAP_NAME` — human-readable name (default: derived from filename)
-- `MAP_SLUG` — URL slug (default: lowercase hyphenated filename without extension)
+- `NAMESPACE` — namespace for a new dataset (default: the catalog's existing namespace)
 - `DESCRIPTION` — optional one-line description
 
-If `$ARGUMENTS` is empty, ask:
+If neither a dataset nor a source is given, **ask** and wait. When the user doesn't know
+the slug, read `PORTAL_DIR/datasets.json` and list the GeoJSON datasets so they can pick:
 ```
-To add a map I need:
-1. Source: local file path or public URL to a GeoJSON file
-2. Portal directory (press Enter for current directory)
-3. Map name (press Enter to use filename)
+To add a map I need either:
+1. Which existing dataset to map? (slug — GeoJSON datasets in your catalog: <name (slug)>, …)
+   …or a GeoJSON source to add and map:
+2. Source: local file path or public URL to a GeoJSON file
+3. Portal directory (Enter for current directory)
 ```
 
 ### 2. Validate the portal directory
 
-The target must be a PortalJS portal. Check `PORTAL_DIR/package.json` and `PORTAL_DIR/pages` exist:
-```
-ERROR: [add-map] NOT_A_PORTAL PORTAL_DIR is not a PortalJS portal (no package.json/pages) — run /new-portal first.
-```
+The target must be a `portaljs-catalog` portal. Confirm `PORTAL_DIR/datasets.json`,
+`PORTAL_DIR/package.json`, and `PORTAL_DIR/pages/[owner]/[slug].tsx` exist. If they don't,
+tell the user this isn't the catalog template and ask how to proceed rather than failing
+silently.
 
-### 3. Fetch/copy and validate the GeoJSON
+### 3. Resolve (or register) the GeoJSON dataset
 
-**If SOURCE is a URL:**
-- Fetch it. If the status is not 200:
+**If `DATASET` is already in `datasets.json`:** read its entry and capture `namespace`,
+`slug`, and `file` (must be served from `/public/data/<file>`). Confirm `format` is
+`geojson`; if it's tabular, tell the user `/add-map` only renders GeoJSON and ask whether
+they meant a different dataset (or `/add-chart`).
+
+**If a `SOURCE` was given for a not-yet-registered dataset:** fetch/copy and validate it,
+then append a manifest entry so the showcase exists:
+
+- URL: fetch it; if the status isn't 200, tell the user (with the HTTP status) and ask
+  them to confirm the URL is publicly accessible / supports CORS.
+- Local path: if the file doesn't exist, tell the user and ask for a correct path.
+- **Validate it is GeoJSON:** parse as JSON and confirm `type` is one of
+  `FeatureCollection`, `Feature`, `GeometryCollection`, `Point`, `MultiPoint`,
+  `LineString`, `MultiLineString`, `Polygon`, or `MultiPolygon`. If not, tell the user it
+  isn't valid GeoJSON (for tabular data use `/add-dataset`) and stop.
+- Copy and register:
+  ```bash
+  mkdir -p PORTAL_DIR/public/data
+  cp SOURCE PORTAL_DIR/public/data/MAP_SLUG.geojson
+  # or for URLs: curl -L SOURCE -o PORTAL_DIR/public/data/MAP_SLUG.geojson
   ```
-  ERROR: [add-map] FETCH_FAILED Could not fetch SOURCE (HTTP STATUS) — check the URL is publicly accessible and supports CORS.
+  Then append to `datasets.json` (matching the `Dataset` shape in `lib/datasets.ts`):
+  ```json
+  {
+    "slug": "MAP_SLUG",
+    "namespace": "NAMESPACE",
+    "name": "MAP_NAME",
+    "description": "DESCRIPTION",
+    "file": "MAP_SLUG.geojson",
+    "format": "geojson"
+  }
   ```
 
-**If SOURCE is a local file path:**
-- Check the file exists. If not:
-  ```
-  ERROR: [add-map] FILE_NOT_FOUND SOURCE does not exist — check the path and retry.
-  ```
-
-**Validate it is GeoJSON.** Parse the content as JSON and confirm `type` is one of
-`FeatureCollection`, `Feature`, `GeometryCollection`, `Point`, `MultiPoint`,
-`LineString`, `MultiLineString`, `Polygon`, or `MultiPolygon`. If parsing fails or
-`type` is none of these:
-```
-ERROR: [add-map] NOT_GEOJSON SOURCE is not valid GeoJSON — /add-map only renders GeoJSON. For tabular data use /add-dataset.
-```
-
-**Copy to portal:**
-```bash
-mkdir -p PORTAL_DIR/public/data
-cp SOURCE PORTAL_DIR/public/data/MAP_SLUG.geojson
-# or for URLs: curl -L SOURCE -o PORTAL_DIR/public/data/MAP_SLUG.geojson
-```
+Capture the final `NAMESPACE`, `SLUG`, and `FILE` for use when rendering the map.
 
 ### 4. Install map dependencies (once)
 
@@ -85,10 +106,7 @@ cd PORTAL_DIR && npm install react-leaflet@^4 leaflet@^1.9 && npm install -D @ty
 
 Tell the user first: `Installing map dependencies (react-leaflet, leaflet)...`
 
-If install fails:
-```
-ERROR: [add-map] INSTALL_FAILED npm install failed — check Node.js >=18 and network access, then retry.
-```
+If install fails, tell the user (check Node.js >=18 and network access) and retry.
 
 > Why `react-leaflet@^4`: v4 targets React 18 (the template's React). Do not install v5 (React 19) unless the portal has been upgraded to React 19.
 
@@ -220,66 +238,55 @@ export default function Map(props: MapProps) {
 }
 ```
 
-### 6. Choose the page path (avoid clobbering `/add-dataset`)
+### 6. Render the map into the showcase's Views section
 
-Map pages live under `pages/datasets/` so they share the home-page catalog with
-`/add-dataset`. If `PORTAL_DIR/pages/datasets/MAP_SLUG.tsx` already exists (e.g. a table
-page from `/add-dataset` for the same data), use `MAP_SLUG-map` for both the page slug
-and the route so both views can coexist. Call the final value `PAGE_SLUG`.
-
-### 7. Generate the map page
-
-Write `PORTAL_DIR/pages/datasets/PAGE_SLUG.tsx`. The page passes the GeoJSON `url` —
-the `Map` component fetches it client-side (the file is served statically from
-`/public/data/`), which sidesteps the fact that `.geojson` imports are not covered by
-`resolveJsonModule`.
+The showcase `pages/[owner]/[slug].tsx` renders **every** dataset, so the map must be
+applied **only for the chosen dataset** — gate it on the dataset's `(namespace, slug)`. The
+route already has a **Views placeholder**:
 
 ```tsx
-import Head from 'next/head'
-import Map from '../../components/Map'
-
-export default function MapPage() {
-  return (
-    <>
-      <Head><title>MAP_NAME</title></Head>
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <nav className="mb-6 text-sm text-gray-500">
-          <a href="/" className="hover:text-gray-700">Home</a>
-          <span className="mx-2">/</span>
-          <span>MAP_NAME</span>
-        </nav>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">MAP_NAME</h1>
-        {DESCRIPTION && <p className="text-gray-500 mb-8">DESCRIPTION</p>}
-        <Map url="/data/MAP_SLUG.geojson" />
-        <p className="mt-6 text-sm text-gray-400">
-          <a href="/data/MAP_SLUG.geojson" className="underline">Download GeoJSON</a>
-        </p>
-      </main>
-    </>
-  )
-}
+{/* Views placeholder — charts and maps are added here by the
+    /add-chart and /add-map skills. */}
+<section className="mt-10 border-t border-gray-200 pt-6">
+  <h2 className="text-lg font-semibold text-gray-900">Views</h2>
+  <p className="mt-2 text-sm text-gray-400">
+    No views yet. Charts and maps for this dataset are added here.
+  </p>
+</section>
 ```
 
-When writing the file, substitute `MAP_NAME`, `MAP_SLUG`, and `DESCRIPTION` with the real
-values. Drop the `{DESCRIPTION && ...}` line entirely if there is no description.
+Edit `PORTAL_DIR/pages/[owner]/[slug].tsx`. The `Map` component fetches the GeoJSON
+client-side from `/data/<file>` (the file is served statically from `/public/data/`),
+which sidesteps the fact that `.geojson` imports are not covered by `resolveJsonModule`.
 
-### 8. Register on the home page
+1. Add the import near the top (after the other component imports):
+   ```tsx
+   import Map from '../../components/Map'
+   ```
+2. Replace the Views placeholder `<section>` so it conditionally renders the map for the
+   target dataset and keeps the "no views yet" message for every other dataset:
 
-Open `PORTAL_DIR/pages/index.tsx` and find the `datasets` array:
-```tsx
-const datasets: { slug: string; name: string; description?: string }[] = []
-```
+   ```tsx
+   <section className="mt-10 border-t border-gray-200 pt-6">
+     <h2 className="text-lg font-semibold text-gray-900">Views</h2>
+     {dataset.namespace === 'NAMESPACE' && dataset.slug === 'SLUG' ? (
+       <div className="mt-4">
+         <Map url={`/data/${dataset.file}`} />
+       </div>
+     ) : (
+       <p className="mt-2 text-sm text-gray-400">
+         No views yet. Charts and maps for this dataset are added here.
+       </p>
+     )}
+   </section>
+   ```
 
-Append an entry (keep existing entries):
-```tsx
-{ slug: 'PAGE_SLUG', name: 'MAP_NAME', description: 'DESCRIPTION' },
-```
+If a previous `/add-chart` or `/add-map` run already replaced this section with a
+view-dispatch block, **extend** that block with another `dataset.namespace === … &&
+dataset.slug === …` branch (or add the `<Map />` alongside an existing `<Chart />` for the
+same dataset) rather than overwriting it.
 
-If the `datasets` array is not found (home page has been customised):
-- Keep the map page; skip registration.
-- Tell the user: "Map page created at /datasets/PAGE_SLUG. Add it to your home page manually."
-
-### 9. Verify the build
+### 7. Verify the build
 
 ```bash
 cd PORTAL_DIR
@@ -291,23 +298,26 @@ tail -20 /tmp/add-map-build.log
 If `BUILD_EXIT` is non-zero, print the log and fix the error before reporting success.
 Do not report success while the build is failing.
 
-### 10. Report success
+### 8. Report success
 
 ```
-✓ Map added: MAP_NAME
-  - Data file: public/data/MAP_SLUG.geojson
+✓ Map added to DATASET
+  - Data file: public/data/SLUG.geojson (manifest entry: format "geojson")
   - Component: components/Map.tsx (+ MapView.tsx)
-  - Page: pages/datasets/PAGE_SLUG.tsx → http://localhost:3000/datasets/PAGE_SLUG
-  - Home page: updated
+  - Showcase:  pages/[owner]/[slug].tsx Views section
+  - Renders at: /@NAMESPACE/SLUG
 
-Next: run `npm run dev` and visit http://localhost:3000/datasets/PAGE_SLUG to verify.
+Next: run `npm run dev` and visit http://localhost:3000/@NAMESPACE/SLUG to verify the map renders.
 ```
 
 ## Notes
 
-- **Tabular vs. map:** `/add-dataset` renders GeoJSON as a properties table; `/add-map`
-  renders it on a map. Run both on the same file to offer both views — the `-map` suffix
-  keeps the routes distinct.
+- **One showcase route, many datasets:** `pages/[owner]/[slug].tsx` renders every dataset,
+  so always gate the map on the dataset's `(namespace, slug)` — otherwise it would appear
+  on every dataset's showcase.
+- **Table vs. map:** the showcase already shows tabular data via `<Table />` and offers a
+  download; `/add-map` adds the geographic view in the Views section. A GeoJSON dataset
+  shows a download link by default (no table), so the map is its primary preview.
 - **Property popups:** every feature's `properties` become a click popup automatically.
 - **Coordinate order:** GeoJSON is `[longitude, latitude]`. Leaflet handles this for you
   via the `GeoJSON` layer — do not pre-swap coordinates.
