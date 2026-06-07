@@ -22,7 +22,9 @@ PASS=0; FAIL=0; FAILED=()
 for skill in "${SKILLS[@]}"; do
   prompt="$PROMPTS/${skill}.txt"
   if [ ! -f "$prompt" ]; then
-    echo "⚠️  SKIP $skill (no prompt file)"; continue
+    echo "❌ FAIL $skill (no prompt file — every shipped skill needs one)"
+    FAIL=$((FAIL+1)); FAILED+=("$skill")
+    continue
   fi
   if "$SCRIPT_DIR/run-test.sh" "$skill" "$prompt"; then
     PASS=$((PASS+1))

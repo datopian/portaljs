@@ -6,7 +6,7 @@ These are **behavioral evals of the PortalJS agentic skills**, not unit tests. T
 
 Checks, per skill: *does a **naive** prompt — one that never names the skill — trigger the correct skill?* This is what guards against the failure modes that silently break skills: a vague or overlapping `description`, or a skill that isn't registered in the plugin manifest.
 
-```
+```text
 tests/skill-triggering/
   prompts/<skill>.txt   # a realistic, indirect user prompt per skill
   run-test.sh           # run one (skill, prompt) → PASS/FAIL

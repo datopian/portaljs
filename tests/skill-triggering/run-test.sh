@@ -44,9 +44,11 @@ echo "=== Skill-triggering: $SKILL_NAME (max-turns=$MAX_TURNS${CLAUDE_MODEL:+, m
     --output-format stream-json \
     "${MODEL_ARGS[@]}" > "$LOG" 2>&1 ) || true
 
-# Match "skill":"new-portal" or "skill":"portaljs:new-portal"
+# Match "skill":"new-portal" or "skill":"portaljs:new-portal" — but only on a
+# line that is also the Skill tool-call, so the two fragments can't satisfy the
+# check from different stream-json events. (stream-json = one JSON record/line.)
 SKILL_PATTERN='"skill":"([^"]*:)?'"${SKILL_NAME}"'"'
-if grep -q '"name":"Skill"' "$LOG" && grep -qE "$SKILL_PATTERN" "$LOG"; then
+if grep -E '"name":"Skill"' "$LOG" | grep -qE "$SKILL_PATTERN"; then
   echo "✅ PASS: '$SKILL_NAME' triggered"
   RESULT=0
 else
