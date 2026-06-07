@@ -63,7 +63,7 @@ Pull existing catalogs and datasets into a PortalJS **static catalog** from the 
 
 ### Wrangle & transform
 Prepare data without leaving the assistant:
-- **Data quality & validation** — the existing `skills/check-data-quality`, to be relocated into its proper home in the skill library.
+- **Data quality & validation** — `/check-data-quality` (`.claude/commands/check-data-quality.md` + `scripts/check-data-quality.sh`).
 - **CSV wrangling** — common operations: clean headers, fix types, dedupe, filter, sort, join, reshape, split/merge columns.
 - **Format transforms** — CSV ⇄ TSV ⇄ JSON ⇄ Parquet, plus Excel (xlsx), XML, and other tabular sources.
 - **SQL over files** (e.g. DuckDB) for slicing and aggregating before publish.
