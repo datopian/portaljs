@@ -1,15 +1,11 @@
 ---
-name: check-data-quality
-description: Audit a local file or remote tabular file for common data quality issues. Use only when the user explicitly asks to check or audit data quality.
-tools: Bash
-requires:
-  bins:
-    - "python3"
+description: Audit a local or remote tabular file (CSV/TSV) for common data quality issues. Read-only. Use only when the user explicitly asks to check or audit data quality.
+allowed-tools: Bash
 ---
 
-# Check Data Quality Skill
+# /check-data-quality
 
-Run a read-only data quality audit for a specific local file or remote file URL.
+Run a read-only data quality audit for a specific local file or remote file URL. Requires `python3`.
 
 ## Usage
 
@@ -24,7 +20,7 @@ bash scripts/check-data-quality.sh "./data/trash.csv"
 bash scripts/check-data-quality.sh "https://example.com/trash.csv"
 ```
 
-## What It Checks
+## What it checks
 
 - row count
 - null and blank values
@@ -37,7 +33,7 @@ bash scripts/check-data-quality.sh "https://example.com/trash.csv"
 
 ## Output
 
-Returns a JSON object with:
+A JSON object with:
 - `status`: `ok`, `warning`, or `critical`
 - `file`, `file_name`, `source_type`
 - `row_count`, `column_count`
@@ -47,6 +43,5 @@ Returns a JSON object with:
 
 ## Notes
 
-- This skill is read-only.
-- It accepts one CSV or TSV file at a time.
+- Read-only; accepts one CSV or TSV file at a time.
 - Local paths and `http`/`https` URLs are supported.
