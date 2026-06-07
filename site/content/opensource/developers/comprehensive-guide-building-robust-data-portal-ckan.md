@@ -73,7 +73,7 @@ In this example there is a `content` folder. Markdown files in this folder are g
 
 Those, however, are not ordinary Markdown pages: they are what we call Data Rich Documents. This means that besides common Markdown, those pages are also capable of rendering data components. This capability allows for the creation of data stories.
 
-The way it works is that these documents support the [MDX syntax](https://mdxjs.com/docs/what-is-mdx/), which allows React components in Markdown files, in the case of this example, making all the components in the [PortalJS components library](https://storybook.portaljs.org/) available on Markdown pages.
+The way it works is that these documents support the [MDX syntax](https://mdxjs.com/docs/what-is-mdx/), which allows React components in Markdown files, in the case of this example, making all the components in the PortalJS components library available on Markdown pages.
 
 So, for example, you can add the following content to the `/content/test.md` file:
 
@@ -111,7 +111,7 @@ Feel free to customize your portal, a few suggestions would be.
 - Connecting to a different CKAN backend and seeing how it looks
 - Using the CKAN Object to build a `orgs` or `groups` page listing all the groups and orgs
 - A showcase page for a specific group or org
-- You could even use some of our [components](https://storybook.portaljs.org/) e.g: You could get the datastore contents for a resource using the `ckan.datastoreSearch(resourceId: string)` function and then display that as a line chart or vega chart.
+- You could even use some of our components e.g: You could get the datastore contents for a resource using the `ckan.datastoreSearch(resourceId: string)` function and then display that as a line chart or vega chart.
 
 ## CKAN API
 

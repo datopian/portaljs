@@ -24,13 +24,6 @@
     "dist"
   ],
   "devDependencies": {
-    "@storybook/addon-essentials": "^7.0.7",
-    "@storybook/addon-interactions": "^7.0.7",
-    "@storybook/addon-links": "^7.0.7",
-    "@storybook/blocks": "^7.0.7",
-    "@storybook/react": "^7.0.7",
-    "@storybook/react-vite": "^7.0.7",
-    "@storybook/testing-library": "^0.0.14-next.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.57.1",

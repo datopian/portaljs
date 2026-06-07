@@ -9,7 +9,7 @@ description: Learn how to create a data-rich document with charts and tables on 
 > [!info] Prerequisites
 > If you want to enrich your markdown content with charts and tables, you first need to add support for rendering markdown files in your PortalJS app. Follow [[markdown|this guide]] to learn how to do this.
 
-PortalJS comes with a library of components that provides essential pieces for your data portal. The best way to explore the components is to look at our [Storybook](https://storybook.portaljs.org/) that contains all the details on how to use them. Below is an overview of available components.
+PortalJS comes with a library of components that provides essential pieces for your data portal. The best way to explore the components is to look at our Storybook that contains all the details on how to use them. Below is an overview of available components.
 
 You can install the library with:
 
@@ -130,7 +130,6 @@ Example usage:
 ```
 
 > [!info]
-> More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-table--docs)
 
 ## Linechart
 
@@ -153,7 +152,6 @@ Example usage:
 ```
 
 > [!info]
-> More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-linechart--docs)
 
 ## Vega chart
 
@@ -197,7 +195,6 @@ Example usage:
 ```
 
 > [!info]
-> More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-vega--docs)
 
 ## VegaLite chart
 
@@ -240,7 +237,6 @@ Example usage:
 ```
 
 > [!info]
-> More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-vegalite--docs)
 
 ## Catalog
 
@@ -306,6 +302,5 @@ You can also add facets that are going to act as filters for your metadata.
 ```
 
 > [!info]
-> More info on the [storybook page](https://storybook.portaljs.org/?path=/docs/components-catalog--docs)
 
 <DocsPagination prev="/opensource/howtos/blog" next="/opensource/howtos/comments"/>

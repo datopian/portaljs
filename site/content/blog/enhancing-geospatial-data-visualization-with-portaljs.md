@@ -57,7 +57,7 @@ Users can also choose a region of focus, which will depend on the data, by setti
 
 ## Mapping the Future with PortalJS
 
-Through our ongoing enhancements to the [PortalJS library](https://storybook.portaljs.org/), we aim to empower users to create engaging and informative data portals featuring diverse map formats and data components.
+Through our ongoing enhancements to the PortalJS library, we aim to empower users to create engaging and informative data portals featuring diverse map formats and data components.
 
 Why not give [PortalJS](https://portaljs.org/) a try today and discover the possibilities for your own data portals? To get started, check out our comprehensive documentation here: [PortalJS Documentation](https://portaljs.org/docs).
 
