@@ -310,9 +310,9 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
             <div className="text-2xl font-bold mt-8 ">
               Why PortalJS Cloud + CKAN is the perfect pair?
             </div>
-            <ReactMarkdown className="prose prose-headings:font-headings dark:prose-invert prose-a:break-word mt-8">
-              {highlight}
-            </ReactMarkdown>
+            <div className="prose prose-headings:font-headings dark:prose-invert prose-a:break-word mt-8">
+              <ReactMarkdown>{highlight}</ReactMarkdown>
+            </div>
           </div>
         )}
         <div className="w-full flex flex-col items-center mt-32">
