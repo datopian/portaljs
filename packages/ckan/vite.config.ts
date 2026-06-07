@@ -18,7 +18,12 @@ export default defineConfig({
             fileName: (format) => `components.${format}.js`,
         },
         rollupOptions: {
-            external: ['react', 'react-dom', 'styled-components'],
+            external: [
+                'react',
+                'react-dom',
+                'styled-components',
+                '@portaljs/ckan-api-client-js',
+            ],
             output: {
                 globals: {
                     react: 'React',
