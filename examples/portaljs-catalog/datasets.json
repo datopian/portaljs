@@ -1,6 +1,7 @@
 [
   {
     "slug": "country-codes",
+    "namespace": "reference",
     "name": "Country Codes",
     "description": "ISO 3166-1 country names with their alpha-2 and alpha-3 codes.",
     "file": "country-codes.csv",
@@ -8,6 +9,7 @@
   },
   {
     "slug": "population-2022",
+    "namespace": "reference",
     "name": "World Population 2022",
     "description": "Estimated mid-year population for a sample of countries.",
     "file": "population-2022.csv",
@@ -15,6 +17,7 @@
   },
   {
     "slug": "co2-emissions",
+    "namespace": "reference",
     "name": "CO₂ Emissions per Capita",
     "description": "Tonnes of CO₂ emitted per person for a sample of countries.",
     "file": "co2-emissions.csv",

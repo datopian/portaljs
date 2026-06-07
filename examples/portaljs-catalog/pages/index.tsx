@@ -1,73 +1,68 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useMemo, useState } from 'react'
-import { getDatasets, type Dataset } from '../lib/datasets'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
-export async function getStaticProps() {
-  return { props: { datasets: getDatasets() } }
-}
+// Suggested searches surfaced as chips below the hero. These are starting points
+// derived from the sample datasets' themes — swap them for your portal's topics.
+const SUGGESTED_QUERIES = ['population', 'emissions', 'country codes', 'reference']
 
-export default function Home({ datasets }: { datasets: Dataset[] }) {
+export default function Home() {
+  const router = useRouter()
   const [query, setQuery] = useState('')
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return datasets
-    return datasets.filter(
-      (d) =>
-        d.name.toLowerCase().includes(q) ||
-        (d.description ?? '').toLowerCase().includes(q)
-    )
-  }, [datasets, query])
+  const search = (q: string) => {
+    const trimmed = q.trim()
+    router.push(trimmed ? `/search?q=${encodeURIComponent(trimmed)}` : '/search')
+  }
 
   return (
     <>
       <Head>
         <title>__PROJECT_NAME__</title>
       </Head>
-      <main className="max-w-5xl mx-auto px-4 py-12">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">__PROJECT_NAME__</h1>
-          <p className="mt-3 text-lg text-gray-500">__DESCRIPTION__</p>
+      <main className="max-w-3xl mx-auto px-4 py-24">
+        <header className="text-center">
+          <h1 className="text-5xl font-bold text-gray-900">__PROJECT_NAME__</h1>
+          <p className="mt-4 text-lg text-gray-500">__DESCRIPTION__</p>
         </header>
 
-        {datasets.length === 0 ? (
-          <div className="rounded-lg border-2 border-dashed border-gray-200 p-12 text-center text-gray-400">
-            <p className="text-lg font-medium">No datasets yet</p>
-            <p className="mt-1 text-sm">
-              Add an entry to <code className="bg-gray-100 px-1 rounded">datasets.json</code> and
-              drop the file in <code className="bg-gray-100 px-1 rounded">public/data</code>.
-            </p>
-          </div>
-        ) : (
-          <>
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={`Search ${datasets.length} datasets...`}
-              className="mb-6 w-full max-w-sm px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {filtered.length === 0 ? (
-              <p className="text-gray-400">No datasets match “{query}”.</p>
-            ) : (
-              <div className="grid gap-4">
-                {filtered.map((ds) => (
-                  <Link
-                    key={ds.slug}
-                    href={`/datasets/${ds.slug}`}
-                    className="block rounded-lg border border-gray-200 p-6 hover:border-blue-400 hover:shadow-sm transition-all"
-                  >
-                    <h2 className="text-xl font-semibold text-gray-900">{ds.name}</h2>
-                    {ds.description && (
-                      <p className="mt-1 text-gray-500">{ds.description}</p>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </>
-        )}
+        {/* Search is the primary call to action — submitting navigates to /search. */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            search(query)
+          }}
+          className="mt-10"
+          role="search"
+        >
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search datasets..."
+            aria-label="Search datasets"
+            className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </form>
+
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+          {SUGGESTED_QUERIES.map((q) => (
+            <Link
+              key={q}
+              href={`/search?q=${encodeURIComponent(q)}`}
+              className="rounded-full border border-gray-200 px-3 py-1 text-sm text-gray-600 hover:border-blue-400 hover:text-blue-600 transition-colors"
+            >
+              {q}
+            </Link>
+          ))}
+        </div>
+
+        <p className="mt-8 text-center text-sm">
+          <Link href="/search" className="text-blue-600 hover:text-blue-700">
+            Browse all datasets &rarr;
+          </Link>
+        </p>
       </main>
     </>
   )
