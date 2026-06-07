@@ -1,5 +1,4 @@
 import { H2, H3 } from '../custom/header'
-import ReactPlayer from 'react-player'
 
 export const PortalPreview = () => {
   return (

@@ -2,7 +2,7 @@ const RSS = require('rss');
 const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
-const glob = require('glob');
+const { globSync } = require('glob');
 
 async function generateFeeds() {
   try {
@@ -13,8 +13,8 @@ async function generateFeeds() {
     const blogPattern = path.join(contentDir, 'blog/**/*.{md,mdx}');
     const docsPattern = path.join(contentDir, 'docs/**/*.{md,mdx}');
     
-    const blogFiles = glob.sync(blogPattern);
-    const docFiles = glob.sync(docsPattern);
+    const blogFiles = globSync(blogPattern);
+    const docFiles = globSync(docsPattern);
     
     const allFiles = [...blogFiles, ...docFiles];
     
