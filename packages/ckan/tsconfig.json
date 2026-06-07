@@ -20,7 +20,8 @@
     "noFallthroughCasesInSwitch": true,
 
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@portaljs/ckan-api-client-js": ["../ckan-api-client-js/src/index.ts"]
     }
   },
   "include": ["src"],
