@@ -1,7 +1,7 @@
 {
   "name": "portaljs",
   "version": "0.1.0",
-  "description": "Agentic skills for building PortalJS data portals — scaffold a portal, add datasets, charts, and maps, connect a CKAN backend, deploy, and audit data quality.",
+  "description": "Agentic skills for building PortalJS data portals — recommend an architecture, scaffold a portal, add datasets, charts, and maps, connect a CKAN backend, deploy, and audit data quality.",
   "author": {
     "name": "Datopian",
     "url": "https://www.datopian.com"
@@ -11,6 +11,7 @@
   "license": "MIT",
   "keywords": ["portaljs", "data-portal", "ckan", "nextjs", "data-catalog"],
   "commands": [
+    "./.claude/commands/architect.md",
     "./.claude/commands/new-portal.md",
     "./.claude/commands/add-dataset.md",
     "./.claude/commands/add-chart.md",

@@ -209,6 +209,7 @@ Add `npm install react-leaflet leaflet @types/leaflet` and import directly. No m
 ## Skills
 
 See `.claude/commands/` for available slash commands:
+- `/architect` — recommend a data architecture (storage/compute/catalog/access/hosting/metadata) from your needs, then hand off to the build skills (the advisory entry point)
 - `/new-portal` — scaffold a new PortalJS data portal from a brief
 - `/add-dataset` — add a dataset (CSV/TSV/JSON/GeoJSON) to an existing portal
 - `/add-chart` — add a chart (line/bar/area/pie/scatter) to a dataset page via recharts
