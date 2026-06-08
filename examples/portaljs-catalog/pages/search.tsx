@@ -3,10 +3,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import DebouncedInput from '../components/ui/DebouncedInput'
-import { datasetHref, getDatasets, type Dataset } from '../lib/datasets'
+import { datasetHref, type Dataset } from '../lib/datasets'
+import { provider } from '../lib/providers'
 
 export async function getStaticProps() {
-  return { props: { datasets: getDatasets() } }
+  return { props: { datasets: await provider.listDatasets() } }
 }
 
 export default function Search({ datasets }: { datasets: Dataset[] }) {
@@ -21,9 +22,10 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
     setQuery(typeof q === 'string' ? q : '')
   }, [router.isReady, router.query.q])
 
-  // Client-side full-text filter over the manifest. This is the seam where a
-  // proper search backend or faceted search (by namespace, format, tags, …)
-  // would slot in later — swap this useMemo for a query to that service.
+  // Client-side full-text filter over the datasets the provider returned. A
+  // provider whose capabilities.search is true would instead call
+  // provider.search({ q, … }) server-side (full-text / faceted by namespace,
+  // format, tags) — the static provider filters here in the browser.
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return datasets

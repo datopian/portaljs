@@ -2,19 +2,16 @@ import Head from 'next/head'
 import Link from 'next/link'
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import { Table } from '../../components/Table'
-import {
-  NAMESPACE_TYPE,
-  getDatasetByNamespace,
-  getDatasets,
-  type Dataset,
-} from '../../lib/datasets'
+import { NAMESPACE_TYPE, type Dataset } from '../../lib/datasets'
+import { provider } from '../../lib/providers'
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const datasets = await provider.listDatasets()
   return {
     // The `owner` segment carries the `@` prefix so the generated URL is
     // /@<namespace>/<slug> — namespacing datasets under `@` keeps them from
     // colliding with regular content/static pages (which never start with `@`).
-    paths: getDatasets().map((d) => ({
+    paths: datasets.map((d) => ({
       params: { owner: '@' + d.namespace, slug: d.slug },
     })),
     fallback: false,
@@ -25,7 +22,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // Strip the leading `@` from the owner segment to recover the namespace,
   // then resolve the dataset by its (namespace, slug) pair.
   const namespace = String(params?.owner ?? '').replace(/^@/, '')
-  const dataset = getDatasetByNamespace(namespace, String(params?.slug))
+  const dataset = await provider.getDataset(namespace, String(params?.slug))
   if (!dataset) return { notFound: true }
   return { props: { dataset } }
 }
