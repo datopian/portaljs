@@ -17,9 +17,9 @@ input** — every question has a sensible default; say **"use defaults"** to tak
 See [the decision framework](../../site/content/docs/architecture/decision-framework.md)
 and [ROADMAP.md](../../ROADMAP.md) for the full model this skill encodes.
 
-## What it recommends — five slots
+## What it recommends — six slots
 
-Every recommendation fills five slots. The **bold** option is the default when nothing
+Every recommendation fills six slots. The **bold** option is the default when nothing
 pulls you off it.
 
 | Slot | Options (default in **bold**) |
