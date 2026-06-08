@@ -4,7 +4,7 @@
   <p align="center">
     <b>The AI-native framework for building data portals.</b>
     <br />
-    Describe the portal you want — your agent scaffolds it and loads your data in minutes.
+    Describe the portal you want — your agent helps you choose an architecture, scaffolds it, and loads your data.
     <br />
     <br />
     <a href="https://www.portaljs.com/opensource">Docs</a>
@@ -21,67 +21,159 @@
 
 ---
 
-PortalJS is an **open-source** framework for building data portals and catalogs. It pairs a lightweight, customizable site with a set of **agentic skills** — commands your AI assistant runs to scaffold a portal, add datasets, and wire up a backend, without you writing boilerplate.
+## Why PortalJS
 
-Built and maintained in the open by [Datopian](https://www.datopian.com/) and the PortalJS community.
+Building a data portal has always meant more than a website. You have to decide where
+the data lives, how it's versioned, how people search it, how it's served, and how it's
+governed — and then wire a frontend on top. Teams either over-build on a heavy data
+warehouse they don't need, or under-build on a pile of scripts that doesn't scale.
+
+PortalJS is an **open-source, agentic skills framework that helps data teams build,
+develop, and ship data portals — and the data infrastructure underneath them.** It isn't
+only a frontend. The skills do two jobs:
+
+- **Advise** — given _what you're building_, _what your data is_, and _what it's for_,
+  they recommend an architecture: storage, compute, catalog, access, hosting, metadata.
+- **Build** — they scaffold that stack as plain, editable Next.js code with no lock-in.
+
+It is **opinionated but open**: the recommended modern path is git + object storage
+(Cloudflare R2) + Parquet + [DuckLake](https://ducklake.select/) + DuckDB — an open
+lakehouse instead of a classic warehouse — but a traditional datastore (CKAN, a
+warehouse) stays a first-class option when you need it. You always own plain code.
+
+Built and maintained in the open by [Datopian](https://www.datopian.com/) and the
+PortalJS community.
+
+## Architecture at a glance
+
+```text
+        🧑  you describe what you want to build
+        │
+        ▼
+╭─ 🤖  AGENTIC SKILLS ──────────────────────────────────  decide + build
+│   /architect · /new-portal · /add-dataset · /add-chart · /add-map …
+╰─  generates plain, editable Next.js code — no lock-in
+        │
+        ▼
+╭─ 🖥️  SURFACES ────────────────────────────────────────  what users see
+│   🏠 Home /      🔎 Catalog /search      📊 Showcase /@ns/slug
+╰─  read data through one DataProvider contract
+        │
+        ▼
+╭─ 🔌  PROVIDERS ───────────────────────────────────────  pluggable backends
+│   📁 static·git     🐘 CKAN     🔭 OpenMetadata     🗂️ git-LFS + R2
+╰─  swap the source without touching a page
+        │
+        ▼
+📦  STORAGE + COMPUTE  —  choose your point on the spectrum:
+
+      flat files  ─▶  Git-LFS + R2  ─▶  Parquet + DuckLake + 🦆 DuckDB  ─▶  warehouse / CKAN
+      simplest                          ⭐ open lakehouse (default)            heaviest
+
+☁️  Substrate  —  Cloudflare R2 (storage) · Workers (runtime) · D1 (catalog) · Pages (static)
+     object storage stays S3-compatible — R2 is the default, never a lock-in
+```
+
+**Three surfaces.** Every data portal is built from three: a **Home** page that explains
+it and offers search, a **Catalog** (`/search`) to discover datasets, and a **Showcase**
+(`/@<namespace>/<slug>`) to explore one dataset — metadata, preview, download/API, and
+charts/maps. ([Core concepts →](https://www.portaljs.com/docs/core-concepts))
+
+**One seam.** The surfaces read data only through a `DataProvider`, so the source — static
+files today, a CKAN or lakehouse backend tomorrow — can change without touching a page.
+
+See [`ROADMAP.md`](ROADMAP.md) for the full model and the
+[architecture decision framework](https://www.portaljs.com/docs/architecture/decision-framework)
+for how `/architect` turns your needs into a stack.
 
 ## Build a portal with your AI assistant
 
-PortalJS ships [Claude Code](https://claude.com/claude-code) skills that turn a brief into a working portal.
+PortalJS ships [Claude Code](https://claude.com/claude-code) skills that turn a brief into
+a working portal.
 
 ### Setup
 
-The skills live in this repo under [`.claude/commands/`](.claude/commands/). The quickest way to try them is from a clone of the repo:
+The skills live in this repo under [`.claude/commands/`](.claude/commands/). The quickest
+way to try them is from a clone:
 
 ```bash
-# 1. Clone the repo and open Claude Code inside it
 git clone https://github.com/datopian/portaljs
 cd portaljs
 claude
 ```
 
-Claude Code auto-discovers the slash commands from `.claude/commands/` — no install step. Type `/` in the session to see `/new-portal`, `/add-dataset`, and the rest.
+Claude Code auto-discovers the slash commands from `.claude/commands/` — no install step.
+Type `/` in the session to see them.
 
-> **Install anywhere:** the skills and template are also packaged as a Claude Code plugin and can be installed into `~/.claude/commands/` so you can run them from any project. See [`.claude/INSTALL.md`](.claude/INSTALL.md).
+> **Install anywhere:** the skills and template are also packaged as a Claude Code plugin
+> and can be installed into `~/.claude/commands/` so you can run them from any project. See
+> [`.claude/INSTALL.md`](.claude/INSTALL.md).
 
 ### Use
 
-In the Claude Code session:
+If you're not sure how to set up your portal, start with the advisor, then build:
 
 ```text
-/new-portal  "Auckland Council open data portal"
-/add-dataset ./data/air-quality.csv
-/add-dataset https://example.com/parks.geojson
+/architect    we have ~200 public CSVs, updated quarterly, and must publish DCAT-AP
+/new-portal   "Auckland Council open data portal"
+/add-dataset  ./data/air-quality.csv
+/add-dataset  https://example.com/parks.geojson
 ```
 
-That scaffolds the site, copies your data in, generates dataset pages, and registers everything on the catalog home page. Run `npm run dev` and you have a portal.
+The skills are **interactive** — if your brief is thin, they interview you in short rounds
+rather than erroring. `/architect` recommends a stack and hands off; `/new-portal`
+scaffolds the three surfaces; `/add-dataset` appends to the `datasets.json` manifest and
+the showcase renders automatically at `/@<namespace>/<slug>`. Run `npm run dev` and you
+have a portal.
 
-**Prefer to start from a template?** Clone the canonical example and build by hand — the skills are a convenience, not a requirement:
+**Prefer to build by hand?** Clone the canonical template — the skills are a convenience,
+not a requirement:
 
 ```bash
-npx create-next-app -e https://github.com/datopian/portaljs/tree/main/examples/portaljs-template my-portal
+npx degit datopian/portaljs/examples/portaljs-catalog my-portal
 ```
 
 ### Available skills
 
 | Skill | What it does |
 |-------|--------------|
-| [`/new-portal`](.claude/commands/new-portal.md) | Scaffold a new portal from a brief |
-| [`/add-dataset`](.claude/commands/add-dataset.md) | Add a CSV, TSV, JSON, or GeoJSON dataset and register it |
-| [`/add-chart`](.claude/commands/add-chart.md) | Add a chart to a dataset page |
-| [`/add-map`](.claude/commands/add-map.md) | Render GeoJSON on an interactive map |
-| [`/connect-ckan`](.claude/commands/connect-ckan.md) | Wire a portal to a CKAN backend |
-| [`/deploy`](.claude/commands/deploy.md) | Deploy to Vercel or static hosting |
+| [`/architect`](.claude/commands/architect.md) | Recommend an architecture (storage/compute/catalog/access/hosting/metadata) from your needs, then hand off — the advisory entry point |
+| [`/new-portal`](.claude/commands/new-portal.md) | Scaffold a new portal (Home + Catalog + Showcase) from a brief |
+| [`/add-dataset`](.claude/commands/add-dataset.md) | Add a CSV, TSV, JSON, or GeoJSON dataset — appends to the manifest; its showcase renders automatically |
+| [`/add-chart`](.claude/commands/add-chart.md) | Add a chart to a dataset's showcase Views section |
+| [`/add-map`](.claude/commands/add-map.md) | Render GeoJSON on an interactive map in the showcase |
+| [`/connect-ckan`](.claude/commands/connect-ckan.md) | Feed the catalog and showcases from a CKAN backend |
+| [`/deploy`](.claude/commands/deploy.md) | Deploy to Cloudflare Pages, Vercel, or static hosting |
+| [`/check-data-quality`](.claude/commands/check-data-quality.md) | Audit a dataset for quality issues (schema, nulls, types) |
 
-More skill families — data ingestion/migration, wrangling and transforms, richer visualization, and metadata — are on the [roadmap](VISION.md). Write your own — see [`.claude/AUTHORING.md`](.claude/AUTHORING.md).
+More skill families — metadata schemas (Frictionless/DCAT), more backends (OpenMetadata,
+git-LFS+R2), a DuckDB data layer, and access control — are on the [roadmap](ROADMAP.md).
+Write your own — see [`.claude/AUTHORING.md`](.claude/AUTHORING.md).
 
-## Why PortalJS
+## What's in this repo
 
-- 🌱 **Open source, MIT licensed** — no lock-in, fork it, ship it, own it.
-- 🤖 **AI-native** — agentic skills do the assembly so you focus on the data, not the scaffolding.
-- 🧩 **Decoupled, any backend** — the frontend is independent from your backend and talks to it over an API. Out-of-the-box support for [CKAN](https://ckan.org/), [DKAN](https://getdkan.org/), [OpenMetadata](https://open-metadata.org/), [Microsoft Purview](https://www.microsoft.com/en-us/security/business/microsoft-purview), [DataHub](https://datahubproject.io/), GitHub, [Frictionless Data Packages](https://frictionlessdata.io/), plain JSON/static files — or your own custom backend.
-- 🎨 **Bring your own stack** — start from the default template or adapt it to the frontend tooling and design system your team already uses.
-- 👥 **Community-driven** — active [Discord](https://discord.gg/krmj5HM6He) and [discussion forum](https://github.com/datopian/portaljs/discussions); contributions welcome.
+```text
+.claude/commands/    the agentic skills (slash commands)
+examples/            reference portals — portaljs-catalog is the canonical template
+packages/
+  core/              layout/UI components            (@portaljs/core)
+  ckan/              CKAN catalog UI + React          (@portaljs/ckan)
+  ckan-api-client-js/ pure CKAN API client            (@portaljs/ckan-api-client-js)
+site/                portaljs.com — the marketing site + docs
+ROADMAP.md           direction, the four contracts, sequencing
+```
+
+The canonical template, [`examples/portaljs-catalog`](examples/portaljs-catalog/), is where
+the three surfaces and the `DataProvider` seam live — read it before building.
+
+## What makes it different
+
+- 🌱 **Open source, MIT, no lock-in** — every skill emits plain Next.js you can fork and own.
+- 🧭 **Advisory, not just generative** — `/architect` helps you _decide_ the infrastructure, not only scaffold a UI.
+- 🦆 **Open lakehouse by default** — git + R2 + Parquet + DuckLake + DuckDB over a heavy warehouse, with DuckDB as the query engine. A datastore/warehouse stays a supported choice.
+- ☁️ **Cloudflare-first, portable** — R2 / Workers / D1 / Pages as the default substrate, but object storage stays S3-compatible.
+- 🧩 **Decoupled, any backend** — one `DataProvider` contract in front of [CKAN](https://ckan.org/), [DKAN](https://getdkan.org/), [OpenMetadata](https://open-metadata.org/), [DataHub](https://datahubproject.io/), GitHub, [Frictionless](https://frictionlessdata.io/), plain files — or your own.
+- 🎨 **Bring your own stack** — adopt the template or lift the skills and the three-surface model into an app you already have.
 
 ## Examples
 
@@ -89,7 +181,8 @@ Reference implementations live in [`examples/`](examples/):
 
 | Example | Backend |
 |---------|---------|
-| [`portaljs-template`](examples/portaljs-template/) | Static / local files — the canonical starting point |
+| [`portaljs-catalog`](examples/portaljs-catalog/) | **Canonical template** — Home + Catalog + Showcase over a static manifest |
+| [`portaljs-template`](examples/portaljs-template/) | Minimal single-page starter |
 | [`ckan`](examples/ckan/) · [`ckan-ssg`](examples/ckan-ssg/) | CKAN |
 | [`github-backed-catalog`](examples/github-backed-catalog/) | GitHub |
 | [`dataset-frictionless`](examples/dataset-frictionless/) | Frictionless Data Package |
@@ -104,7 +197,9 @@ Reference implementations live in [`examples/`](examples/):
 
 ## Contributing
 
-PortalJS is built in the open and we welcome contributions of all sizes — new skills, examples, docs, and fixes. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started, and read [VISION.md](VISION.md) for where the project is headed.
+PortalJS is built in the open and we welcome contributions of all sizes — new skills,
+examples, docs, and fixes. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started, and read
+[ROADMAP.md](ROADMAP.md) and [VISION.md](VISION.md) for where the project is headed.
 
 ## License
 
