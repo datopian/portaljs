@@ -1,0 +1,1 @@
+We're standing up a data portal for our agency and have a few hundred datasets, some of them pretty large. We're not sure whether to use a data warehouse, a lakehouse, or just plain files, and how to host it. Can you help us figure out the right setup before we start building?

@@ -8,6 +8,7 @@ PROMPTS="$SCRIPT_DIR/prompts"
 
 # One entry per shipped skill (.claude/commands/*.md).
 SKILLS=(
+  architect
   new-portal
   add-dataset
   add-chart

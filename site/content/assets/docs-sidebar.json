@@ -22,6 +22,10 @@
       {
         "title": "Core concepts",
         "href": "/docs/core-concepts"
+      },
+      {
+        "title": "Architecture decision framework",
+        "href": "/docs/architecture/decision-framework"
       }
     ]
   },
@@ -31,6 +35,10 @@
       {
         "title": "Skills reference",
         "href": "/docs/skills"
+      },
+      {
+        "title": "/architect",
+        "href": "/docs/skills/architect"
       },
       {
         "title": "/new-portal",
