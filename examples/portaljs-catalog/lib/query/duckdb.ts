@@ -17,43 +17,55 @@ export class DuckDbQuery implements DataQuery {
   private worker: Worker | null = null
 
   async open(source: QuerySource): Promise<void> {
+    // Tear down anything from a previous open() so a retry can't leak a worker
+    // or DB handle.
+    await this.close()
+
     const duckdb = await import('@duckdb/duckdb-wasm')
+    let workerUrl: string | null = null
+    try {
+      // Pick the best wasm bundle for this browser and spin up the worker from a
+      // Blob URL — avoids any bundler/worker configuration in the host app.
+      const bundles = duckdb.getJsDelivrBundles()
+      const bundle = await duckdb.selectBundle(bundles)
+      workerUrl = URL.createObjectURL(
+        new Blob([`importScripts("${bundle.mainWorker}");`], {
+          type: 'text/javascript',
+        })
+      )
+      this.worker = new Worker(workerUrl)
+      const logger = new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING)
+      this.db = new duckdb.AsyncDuckDB(logger, this.worker)
+      await this.db.instantiate(bundle.mainModule, bundle.pthreadWorker)
 
-    // Pick the best wasm bundle for this browser and spin up the worker from a
-    // Blob URL — avoids any bundler/worker configuration in the host app.
-    const bundles = duckdb.getJsDelivrBundles()
-    const bundle = await duckdb.selectBundle(bundles)
-    const workerUrl = URL.createObjectURL(
-      new Blob([`importScripts("${bundle.mainWorker}");`], {
-        type: 'text/javascript',
-      })
-    )
-    this.worker = new Worker(workerUrl)
-    const logger = new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING)
-    this.db = new duckdb.AsyncDuckDB(logger, this.worker)
-    await this.db.instantiate(bundle.mainModule, bundle.pthreadWorker)
-    URL.revokeObjectURL(workerUrl)
+      // Fetch the file and register it in DuckDB's virtual filesystem.
+      const res = await fetch(source.url)
+      if (!res.ok) {
+        throw new Error(`Failed to fetch ${source.url} (${res.status})`)
+      }
+      const buf = new Uint8Array(await res.arrayBuffer())
+      const isParquet = source.format === 'parquet'
+      const fname = isParquet ? 'data.parquet' : 'data.csv'
+      await this.db.registerFileBuffer(fname, buf)
 
-    // Fetch the file and register it in DuckDB's virtual filesystem.
-    const res = await fetch(source.url)
-    if (!res.ok) {
-      throw new Error(`Failed to fetch ${source.url} (${res.status})`)
+      // Materialize the file as the table `data`. read_csv_auto sniffs the
+      // schema; TSV is the same reader with a tab delimiter; Parquet is read
+      // directly.
+      const reader = isParquet
+        ? `read_parquet('${fname}')`
+        : source.format === 'tsv'
+        ? `read_csv_auto('${fname}', delim='\t')`
+        : `read_csv_auto('${fname}')`
+
+      this.conn = await this.db.connect()
+      await this.conn.query(`CREATE OR REPLACE TABLE data AS SELECT * FROM ${reader}`)
+    } catch (e) {
+      // Don't leave a half-initialized engine behind on failure.
+      await this.close()
+      throw e
+    } finally {
+      if (workerUrl) URL.revokeObjectURL(workerUrl)
     }
-    const buf = new Uint8Array(await res.arrayBuffer())
-    const isParquet = source.format === 'parquet'
-    const fname = isParquet ? 'data.parquet' : 'data.csv'
-    await this.db.registerFileBuffer(fname, buf)
-
-    // Materialize the file as the table `data`. read_csv_auto sniffs the schema;
-    // TSV is the same reader with a tab delimiter; Parquet is read directly.
-    const reader = isParquet
-      ? `read_parquet('${fname}')`
-      : source.format === 'tsv'
-      ? `read_csv_auto('${fname}', delim='\t')`
-      : `read_csv_auto('${fname}')`
-
-    this.conn = await this.db.connect()
-    await this.conn.query(`CREATE OR REPLACE TABLE data AS SELECT * FROM ${reader}`)
   }
 
   async query(sql: string): Promise<QueryResult> {
