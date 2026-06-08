@@ -46,28 +46,32 @@ PortalJS community.
 
 ## Architecture at a glance
 
-```
-        +-- you describe intent -----------------------------------------------+
-        |                                                                       |
-   +====v===============================================================+
-   |  AGENTIC SKILLS                                                     |   decide + build
-   |  /architect  /new-portal  /add-dataset  /add-chart  /add-map  ...   |
-   +====+===============================================================+
-        |  generate plain, editable Next.js code  (no lock-in)
-   +====v===============================================================+
-   |  SURFACES        Home /      Catalog /search      Showcase /@ns/slug |   what users see
-   +====+===============================================================+
-        |  DataProvider contract   (list | get | search | capabilities)
-   +====v===============================================================+
-   |  PROVIDERS       static (git)    CKAN    OpenMetadata    git-LFS+R2  |   pluggable backend
-   +====+===============================================================+
-        |
-        v   storage + compute spectrum
-   flat files  -->  Git-LFS + R2  -->  Parquet + DuckLake + DuckDB  -->  warehouse / CKAN
-   simplest                            open lakehouse (default)                  heaviest
+```text
+        🧑  you describe what you want to build
+        │
+        ▼
+╭─ 🤖  AGENTIC SKILLS ──────────────────────────────────  decide + build
+│   /architect · /new-portal · /add-dataset · /add-chart · /add-map …
+╰─  generates plain, editable Next.js code — no lock-in
+        │
+        ▼
+╭─ 🖥️  SURFACES ────────────────────────────────────────  what users see
+│   🏠 Home /      🔎 Catalog /search      📊 Showcase /@ns/slug
+╰─  read data through one DataProvider contract
+        │
+        ▼
+╭─ 🔌  PROVIDERS ───────────────────────────────────────  pluggable backends
+│   📁 static·git     🐘 CKAN     🔭 OpenMetadata     🗂️ git-LFS + R2
+╰─  swap the source without touching a page
+        │
+        ▼
+📦  STORAGE + COMPUTE  —  choose your point on the spectrum:
 
-   substrate:  Cloudflare R2 (storage) · Workers (runtime) · D1 (catalog) · Pages (static)
-               object storage is S3-compatible — R2 is the default, never a lock-in
+      flat files  ─▶  Git-LFS + R2  ─▶  Parquet + DuckLake + 🦆 DuckDB  ─▶  warehouse / CKAN
+      simplest                          ⭐ open lakehouse (default)            heaviest
+
+☁️  Substrate  —  Cloudflare R2 (storage) · Workers (runtime) · D1 (catalog) · Pages (static)
+     object storage stays S3-compatible — R2 is the default, never a lock-in
 ```
 
 **Three surfaces.** Every data portal is built from three: a **Home** page that explains
@@ -107,7 +111,7 @@ Type `/` in the session to see them.
 
 ### Use
 
-Not sure how to set things up? Start with the advisor, then build:
+If you're not sure how to set up your portal, start with the advisor, then build:
 
 ```text
 /architect    we have ~200 public CSVs, updated quarterly, and must publish DCAT-AP
@@ -148,7 +152,7 @@ Write your own — see [`.claude/AUTHORING.md`](.claude/AUTHORING.md).
 
 ## What's in this repo
 
-```
+```text
 .claude/commands/    the agentic skills (slash commands)
 examples/            reference portals — portaljs-catalog is the canonical template
 packages/
