@@ -3,7 +3,8 @@
 // A dataset declares a Frictionless Table Schema + Data Package descriptor fields;
 // a MetadataProfile names + validates that shape; the registry resolves a profile
 // by id (default = the L0 Frictionless Tabular profile). DCAT interop is the
-// serialization layer on top, designed-in here and built later. See ./README.md.
+// serialization + harvest layer on top (toDCAT/toDCATCatalog → a /catalog.jsonld).
+// See ./README.md.
 
 export type {
   FieldType,
@@ -31,7 +32,14 @@ export {
 export {
   toDCAT,
   fromDCAT,
+  toDCATCatalog,
+  fromDCATCatalog,
+  DCAT_CONTEXT,
   type DcatDataset,
   type DcatDistribution,
+  type DcatCatalog,
   type FrictionlessLike,
+  type CatalogEntry,
+  type ToDcatOptions,
+  type ToDcatCatalogOptions,
 } from './dcat'

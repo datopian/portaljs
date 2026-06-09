@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "generate:dcat": "tsx scripts/generate-dcat.ts",
+    "predev": "npm run generate:dcat",
     "dev": "next dev",
+    "prebuild": "npm run generate:dcat",
     "build": "next build",
     "start": "next start"
   },
@@ -25,6 +28,7 @@
     "autoprefixer": "^10.0.0",
     "postcss": "^8.0.0",
     "tailwindcss": "^3.0.0",
+    "tsx": "^4.19.0",
     "typescript": "^5.0.0"
   }
 }

@@ -14,8 +14,8 @@ The model is **Frictionless-native**: a dataset is authored as a Frictionless Da
 Package — a [Table Schema](https://specs.frictionlessdata.io/table-schema/)
 (`fields[]` with types + constraints) plus the Data Package descriptor fields a
 catalog cares about (`title`, `licenses`, `sources`, `keywords`, ...). **DCAT /
-DCAT-AP is a serialization + harvest layer ON TOP of this model** — designed-in here
-(`dcat.ts`), built in the later DCAT-interop phase.
+DCAT-AP is a serialization + harvest layer ON TOP of this model** (`dcat.ts`) — the
+portal emits a DCAT-3 `/catalog.jsonld` so external catalogs can harvest it.
 
 ```
    the showcase surface  /@<namespace>/<slug>
@@ -131,16 +131,36 @@ getProfile(undefined)                // -> the L0 default
 getProfile('nope')                   // unknown -> falls back to L0 default
 ```
 
-## DCAT interop (designed-in, not built)
+## DCAT interop
 
-`dcat.ts` pins the contract — `DcatDataset` types + `toDCAT()` / `fromDCAT()`
-signatures (which currently throw). DCAT/DCAT-AP is how a portal **exposes** its
-catalog for harvest (e.g. a `/catalog.jsonld`) and **ingests** from external
-catalogs. The Frictionless-native fields map cleanly onto it (`title→dct:title`,
-`keywords→dcat:keyword`, `licenses→dct:license`, `file/format→dcat:distribution`).
-The mapping is built in the DCAT-interop phase — see the sketch in `dcat.ts`.
+`dcat.ts` is the serialization + harvest layer over the Frictionless-native model.
+DCAT/DCAT-AP is how a portal **exposes** its catalog for harvest and **ingests**
+from external catalogs. The Frictionless fields map onto DCAT-3 JSON-LD
+(`title→dct:title`, `keywords→dcat:keyword`, `licenses→dct:license`,
+`sources→dct:source`, `file/format→dcat:distribution`).
+
+```ts
+import { toDCAT, fromDCAT, toDCATCatalog, fromDCATCatalog } from './lib/metadata'
+
+toDCAT(dataset, { baseUrl, identifier, landingPage })  // one Frictionless dataset → dcat:Dataset
+toDCATCatalog(datasets, { baseUrl, title })            // the whole catalog → dcat:Catalog
+fromDCAT(node) / fromDCATCatalog(catalog)              // harvest/import back to Frictionless
+```
+
+**The harvest endpoint.** `scripts/generate-dcat.ts` reads the catalog through the
+data provider and writes `public/catalog.jsonld` (a DCAT-3 `dcat:Catalog`). It runs
+automatically on `predev`/`prebuild`, so the file is always fresh — and because it's
+a static file it harvests on **any** host (static Cloudflare Pages, a CDN, a Worker),
+no runtime required. Set `SITE_URL` to emit absolute landing/download URLs; without
+it links are root-relative (fine for same-origin harvest).
+
+**What DCAT does not carry.** DCAT has no inline field schema — the Table Schema is
+referenced via a distribution's `dcat:describedBy`, not embedded. So `fromDCAT`
+recovers package metadata + the distribution (file/format), **not** the field-level
+schema. That asymmetry is intrinsic to DCAT.
 
 ## Out of scope here
 
-- `/define-schema` authoring skill (the interview/build layer) — separate bead.
-- The actual DCAT mapping — DCAT-interop phase.
+- `/define-schema` authoring skill (the interview/build layer) — see that skill.
+- A full DCAT-AP profile (mandatory EU-portal classes/properties) — this is the
+  pragmatic DCAT-3 core; extend `dcat.ts` for a specific national/domain profile.
