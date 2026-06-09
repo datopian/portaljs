@@ -81,10 +81,10 @@ warehouse, and worth weighing explicitly when you architect a portal.
 **Cloud warehouses bill per scan.** Snowflake, BigQuery, Databricks et al. charge for
 the compute a query consumes, and a heavy join/aggregate re-scans the data **every time
 it runs**. Put that on a schedule and the cost compounds. A community-reported example
-(see the [DuckDB vs. warehouse thread](https://www.reddit.com/r/DuckDB/comments/1u0c8g0/why_pay_snowflake_to_scan_a_billion_rows_every_15/)):
 a 1-billion-row join + aggregate that returns a ~2,000-row summary needs a Large
-warehouse (~8 credits/hr, ~2 min/run) to finish — about **0.27 credits/run**. Refreshed
-every 15 minutes that's ~26 credits/day ≈ **$75/day ≈ $27,000/year — from one pipeline**.
+warehouse (~8 credits/hr, ~2 min/run) to finish — about **0.27 credits/run**. Using the
+thread's assumptions (credit price and schedule, as reported in June 2026), refreshing
+every 15 minutes is ~26 credits/day (about **$75/day ≈ $27,000/year**) for one pipeline.
 
 **Push the compute to where the data lives.** The same workload runs in ~23 seconds on
 a laptop with DuckDB reading Parquet directly — no cluster, no warehouse. The expensive
