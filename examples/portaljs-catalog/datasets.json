@@ -5,7 +5,49 @@
     "name": "Country Codes",
     "description": "ISO 3166-1 country names with their alpha-2 and alpha-3 codes.",
     "file": "country-codes.csv",
-    "format": "csv"
+    "format": "csv",
+    "profile": "frictionless-tabular",
+    "schema": {
+      "primaryKey": "alpha3",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "title": "Country name",
+          "description": "Common English short name of the country.",
+          "constraints": { "required": true }
+        },
+        {
+          "name": "alpha2",
+          "type": "string",
+          "title": "Alpha-2 code",
+          "description": "ISO 3166-1 alpha-2 two-letter code.",
+          "constraints": { "required": true, "unique": true, "pattern": "^[A-Z]{2}$" }
+        },
+        {
+          "name": "alpha3",
+          "type": "string",
+          "title": "Alpha-3 code",
+          "description": "ISO 3166-1 alpha-3 three-letter code.",
+          "constraints": { "required": true, "unique": true, "pattern": "^[A-Z]{3}$" }
+        }
+      ]
+    },
+    "licenses": [
+      {
+        "name": "ODbL-1.0",
+        "title": "Open Data Commons Open Database License 1.0",
+        "path": "https://opendatacommons.org/licenses/odbl/1-0/"
+      }
+    ],
+    "sources": [
+      {
+        "title": "ISO 3166-1",
+        "path": "https://www.iso.org/iso-3166-country-codes.html"
+      }
+    ],
+    "keywords": ["countries", "iso", "reference"],
+    "version": "1.0.0"
   },
   {
     "slug": "population-2022",

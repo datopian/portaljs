@@ -6,6 +6,8 @@
 // OpenMetadata, a git-LFS + object-store source) implement the same interface, so
 // swapping where data comes from never touches a page.
 
+import type { License, Source, TableSchema } from '../metadata/types'
+
 export type Dataset = {
   slug: string
   namespace: string
@@ -13,6 +15,25 @@ export type Dataset = {
   description?: string
   file: string
   format: 'csv' | 'tsv' | 'json' | 'geojson'
+
+  // --- metadata-profile contract (lib/metadata) ---
+  // How this dataset's schema + descriptive metadata are authored and surfaced.
+  // All optional: a dataset with none still lists and previews — the showcase
+  // degrades cleanly. A backend provider maps its native metadata onto these.
+  //
+  // MetadataProfile id (defaults to the L0 'frictionless-tabular'); surfaces
+  // resolve it via getProfile().
+  profile?: string
+  // Frictionless Table Schema — the field-level contract, rendered as a
+  // column/type/description table on the showcase.
+  schema?: TableSchema
+  // Data Package descriptor fields a catalog surfaces.
+  licenses?: License[]
+  sources?: Source[]
+  keywords?: string[]
+  created?: string
+  modified?: string
+  version?: string
 }
 
 // A discovery query against the catalog. The static provider filters in memory;
