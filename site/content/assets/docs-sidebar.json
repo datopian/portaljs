@@ -61,6 +61,10 @@
         "href": "/docs/skills/connect-ckan"
       },
       {
+        "title": "/define-schema",
+        "href": "/docs/skills/define-schema"
+      },
+      {
         "title": "/deploy",
         "href": "/docs/skills/deploy"
       }

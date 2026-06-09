@@ -78,4 +78,4 @@ Force a target, or promote a preview to production:
 - **[`/connect-ckan`](/docs/skills/connect-ckan)** — point the portal at a live
   backend before deploying.
 
-<DocsPagination prev="/docs/skills/connect-ckan" />
+<DocsPagination prev="/docs/skills/define-schema" />
