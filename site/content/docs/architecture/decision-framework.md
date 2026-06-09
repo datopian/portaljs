@@ -91,8 +91,9 @@ a laptop with DuckDB reading Parquet directly — no cluster, no warehouse. The 
 scan/join/aggregate happens locally (or at the edge in a Worker); the warehouse, if it's
 in the picture at all, only **stores the small answer**. Recurring compute cost →
 effectively **zero**. This is exactly PortalJS's compute slot: DuckDB-Wasm in the
-browser, escalating to server-side DuckDB only when data size forces it — never a
-per-query warehouse charge for what a reader filters or aggregates.
+browser, escalating to server-side DuckDB only when data size forces it — avoiding
+warehouse per-scan charges for reader-driven filtering/aggregation, while still paying
+normal runtime compute where the query executes.
 
 **Open formats + object storage = no lock-in.** Parquet on S3-compatible storage (R2 by
 default) is portable; you rent **storage** (cheap, flat) rather than **per-query compute**
