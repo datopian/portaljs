@@ -15,6 +15,15 @@ export type { Dataset } from './providers'
 // metadata label ("Theme" vs "Owner") — the URL is always /@<namespace>/<slug>.
 export const NAMESPACE_TYPE: 'theme' | 'owner' = 'theme'
 
+// The compute engine for a dataset's data on its showcase page:
+//   'flat'   — fetch the file and preview it (papaparse). Lightest; the default.
+//   'duckdb' — load the file into in-browser DuckDB-Wasm and expose a SQL query
+//              view (filter/aggregate/join over CSV/Parquet, no server).
+// This is the "compute" slot on the storage+compute spectrum (see ROADMAP.md);
+// `/architect` flips it to 'duckdb' when the portal needs querying, not just
+// preview. DuckDB only loads in the browser and only when a showcase renders.
+export const DATA_QUERY: 'flat' | 'duckdb' = 'flat'
+
 // Canonical URL for a dataset's showcase page. Datasets are namespaced under `@`
 // so they never collide with regular content/static pages (which never start
 // with `@`). See README for the routing rationale.

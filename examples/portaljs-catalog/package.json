@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@duckdb/duckdb-wasm": "^1.32.0",
     "@heroicons/react": "^2.0.0",
     "@tanstack/react-table": "^8.21.0",
     "next": "14.2.35",

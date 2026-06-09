@@ -1,9 +1,17 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import { Table } from '../../components/Table'
-import { NAMESPACE_TYPE, type Dataset } from '../../lib/datasets'
+import { DATA_QUERY, NAMESPACE_TYPE, type Dataset } from '../../lib/datasets'
 import { provider } from '../../lib/providers'
+
+// DuckDB only runs in the browser, so load the query view client-side. The chunk
+// (and DuckDB-Wasm) is only fetched when DATA_QUERY === 'duckdb' and a showcase
+// actually renders it — flat portals never pay for it.
+const DataExplorer = dynamic(() => import('../../components/DataExplorer'), {
+  ssr: false,
+})
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const datasets = await provider.listDatasets()
@@ -76,8 +84,11 @@ export default function DatasetPage({ dataset }: { dataset: Dataset }) {
           </div>
         </dl>
 
-        {/* Data preview */}
-        {tabular ? (
+        {/* Data preview — flat <Table /> by default, or a DuckDB-Wasm SQL
+            query view when the portal's DATA_QUERY engine is 'duckdb'. */}
+        {tabular && DATA_QUERY === 'duckdb' ? (
+          <DataExplorer dataset={dataset} />
+        ) : tabular ? (
           <Table url={url} fullWidth />
         ) : (
           <p className="text-gray-500">
