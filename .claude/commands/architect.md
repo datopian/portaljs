@@ -159,7 +159,7 @@ Map the brief to concrete next commands and offer to run the first one:
 | Charts / maps on a showcase | `/add-chart` · `/add-map` |
 | Backend with RBAC / existing CKAN | `/connect-ckan` |
 | OpenMetadata backend | `/connect-openmetadata` *(planned)* |
-| Custom / extended / DCAT metadata | `/define-schema` *(planned)* |
+| Custom / extended / DCAT metadata | `/define-schema` — describe a dataset's fields + metadata (Frictionless; DCAT export built later) |
 | Ship it | `/deploy` (Cloudflare Pages, or Workers for the runtime mode) |
 
 End by recommending the exact sequence, e.g.:

@@ -14,6 +14,7 @@ SKILLS=(
   add-chart
   add-map
   connect-ckan
+  define-schema
   deploy
   check-data-quality
 )

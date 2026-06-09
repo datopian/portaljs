@@ -1,0 +1,1 @@
+I've added a few CSV datasets to my portal but the dataset pages just show a plain table. I want to properly describe each column — its type, what it means, which ones are required — and add a license and the source it came from, so the page shows a real field reference. Can you set that up from the data?

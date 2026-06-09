@@ -18,14 +18,15 @@ portal. You describe intent; the skill writes the code.
   [`/new-portal`](/docs/skills/new-portal), load data with
   [`/add-dataset`](/docs/skills/add-dataset), enrich with
   [`/add-chart`](/docs/skills/add-chart) or [`/add-map`](/docs/skills/add-map),
-  swap the data source with [`/connect-ckan`](/docs/skills/connect-ckan), and go
-  live with [`/deploy`](/docs/skills/deploy).
+  describe it with [`/define-schema`](/docs/skills/define-schema), swap the data
+  source with [`/connect-ckan`](/docs/skills/connect-ckan), and go live with
+  [`/deploy`](/docs/skills/deploy).
 - **Plain, editable output.** Every skill writes ordinary Next.js, Tailwind, and
   React code into your project — no magic runtime interpreting a config at request
   time, nothing feature-gated behind a hosted product. You can clone, fork, and
   hand-edit everything they produce. This is what _AI-native, not AI-only_ means.
 
-## The six skills
+## The skills
 
 | Skill | What it does |
 | ----- | ------------ |
@@ -34,6 +35,7 @@ portal. You describe intent; the skill writes the code.
 | [`/add-chart`](/docs/skills/add-chart) | Add a line, bar, area, pie, or scatter chart to a dataset page using `recharts`. |
 | [`/add-map`](/docs/skills/add-map) | Render a GeoJSON dataset on an interactive Leaflet map and register it on the home page. |
 | [`/connect-ckan`](/docs/skills/connect-ckan) | Wire the portal to a [CKAN](/ckan) backend over its API instead of static files. |
+| [`/define-schema`](/docs/skills/define-schema) | Infer a Frictionless Table Schema from a dataset's data, add license/source/keyword metadata, and surface a typed field table on its showcase. |
 | [`/deploy`](/docs/skills/deploy) | Build and publish the portal to Vercel or any static host — with a live URL at the end. |
 
 ## Author your own
