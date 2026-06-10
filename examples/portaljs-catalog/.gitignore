@@ -3,3 +3,6 @@ node_modules/
 .env
 .env.local
 out/
+
+# Generated DCAT harvest document (npm run generate:dcat → predev/prebuild)
+public/catalog.jsonld
