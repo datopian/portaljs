@@ -9,7 +9,7 @@ tags:
   - ETL
   - API
   - Guide
-image: "/static/img/blog/2026-01-22-keep-your-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api/api-docs.png"
+image: "/static/img/blog/2026-01-22-keep-your-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api/hero.png"
 filetype: 'blog'
 ---
 
