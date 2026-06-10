@@ -7,7 +7,7 @@ tags:
   - PortalJS
   - data portals
   - OpenMetadata
-image: "/static/img/blog/2026-01-09-turning-openmetadata-into-a-user-friendly-data-portal-with-portaljs/portaljs-search-page.png"
+image: "/static/img/blog/2026-01-09-turning-openmetadata-into-a-user-friendly-data-portal-with-portaljs/hero.png"
 filetype: 'blog'
 ---
 
