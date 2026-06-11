@@ -5,7 +5,7 @@ title: A Global Transport Hub - Building a shared, open data infrastructure for 
 metatitle: Transport Data Commons Open Data Portal Built with PortalJS and CKAN
 metaDescription: See how Transport Data Commons used PortalJS and CKAN to launch a global open data portal—automating ingestion, standardizing SDMX metadata, and improving data access.
 description: We helped the Transport Data Commons (TDC) transform fragmented transport and sustainability data into a unified, public-facing portal. Using CKAN and PortalJS, we built a user-friendly platform that standardizes metadata, automates data ingestion, and enables seamless access and collaboration across 30+ global organizations.
-image: /static/img/showcases/2025-06-06-TDC/featured-image.jpg
+image: /static/img/showcases/2025-06-06-TDC/tdc-hero.png
 images:
   ["/static/img/showcases/2025-06-06-TDC/image1.png","/static/img/showcases/2025-06-06-TDC/image2.png","/static/img/showcases/2025-06-06-TDC/image3.png","/static/img/showcases/2025-06-06-TDC/image4.png","/static/img/showcases/2025-06-06-TDC/image5.png"]
 authors: ['williamlima']
