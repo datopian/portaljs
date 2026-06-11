@@ -21,6 +21,32 @@
 
 ---
 
+## Quickstart
+
+**Build one with your AI assistant** — the PortalJS way. In a [Claude Code](https://claude.com/claude-code) session:
+
+```bash
+git clone https://github.com/datopian/portaljs && cd portaljs && claude
+# then, in the session:
+/new-portal   "Auckland Council open data portal"
+```
+
+`/new-portal` scaffolds the three surfaces; `/add-dataset` loads your data; `/architect`
+picks an architecture first if you're unsure. No install step — Claude Code auto-discovers
+the skills. ([Install them anywhere →](.claude/INSTALL.md))
+
+**Or run the template directly** — plain Next.js, no account, no lock-in:
+
+```bash
+npx tiged datopian/portaljs/examples/portaljs-catalog my-portal
+cd my-portal && npm install && npm run dev      # → http://localhost:3000
+```
+
+You get Home, a Catalog (`/search`), and a dataset Showcase (`/@<namespace>/<slug>`) over
+sample data. Add your own CSV/JSON to `datasets.json` and it renders automatically.
+
+⭐ If it's useful, a star helps others find it.
+
 ## Why PortalJS
 
 Building a data portal has always meant more than a website. You have to decide where
