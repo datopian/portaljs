@@ -12,7 +12,10 @@ export function parseCsv(csv: string) {
   })
   const rows = (result.data as Record<string, string>[]) ?? []
   const fields = (result.meta.fields ?? []).map((f) => ({ key: f, name: f }))
-  if (rows.length === 0 || fields.length === 0) {
+  // Throw only when NOTHING parsed (no header AND no rows). A header with zero
+  // data rows still returns its fields, so the table renders columns + an empty
+  // state rather than erroring.
+  if (rows.length === 0 && fields.length === 0) {
     const msg = result.errors.map((e) => `row ${e.row ?? '?'}: ${e.message}`).join('; ')
     throw new Error(`CSV parse error — ${msg || 'no rows parsed'}`)
   }
