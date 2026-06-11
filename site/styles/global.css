@@ -18,10 +18,12 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: var(--font-roco), -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   overflow-x: hidden;
-  background-color: #1e293b;
+  /* Light-only site: the previous #1e293b (dark slate) was a pre-redesign
+     leftover that showed through on short pages and overscroll. */
+  background-color: #ffffff;
 }
 
 /* mathjax */

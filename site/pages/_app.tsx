@@ -109,7 +109,7 @@ function MyApp({ Component, pageProps }) {
         </>
       )}
       <PostHogProvider client={posthog}>
-        <main className={` font-sans`}>
+        <main className={`${RobotoCondensed.variable} font-sans`}>
           <Component {...pageProps} />
         </main>
       </PostHogProvider>
