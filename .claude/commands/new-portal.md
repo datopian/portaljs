@@ -155,9 +155,10 @@ fi
 ```
 
 If the remote fetch fails (bad ref, network, or tiged unavailable), tell the user plainly
-and ask how to proceed (retry / different ref / check network) — requires Node.js >=18 so
-`npx tiged` is available. If running locally and the variant directory is missing, tell
-the user the local checkout is out of date and offer to fetch remotely instead.
+and ask how to proceed (retry / different ref / check network). The scaffolded portal
+(Next.js) requires **Node.js >=18**; `npx tiged` itself runs on older Node, but use >=18
+to match the template. If running locally and the variant directory is missing, tell the
+user the local checkout is out of date and offer to fetch remotely instead.
 
 ### 5. Substitute placeholder tokens
 
