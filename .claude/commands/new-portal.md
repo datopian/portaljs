@@ -145,15 +145,20 @@ if [ "$TEMPLATE_MODE" = "local" ]; then
   # Remove build artifacts that must not be copied
   rm -rf "./$PROJECT_SLUG/node_modules" "./$PROJECT_SLUG/.next"
 else
-  # degit fetches a subdirectory of a repo with no git history or node_modules.
-  npx --yes degit "datopian/portaljs/$TEMPLATE_VARIANT#$PORTALJS_TEMPLATE_REF" "./$PROJECT_SLUG"
+  # tiged (maintained degit fork) fetches a subdirectory of a repo with no git
+  # history or node_modules. NOTE: plain `degit` is NOT reliable here — when its
+  # tarball fetch fails it silently falls back to a full `git clone` that ignores
+  # the subdirectory, dropping the WHOLE monorepo into the target (exit 0). tiged
+  # extracts the subdirectory correctly.
+  npx --yes tiged "datopian/portaljs/$TEMPLATE_VARIANT#$PORTALJS_TEMPLATE_REF" "./$PROJECT_SLUG"
 fi
 ```
 
-If the remote fetch fails (bad ref, network, or degit unavailable), tell the user plainly
-and ask how to proceed (retry / different ref / check network) — requires Node.js >=18 so
-`npx degit` is available. If running locally and the variant directory is missing, tell
-the user the local checkout is out of date and offer to fetch remotely instead.
+If the remote fetch fails (bad ref, network, or tiged unavailable), tell the user plainly
+and ask how to proceed (retry / different ref / check network). The scaffolded portal
+(Next.js) requires **Node.js >=18**; `npx tiged` itself runs on older Node, but use >=18
+to match the template. If running locally and the variant directory is missing, tell the
+user the local checkout is out of date and offer to fetch remotely instead.
 
 ### 5. Substitute placeholder tokens
 

@@ -16,11 +16,11 @@ the same project by hand. This page shows how.
 
 ## 1. Get the template
 
-Grab the canonical catalog template with [degit](https://github.com/Rich-Harris/degit)
-(no git history, just the files):
+Grab the canonical catalog template with [tiged](https://github.com/tiged/tiged)
+(a maintained `degit` fork that reliably extracts the subdirectory — no git history, just the files):
 
 ```bash
-npx degit datopian/portaljs/examples/portaljs-catalog my-portal
+npx tiged datopian/portaljs/examples/portaljs-catalog my-portal
 cd my-portal
 npm install
 npm run dev

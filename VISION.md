@@ -30,7 +30,7 @@ And scaffolding is only the start. The same model — describe intent, get plain
 
 ### Next — make skills installable anywhere
 Today the skills are **repo-local**: they run from inside a clone of this repo because `/new-portal` resolves the template via `git rev-parse --show-toplevel`. To let users run them from any project:
-- [x] Fetch the template remotely (`npx degit`) instead of from the local checkout, so `/new-portal` works outside this repo
+- [x] Fetch the template remotely (`npx tiged`) instead of from the local checkout, so `/new-portal` works outside this repo
 - [x] Support installing the commands into `~/.claude/commands/` (personal scope), with docs ([`.claude/INSTALL.md`](.claude/INSTALL.md))
 - [x] Package the skills + template as a distributable Claude Code plugin (`.claude-plugin/`)
 
