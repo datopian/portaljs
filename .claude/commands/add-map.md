@@ -286,17 +286,21 @@ view-dispatch block, **extend** that block with another `dataset.namespace === �
 dataset.slug === …` branch (or add the `<Map />` alongside an existing `<Chart />` for the
 same dataset) rather than overwriting it.
 
-### 7. Verify the build
+### 7. Verify
+
+Type-check (do NOT run `next build` here). `next build` writes to `.next/`, the same
+directory a running `npm run dev` uses — building over a live dev server corrupts it.
+`tsc` writes nothing to `.next/`, so it's safe while the user's portal is running:
 
 ```bash
 cd PORTAL_DIR
-npx next build > /tmp/add-map-build.log 2>&1
-BUILD_EXIT=$?
-tail -20 /tmp/add-map-build.log
+npx tsc --noEmit > /tmp/add-map-verify.log 2>&1
+VERIFY_EXIT=$?
+tail -20 /tmp/add-map-verify.log
 ```
 
-If `BUILD_EXIT` is non-zero, print the log and fix the error before reporting success.
-Do not report success while the build is failing.
+If `VERIFY_EXIT` is non-zero, print the log and fix the error before reporting success.
+Do not report success while type-checking still fails.
 
 ### 8. Report success
 
