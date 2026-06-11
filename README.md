@@ -130,7 +130,7 @@ have a portal.
 not a requirement:
 
 ```bash
-npx degit datopian/portaljs/examples/portaljs-catalog my-portal
+npx tiged datopian/portaljs/examples/portaljs-catalog my-portal
 ```
 
 ### Available skills

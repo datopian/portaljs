@@ -42,10 +42,10 @@ the URL is always `/@<namespace>/<slug>`. See [Core concepts](/docs/core-concept
 the rationale. [`/add-dataset`](/docs/skills/add-dataset) appends a manifest entry
 against this template.
 
-Clone it by hand with [degit](https://github.com/Rich-Harris/degit):
+Clone it by hand with [tiged](https://github.com/tiged/tiged) (a maintained `degit` fork that reliably extracts a subdirectory):
 
 ```bash
-npx degit datopian/portaljs/examples/portaljs-catalog my-portal
+npx tiged datopian/portaljs/examples/portaljs-catalog my-portal
 ```
 
 ## Minimal variant — single page
@@ -56,7 +56,7 @@ no catalog, no per-dataset pages. Use it when you want a single landing page and
 add structure yourself, or as the smallest possible base to build on.
 
 ```bash
-npx degit datopian/portaljs/examples/portaljs-template my-portal
+npx tiged datopian/portaljs/examples/portaljs-template my-portal
 ```
 
 ## Which should I use?
