@@ -240,17 +240,21 @@ and network access before retrying.
 
 ### 9. Verify scaffold-ready
 
-Capture build output and exit code separately so a failure is never silently missed:
+Type-check (do NOT run `next build` here). `next build` writes to `.next/`, the same
+directory a running `npm run dev` uses — building over a live dev server corrupts it
+(the portal then 404s its own chunks). The normal flow is "scaffold → `npm run dev` to
+watch it → keep adding datasets," so verify with `tsc`, which writes nothing to `.next/`:
 
 ```bash
 cd "./$PROJECT_SLUG"
-npx next build > /tmp/next-build.log 2>&1
-BUILD_EXIT=$?
-tail -20 /tmp/next-build.log
+npx tsc --noEmit > /tmp/new-portal-verify.log 2>&1
+VERIFY_EXIT=$?
+tail -20 /tmp/new-portal-verify.log
 ```
 
-If `BUILD_EXIT` is non-zero, print the full log and fix the error before reporting
-success. Do not report success while the build is still failing.
+If `VERIFY_EXIT` is non-zero, print the log and fix the error before reporting success.
+Do not report success while type-checking still fails. (A full `next build` happens in
+`/deploy`, which guards against a running dev server.)
 
 ### 10. Report success
 
