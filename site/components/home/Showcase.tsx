@@ -18,7 +18,7 @@ const portals = [
     title: 'Transport Data Commons',
     subtitle: 'Shared open-data infrastructure for transport',
     href: 'https://portal.transport-data.org/',
-    image: '/static/img/showcases/2025-06-06-TDC/featured-image.jpg',
+    image: '/static/img/showcases/2025-06-06-TDC/tdc-hero.png',
   },
   {
     title: 'Open Data Nepal',
