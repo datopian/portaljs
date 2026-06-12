@@ -1,4 +1,3 @@
-import ShowCaseMobile from './ShowCaseMobile'
 import ShowcasesItem from './ShowcasesItem'
 
 export const dataPortals = [
@@ -219,21 +218,10 @@ export default function Showcases() {
           </p>
         </div>
       </div>
-      <div className="not-prose my-12 grid grid-cols-1 gap-6 lg:gap-12 md:grid-cols-2">
-        {dataPortals.map((item) => {
-          return (
-            <div className="hidden sm:block" key={item.title}>
-              <ShowcasesItem item={item} />
-            </div>
-          )
-        })}
-        {dataPortals.map((item) => {
-          return (
-            <div className="sm:hidden" key={item.title}>
-              <ShowCaseMobile item={item} />
-            </div>
-          )
-        })}
+      <div className="not-prose my-12 grid grid-cols-1 gap-[22px] sm:grid-cols-2">
+        {dataPortals.map((item) => (
+          <ShowcasesItem item={item} key={item.title} />
+        ))}
       </div>
     </div>
   )
