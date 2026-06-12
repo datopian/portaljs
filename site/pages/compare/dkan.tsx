@@ -1,4 +1,5 @@
 import Layout from '@/components/Layout'
+import SocialProofStrip from '@/components/SocialProofStrip'
 import Schedule from '@/components/home/Schedule'
 import { OrganizationJsonLd, BreadcrumbJsonLd } from 'next-seo';
 import { generateNextSeo } from 'next-seo/pages';
@@ -259,32 +260,7 @@ export default function PortalJSvsDKAN() {
       </div>
 
       {/* Social Proof Section */}
-      <div className="text-center max-w-full mx-auto py-24 px-4 sm:px-6 lg:px-8 w-full">
-        <h2 className="text-base font-semibold text-theme-orange uppercase tracking-wide opacity-75">
-          Trusted by leading organizations worldwide
-        </h2>
-        <div className="max-w-8xl flex justify-center mt-5" tabIndex={0}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 justify-center items-center gap-x-4 gap-y-5 w-full mt-6">
-            {socialProofLogos.map((logo) => (
-              <Link
-                className="flex items-center justify-center w-full h-full max-h-24 p-2 opacity-75 hover:opacity-100 transition-all duration-300"
-                key={logo.name}
-                title={logo.name}
-                href={logo.url}
-              >
-                <Image
-                  className={`h-auto grayscale`}
-                  src={logo.src}
-                  alt={`${logo.name} Logo`}
-                  title={logo.name}
-                  height={100}
-                  width={logo.width}
-                />
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
+      <SocialProofStrip logos={socialProofLogos} />
 
       {/* Testimonials Section */}
       <div className="w-full bg-slate-50 dark:bg-slate-900">
