@@ -9,7 +9,7 @@ export default function SocialProof() {
       srcDark: '/static/img/social-proof/TDC_logo.svg',
       srcLight: '/static/img/social-proof/TDC_logo.svg',
       url: 'https://portal.transport-data.org/',
-      style: '',
+      style: 'grayscale',
       width: 240,
     },
     {
@@ -17,7 +17,7 @@ export default function SocialProof() {
       srcDark: '/static/img/social-proof/dx-connect-find.svg',
       srcLight: '/static/img/social-proof/dx-connect-find.svg',
       url: 'https://finddx.portaljs.com/',
-      style: '',
+      style: 'grayscale',
       width: 170,
     },
     {
@@ -25,7 +25,7 @@ export default function SocialProof() {
       srcDark: '/static/img/social-proof/sse-logo-white.png',
       srcLight: '/static/img/social-proof/sse-logo-white.png',
       url: 'https://data.ssen.co.uk/',
-      style: 'max-h-28 invert',
+      style: 'max-h-28 grayscale invert',
       width: 200,
     },
     {
@@ -34,7 +34,7 @@ export default function SocialProof() {
       srcLight: '/static/img/social-proof/usyd-dark.svg',
       url: 'https://www.idpo.org.au',
       // White-on-transparent asset — invert so it reads as dark on the light bg.
-      style: 'invert',
+      style: 'grayscale invert',
       width: 115,
     },
     {
@@ -42,7 +42,7 @@ export default function SocialProof() {
       srcDark: '/static/img/social-proof/uae_moei_eng-logo.png',
       srcLight: '/static/img/social-proof/uae_moei_eng-logo.png',
       url: 'https://opendata.moei.gov.ae/',
-      style: '',
+      style: 'grayscale',
       width: 230,
     },
     {
@@ -51,7 +51,7 @@ export default function SocialProof() {
         '/static/img/social-proof/Marcus_Institute_HMS_vertical-grey-transparent.png',
       srcLight: '/static/img/social-proof/Marcus_Institute_HMS-light.png',
       url: 'https://data.hsl.harvard.edu/',
-      style: '',
+      style: 'grayscale',
       width: 200,
     },
     {
@@ -59,7 +59,7 @@ export default function SocialProof() {
       srcDark: '/static/img/social-proof/Open-Data-Northern-Ireland-grey.png',
       srcLight: '/static/img/social-proof/Open-Data-Northern-Ireland-light.png',
       url: 'https://www.opendatani.gov.uk/',
-      style: '',
+      style: 'grayscale',
       width: 180,
     },
     {
@@ -68,7 +68,7 @@ export default function SocialProof() {
       srcLight: '/static/img/social-proof/hounslow-light.svg',
       url: 'https://data.hounslow.gov.uk',
       // White-on-transparent asset — invert so it reads as dark on the light bg.
-      style: 'invert',
+      style: 'grayscale invert',
       width: 200,
     },
   ]
@@ -83,7 +83,7 @@ export default function SocialProof() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-center items-center gap-x-4 gap-y-5 w-full mt-6">
           {logos.map((logo, index) => (
             <Link
-              className="flex items-center justify-center w-full h-full max-h-24 p-2 opacity-100 transition-all duration-300"
+              className="flex items-center justify-center w-full h-full max-h-24 p-2 opacity-70 hover:opacity-100 transition-all duration-300"
               key={logo.srcDark + index}
               title={logo.name}
               href={logo.url}
