@@ -85,7 +85,7 @@ export const dataPortals = [
     title: 'Transport Data Commons',
     subtitle: 'A Global Transport Hub - Building a shared, open data infrastructure for 30+ transport organizations.',
     href: 'https://portal.transport-data.org/',
-    image: '/static/img/showcases/2025-06-06-TDC/featured-image.jpg',
+    image: '/static/img/showcases/2025-06-06-TDC/tdc-hero.png',
     description:
       'Transport Data Commons aims to improve access, sharing, and analysing transportation data for a more sustainable future.',
     sourceUrl: 'https://github.com/transport-data/portal',
