@@ -33,7 +33,8 @@ export default function SocialProof() {
       srcDark: '/static/img/social-proof/UNIOFSY.png',
       srcLight: '/static/img/social-proof/usyd-dark.svg',
       url: 'https://www.idpo.org.au',
-      style: '',
+      // White-on-transparent asset — invert so it reads as dark on the light bg.
+      style: 'invert',
       width: 115,
     },
     {
@@ -66,7 +67,8 @@ export default function SocialProof() {
       srcDark: '/static/img/social-proof/hounslow.svg',
       srcLight: '/static/img/social-proof/hounslow-light.svg',
       url: 'https://data.hounslow.gov.uk',
-      style: '',
+      // White-on-transparent asset — invert so it reads as dark on the light bg.
+      style: 'invert',
       width: 200,
     },
   ]
