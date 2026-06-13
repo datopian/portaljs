@@ -18,9 +18,10 @@ instead.
 
 ## 1. Install the skills
 
-The skills are Claude Code commands — `/new-portal`, `/add-dataset`, `/add-chart`,
-`/add-map`, `/connect-ckan`, `/deploy`. Install them once into your personal scope
-so they're available in every project:
+The skills are Claude Code commands — `/architect`, `/new-portal`, `/add-dataset`,
+`/add-chart`, `/add-map`, `/connect-ckan`, `/define-schema`, `/deploy`, and
+`/check-data-quality`. Install them all once into your personal scope so they're
+available in every project:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/datopian/portaljs/main/scripts/install-portaljs-skills.sh | bash
@@ -42,7 +43,7 @@ In Claude Code, describe the portal you want:
 /new-portal Auckland Council Open Data Portal — public datasets for the Auckland region
 ```
 
-`/new-portal` copies the canonical lightweight template, substitutes your project
+`/new-portal` fetches the latest canonical catalog template, substitutes your project
 name and description, installs dependencies, and verifies the build. You get a
 real Next.js project — plain, editable code you own.
 
