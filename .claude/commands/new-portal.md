@@ -104,21 +104,33 @@ Derive `PROJECT_SLUG` from `PROJECT_NAME` (lowercase, hyphenated, no special cha
 ### 3. Resolve the template source
 
 This skill works **both inside a clone of the portaljs repo and from any other project**.
-It prefers a local checkout (fast, offline, matches your working tree) and otherwise
-fetches the template remotely from GitHub. The default — and currently only — variant is
-`examples/portaljs-catalog`.
+**Default to fetching the template remotely (always the latest).** Use a local checkout
+only when you are genuinely inside an up-to-date portaljs repo AND not scaffolding into it.
+The default — and currently only — variant is `examples/portaljs-catalog`.
 
 ```bash
 TEMPLATE_VARIANT="examples/portaljs-catalog"
 
-# Prefer a local checkout; fall back to remote fetch from GitHub.
-if GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) && [ -d "$GIT_ROOT/$TEMPLATE_VARIANT" ]; then
-  TEMPLATE_MODE="local"
-  TEMPLATE_DIR="$GIT_ROOT/$TEMPLATE_VARIANT"
-else
-  TEMPLATE_MODE="remote"
-  # Override the ref (branch, tag, or commit) with PORTALJS_TEMPLATE_REF; defaults to main.
-  PORTALJS_TEMPLATE_REF="${PORTALJS_TEMPLATE_REF:-main}"
+# Default: fetch the latest template from GitHub. Override the ref with
+# PORTALJS_TEMPLATE_REF (branch, tag, or commit); defaults to main.
+TEMPLATE_MODE="remote"
+PORTALJS_TEMPLATE_REF="${PORTALJS_TEMPLATE_REF:-main}"
+
+# Use a LOCAL checkout only when BOTH hold (otherwise stay remote):
+#  1. the resolved repo has the CURRENT template — verified by the @-namespaced
+#     route file pages/[owner]/[slug].tsx. An old clone without it would scaffold a
+#     stale, non-namespaced portal (pages/datasets/[slug].tsx) — issue #1556.
+#  2. we are NOT scaffolding inside that repo (never create a portal inside the
+#     framework repo itself).
+if GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) \
+   && [ -f "$GIT_ROOT/$TEMPLATE_VARIANT/pages/[owner]/[slug].tsx" ]; then
+  case "$(pwd)/" in
+    "$GIT_ROOT/"*)
+      echo "Inside the portaljs repo — fetching the template remotely instead of copying in place." ;;
+    *)
+      TEMPLATE_MODE="local"
+      TEMPLATE_DIR="$GIT_ROOT/$TEMPLATE_VARIANT" ;;
+  esac
 fi
 ```
 
@@ -157,8 +169,9 @@ fi
 If the remote fetch fails (bad ref, network, or tiged unavailable), tell the user plainly
 and ask how to proceed (retry / different ref / check network). The scaffolded portal
 (Next.js) requires **Node.js >=18**; `npx tiged` itself runs on older Node, but use >=18
-to match the template. If running locally and the variant directory is missing, tell the
-user the local checkout is out of date and offer to fetch remotely instead.
+to match the template. (The resolver already defaults to remote when no current local
+template is found, so a missing or stale local checkout falls through to the latest
+template automatically.)
 
 ### 5. Substitute placeholder tokens
 
