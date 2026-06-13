@@ -15,6 +15,12 @@ framework wiring.
 Use this for the "decoupled / any backend" path: the user has a CKAN data management
 system (their own or a public one) and wants a browseable portal in front of it.
 
+**You can run this right after `/new-portal`.** A fresh portal ships with a few sample
+datasets so it builds and renders immediately — you do NOT need to hand-author a static
+dataset list first. If the user says up front they want a CKAN backend, scaffold with the
+sample data, then run `/connect-ckan` to swap the source over to CKAN. Only a CKAN base
+URL is required.
+
 The generated pages fetch CKAN **server-side** in `getStaticProps`/`getStaticPaths`, so
 the `@portaljs/ckan` bundle never reaches the browser — the client stays lean and the
 site can be statically deployed.

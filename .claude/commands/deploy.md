@@ -1,5 +1,5 @@
 ---
-description: One-shot deploy of a PortalJS portal to Vercel or static hosting. Detects the target, builds, and publishes — with a live URL at the end.
+description: One-shot deploy of a PortalJS portal to Cloudflare Pages (recommended), Vercel, or any static host. Detects the target, builds, and publishes — with a live URL at the end.
 allowed-tools: Read, Write, Edit, Bash
 ---
 
@@ -7,8 +7,10 @@ allowed-tools: Read, Write, Edit, Bash
 
 Deploy an existing PortalJS portal in one shot. Two targets:
 
-- **`vercel`** — push to Vercel via the `vercel` CLI. Handles SSR/ISR natively, gives a live `*.vercel.app` URL (or your custom domain). Best default for portals that may grow server-side features.
-- **`static`** — build a fully static site (`next export` → `out/`) suitable for any static host: GitHub Pages, Netlify drop, S3 + CloudFront, Cloudflare Pages, plain nginx. No server required.
+- **`vercel`** — push to Vercel via the `vercel` CLI. Handles SSR/ISR natively, gives a live `*.vercel.app` URL (or your custom domain). Zero-config if the user already has the Vercel CLI, so the skill may auto-detect it.
+- **`static`** — build a fully static site (`next export` → `out/`) for any static host: **Cloudflare Pages** (`npx wrangler pages deploy out`), GitHub Pages, Netlify, S3 + CloudFront, plain nginx. No server required.
+
+> **Recommended host: Cloudflare Pages** (the `static` target). PortalJS's architecture docs default to a static-first, S3-compatible, no-lock-in stack on Cloudflare (Pages for static; Workers for the opt-in runtime). Vercel is offered as a convenient SSR option, not the recommended production default — if the skill auto-detects Vercel (because the CLI is installed) it will say so before proceeding, and you can choose `static` + Cloudflare instead. A first-class managed/bring-your-own Cloudflare deploy flow is on the roadmap.
 
 This skill builds, verifies the build passes, and either publishes (Vercel) or produces a ready-to-upload `out/` directory (static). It never reports success on a failing build.
 
