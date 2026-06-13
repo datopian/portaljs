@@ -1,0 +1,35 @@
+{
+  "name": "create-portaljs",
+  "version": "0.1.0",
+  "description": "Scaffold a PortalJS data portal — npm create portaljs@latest",
+  "type": "module",
+  "bin": {
+    "create-portaljs": "index.mjs"
+  },
+  "files": [
+    "index.mjs",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "portaljs",
+    "data-portal",
+    "create",
+    "scaffold",
+    "cli",
+    "nextjs"
+  ],
+  "homepage": "https://github.com/datopian/portaljs/tree/main/packages/create-portaljs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/datopian/portaljs.git",
+    "directory": "packages/create-portaljs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "giget": "^1.2.3",
+    "prompts": "^2.4.2"
+  }
+}
