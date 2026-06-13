@@ -23,19 +23,26 @@
 
 ## Quickstart
 
-**Build one with your AI assistant** — the PortalJS way. In a [Claude Code](https://claude.com/claude-code) session:
+**Build one with your AI assistant** — the recommended path. Install the skills once,
+then create portals from **any directory** (not inside this repo):
 
 ```bash
-git clone https://github.com/datopian/portaljs && cd portaljs && claude
-# then, in the session:
-/new-portal   "Auckland Council open data portal"
+# 1. Install the PortalJS skills (once) — into ~/.claude/commands
+curl -fsSL https://raw.githubusercontent.com/datopian/portaljs/main/scripts/install-portaljs-skills.sh | bash
 ```
 
-`/new-portal` scaffolds the three surfaces; `/add-dataset` loads your data; `/architect`
-picks an architecture first if you're unsure. No install step — Claude Code auto-discovers
-the skills. ([Install them anywhere →](.claude/INSTALL.md))
+Then, from a fresh working directory, in a [Claude Code](https://claude.com/claude-code) session:
 
-**Or run the template directly** — plain Next.js, no account, no lock-in:
+```text
+/new-portal   "Auckland Council open data portal"
+/add-dataset  ./data/air-quality.csv
+```
+
+`/new-portal` fetches the latest template and scaffolds the three surfaces; `/add-dataset`
+loads your data; `/architect` picks an architecture first if you're unsure; `/connect-ckan`
+points it at a CKAN backend. ([Install details + all skills →](.claude/INSTALL.md))
+
+**Or build by hand** — plain Next.js, no AI, no lock-in:
 
 ```bash
 npx tiged datopian/portaljs/examples/portaljs-catalog my-portal
