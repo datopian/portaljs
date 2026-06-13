@@ -64,5 +64,35 @@
     "description": "Tonnes of CO₂ emitted per person for a sample of countries.",
     "file": "co2-emissions.csv",
     "format": "csv"
+  },
+  {
+    "slug": "country-indicators",
+    "namespace": "reference",
+    "name": "Country Indicators (bundle)",
+    "description": "A multi-resource dataset: reference codes plus population and CO₂ indicators for a sample of countries.",
+    "keywords": ["countries", "reference", "indicators"],
+    "resources": [
+      {
+        "name": "codes",
+        "path": "country-codes.csv",
+        "format": "csv",
+        "title": "Country codes",
+        "description": "ISO 3166-1 names with alpha-2 and alpha-3 codes."
+      },
+      {
+        "name": "population",
+        "path": "population-2022.csv",
+        "format": "csv",
+        "title": "Population 2022",
+        "description": "Estimated mid-year population."
+      },
+      {
+        "name": "co2",
+        "path": "co2-emissions.csv",
+        "format": "csv",
+        "title": "CO₂ emissions per capita",
+        "description": "Tonnes of CO₂ emitted per person."
+      }
+    ]
   }
 ]

@@ -8,13 +8,36 @@
 
 import type { License, Source, TableSchema } from '../metadata/types'
 
+export type DataFormat = 'csv' | 'tsv' | 'json' | 'geojson'
+
+// A single file within a dataset (a Frictionless "resource"). A dataset can hold
+// several — data + a data dictionary + methodology, or quarterly files, etc.
+export type Resource = {
+  // Stable id within the dataset (e.g. "data", "dictionary"). Used in anchors.
+  name: string
+  // Bare filename served from /public/data (e.g. "orders-2024.csv").
+  path: string
+  format: DataFormat
+  title?: string
+  description?: string
+  // Per-resource Frictionless Table Schema.
+  schema?: TableSchema
+}
+
 export type Dataset = {
   slug: string
   namespace: string
   name: string
   description?: string
-  file: string
-  format: 'csv' | 'tsv' | 'json' | 'geojson'
+  // Single-resource sugar — a one-file dataset sets `file`/`format` (+ optional
+  // `schema`) directly. For multiple files, use `resources` below. Read either
+  // shape through getResources() (lib/datasets.ts), which normalizes to a
+  // Resource[]; surfaces consume that, not `file` directly.
+  file?: string
+  format?: DataFormat
+  // Multiple files in one dataset (Frictionless Data Package resources). When
+  // present, takes precedence over the single `file`/`format` above.
+  resources?: Resource[]
 
   // --- metadata-profile contract (lib/metadata) ---
   // How this dataset's schema + descriptive metadata are authored and surfaced.
@@ -24,8 +47,8 @@ export type Dataset = {
   // MetadataProfile id (defaults to the L0 'frictionless-tabular'); surfaces
   // resolve it via getProfile().
   profile?: string
-  // Frictionless Table Schema — the field-level contract, rendered as a
-  // column/type/description table on the showcase.
+  // Frictionless Table Schema — for a single-resource dataset, the schema of
+  // that file. (Per-file schemas for multi-resource live on each Resource.)
   schema?: TableSchema
   // Data Package descriptor fields a catalog surfaces.
   licenses?: License[]

@@ -3,7 +3,14 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import { Table } from '../../components/Table'
-import { DATA_QUERY, NAMESPACE_TYPE, type Dataset } from '../../lib/datasets'
+import {
+  DATA_QUERY,
+  NAMESPACE_TYPE,
+  getResources,
+  resourceUrl,
+  type Dataset,
+  type Resource,
+} from '../../lib/datasets'
 import { provider } from '../../lib/providers'
 
 // DuckDB only runs in the browser, so load the query view client-side. The chunk
@@ -36,8 +43,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 }
 
 export default function DatasetPage({ dataset }: { dataset: Dataset }) {
-  const url = `/data/${dataset.file}`
-  const tabular = dataset.format === 'csv' || dataset.format === 'tsv'
+  const resources = getResources(dataset)
   const namespaceLabel = NAMESPACE_TYPE === 'owner' ? 'Owner' : 'Theme'
 
   return (
@@ -74,15 +80,11 @@ export default function DatasetPage({ dataset }: { dataset: Dataset }) {
           </div>
           <div>
             <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-              Format
+              Resources
             </dt>
-            <dd className="mt-1 text-sm text-gray-800">{dataset.format}</dd>
-          </div>
-          <div>
-            <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-              File
-            </dt>
-            <dd className="mt-1 text-sm text-gray-800">{dataset.file}</dd>
+            <dd className="mt-1 text-sm text-gray-800">
+              {resources.length} file{resources.length === 1 ? '' : 's'}
+            </dd>
           </div>
           {dataset.version && (
             <div>
@@ -116,80 +118,15 @@ export default function DatasetPage({ dataset }: { dataset: Dataset }) {
           </div>
         )}
 
-        {/* Data preview — flat <Table /> by default, or a DuckDB-Wasm SQL
-            query view when the portal's DATA_QUERY engine is 'duckdb'. */}
-        {tabular && DATA_QUERY === 'duckdb' ? (
-          <DataExplorer dataset={dataset} />
-        ) : tabular ? (
-          <Table url={url} fullWidth />
-        ) : (
-          <p className="text-gray-500">
-            Preview not available for {dataset.format} files.{' '}
-            <a href={url} className="underline">
-              Download the file
-            </a>
-            .
-          </p>
-        )}
-
-        {/* Schema — the dataset's Frictionless Table Schema (metadata-profile
-            contract). Rendered when declared; the page degrades cleanly without it. */}
-        {dataset.schema?.fields && dataset.schema.fields.length > 0 && (
-          <section className="mt-10 border-t border-gray-200 pt-6">
-            <h2 className="text-lg font-semibold text-gray-900">Schema</h2>
-            <div className="mt-3 overflow-x-auto">
-              <table className="min-w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-200 text-left text-xs uppercase tracking-wide text-gray-400">
-                    <th className="py-2 pr-4 font-semibold">Field</th>
-                    <th className="py-2 pr-4 font-semibold">Type</th>
-                    <th className="py-2 pr-4 font-semibold">Description</th>
-                    <th className="py-2 font-semibold">Constraints</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dataset.schema.fields.map((f) => {
-                    const c = f.constraints
-                    const tags = [
-                      c?.required && 'required',
-                      c?.unique && 'unique',
-                      c?.enum && `enum(${c.enum.length})`,
-                    ].filter(Boolean) as string[]
-                    return (
-                      <tr
-                        key={f.name}
-                        className="border-b border-gray-100 align-top"
-                      >
-                        <td className="py-2 pr-4 font-mono text-gray-800">
-                          {f.name}
-                        </td>
-                        <td className="py-2 pr-4 text-gray-600">
-                          {f.type ?? '—'}
-                        </td>
-                        <td className="py-2 pr-4 text-gray-600">
-                          {f.description ?? f.title ?? ''}
-                        </td>
-                        <td className="py-2 text-gray-500">
-                          {tags.join(', ')}
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-            {dataset.schema.primaryKey && (
-              <p className="mt-2 text-xs text-gray-400">
-                Primary key:{' '}
-                <code className="rounded bg-gray-100 px-1">
-                  {Array.isArray(dataset.schema.primaryKey)
-                    ? dataset.schema.primaryKey.join(', ')
-                    : dataset.schema.primaryKey}
-                </code>
-              </p>
-            )}
-          </section>
-        )}
+        {/* Data — one section per resource (a single-file dataset has exactly
+            one; multi-resource datasets render a section for each file). */}
+        {resources.map((r, i) => (
+          <ResourceSection
+            key={r.name + i}
+            resource={r}
+            showHeading={resources.length > 1}
+          />
+        ))}
 
         {/* Sources & license — Data Package descriptor fields. */}
         {((dataset.licenses && dataset.licenses.length > 0) ||
@@ -247,30 +184,6 @@ export default function DatasetPage({ dataset }: { dataset: Dataset }) {
           </section>
         )}
 
-        {/* Download + API */}
-        <section className="mt-10 border-t border-gray-200 pt-6">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Download &amp; API
-          </h2>
-          <p className="mt-2 text-sm">
-            <a
-              href={url}
-              className="text-blue-600 underline hover:text-blue-700"
-            >
-              Download {dataset.file}
-            </a>
-          </p>
-          <p className="mt-2 text-sm text-gray-500">
-            The raw file is served statically at{' '}
-            <code className="bg-gray-100 px-1 rounded">{url}</code> — fetch it
-            directly for programmatic / API access (e.g.{' '}
-            <code className="bg-gray-100 px-1 rounded">
-              fetch(&apos;{url}&apos;)
-            </code>
-            ).
-          </p>
-        </section>
-
         {/* Views placeholder — charts and maps are added here by the
             /add-chart and /add-map skills. */}
         <section className="mt-10 border-t border-gray-200 pt-6">
@@ -281,5 +194,115 @@ export default function DatasetPage({ dataset }: { dataset: Dataset }) {
         </section>
       </main>
     </>
+  )
+}
+
+// One resource within a dataset: preview (flat <Table /> or the DuckDB SQL view),
+// its Frictionless Table Schema, and a download / API line. A single-file dataset
+// renders exactly one of these (getResources synthesizes it); multi-resource
+// datasets render one per file, each with its own heading.
+function ResourceSection({
+  resource,
+  showHeading,
+}: {
+  resource: Resource
+  showHeading: boolean
+}) {
+  const url = resourceUrl(resource)
+  const tabular = resource.format === 'csv' || resource.format === 'tsv'
+  return (
+    <section className="mt-10 border-t border-gray-200 pt-6 first:mt-2 first:border-t-0 first:pt-0">
+      {showHeading && (
+        <div className="mb-3 flex items-baseline gap-3">
+          <h2 className="text-lg font-semibold text-gray-900">
+            {resource.title ?? resource.name}
+          </h2>
+          <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs uppercase tracking-wide text-gray-500">
+            {resource.format}
+          </span>
+        </div>
+      )}
+      {showHeading && resource.description && (
+        <p className="mb-3 text-sm text-gray-500">{resource.description}</p>
+      )}
+
+      {tabular && DATA_QUERY === 'duckdb' ? (
+        <DataExplorer resource={resource} />
+      ) : tabular ? (
+        <Table url={url} fullWidth />
+      ) : (
+        <p className="text-gray-500">
+          Preview not available for {resource.format} files.{' '}
+          <a href={url} className="underline">
+            Download the file
+          </a>
+          .
+        </p>
+      )}
+
+      {/* Per-resource Frictionless Table Schema (degrades cleanly when absent). */}
+      {resource.schema?.fields && resource.schema.fields.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+            Schema
+          </h3>
+          <div className="mt-2 overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200 text-left text-xs uppercase tracking-wide text-gray-400">
+                  <th className="py-2 pr-4 font-semibold">Field</th>
+                  <th className="py-2 pr-4 font-semibold">Type</th>
+                  <th className="py-2 pr-4 font-semibold">Description</th>
+                  <th className="py-2 font-semibold">Constraints</th>
+                </tr>
+              </thead>
+              <tbody>
+                {resource.schema.fields.map((f) => {
+                  const c = f.constraints
+                  const tags = [
+                    c?.required && 'required',
+                    c?.unique && 'unique',
+                    c?.enum && `enum(${c.enum.length})`,
+                  ].filter(Boolean) as string[]
+                  return (
+                    <tr key={f.name} className="border-b border-gray-100 align-top">
+                      <td className="py-2 pr-4 font-mono text-gray-800">{f.name}</td>
+                      <td className="py-2 pr-4 text-gray-600">{f.type ?? '—'}</td>
+                      <td className="py-2 pr-4 text-gray-600">
+                        {f.description ?? f.title ?? ''}
+                      </td>
+                      <td className="py-2 text-gray-500">{tags.join(', ')}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+          {resource.schema.primaryKey && (
+            <p className="mt-2 text-xs text-gray-400">
+              Primary key:{' '}
+              <code className="rounded bg-gray-100 px-1">
+                {Array.isArray(resource.schema.primaryKey)
+                  ? resource.schema.primaryKey.join(', ')
+                  : resource.schema.primaryKey}
+              </code>
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Download + API for this resource. */}
+      <p className="mt-4 text-sm">
+        <a href={url} className="text-blue-600 underline hover:text-blue-700">
+          Download {resource.path}
+        </a>
+        <span className="text-gray-500">
+          {' '}
+          — served statically at{' '}
+          <code className="bg-gray-100 px-1 rounded">{url}</code> for programmatic
+          access.
+        </span>
+      </p>
+    </section>
   )
 }

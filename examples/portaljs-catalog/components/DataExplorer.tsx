@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import LoadingSpinner from './ui/LoadingSpinner'
 import { DuckDbQuery } from '../lib/query/duckdb'
-import type { Dataset } from '../lib/datasets'
+import type { Resource } from '../lib/datasets'
 
-// A DuckDB-Wasm-backed data view for a dataset's showcase. Loads the file into an
+// A DuckDB-Wasm-backed data view for a single resource. Loads the file into an
 // in-browser DuckDB, previews it, and lets the visitor run SQL against the table
 // `data` — all client-side, no server. Rendered in place of the flat <Table />
 // when the portal's DATA_QUERY engine is 'duckdb' (see lib/datasets.ts). Import it
@@ -11,8 +11,8 @@ import type { Dataset } from '../lib/datasets'
 
 const PREVIEW_LIMIT = 50
 
-export default function DataExplorer({ dataset }: { dataset: Dataset }) {
-  const url = `/data/${dataset.file}`
+export default function DataExplorer({ resource }: { resource: Resource }) {
+  const url = `/data/${resource.path}`
   const defaultSql = `SELECT * FROM data LIMIT ${PREVIEW_LIMIT}`
 
   // One engine instance per source file.
@@ -32,7 +32,7 @@ export default function DataExplorer({ dataset }: { dataset: Dataset }) {
     setError(null)
     ;(async () => {
       try {
-        await engine.open({ url, format: dataset.format })
+        await engine.open({ url, format: resource.format })
         const count = await engine.query('SELECT count(*) AS n FROM data')
         const res = await engine.query(defaultSql)
         if (cancelled) return
@@ -49,7 +49,7 @@ export default function DataExplorer({ dataset }: { dataset: Dataset }) {
       cancelled = true
       void engine.close()
     }
-  }, [engine, url, dataset.format, defaultSql])
+  }, [engine, url, resource.format, defaultSql])
 
   const run = async () => {
     setLoading(true)

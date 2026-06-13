@@ -73,4 +73,4 @@ When it finishes:
 - **[`/add-chart`](/docs/skills/add-chart)** — add a chart to the dataset's showcase.
 - **[`/add-map`](/docs/skills/add-map)** — show geographic data on a map.
 
-<DocsPagination prev="/docs/skills/new-portal" next="/docs/skills/add-chart" />
+<DocsPagination prev="/docs/skills/new-portal" next="/docs/skills/add-resource" />
