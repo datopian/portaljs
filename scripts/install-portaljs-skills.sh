@@ -20,7 +20,8 @@ DEST="${CLAUDE_COMMANDS_DIR:-$HOME/.claude/commands}"
 RAW_BASE="https://raw.githubusercontent.com/datopian/portaljs/${REF}/.claude/commands"
 
 # OSS skills only — excludes Gas Town internal commands (done/handoff/review).
-SKILLS="new-portal add-dataset add-chart add-map deploy"
+# Keep in sync with the `commands` list in .claude-plugin/plugin.json.
+SKILLS="architect new-portal add-dataset add-chart add-map connect-ckan define-schema deploy check-data-quality"
 
 # Detect a local checkout: this script lives in <repo>/scripts/, so the commands
 # dir is ../.claude/commands relative to the script.
