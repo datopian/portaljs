@@ -21,7 +21,7 @@ RAW_BASE="https://raw.githubusercontent.com/datopian/portaljs/${REF}/.claude/com
 
 # OSS skills only — excludes Gas Town internal commands (done/handoff/review).
 # Keep in sync with the `commands` list in .claude-plugin/plugin.json.
-SKILLS="architect new-portal add-dataset add-chart add-map connect-ckan define-schema deploy check-data-quality"
+SKILLS="architect new-portal add-dataset add-resource add-chart add-map connect-ckan define-schema deploy check-data-quality"
 
 # Detect a local checkout: this script lives in <repo>/scripts/, so the commands
 # dir is ../.claude/commands relative to the script.

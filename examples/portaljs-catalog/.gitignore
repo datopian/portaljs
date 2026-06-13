@@ -6,3 +6,6 @@ out/
 
 # Generated DCAT harvest document (npm run generate:dcat → predev/prebuild)
 public/catalog.jsonld
+
+# TypeScript incremental build cache
+*.tsbuildinfo

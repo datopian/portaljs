@@ -11,6 +11,7 @@ SKILLS=(
   architect
   new-portal
   add-dataset
+  add-resource
   add-chart
   add-map
   connect-ckan

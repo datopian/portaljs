@@ -5,9 +5,9 @@
 // holds only the provider-independent bits: the Dataset shape, the namespace
 // mode, and the canonical URL helper.
 
-import type { Dataset } from './providers'
+import type { Dataset, Resource } from './providers'
 
-export type { Dataset } from './providers'
+export type { Dataset, Resource } from './providers'
 
 // A portal uses exactly ONE namespace mode. Set to 'theme' for a single-publisher
 // portal (datasets grouped by subject) or 'owner' for a multi-publisher portal
@@ -29,4 +29,29 @@ export const DATA_QUERY: 'flat' | 'duckdb' = 'flat'
 // with `@`). See README for the routing rationale.
 export function datasetHref(d: Dataset): string {
   return `/@${d.namespace}/${d.slug}`
+}
+
+// Normalize a dataset to its resource list. A multi-resource dataset returns its
+// `resources` as-is; a single-file dataset is presented as one synthesized
+// resource (from `file`/`format`/`schema`) so every surface renders datasets
+// uniformly — there's no single-vs-multi branching at the call site.
+export function getResources(d: Dataset): Resource[] {
+  if (d.resources && d.resources.length > 0) return d.resources
+  if (d.file) {
+    return [
+      {
+        name: 'data',
+        path: d.file,
+        format: d.format ?? 'csv',
+        title: d.name,
+        schema: d.schema,
+      },
+    ]
+  }
+  return []
+}
+
+// Public URL of a resource's raw file (served statically from /public/data).
+export function resourceUrl(r: Resource): string {
+  return `/data/${r.path}`
 }

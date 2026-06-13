@@ -1,0 +1,1 @@
+My "orders" dataset already has the main CSV, but I also have a separate data dictionary file and a methodology document that belong to the same dataset. I don't want them as separate datasets — they're part of the orders dataset. How do I attach these extra files to it so they show up on the same page?

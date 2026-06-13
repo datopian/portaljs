@@ -4,6 +4,8 @@ import type { DataProvider } from './types'
 export type {
   DataProvider,
   Dataset,
+  DataFormat,
+  Resource,
   DatasetQuery,
   ProviderCapabilities,
 } from './types'

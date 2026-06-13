@@ -32,6 +32,7 @@ portal. You describe intent; the skill writes the code.
 | ----- | ------------ |
 | [`/new-portal`](/docs/skills/new-portal) | Scaffold a new portal from a brief — copies the template, substitutes your project name and description, installs deps, verifies the build. |
 | [`/add-dataset`](/docs/skills/add-dataset) | Add a CSV, TSV, JSON, or GeoJSON dataset — copies the data in, generates a dataset page, and registers it on the home page catalog. |
+| [`/add-resource`](/docs/skills/add-resource) | Attach another file (data dictionary, methodology, extra data) to an existing dataset — it becomes multi-resource and the showcase renders a section per file. |
 | [`/add-chart`](/docs/skills/add-chart) | Add a line, bar, area, pie, or scatter chart to a dataset page using `recharts`. |
 | [`/add-map`](/docs/skills/add-map) | Render a GeoJSON dataset on an interactive Leaflet map and register it on the home page. |
 | [`/connect-ckan`](/docs/skills/connect-ckan) | Wire the portal to a [CKAN](/ckan) backend over its API instead of static files. |

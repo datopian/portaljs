@@ -71,4 +71,4 @@ finishes:
 - **[`/add-map`](/docs/skills/add-map)** — render geographic data on a map instead.
 - **[`/deploy`](/docs/skills/deploy)** — publish the portal once it looks right.
 
-<DocsPagination prev="/docs/skills/add-dataset" next="/docs/skills/add-map" />
+<DocsPagination prev="/docs/skills/add-resource" next="/docs/skills/add-map" />
