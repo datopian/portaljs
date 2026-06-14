@@ -32,8 +32,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # - name: Send a Discord notification if a publish happens
-      #   if: steps.changesets.outputs.published == 'true'
-      #   uses: Ilshidur/action-discord@0.3.2
-      #   with:
-      #     args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
+      - name: Send a Discord notification if a publish happens
+        if: steps.changesets.outputs.published == 'true'
+        continue-on-error: true # a missing/broken webhook must never fail a good release
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: '📦 {{ EVENT_PAYLOAD.repository.full_name }} published a new release to npm.'
