@@ -1,5 +1,11 @@
 # create-portaljs
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1567](https://github.com/datopian/portaljs/pull/1567) [`8c392a9d704187de87411775ed03176e2fa99ade`](https://github.com/datopian/portaljs/commit/8c392a9d704187de87411775ed03176e2fa99ade) Thanks [@anuveyatsu](https://github.com/anuveyatsu)! - Show a branded cyclone animation (sky→teal gradient, spinner, rotating status, elapsed timer) while dependencies install. Falls back to a single plain line when stdout isn't a TTY (CI logs stay clean).
+
 ## 0.2.0
 
 ### Minor Changes
