@@ -58,7 +58,7 @@ export default function DatasetPage({ dataset }: { dataset: Dataset }) {
           </Link>
           <span className="mx-2">/</span>
           <Link href="/search" className="hover:text-gray-700">
-            Datasets
+            Search
           </Link>
           <span className="mx-2">/</span>
           <span>{dataset.name}</span>
