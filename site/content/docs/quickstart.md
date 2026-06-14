@@ -5,9 +5,20 @@ title: Quickstart — the AI path
 description: Install the PortalJS skills, scaffold a portal, add your data, and go live in minutes — your AI assistant does the assembly.
 ---
 
-This is the fast path. You'll install the PortalJS skills into
+> [!tip] One-command start
+> The fastest way to a working portal — no AI, nothing to install beyond Node 18+:
+>
+> ```bash
+> npm create portaljs@latest my-portal
+> cd my-portal && npm run dev
+> ```
+>
+> That scaffolds the full template. The rest of this page is the **AI-assisted** path:
+> install the skills and drive the whole build (and ongoing changes) from chat.
+
+This page is the AI path. You'll install the PortalJS skills into
 [Claude Code](https://docs.claude.com/en/docs/claude-code), then drive the whole
-build from chat. Prefer to build by hand? See [Manual setup](/docs/manual-setup)
+build from chat. Prefer to build entirely by hand? See [Manual setup](/docs/manual-setup)
 instead.
 
 > [!info] Prerequisites

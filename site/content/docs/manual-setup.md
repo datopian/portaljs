@@ -16,19 +16,24 @@ the same project by hand. This page shows how.
 
 ## 1. Get the template
 
-Grab the canonical catalog template with [tiged](https://github.com/tiged/tiged)
-(a maintained `degit` fork that reliably extracts the subdirectory — no git history, just the files):
+Scaffold the canonical catalog template with the `create-portaljs` CLI — it copies the
+template, substitutes your project name, and sets the namespace mode:
 
 ```bash
-npx tiged datopian/portaljs/examples/portaljs-catalog my-portal
+npm create portaljs@latest my-portal
 cd my-portal
-npm install
+npm install   # (the CLI offers to do this for you)
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000). You now have a running portal —
 a home page (`/`), a search catalog at `/search`, and per-dataset showcase pages — with
 a few sample datasets.
+
+> [!note] Bare copy, no prompts
+> To grab just the files with no scaffolding prompts, use
+> [tiged](https://github.com/tiged/tiged) (a maintained `degit` fork that reliably
+> extracts the subdirectory): `npx tiged datopian/portaljs/examples/portaljs-catalog my-portal`.
 
 > [!note] Just a landing page?
 > If you only want a single home page with no catalog or dataset pages, use the

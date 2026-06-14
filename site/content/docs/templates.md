@@ -42,7 +42,13 @@ the URL is always `/@<namespace>/<slug>`. See [Core concepts](/docs/core-concept
 the rationale. [`/add-dataset`](/docs/skills/add-dataset) appends a manifest entry
 against this template.
 
-Clone it by hand with [tiged](https://github.com/tiged/tiged) (a maintained `degit` fork that reliably extracts a subdirectory):
+Scaffold it with the CLI (recommended):
+
+```bash
+npm create portaljs@latest my-portal
+```
+
+Or grab the bare files with [tiged](https://github.com/tiged/tiged) (a maintained `degit` fork that reliably extracts a subdirectory):
 
 ```bash
 npx tiged datopian/portaljs/examples/portaljs-catalog my-portal
