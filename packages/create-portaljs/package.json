@@ -28,6 +28,9 @@
     "directory": "packages/create-portaljs"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "giget": "^1.2.3",
     "prompts": "^2.4.2"
