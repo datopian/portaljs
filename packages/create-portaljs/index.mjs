@@ -3,12 +3,30 @@
 //   npm create portaljs@latest my-portal
 // See SPEC.md. Plain ESM, Node >= 18, deps: giget + prompts.
 
-import { existsSync, readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, writeFileSync, statSync, rmSync } from 'node:fs'
 import { join, basename, resolve } from 'node:path'
 import { spawn, spawnSync } from 'node:child_process'
 
 const TEMPLATE = 'examples/portaljs-catalog'
 const TEXT_EXT = new Set(['.ts', '.tsx', '.js', '.mjs', '.json', '.css', '.md', '.html'])
+
+// Where the agentic skills live in the repo, and the OSS allowlist we bundle into
+// the scaffold's project-local .claude/commands/ (so `claude` in the new portal
+// sees /add-dataset, /connect-ckan, … with no separate install step). Kept in sync
+// with .claude-plugin/plugin.json and scripts/install-portaljs-skills.sh.
+const SKILLS_SRC = '.claude/commands'
+const SKILLS = [
+  'architect',
+  'new-portal',
+  'add-dataset',
+  'add-resource',
+  'add-chart',
+  'add-map',
+  'connect-ckan',
+  'define-schema',
+  'deploy',
+  'check-data-quality',
+]
 
 function parseArgs(argv) {
   const o = { install: true, git: true, yes: false, ref: 'main' }
@@ -280,6 +298,30 @@ async function main() {
     writeFileSync(datasetsTs, s)
   }
 
+  // 5b. Bundle the agentic skills into the project's .claude/commands/ so they
+  // work the instant the user runs `claude` in the new portal — no global
+  // install. Pinned to the same template ref, so skills match the scaffold.
+  // The repo's .claude/commands holds only OSS skills today; we still prune to
+  // the allowlist so a future internal command never leaks into a scaffold.
+  // Non-fatal: a fetch failure just prints the manual install one-liner.
+  const skillsDir = join(target, '.claude', 'commands')
+  try {
+    await downloadTemplate(`github:datopian/portaljs/${SKILLS_SRC}#${opts.ref}`, {
+      dir: skillsDir,
+      force: true,
+    })
+    for (const entry of readdirSync(skillsDir)) {
+      const keep = entry.endsWith('.md') && SKILLS.includes(entry.slice(0, -3))
+      if (!keep) rmSync(join(skillsDir, entry), { recursive: true, force: true })
+    }
+    console.log(`Bundled ${SKILLS.length} PortalJS skills into .claude/commands/`)
+  } catch (e) {
+    console.log(
+      `\x1b[33m⚠\x1b[0m  Could not bundle skills (${e?.message || e}). Install them with:\n` +
+        '   curl -fsSL https://raw.githubusercontent.com/datopian/portaljs/main/scripts/install-portaljs-skills.sh | bash'
+    )
+  }
+
   // 6. Optional git init + install.
   if (doGit && !existsSync(join(target, '.git'))) {
     if (run('git', ['init', '-q'], target)) {
@@ -307,7 +349,8 @@ Next:
   cd ${dir}${doInstall ? '' : '\n  npm install'}
   npm run dev            # → http://localhost:3000
 
-Then, in a Claude Code session, build it out:
+Then run \`claude\` in the project — the PortalJS skills are bundled in
+.claude/commands/, so these work right away:
   /add-dataset   ./data/your-file.csv     add data (or /add-resource for more files)
   /connect-ckan  <ckan-url>               point at a CKAN backend instead
   /deploy                                 publish (Cloudflare Pages recommended)
