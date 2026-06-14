@@ -63,8 +63,12 @@ finishes:
 ✓ Chart added to country-codes
   - Component: components/Chart.tsx (recharts)
   - View: pages/[owner]/[slug].tsx — <Chart type="line" x="year" y="population"> for @reference/country-codes
-  - Dependency: recharts@^2.12.0 added to package.json
+  - Dependency: recharts@^2.15.0 added to package.json
 ```
+
+> recharts 2.15 declares React 19 support, but its bundled `react-is` must match
+> your React. The catalog template pins `"overrides": { "react-is": "^19.0.0" }`
+> in `package.json` so this works out of the box on React 19.
 
 ## Where to go next
 

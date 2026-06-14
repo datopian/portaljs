@@ -80,7 +80,7 @@ pick line, bar, area, pie, or scatter.
 ### 4. Install recharts
 
 ```bash
-cd PORTAL_DIR && npm install recharts@^2.12.0
+cd PORTAL_DIR && npm install recharts@^2.15.0
 ```
 
 Do **not** install `@portaljs/components`. If the install fails, tell the user (check
@@ -282,7 +282,7 @@ success.
   - Component: components/Chart.tsx (recharts)
   - Showcase:  pages/[owner]/[slug].tsx Views section — <Chart type="TYPE" x="X" y=...>
   - Renders at: /@NAMESPACE/SLUG
-  - Dependency: recharts@^2.12.0 added to package.json
+  - Dependency: recharts@^2.15.0 added to package.json
 
 Next: run `npm run dev` and visit http://localhost:3000/@NAMESPACE/SLUG to verify the chart renders.
 ```

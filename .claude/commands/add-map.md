@@ -101,14 +101,16 @@ The template does not bundle a map component. Install Leaflet directly. Check wh
 `react-leaflet` is already in `PORTAL_DIR/package.json` — if so, skip this step.
 
 ```bash
-cd PORTAL_DIR && npm install react-leaflet@^4 leaflet@^1.9 && npm install -D @types/leaflet
+cd PORTAL_DIR && npm install react-leaflet@^5 leaflet@^1.9 && npm install -D @types/leaflet
 ```
 
 Tell the user first: `Installing map dependencies (react-leaflet, leaflet)...`
 
 If install fails, tell the user (check Node.js >=18 and network access) and retry.
 
-> Why `react-leaflet@^4`: v4 targets React 18 (the template's React). Do not install v5 (React 19) unless the portal has been upgraded to React 19.
+> Why `react-leaflet@^5`: v5 targets React 19, which the catalog template uses. (If a
+> portal is still on React 18, install `react-leaflet@^4` instead — its peer dep requires
+> React 18.)
 
 ### 5. Generate the `Map` component (once)
 
