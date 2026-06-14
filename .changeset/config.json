@@ -10,5 +10,5 @@
   "access": "restricted",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": ["@portaljs/core", "@portaljs/ckan", "@portaljs/ckan-api-client-js"]
 }

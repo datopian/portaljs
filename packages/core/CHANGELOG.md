@@ -1,11 +1,5 @@
 # @portaljs/core
 
-## 1.0.10
-
-### Patch Changes
-
-- [#1532](https://github.com/datopian/portaljs/pull/1532) [`8bb5c310440fee6e68a8af98367085ee6f546db6`](https://github.com/datopian/portaljs/commit/8bb5c310440fee6e68a8af98367085ee6f546db6) Thanks [@anuveyatsu](https://github.com/anuveyatsu)! - Widen peer dependencies so the package installs on the modern stack without `--legacy-peer-deps`: `react`/`react-dom` now allow `^19` (in addition to `^18`), and `next` is `>=13.2.1` (allowing Next 14–16).
-
 ## 1.0.8
 
 ### Patch Changes

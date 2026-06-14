@@ -1,6 +1,6 @@
 {
   "name": "@portaljs/core",
-  "version": "1.0.10",
+  "version": "1.0.9",
   "description": "Core Portal.JS components, configs and utils.",
   "repository": {
     "type": "git",
