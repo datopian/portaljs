@@ -5,7 +5,7 @@
 
 import { existsSync, readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs'
 import { join, basename, resolve } from 'node:path'
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 
 const TEMPLATE = 'examples/portaljs-catalog'
 const TEXT_EXT = new Set(['.ts', '.tsx', '.js', '.mjs', '.json', '.css', '.md', '.html'])
@@ -83,6 +83,88 @@ function substitute(dir, replacements) {
 function run(cmd, args, cwd) {
   const r = spawnSync(cmd, args, { cwd, stdio: 'inherit' })
   return r.status === 0
+}
+
+// Run a command async, quietly (so it doesn't clobber the animation), capturing
+// stderr for error reporting. Resolves { ok, err }.
+function runAsync(cmd, args, cwd) {
+  return new Promise((res) => {
+    const child = spawn(cmd, args, { cwd, stdio: ['ignore', 'ignore', 'pipe'] })
+    let err = ''
+    child.stderr.on('data', (d) => {
+      err += d.toString()
+    })
+    child.on('error', () => res({ ok: false, err: `failed to start ${cmd}` }))
+    child.on('close', (code) => res({ ok: code === 0, err }))
+  })
+}
+
+// A branded cyclone animation to watch while deps install. Renders in place over
+// a few lines, sky→teal gradient (the PortalJS palette), with a flowing funnel,
+// a spinner, rotating status, and an elapsed timer. No-ops (one plain line) when
+// stdout isn't a TTY, so CI logs stay clean.
+function createBuildAnimation() {
+  if (!process.stdout.isTTY) {
+    console.log('Installing dependencies…')
+    return { stop() {} }
+  }
+  const SKY = [56, 189, 248]
+  const TEAL = [94, 234, 212]
+  const lerp = (a, b, t) => Math.round(a + (b - a) * t)
+  const grad = (i, n, s) => {
+    const t = n > 1 ? i / (n - 1) : 0
+    return `\x1b[38;2;${lerp(SKY[0], TEAL[0], t)};${lerp(SKY[1], TEAL[1], t)};${lerp(SKY[2], TEAL[2], t)}m${s}\x1b[0m`
+  }
+  const WAVE = ['≋', '≈', '∿', '~'] // shifts per row → flowing-funnel illusion
+  const SPIN = ['◐', '◓', '◑', '◒']
+  const MSG = [
+    'spinning up your portal',
+    'wiring Home · Catalog · Showcase',
+    'loading sample datasets',
+    'almost ready',
+  ]
+  // Funnel rows: [indent, wave-count] narrowing to an apex.
+  const FUNNEL = [
+    [6, 5],
+    [7, 3],
+    [8, 1],
+  ]
+  const HEIGHT = 6 // 1 blank + 4 cyclone + 1 status
+  const start = Date.now()
+  let f = 0
+  process.stdout.write('\x1b[?25l') // hide cursor
+  process.stdout.write('\n'.repeat(HEIGHT)) // reserve space
+  const draw = () => {
+    const secs = Math.floor((Date.now() - start) / 1000)
+    const lines = ['']
+    FUNNEL.forEach(([indent, width], ri) => {
+      const w = WAVE[(f + ri) % WAVE.length]
+      lines.push(' '.repeat(indent) + grad(ri, FUNNEL.length + 1, '╲' + w.repeat(width) + '╱'))
+    })
+    lines.push(' '.repeat(9) + grad(FUNNEL.length, FUNNEL.length + 1, '▿'))
+    const sp = `\x1b[38;2;${SKY[0]};${SKY[1]};${SKY[2]}m${SPIN[f % SPIN.length]}\x1b[0m`
+    const msg = MSG[Math.floor(f / 14) % MSG.length]
+    lines.push(`   ${sp}  \x1b[1mPortalJS\x1b[0m \x1b[2m· ${msg}… (${secs}s)\x1b[0m`)
+    process.stdout.write(`\x1b[${HEIGHT}A`) // up to the top of the reserved block
+    for (const ln of lines.slice(0, HEIGHT)) process.stdout.write('\x1b[2K' + ln + '\n')
+    f++
+  }
+  draw()
+  const timer = setInterval(draw, 110)
+  return {
+    stop(ok) {
+      clearInterval(timer)
+      process.stdout.write(`\x1b[${HEIGHT}A`)
+      for (let i = 0; i < HEIGHT; i++) process.stdout.write('\x1b[2K\n')
+      process.stdout.write(`\x1b[${HEIGHT}A\x1b[?25h`) // back to top, show cursor
+      const secs = Math.floor((Date.now() - start) / 1000)
+      console.log(
+        ok
+          ? `\x1b[38;2;94;234;212m✔\x1b[0m Dependencies installed \x1b[2m(${secs}s)\x1b[0m`
+          : '\x1b[33m⚠\x1b[0m  Dependency install did not complete'
+      )
+    },
+  }
 }
 
 async function main() {
@@ -192,9 +274,14 @@ async function main() {
     }
   }
   if (doInstall) {
-    console.log('\nInstalling dependencies…')
-    if (!run('npm', ['install'], target)) {
-      console.log('npm install failed — you can run it yourself in the project.')
+    const anim = createBuildAnimation()
+    const { ok, err } = await runAsync('npm', ['install'], target)
+    anim.stop(ok)
+    if (!ok) {
+      console.log('  Run `npm install` yourself in the project to finish.')
+      if (err) {
+        console.log('\x1b[2m' + err.trim().split('\n').slice(-3).join('\n') + '\x1b[0m')
+      }
     }
   }
 
