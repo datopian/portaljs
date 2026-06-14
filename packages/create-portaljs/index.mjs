@@ -94,7 +94,7 @@ function runAsync(cmd, args, cwd) {
     child.stderr.on('data', (d) => {
       err += d.toString()
     })
-    child.on('error', () => res({ ok: false, err: `failed to start ${cmd}` }))
+    child.on('error', (e) => res({ ok: false, err: `failed to start ${cmd}: ${e.message}` }))
     child.on('close', (code) => res({ ok: code === 0, err }))
   })
 }
@@ -132,6 +132,17 @@ function createBuildAnimation() {
   const HEIGHT = 6 // 1 blank + 4 cyclone + 1 status
   const start = Date.now()
   let f = 0
+  // Restore the cursor even if we never reach stop() (crash / SIGINT / SIGTERM),
+  // otherwise the user's terminal is left with a hidden cursor.
+  const showCursor = () => process.stdout.write('\x1b[?25h')
+  const onExit = () => showCursor()
+  const onSignal = () => {
+    showCursor()
+    process.exit(130)
+  }
+  process.once('exit', onExit)
+  process.once('SIGINT', onSignal)
+  process.once('SIGTERM', onSignal)
   process.stdout.write('\x1b[?25l') // hide cursor
   process.stdout.write('\n'.repeat(HEIGHT)) // reserve space
   const draw = () => {
@@ -154,6 +165,9 @@ function createBuildAnimation() {
   return {
     stop(ok) {
       clearInterval(timer)
+      process.removeListener('exit', onExit)
+      process.removeListener('SIGINT', onSignal)
+      process.removeListener('SIGTERM', onSignal)
       process.stdout.write(`\x1b[${HEIGHT}A`)
       for (let i = 0; i < HEIGHT; i++) process.stdout.write('\x1b[2K\n')
       process.stdout.write(`\x1b[${HEIGHT}A\x1b[?25h`) // back to top, show cursor
