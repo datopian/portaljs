@@ -23,13 +23,16 @@ added once and works with every target.
 
 **Sources (v1):**
 
-| Source | Read via | Covers |
-| ------ | -------- | ------ |
-| **CKAN** | `package_search` / `package_show` | any CKAN instance |
-| **DCAT-US `/data.json`** | one catalog document | **DKAN, ArcGIS Hub, data.gov**, other DCAT-US publishers |
+| Source | `--source` | Read via | Covers |
+| ------ | ---------- | -------- | ------ |
+| **CKAN** | `ckan` | `package_search` / `package_show` | any CKAN instance |
+| **DCAT-US `/data.json`** | `dcat` | one catalog document | **DKAN, ArcGIS Hub, data.gov**, other DCAT-US publishers |
+| **Socrata** | `socrata` | Discovery API + resource exports | Socrata-powered sites |
+| **OpenDataSoft** | `ods` | Explore API v2 + exports | ODS-powered portals |
+| **ArcGIS FeatureServer / MapServer** | `arcgis` | layer metadata + GeoJSON query | individual ArcGIS services (each layer → a GeoJSON dataset) |
 
-> DKAN, ArcGIS Hub, and data.gov publish a DCAT-US `/data.json` — use the **dcat** source
-> for those. Native Socrata, OpenDataSoft, and ArcGIS FeatureServer readers are planned.
+> DKAN, ArcGIS Hub, and data.gov publish a DCAT-US `/data.json` — use **dcat** for those whole
+> catalogs; use **arcgis** for an individual FeatureServer/MapServer.
 
 **Targets:**
 
@@ -74,6 +77,14 @@ Harvest a DCAT catalog (DKAN / ArcGIS Hub / data.gov):
 
 ```
 /migrate https://hub.arcgis.com/data.json --source dcat
+```
+
+Harvest a Socrata site, an OpenDataSoft portal, or a single ArcGIS service:
+
+```
+/migrate https://data.cityofnewyork.us --source socrata
+/migrate https://data.opendatasoft.com --source ods
+/migrate https://services.arcgis.com/…/FeatureServer --source arcgis
 ```
 
 Move one CKAN instance's datasets into another CKAN (set the write key first):

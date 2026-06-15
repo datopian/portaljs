@@ -1,5 +1,5 @@
 ---
-description: Migrate (harvest) datasets between open-data platforms. Reads a CKAN instance or a DCAT-US /data.json catalog (DKAN, ArcGIS Hub, data.gov) and writes them to a static PortalJS catalog (datasets.json, link-by-URL or download) or pushes them into a CKAN instance over its API.
+description: Migrate (harvest) datasets between open-data platforms. Reads CKAN, a DCAT-US /data.json catalog (DKAN, ArcGIS Hub, data.gov), Socrata, OpenDataSoft, or an ArcGIS FeatureServer, and writes them to a static PortalJS catalog (datasets.json, link-by-URL or download) or pushes them into a CKAN instance over its API.
 allowed-tools: Read, Write, Edit, Bash, WebFetch
 ---
 
@@ -25,14 +25,17 @@ target. v1 ships two readers and one writer.
 
 **Sources (v1):**
 
-| Source | How it's read | Covers |
-| ------ | ------------- | ------ |
-| **CKAN** | REST API (`package_search` / `package_show`) | any CKAN instance |
-| **DCAT-US `/data.json`** | one catalog document | **DKAN, ArcGIS Hub, data.gov**, and other DCAT-US publishers |
+| Source | `--source` | How it's read | Covers |
+| ------ | ---------- | ------------- | ------ |
+| **CKAN** | `ckan` | REST API (`package_search` / `package_show`) | any CKAN instance |
+| **DCAT-US `/data.json`** | `dcat` | one catalog document | **DKAN, ArcGIS Hub, data.gov**, other DCAT-US publishers |
+| **Socrata** | `socrata` | Discovery API + per-dataset resource exports | Socrata-powered open-data sites |
+| **OpenDataSoft** | `ods` | Explore API v2 catalog + exports | ODS-powered portals |
+| **ArcGIS FeatureServer / MapServer** | `arcgis` | layer metadata + GeoJSON query | individual ArcGIS map/feature services |
 
-> DKAN, ArcGIS Hub, and data.gov all expose a DCAT-US `/data.json` — use the **dcat**
-> source for those. (Socrata, OpenDataSoft, and ArcGIS FeatureServer are planned; for now,
-> if they expose a `/data.json`, the dcat reader works.)
+> DKAN, ArcGIS Hub, and data.gov publish a DCAT-US `/data.json` — use the **dcat** source for
+> those whole catalogs. Use **arcgis** for an individual FeatureServer/MapServer (each layer
+> becomes a GeoJSON dataset, which `/data.json` doesn't expose).
 
 **Targets:**
 
@@ -47,10 +50,12 @@ since any reader can feed any writer through the canonical shape.
 ## Required input — ask, don't error
 
 **Source:**
-- **Source type** — `ckan` or `dcat` (auto-detected from the URL if omitted; see step 3).
-- **Source URL** (required) — a CKAN base URL (e.g. `https://demo.dev.datopian.com`) or a
-  DCAT `/data.json` URL (e.g. `https://hub.arcgis.com/data.json`).
-- **Filters** (optional, CKAN only) — org / group names to restrict the harvest.
+- **Source type** — `ckan`, `dcat`, `socrata`, `ods`, or `arcgis` (auto-detected from the
+  URL if omitted; see step 3).
+- **Source URL** (required) — e.g. a CKAN base URL, a DCAT `/data.json` URL, a Socrata or
+  OpenDataSoft site root, or an ArcGIS `…/FeatureServer` (or `…/MapServer`) URL.
+- **Filters** (optional) — CKAN: org / group names. Socrata/ODS: pass a search term or
+  category to scope large catalogs.
 
 **Target** — `--target static` (default) or `--target ckan`:
 - **static**: **Portal directory** (optional, default current dir); **copy mode** `link`
@@ -116,12 +121,17 @@ write without a confirmed key. If `OWNER_ORG` is set, confirm it exists
 ### 3. Detect the source type and verify it's reachable
 
 If `SOURCE_TYPE` is unset, auto-detect:
-- If the URL ends in `.json` (or contains `/data.json`), treat as **dcat**.
+- URL contains `/FeatureServer` or `/MapServer` → **arcgis**.
+- URL ends in `.json` or contains `/data.json` → **dcat**.
+- URL contains `/api/explore/` → **ods**; `/api/catalog/` → **socrata**.
 - Otherwise probe CKAN: `curl -s -m 20 "SOURCE_URL/api/3/action/package_search?rows=1"` →
   if JSON with `"success": true`, it's **ckan**.
-- If neither, try fetching `SOURCE_URL/data.json` as a DCAT catalog.
-- If still nothing resolves, tell the user the URL didn't look like a CKAN API or a DCAT
-  catalog, and ask them to confirm the URL / pick the type — don't dead-end.
+- Else probe in turn: `SOURCE_URL/api/explore/v2.1/catalog/datasets?limit=1` (ods),
+  `SOURCE_URL/data.json` (dcat).
+- If still nothing resolves, tell the user the URL didn't look like a supported source and
+  ask them to confirm the URL / pick the `--source` type — don't dead-end. (Socrata is read
+  through the central Discovery API, so for a Socrata site pass `--source socrata` with the
+  site root, e.g. `https://data.cityofnewyork.us`.)
 
 For **ckan** with an `ORG_FILTER`, validate each org exists via
 `organization_show?id=ORG`; if one is missing, list valid orgs (`organization_list`) and
@@ -180,11 +190,56 @@ Apply `ORG_FILTER`/`GROUP_FILTER` via the `fq` query
 | `resources[].path` | distribution `downloadURL` \|\| `accessURL` (link mode) |
 | `resources[].format` | distribution `format` \|\| `mediaType` → normalized (below) |
 
+**Socrata mapping** (Discovery API at the central host, then per-dataset file exports):
+
+Page the catalog: `https://api.us.socrata.com/api/catalog/v1?domains=<host>&limit=100&offset=…`
+(`<host>` is the site root's hostname, e.g. `data.cityofnewyork.us`). Use `&q=<term>` or
+`&categories=<cat>` for the optional filter. Each `results[]` item has a `resource` object:
+
+| Canonical | Socrata field |
+| --------- | ------------- |
+| `slug` | `resource.id` (the 4x4, e.g. `8wbx-tsch`) |
+| `namespace` | slugified `classification.domain_category` (fallback `dataset`) |
+| `name` | `resource.name` |
+| `description` | `resource.description` |
+| `keywords` | `classification.domain_tags` |
+| `resources[].path` | `https://<host>/resource/<id>.csv` (tabular) or `.geojson` for map data (link mode) |
+| `resources[].format` | `csv` (or `geojson` when the asset is geospatial) |
+
+**OpenDataSoft mapping** (Explore API v2):
+
+Page `https://<host>/api/explore/v2.1/catalog/datasets?limit=100&offset=…` (use `&where=…`
+or `&refine=…` for filters). Each `results[]` item:
+
+| Canonical | ODS field |
+| --------- | --------- |
+| `slug` | slugified `dataset_id` (ODS ids can contain `@`, which is the namespace sentinel) |
+| `namespace` | slugified first `metas.default.theme` (fallback `dataset`) |
+| `name` | `metas.default.title` |
+| `description` | `metas.default.description` |
+| `keywords` | `metas.default.keyword` |
+| `resources[].path` | `https://<host>/api/explore/v2.1/catalog/datasets/<id>/exports/csv` (and `/exports/geojson` if the dataset has geo) (link mode) |
+| `resources[].format` | `csv` (or `geojson`) |
+
+**ArcGIS FeatureServer / MapServer mapping** (one service → many layers; each layer is a
+GeoJSON dataset):
+
+GET `<service-url>?f=json` to list `layers[]` (and `tables[]`). For each layer:
+
+| Canonical | ArcGIS field |
+| --------- | ------------ |
+| `slug` | slugified `name` (fallback `layer-<id>`) |
+| `namespace` | slugified service name (last path segment before `/FeatureServer`) |
+| `name` | layer `name` |
+| `description` | layer `description` (often empty) |
+| `resources[].path` | `<service-url>/<layerId>/query?where=1%3D1&outFields=*&f=geojson` (link mode) |
+| `resources[].format` | `geojson` |
+
 **Format normalization.** Lowercase and map to the formats the showcase can preview
 (`csv`, `tsv`, `json`, `geojson`); keep any other format string as-is (the showcase shows a
 download link instead of a preview for non-tabular formats). Map common media types:
 `text/csv→csv`, `application/json→json`, `application/geo+json→geojson`,
-`text/tab-separated-values→tsv`. Drop distributions with no usable URL.
+`text/tab-separated-values→tsv`. Drop distributions/resources with no usable URL.
 
 Ensure `slug` is unique within its `namespace` (suffix `-2`, `-3`, … on collision).
 
@@ -320,6 +375,6 @@ Next: open <target-url> to review the imported datasets.
   a slow build. Use the CKAN org/group filters (or a DCAT source already scoped to a site)
   to migrate a subset, and tell the user how many were imported vs. available.
 - **DKAN / ArcGIS Hub / data.gov.** These are DCAT-US publishers — point `/migrate` at their
-  `/data.json` with `--source dcat`. A native Socrata/OpenDataSoft/ArcGIS-FeatureServer
-  reader is planned for richer metadata.
+  whole-catalog `/data.json` with `--source dcat`. For one ArcGIS service (not a Hub site),
+  use `--source arcgis` against its `…/FeatureServer` so each layer becomes a GeoJSON dataset.
 ```
