@@ -5,48 +5,16 @@ import { useEffect, useState } from 'react'
 import GitHubIcon from '../icons/GitHubIcon'
 import { H2, H3 } from '../custom/header'
 import DiscordIcon from '../icons/DiscordIcon'
-import EmailIcon from '../icons/EmailIcon'
-
-const Stat = ({ title, value, ...props }) => {
-  return (
-    <div {...props} className="flex flex-col justify-center items-center">
-      <span className="text-4xl sm:text-6xl font-bold text-secondary">
-        {value}
-      </span>
-      <p className="text-lg font-medium">{title}</p>
-    </div>
-  )
-}
-
-const IconButton = ({ Icon, text, href, ...props }) => {
-  return (
-    <div {...props}>
-      <a
-        className="rounded border border-secondary px-5 py-3 text-primary dark:text-primary-dark flex items-center hover:bg-secondary hover:text-primary dark:hover:text-primary transition-all duration-200"
-        href={href}
-      >
-        <Icon className="w-6 h-6 mr-2" />
-        {text}
-      </a>
-    </div>
-  )
-}
 
 export default function Community({ homePage }: { homePage: boolean }) {
   const [repoInfo, setRepoInfo] = useState<any>()
   const [contributorsCount, setContributorsCount] = useState('')
 
   useEffect(() => {
-    //  This runs on client side and it's unlikely that users
-    //  will exceed the GitHub API  usage limit,  but added a
-    //  handling for that just in case.
-
     getRepoInfo().then((res) => {
       if (res.success) {
         res.info.then((data) => setRepoInfo(data))
       } else {
-        //  If the request fail e.g API usage limit, use
-        //  a placeholder
         setRepoInfo({ stargazers_count: '+2k' })
       }
     })
@@ -62,80 +30,75 @@ export default function Community({ homePage }: { homePage: boolean }) {
 
   const social = homePage ? true : false
   return (
-    <div className="prose-a:no-underline relative py-24 " id="contact">
-      <div className="relative max-w-8xl mx-auto flex flex-col items-center">
+    <div className="prose-a:no-underline relative py-24" id="contact">
+      <div className="relative max-w-8xl mx-auto flex flex-col items-center px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <H2>Backed by a Global Community</H2>
           <H3 className="mb-4">
             We are growing. Get in touch or become a contributor!
           </H3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 justify-center mt-12 gap-14 md:items-stretch items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 justify-center mt-12 gap-8 md:items-stretch items-center w-full max-w-2xl">
           <a
-            className="h-auto flex flex-col justify-between relative w-full p-6 bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 hover:bg-slate-100 transition-all  shadow-lg rounded-2xl ring-1 ring-slate-200 dark:ring-slate-800 text-center"
-            href="https://github.com/datopian/portaljs "
+            className="h-auto flex flex-col justify-between relative w-full p-8 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300 rounded-2xl ring-1 ring-slate-200 dark:ring-slate-800 hover:ring-slate-300 dark:hover:ring-slate-700 text-center"
+            href="https://github.com/datopian/portaljs"
           >
-            <div className="flex justify-center -mt-10">
-              <div className="bg-yellow-100 text-yellow-500 p-4 rounded-full shadow-md">
-                <StarIcon width={40} />
+            <div className="flex justify-center -mt-12">
+              <div className="bg-amber-50 dark:bg-amber-900/20 text-amber-400 p-4 rounded-2xl ring-1 ring-amber-100 dark:ring-amber-800/30">
+                <StarIcon width={36} />
               </div>
             </div>
-            <p className="opacity-80 text-sm mt-2">
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-4">
               This repository is shining bright with:
             </p>
-            <p className="text-5xl font-bold text-yellow-500 mt-4">
+            <p className="text-5xl font-bold bg-gradient-to-br from-amber-400 to-amber-500 bg-clip-text text-transparent mt-4">
               {repoInfo?.stargazers_count}
             </p>
-            <h2 className="mt-4 text-2xl font-bold">Stars</h2>
-            <p className="opacity-70 text-sm mt-4">
-              Thank you for your support! 🌟
+            <h2 className="mt-3 text-xl font-bold text-slate-900 dark:text-white">Stars</h2>
+            <p className="text-slate-400 dark:text-slate-500 text-sm mt-3">
+              Thank you for your support!
             </p>
           </a>
           <a
-            className="h-auto flex flex-col justify-between relative w-full p-6 bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 hover:bg-slate-100 transition-all  shadow-lg rounded-2xl ring-1 ring-slate-200 dark:ring-slate-800 text-center"
+            className="h-auto flex flex-col justify-between relative w-full p-8 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300 rounded-2xl ring-1 ring-slate-200 dark:ring-slate-800 hover:ring-slate-300 dark:hover:ring-slate-700 text-center"
             href="https://github.com/datopian/portaljs"
           >
-            <div className="flex justify-center -mt-10">
-              <div className="bg-blue-100 text-blue-500 p-4 rounded-full shadow-md">
-                <UsersIcon width={40} />
+            <div className="flex justify-center -mt-12">
+              <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-500 p-4 rounded-2xl ring-1 ring-blue-100 dark:ring-blue-800/30">
+                <UsersIcon width={36} />
               </div>
             </div>
-            <p
-              className={`opacity-80 text-sm mt-2 ${
-                homePage ? 'text-nowrap' : ''
-              }`}
-            >
+            <p className={`text-slate-500 dark:text-slate-400 text-sm mt-4 ${homePage ? 'text-nowrap' : ''}`}>
               Incredible developers contributing their brilliance:
             </p>
-            <p className="text-5xl font-bold text-blue-500 mt-4">
+            <p className="text-5xl font-bold bg-gradient-to-br from-sky-400 to-blue-600 bg-clip-text text-transparent mt-4">
               {contributorsCount}
             </p>
-            <h2 className="mt-4 text-2xl font-bold">Contributors</h2>
-            <p className="opacity-70 text-sm mt-4">
-              Join the team! and make an impact! 👩‍💻👨‍💻
+            <h2 className="mt-3 text-xl font-bold text-slate-900 dark:text-white">Contributors</h2>
+            <p className="text-slate-400 dark:text-slate-500 text-sm mt-3">
+              Join the team and make an impact!
             </p>
           </a>
         </div>
         {!social && (
-          <div className="flex flex-col sm:flex-row gap-x-8 items-center">
+          <div className="flex flex-col sm:flex-row gap-4 items-center mt-10">
             <a
               href={siteConfig.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-fit h-[50px] mt-[40px] flex gap-[14px] justify-center items-center  text-center py-3 px-6 bg-gradient-to-r from-secondary to-blue-600 text-white font-semibold rounded-full shadow-lg hover:from-blue-600 hover:to-blue-800 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              className="inline-flex items-center gap-2 rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
             >
-              <div className="w-[24px] h-[24px]">
+              <div className="w-5 h-5">
                 <GitHubIcon />
               </div>
-
-              <p className="text-nowrap">View on GitHub</p>
+              View on GitHub
             </a>
             <a
-              className="w-fit h-[50px] mt-[40px] flex gap-[14px] justify-center items-center  text-center py-3 px-6 bg-gradient-to-r from-secondary to-blue-600 text-white font-semibold rounded-full shadow-lg hover:from-blue-600 hover:to-blue-800 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               href={siteConfig.discord}
+              className="inline-flex items-center gap-2 rounded-[10px] border border-slate-300 bg-white px-[18px] py-2.5 text-[14.5px] font-semibold text-slate-700 transition-all duration-150 hover:-translate-y-px hover:border-blue-400 hover:text-blue-600"
             >
-              <DiscordIcon className="w-6 h-6 mr-2" />
-              <p className="text-nowrap">Join the Discord server</p>
+              <DiscordIcon className="w-5 h-5" />
+              Join the Discord
             </a>
           </div>
         )}
