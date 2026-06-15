@@ -3,7 +3,6 @@ import { getContributorsCount, getRepoInfo } from '@/lib/getGitHubData'
 import { StarIcon, UsersIcon } from '@heroicons/react/24/solid'
 import { useEffect, useState } from 'react'
 import GitHubIcon from '../icons/GitHubIcon'
-import { H2, H3 } from '../custom/header'
 import DiscordIcon from '../icons/DiscordIcon'
 
 export default function Community({ homePage }: { homePage: boolean }) {
@@ -33,10 +32,12 @@ export default function Community({ homePage }: { homePage: boolean }) {
     <div className="prose-a:no-underline relative py-24" id="contact">
       <div className="relative max-w-8xl mx-auto flex flex-col items-center px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <H2>Backed by a Global Community</H2>
-          <H3 className="mb-4">
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+            Backed by a Global Community
+          </h2>
+          <p className="mt-3.5 text-[17px] text-slate-600 dark:text-slate-300">
             We are growing. Get in touch or become a contributor!
-          </H3>
+          </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 justify-center mt-12 gap-8 md:items-stretch items-center w-full max-w-2xl">
           <a
