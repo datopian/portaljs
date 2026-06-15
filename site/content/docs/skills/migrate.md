@@ -31,8 +31,15 @@ added once and works with every target.
 > DKAN, ArcGIS Hub, and data.gov publish a DCAT-US `/data.json` — use the **dcat** source
 > for those. Native Socrata, OpenDataSoft, and ArcGIS FeatureServer readers are planned.
 
-**Target (v1):** the static `portaljs-catalog` (`datasets.json` + optional files in
-`/public/data/`).
+**Targets:**
+
+| Target | `--target` | Writes |
+| ------ | ---------- | ------ |
+| **Static PortalJS catalog** (default) | `static` | `datasets.json` (+ optional files in `/public/data/`) |
+| **CKAN instance** | `ckan` | datasets/resources into a CKAN backend via its action API |
+
+The CKAN target enables platform-to-platform moves — **CKAN→CKAN** and **DKAN→CKAN** — since
+any reader feeds any writer through the canonical shape.
 
 ## Inputs
 
@@ -40,11 +47,14 @@ added once and works with every target.
 | ----- | -------- | ----- |
 | Source URL | Yes | A CKAN base URL, or a DCAT `/data.json` URL. |
 | Source type | No | `ckan` or `dcat`; auto-detected from the URL if omitted. |
-| Portal directory | No | The target portal. Defaults to the current directory. |
-| Org / group filter | No | CKAN only — restrict the harvest. |
-| Copy mode | No | `link` (default) or `download` — see below. |
-| `--dry-run` | No | Preview what would be written without changing `datasets.json`. |
-| `--replace` | No | Clear existing entries first (default: upsert alongside them). |
+| Org / group filter | No | CKAN source only — restrict the harvest. |
+| `--target` | No | `static` (default) or `ckan`. |
+| Portal directory | No | Static target — defaults to the current directory. |
+| Copy mode | No | Static target — `link` (default) or `download`. |
+| Target CKAN URL | For `--target ckan` | The CKAN instance to write into. |
+| `CKAN_API_KEY` (env) | For `--target ckan` | A **write** API key, read from the environment — never passed on the command line. |
+| `--dry-run` | No | Preview what would be written, change nothing. |
+| `--replace` | No | Static target — clear existing entries first (default: upsert). |
 
 ## Examples
 
@@ -66,7 +76,16 @@ Harvest a DCAT catalog (DKAN / ArcGIS Hub / data.gov):
 /migrate https://hub.arcgis.com/data.json --source dcat
 ```
 
-## Copy modes
+Move one CKAN instance's datasets into another CKAN (set the write key first):
+
+```
+export CKAN_API_KEY=…           # write key for the destination
+/migrate https://source-ckan.example --target ckan --target-url https://dest-ckan.example --owner-org my-org
+```
+
+> Copy modes apply to the **static** target. For `--target ckan`, see *CKAN target* below.
+
+## Copy modes (static target)
 
 - **`link` (default)** — each resource's `path` is set to the **source file URL**. No files
   are copied; the catalog references the source's hosting. Fast and light, but previews and
@@ -86,6 +105,16 @@ Both produce the same `datasets.json`; only `resources[].path` differs. The temp
 
 It runs a full `npm run build` and reports how many datasets were imported and pages
 generated before declaring success.
+
+## CKAN target
+
+With `--target ckan`, `/migrate` pushes the canonical datasets into a CKAN instance instead
+of writing `datasets.json`: it ensures the owner organization exists, then `package_create`
+(or `package_update` on re-run) for each dataset and `resource_create` for each resource,
+authenticating with the `CKAN_API_KEY` env var. The slug becomes CKAN's package `name`;
+`name`/`description`/`keywords` map to `title`/`notes`/`tags`. In `link` mode the resource
+`url` references the source file (v1 does not re-upload bytes into CKAN). It stops on the
+first auth/permission error rather than half-migrating.
 
 ## After migrating
 
