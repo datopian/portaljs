@@ -48,15 +48,15 @@ export default function Community({ homePage }: { homePage: boolean }) {
                 <StarIcon width={36} />
               </div>
             </div>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-4">
+            <p className="opacity-80 text-sm mt-4">
               This repository is shining bright with:
             </p>
             <p className="text-5xl font-bold bg-gradient-to-br from-amber-400 to-amber-500 bg-clip-text text-transparent mt-4">
               {repoInfo?.stargazers_count}
             </p>
-            <h2 className="mt-3 text-2xl font-bold text-slate-900 dark:text-white">Stars</h2>
-            <p className="text-slate-400 dark:text-slate-500 text-sm mt-3">
-              Thank you for your support!
+            <h2 className="mt-4 text-2xl font-bold">Stars</h2>
+            <p className="opacity-70 text-sm mt-4">
+              Thank you for your support! 🌟
             </p>
           </a>
           <a
@@ -68,15 +68,15 @@ export default function Community({ homePage }: { homePage: boolean }) {
                 <UsersIcon width={36} />
               </div>
             </div>
-            <p className={`text-slate-500 dark:text-slate-400 text-sm mt-4 ${homePage ? 'text-nowrap' : ''}`}>
+            <p className={`opacity-80 text-sm mt-4 ${homePage ? 'text-nowrap' : ''}`}>
               Incredible developers contributing their brilliance:
             </p>
             <p className="text-5xl font-bold bg-gradient-to-br from-sky-400 to-blue-600 bg-clip-text text-transparent mt-4">
               {contributorsCount}
             </p>
-            <h2 className="mt-3 text-2xl font-bold text-slate-900 dark:text-white">Contributors</h2>
-            <p className="text-slate-400 dark:text-slate-500 text-sm mt-3">
-              Join the team and make an impact!
+            <h2 className="mt-4 text-2xl font-bold">Contributors</h2>
+            <p className="opacity-70 text-sm mt-4">
+              Join the team! and make an impact! 👩‍💻👨‍💻
             </p>
           </a>
         </div>
