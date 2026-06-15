@@ -167,10 +167,15 @@ Ensure `slug` is unique within its `namespace` (suffix `-2`, `-3`, … on collis
   fast, light, and the catalog stays in sync with the source's hosting. Trade-off: previews
   and downloads depend on the source staying up and allowing cross-origin reads.
 - **`download`:** for each resource, download the file into
-  `PORTAL_DIR/public/data/<namespace>/<slug>/<filename>` and set `path` to the **relative**
-  `"<namespace>/<slug>/<filename>"`. Self-contained portal, no runtime dependency on the
-  source — but a large catalog balloons the repo. Skip (with a logged warning) any file
-  that fails to download rather than aborting the whole run.
+  `PORTAL_DIR/public/data/<namespace>/<slug>/<NN>-<safe-filename>` and set `path` to the
+  matching **relative** `"<namespace>/<slug>/<NN>-<safe-filename>"`. `<NN>` is the resource's
+  zero-padded index within the dataset and `<safe-filename>` is the URL basename sanitized to
+  `[a-zA-Z0-9._-]` (default `data.<format>` when the URL has no usable basename). The index
+  prefix is **required** — harvested datasets routinely expose several distributions sharing a
+  basename (e.g. two `download.csv`s), and a bare `<filename>` would let later files overwrite
+  earlier ones. Self-contained portal, no runtime dependency on the source — but a large
+  catalog balloons the repo. Skip (with a logged warning) any file that fails to download
+  rather than aborting the whole run.
 
 ### 6. Dry-run preview
 
