@@ -51,15 +51,15 @@ becomes an implementation detail we've wrapped away.
 
 ## URL & namespace scheme
 
-- Public URL: `https://<slug>.<cloud-zone>` where `<cloud-zone>` is **TBD** — see *Legacy
-  coexistence* below. Either bare `portaljs.com` (with safeguards) or a dedicated namespace
-  like `app.portaljs.com` / a separate `portaljs.cloud` zone.
-- `<slug>` is unique within the cloud zone (it's a hostname). On collision at deploy time,
-  the API suffixes (`<slug>-2`) or namespaces under the user — final scheme TBD, see Open
-  questions.
-- **Reserved subdomains** (never assignable): `www docs app api cloud blog status
-  staging admin assets cdn` (+ **every existing host in the `portaljs.com` zone** — built
-  from a live inventory, not a guess).
+- Public URL: **`https://<slug>.app.portaljs.com`** (locked 2026-06-15). The wildcard lives
+  on `app.portaljs.com`, **not** bare `portaljs.com` — so legacy `<prefix>.portaljs.com`
+  customers are physically out of the wildcard's scope and unaffected.
+- `<slug>` is unique within `app.portaljs.com` (only ever new-system tenants — no legacy
+  collision possible). On collision among new tenants, the API suffixes (`<slug>-2`) or
+  namespaces under the user — final scheme TBD, see Open questions.
+- **Reserved labels** under `app.portaljs.com`: `www api staging admin` (small list — the
+  legacy-collision problem is gone, so the big zone-inventory reserved-list is no longer
+  required).
 
 ## Legacy `*.portaljs.com` coexistence (must resolve before prod DNS)
 
@@ -75,18 +75,14 @@ only catches hostnames with no explicit record.
 per-customer records; (b) informal/unclaimed names; (c) a new user's slug colliding with an
 existing customer's prefix.
 
-**Plan (in order of safety):**
-1. **Dedicated namespace (recommended).** Point the wildcard at a namespace legacy never
-   used — `*.app.portaljs.com` or a separate zone `*.portaljs.cloud` — so new deploys cannot
-   collide with anything on bare `portaljs.com`. Still presented as "PortalJS Cloud."
-2. **Inventory + reserved-list.** Before any wildcard, enumerate every existing
-   `portaljs.com` subdomain in the Cloudflare zone; bake them into the Worker reserved list
-   and confirm each has an explicit record (so DNS specificity protects it).
-3. **Staging-first.** Validate on `*.staging.portaljs.com`; never flip the bare
-   `*.portaljs.com` wildcard until 1–2 are confirmed.
+**Resolution (locked 2026-06-15): dedicated namespace `*.app.portaljs.com`.** The wildcard is
+scoped to `app.portaljs.com`, a name legacy never used, so new deploys **cannot** collide
+with any bare-`portaljs.com` customer subdomain — the wildcard simply doesn't cover them.
+This removes the need for a zone inventory / large reserved-list. Legacy
+`<prefix>.portaljs.com` deployments are entirely untouched.
 
-If bare `<slug>.portaljs.com` is required (not a dedicated namespace), then **(2) + (3) are
-mandatory** and the deploy API must reject any slug already present in the zone inventory.
+Still observed: **staging-first** — validate on `*.staging.app.portaljs.com` before flipping
+the production `*.app.portaljs.com` wildcard.
 
 ## R2 layout
 

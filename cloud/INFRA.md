@@ -12,10 +12,12 @@ until these exist.
 - The **`portaljs.com` zone** managed in that account (it already is, for the marketing site).
 
 ## 2. DNS
-- A **wildcard** `*.portaljs.com` record (proxied) pointed at the **Router Worker** (via a
-  Workers route `*.portaljs.com/*`). Existing hosts (`www`, `docs`, `api`, etc.) keep their
-  own records and are excluded by the Worker's reserved-list.
-- For staging: `*.staging.portaljs.com` → the staging Router Worker.
+- A **wildcard** `*.app.portaljs.com` record (proxied) pointed at the **Router Worker** (via
+  a Workers route `*.app.portaljs.com/*`). **Scoped to `app.portaljs.com` on purpose** — it
+  does NOT cover bare `<prefix>.portaljs.com`, so existing/legacy PortalJS Cloud customer
+  subdomains are unaffected (different name level, outside the wildcard).
+- For staging: `*.staging.app.portaljs.com` → the staging Router Worker.
+- Legacy `<prefix>.portaljs.com` records stay exactly as they are — no changes needed.
 
 ## 3. R2
 - One **R2 bucket** (e.g. `portaljs-cloud`) for tenant static files. A separate
