@@ -1,4 +1,5 @@
-import { Player } from '@lottiefiles/react-lottie-player'
+import dynamic from 'next/dynamic'
+const Player = dynamic(() => import('@lottiefiles/react-lottie-player').then(mod => mod.Player), { ssr: false })
 import { H2, H3 } from '../custom/header'
 import { useTheme } from 'next-themes'
 
@@ -76,20 +77,20 @@ export const KeyFeatures = ({ productName }: KeyFeaturesProps) => {
           <H2 className="mt-2 tracking-4 text-center">
             Key Features
           </H2>
-          <H3 className="text-lg leading-8 opacity-75 text-center">
+          <H3 className="text-lg leading-8 !opacity-100 text-slate-600 dark:text-slate-400 text-center">
             Solve {productName}'s user experience challenges with PortalJS—transform technical interfaces into business-friendly data portals
           </H3>
         </div>
         <div className="mt-10 grid grid-cols-1 gap-4 sm:mt-16 lg:grid-cols-6 lg:grid-rows-2">
           {features.map((feature) => (
             <div key={feature.title} className={`flex p-px ${feature.colSpan}`}>
-              <div className={`overflow-hidden rounded-lg dark:bg-slate-900 ring-1 ring-slate-200 dark:ring-slate-800 dark:hover:bg-slate-800 hover:bg-slate-100 transition-all duration-300 shadow-lg ${feature.style}`}>
+              <div className={`overflow-hidden rounded-lg dark:bg-slate-900 ring-1 ring-slate-200 dark:ring-slate-800 dark:hover:bg-slate-800 hover:bg-slate-100 transition-all duration-300 ${feature.style}`}>
                 <div className="flex flex-col items-start p-10">
                   <Player src={`/static/icons/${theme}/${feature.icon}.json`} autoplay loop className={`w-14 h-14 ${feature.iconStyle}`} />
                   <p className="mt-2 text-xl font-semibold tracking-tight dark:text-white">
                     {feature.title}
                   </p>
-                  <p className="mt-2 ">{feature.description}</p>
+                  <p className="mt-2 text-slate-600 dark:text-slate-400">{feature.description}</p>
                 </div>
               </div>
             </div>

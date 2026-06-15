@@ -3,17 +3,25 @@
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@portaljs/core": ["node_modules/@portaljs/core/dist/src"],
+      "@portaljs/core": [
+        "node_modules/@portaljs/core/dist/src"
+      ],
       "@portaljs/remark-callouts": [
         "node_modules/@portaljs/remark-callouts/dist/src"
       ],
       "@portaljs/remark-embed": [
         "node_modules/@portaljs/remark-embed/dist/src"
       ],
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     },
     "target": "es2020",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -25,8 +33,15 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "react-jsx"
   },
-  "include": ["types.d.ts", "next-env.d.ts", "**/*.tsx", "**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "types.d.ts",
+    "next-env.d.ts",
+    "**/*.tsx",
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
