@@ -1,5 +1,5 @@
 ---
-description: Wire a scaffolded PortalJS portal to a CKAN backend over its API. Installs @portaljs/ckan and feeds the /search catalog and /@<namespace>/<slug> showcases from CKAN instead of datasets.json.
+description: Wire a scaffolded PortalJS portal to a CKAN backend over its API. Generates a tiny server-side fetch client (no runtime dependency) and feeds the /search catalog and /@<namespace>/<slug> showcases from CKAN instead of datasets.json.
 allowed-tools: Read, Write, Edit, Bash, WebFetch
 ---
 
@@ -9,8 +9,15 @@ Connect an existing `portaljs-catalog` portal to a live CKAN backend. The portal
 reading the static `datasets.json` manifest (and files in `/public/data/`) and instead
 feeds its two data surfaces — the **`/search` catalog** and the **`/@<namespace>/<slug>`
 showcases** — straight from a CKAN instance's REST API (`package_search` / `package_show`)
-using the `@portaljs/ckan` client. Output is plain, editable Next.js code — no opaque
-framework wiring.
+through a tiny generated fetch client. Output is plain, editable Next.js code with **no
+runtime dependency** — no opaque framework wiring.
+
+> **Why a fetch client, not `@portaljs/ckan`?** That package's bundle wires React UI
+> components to React 18 internals (`ReactCurrentDispatcher`) and crashes at import under
+> the template's React 19 — even server-side, where this skill imports it. The CKAN client
+> class is locked inside that same module, so it can't be used in isolation. A ~40-line
+> `fetch` wrapper covers the two REST actions this skill needs (`package_search`,
+> `package_show`), is server-side only, ships zero client bytes, and has no React coupling.
 
 Use this for the "decoupled / any backend" path: the user has a CKAN data management
 system (their own or a public one) and wants a browseable portal in front of it.
@@ -21,9 +28,8 @@ dataset list first. If the user says up front they want a CKAN backend, scaffold
 sample data, then run `/connect-ckan` to swap the source over to CKAN. Only a CKAN base
 URL is required.
 
-The generated pages fetch CKAN **server-side** in `getStaticProps`/`getStaticPaths`, so
-the `@portaljs/ckan` bundle never reaches the browser — the client stays lean and the
-site can be statically deployed.
+The generated pages fetch CKAN **server-side** in `getStaticProps`/`getStaticPaths`, so the
+catalog is pre-rendered at build time and the site can be statically deployed.
 
 ## Required input — ask, don't error
 
@@ -82,42 +88,17 @@ If any returns `success: false`, tell the user that org wasn't found, list the v
 from `organization_list`, and ask which one they meant (or to drop the filter) before
 continuing.
 
-### 4. Install `@portaljs/ckan` (once)
+### 4. Generate the CKAN client module (a tiny fetch wrapper)
 
-Tell the user first: `Installing @portaljs/ckan...`
-
-```bash
-cd PORTAL_DIR && npm install @portaljs/ckan@^0.1.0
-```
-
-If install fails, tell the user (check Node.js >=18 and network access) and retry.
-
-### 5. Patch `tsconfig.json` so TypeScript resolves the CKAN types
-
-`@portaljs/ckan` ships its `index.d.ts` but its `package.json` `exports` field has no
-`types` condition, so under the template's `moduleResolution: "bundler"` the build fails
-with *"Could not find a declaration file for module '@portaljs/ckan'"*. Fix it by adding a
-`paths` mapping to the declaration file.
-
-Open `PORTAL_DIR/tsconfig.json` and add the `@portaljs/ckan` key to `compilerOptions.paths`
-(keep any existing entries such as `"@/*"`):
-```jsonc
-"paths": {
-  "@/*": ["./*"],
-  "@portaljs/ckan": ["./node_modules/@portaljs/ckan/dist/index.d.ts"]
-}
-```
-If there is no `paths` object yet, create one with both keys. This step is mandatory — the
-build will not type-check without it.
-
-### 6. Generate the CKAN client module
-
-Write `PORTAL_DIR/lib/ckan.ts`. The provided URL becomes the default, overridable at deploy
-time via the `DMS` env var. Org/group filters and the build-time page cap live here as
-plain editable constants.
+Write `PORTAL_DIR/lib/ckan.ts` — a self-contained server-side client over the CKAN REST
+API. **No package install, no `tsconfig` changes**: it uses the built-in `fetch`, so there
+is nothing to add to `package.json` and no `paths` entry to maintain. The provided URL
+becomes the default, overridable at deploy time via the `DMS` env var. Org/group filters
+and the build-time page cap live here as plain editable constants.
 
 ```ts
-import { CKAN } from '@portaljs/ckan'
+// Minimal server-side CKAN client — plain fetch, no dependency, no React coupling.
+// Used ONLY in getStaticProps/getStaticPaths, so it never reaches the browser bundle.
 
 // CKAN backend base URL. Override at deploy time with the DMS env var.
 export const DMS = (process.env.DMS || 'CKAN_URL').replace(/\/+$/, '')
@@ -130,12 +111,65 @@ export const GROUP_FILTER: string[] = [/* GROUP_FILTER */]
 // note every dataset becomes one statically generated page.
 export const MAX_DATASETS = 200
 
-// Shared client. Used ONLY in getStaticProps/getStaticPaths (server side),
-// so the @portaljs/ckan bundle never reaches the browser.
-export const ckan = new CKAN(DMS)
+// CKAN REST shapes — only the fields the pages read.
+type CkanResource = { id: string; name?: string; format?: string; url?: string }
+type CkanOrganization = { name?: string; title?: string }
+export type CkanPackage = {
+  name: string
+  title?: string
+  notes?: string
+  organization?: CkanOrganization
+  resources?: CkanResource[]
+}
+
+export type SearchArgs = {
+  offset?: number
+  limit?: number
+  tags?: string[]
+  orgs?: string[]
+  groups?: string[]
+}
+
+// Build a CKAN `fq` filter-query from org/group/tag lists (OR within a field).
+function buildFq({ orgs = [], groups = [], tags = [] }: SearchArgs): string {
+  const clause = (field: string, vals: string[]) =>
+    vals.length ? `${field}:(${vals.map((v) => `"${v}"`).join(' OR ')})` : ''
+  return [clause('organization', orgs), clause('groups', groups), clause('tags', tags)]
+    .filter(Boolean)
+    .join(' ')
+}
+
+async function ckanAction(action: string, params: Record<string, string>): Promise<any> {
+  const qs = new URLSearchParams(params).toString()
+  const res = await fetch(`${DMS}/api/3/action/${action}?${qs}`)
+  if (!res.ok) throw new Error(`CKAN ${action} failed: ${res.status} ${res.statusText}`)
+  const body = await res.json()
+  if (!body?.success) throw new Error(`CKAN ${action} returned success=false`)
+  return body.result
+}
+
+// The two-method surface the pages use. Add more actions (organization_list,
+// datastore_search, …) here as you extend the portal.
+export const ckan = {
+  async packageSearch(
+    args: SearchArgs = {}
+  ): Promise<{ datasets: CkanPackage[]; count: number }> {
+    const params: Record<string, string> = {
+      start: String(args.offset ?? 0),
+      rows: String(args.limit ?? MAX_DATASETS),
+    }
+    const fq = buildFq(args)
+    if (fq) params.fq = fq
+    const result = await ckanAction('package_search', params)
+    return { datasets: result.results ?? [], count: result.count ?? 0 }
+  },
+  async getDatasetDetails(slug: string): Promise<CkanPackage> {
+    return ckanAction('package_show', { id: slug })
+  },
+}
 
 // A card is the serializable shape passed to client components from the
-// server-side data functions (never pass the raw CKAN client across this seam).
+// server-side data functions (never pass the raw CKAN responses around unfiltered).
 export type DatasetCard = {
   slug: string
   namespace: string
@@ -154,12 +188,12 @@ export function datasetHref(d: { namespace: string; slug: string }): string {
 Substitute `CKAN_URL` with the real URL and fill `ORG_FILTER`/`GROUP_FILTER` with quoted
 org/group names (e.g. `['my-org']`), or leave them as `[]` if no filter was given.
 
-> **Keep CKAN calls server-side.** Only reference `ckan`, `DMS`, and the filters inside
-> `getStaticProps`/`getStaticPaths`. If a React component body imports them, Next.js bundles
-> the whole `@portaljs/ckan` package into the client. Pass plain serializable props to
-> components instead.
+> **Keep CKAN calls server-side.** Reference `ckan`, `DMS`, and the filters only inside
+> `getStaticProps`/`getStaticPaths`, and pass plain serializable props to components. The
+> fetch wrapper has no client cost, but keeping data-fetching server-side preserves the SSG
+> model (everything pre-rendered, statically hostable).
 
-### 7. Generate the CKAN-backed catalog at `/search`
+### 5. Generate the CKAN-backed catalog at `/search`
 
 The home page (`pages/index.tsx`) stays the search-first landing — its search box and chips
 already navigate to `/search`. Wire the **catalog list** at `PORTAL_DIR/pages/search.tsx`
@@ -238,7 +272,7 @@ you want live text filtering over the CKAN results, keep a client-side filter ov
 `package_search?q=` later. Leave `pages/index.tsx` as-is (it's the static search landing);
 only swap the catalog's data source. Tell the user what you changed.
 
-### 8. Generate the CKAN-backed showcase at `/@<namespace>/<slug>`
+### 6. Generate the CKAN-backed showcase at `/@<namespace>/<slug>`
 
 Overwrite `PORTAL_DIR/pages/[owner]/[slug].tsx` (the template's showcase route). It
 pre-renders one page per dataset via `getStaticPaths` and fetches full details with
@@ -361,7 +395,7 @@ export default function DatasetPage({ dataset }: { dataset: DatasetView }) {
 > `/add-map` skills target the static showcase's Views section, so they don't apply to the
 > CKAN-backed route as-is.
 
-### 9. Verify the build
+### 7. Verify the build
 
 ```bash
 cd PORTAL_DIR
@@ -371,19 +405,20 @@ tail -30 /tmp/connect-ckan-build.log
 ```
 
 If `BUILD_EXIT` is non-zero, print the log and fix the error before reporting success. Do
-not report success while the build is failing. Common cause: missing tsconfig `paths` entry
-(step 5).
+not report success while the build is failing. Common causes: a typo in the substituted
+`CKAN_URL`, or an org/group filter name that doesn't exist on the instance (the catalog
+comes back empty).
 
 > **Build time scales with dataset count.** Each dataset is one `package_show` request and
 > one static page. On large instances the build can be slow — `MAX_DATASETS` in `lib/ckan.ts`
 > caps it. If the cap is hit, tell the user how many datasets were rendered vs. the catalog
 > total and that they can raise `MAX_DATASETS`.
 
-### 10. Report success
+### 8. Report success
 
 ```
 ✓ Connected to CKAN: CKAN_URL
-  - Client:    lib/ckan.ts (DMS overridable via env var)
+  - Client:    lib/ckan.ts (fetch wrapper, no dependency; DMS overridable via env var)
   - Home:      pages/index.tsx → unchanged search landing (search box → /search)
   - Catalog:   pages/search.tsx → lists datasets from package_search, links to /@<ns>/<slug>
   - Showcase:  pages/[owner]/[slug].tsx → package_show, CSV/TSV preview via <Table>
@@ -399,9 +434,10 @@ Next: run `npm run dev` and visit http://localhost:3000, or run /deploy to publi
   fast, statically hostable, but data is fixed at build time — rebuild to pick up new CKAN
   datasets. For always-live data, deploy to a Node host and either switch the pages to
   `getServerSideProps` or set `getStaticPaths` `fallback: 'blocking'`.
-- **Client bundle stays clean.** `@portaljs/ckan` (which bundles React UI components) is
-  imported only in server-side data functions, so it is tree-shaken out of the browser
-  bundle. Keep it that way — never reference `ckan`/`DMS` in component bodies.
+- **No runtime dependency.** `lib/ckan.ts` is a plain `fetch` wrapper — nothing is added to
+  `package.json`, so there's no version to track and nothing to bundle. Keep CKAN calls in
+  server-side data functions (never reference `ckan`/`DMS` in component bodies) to preserve
+  the pre-rendered SSG model.
 - **DMS env var.** `lib/ckan.ts` reads `process.env.DMS` first, falling back to the URL you
   provided. Set `DMS` in the deploy environment to point at a different CKAN instance without
   editing code.
@@ -411,7 +447,8 @@ Next: run `npm run dev` and visit http://localhost:3000, or run /deploy to publi
 - **CORS for resource previews.** The `<Table>` preview fetches resource URLs from the
   browser. If a CKAN resource host blocks cross-origin requests, the table shows a load
   error while the Download link still works. Datastore-backed resources are the most reliable.
-- **CKAN client API.** `lib/ckan.ts` exposes a `@portaljs/ckan` `CKAN` instance. Other useful
-  methods for extending the portal: `getOrgsWithDetails()`, `getGroupsWithDetails()`,
-  `getAllTags()` (build filter UIs), and `datastoreSearch(resourceId)` (query the datastore).
+- **Extending the client.** `lib/ckan.ts` wraps two REST actions (`package_search`,
+  `package_show`). To build filter UIs or query the datastore, add more actions the same way
+  via the `ckanAction` helper — e.g. `organization_list`, `group_list`, `tag_list`,
+  `datastore_search?resource_id=…`. Each is one `ckanAction('<name>', { … })` call.
 ```

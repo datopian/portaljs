@@ -1,6 +1,6 @@
 ---
 metatitle: /connect-ckan – Wire a PortalJS Portal to a CKAN Backend over its API
-metadescription: The /connect-ckan skill installs @portaljs/ckan, feeds the catalog at /search and dataset showcases at /@<namespace>/<slug> from CKAN as plain editable code, and verifies the build — the decoupled, any-backend path.
+metadescription: The /connect-ckan skill generates a tiny server-side fetch client (no runtime dependency), feeds the catalog at /search and dataset showcases at /@<namespace>/<slug> from CKAN as plain editable code, and verifies the build — the decoupled, any-backend path.
 title: /connect-ckan
 description: Wire a portal to a CKAN backend over its API instead of static files — the decoupled, any-backend path.
 ---
@@ -9,16 +9,16 @@ description: Wire a portal to a CKAN backend over its API instead of static file
 backend. The portal stops reading the static `datasets.json` manifest and
 `/public/data/` files, and instead feeds both surfaces — the catalog at `/search`
 and the dataset showcases at `/@<namespace>/<slug>` — straight from a CKAN
-instance's REST API (`package_search` / `package_show`) using the `@portaljs/ckan`
-client. The output is plain, editable Next.js code — no opaque framework wiring.
+instance's REST API (`package_search` / `package_show`) through a tiny generated
+`fetch` client. The output is plain, editable Next.js code with **no runtime
+dependency** — no opaque framework wiring.
 
 ## When to use it
 
 Use it for the **decoupled / any-backend** path: you have a CKAN data management
 system (your own or a public one) and want a browseable portal in front of it.
 CKAN calls run **server-side** in `getStaticProps` / `getStaticPaths`, so the
-`@portaljs/ckan` bundle never reaches the browser and the site can still be
-statically deployed.
+catalog is pre-rendered at build time and the site can still be statically deployed.
 
 ## Inputs
 
@@ -46,11 +46,10 @@ Restricted to specific organizations:
 
 ## What it produces
 
-- `@portaljs/ckan` added to `package.json`, plus a `tsconfig.json` `paths` entry so
-  TypeScript resolves the client's types.
-- `lib/ckan.ts` — a small, editable client module. The CKAN URL is the default,
-  overridable at deploy time via the `DMS` env var; org/group filters and a
-  build-time page cap (`MAX_DATASETS`) are plain constants you can edit.
+- `lib/ckan.ts` — a small, editable `fetch`-based client (no package added to
+  `package.json`, no `tsconfig` changes). The CKAN URL is the default, overridable at
+  deploy time via the `DMS` env var; org/group filters and a build-time page cap
+  (`MAX_DATASETS`) are plain constants you can edit.
 - `pages/search.tsx` rewritten so the catalog lists datasets from `package_search`.
 - `pages/[owner]/[slug].tsx` — the showcase route, repointed to pre-render one
   showcase per dataset at `/@<namespace>/<slug>` via `package_show`, previewing

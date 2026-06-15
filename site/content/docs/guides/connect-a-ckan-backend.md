@@ -27,7 +27,7 @@ Optionally restrict the catalog to one or more organizations or groups:
 ```
 
 [`/connect-ckan`](/docs/skills/connect-ckan) verifies the CKAN API is reachable,
-installs `@portaljs/ckan`, generates a `lib/ckan.ts` client module, and rewrites the
+generates a tiny `lib/ckan.ts` fetch client (no runtime dependency), and rewrites the
 catalog (`/search`) and the dataset showcase route to fetch from CKAN. It runs a full
 `next build` and reports how many dataset pages were generated.
 
@@ -35,15 +35,14 @@ catalog (`/search`) and the dataset showcase route to fetch from CKAN. It runs a
 
 The frontend is **independent from the backend** and talks to it over the API
 (`package_search` for the catalog, `package_show` for each dataset). The generated
-pages fetch CKAN **server-side** in `getStaticProps`/`getStaticPaths`, so the
-`@portaljs/ckan` bundle never reaches the browser — the client stays lean and the site
-can still deploy statically.
+pages fetch CKAN **server-side** in `getStaticProps`/`getStaticPaths`, so the catalog is
+pre-rendered at build time and the site can still deploy statically.
 
 It writes plain, editable code:
 
-- `lib/ckan.ts` — a shared `CKAN` client. The base URL defaults to what you passed and
-  is overridable at deploy time via the `DMS` env var; org/group filters and a
-  build-time `MAX_DATASETS` cap live here as plain constants.
+- `lib/ckan.ts` — a tiny `fetch`-based CKAN client (no dependency). The base URL defaults
+  to what you passed and is overridable at deploy time via the `DMS` env var; org/group
+  filters and a build-time `MAX_DATASETS` cap live here as plain constants.
 - `pages/search.tsx` — the catalog at `/search`, listing datasets from `package_search`.
 - `pages/[owner]/[slug].tsx` — the dataset showcase at `/@<namespace>/<slug>`, one
   statically generated page per dataset, with CSV/TSV resources previewed through the
@@ -51,32 +50,42 @@ It writes plain, editable code:
 
 > [!note] Keep CKAN calls server-side
 > Reference `ckan`, `DMS`, and the filters **only** inside
-> `getStaticProps`/`getStaticPaths`. If a component body imports them, Next.js bundles
-> the whole `@portaljs/ckan` package into the client. Pass plain serializable props to
-> components instead.
+> `getStaticProps`/`getStaticPaths`, and pass plain serializable props to components. The
+> fetch wrapper has no client cost, but keeping data-fetching server-side preserves the
+> pre-rendered SSG model.
 
 ## The by-hand path
 
-Install the client and create `lib/ckan.ts`:
-
-```bash
-npm install @portaljs/ckan@^0.1.0
-```
+Create `lib/ckan.ts` — a small server-side `fetch` wrapper over the CKAN REST API. No
+package to install, no `tsconfig` changes; it uses the built-in `fetch`:
 
 ```ts
-import { CKAN } from '@portaljs/ckan';
-export const ckan = new CKAN((process.env.DMS || 'https://demo.dev.datopian.com').replace(/\/+$/, ''));
+export const DMS = (process.env.DMS || 'https://demo.dev.datopian.com').replace(/\/+$/, '');
+
+async function ckanAction(action: string, params: Record<string, string>) {
+  const res = await fetch(`${DMS}/api/3/action/${action}?${new URLSearchParams(params)}`);
+  if (!res.ok) throw new Error(`CKAN ${action} failed: ${res.status}`);
+  const body = await res.json();
+  if (!body?.success) throw new Error(`CKAN ${action} returned success=false`);
+  return body.result;
+}
+
+export const ckan = {
+  packageSearch: (rows = 200) =>
+    ckanAction('package_search', { rows: String(rows) }).then((r) => ({ datasets: r.results, count: r.count })),
+  getDatasetDetails: (slug: string) => ckanAction('package_show', { id: slug }),
+};
 ```
 
 Then call `ckan.packageSearch(...)` from `getStaticProps` on the catalog
 (`pages/search.tsx`) and `ckan.getDatasetDetails(slug)` from the dynamic showcase route
 `pages/[owner]/[slug].tsx`, passing the results as props.
 
-> [!note] TypeScript types for @portaljs/ckan
-> Under the template's `moduleResolution: "bundler"`, add a `paths` entry in
-> `tsconfig.json` so TypeScript finds the declarations:
-> `"@portaljs/ckan": ["./node_modules/@portaljs/ckan/dist/index.d.ts"]`. Without it the
-> build fails to type-check.
+> [!note] Why not `@portaljs/ckan`?
+> That package's bundle wires React UI components to React 18 internals
+> (`ReactCurrentDispatcher`) and crashes at import under the template's React 19 — even
+> server-side. The fetch wrapper above covers the two REST actions the portal needs with
+> no React coupling and zero client bytes.
 
 ## Notes
 
