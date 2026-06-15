@@ -20,9 +20,10 @@ frontend. See [Core concepts](/docs/core-concepts) for the model.
 ## CKAN
 
 The first-class, skill-supported path. [`/connect-ckan`](/docs/guides/connect-a-ckan-backend)
-installs `@portaljs/ckan`, lists datasets from `package_search`, and renders each from
-`package_show`, with CSV/TSV resources previewed through the template's `<Table />`.
-Calls run server-side so the CKAN bundle never reaches the browser. See the
+generates a tiny server-side `fetch` client (no dependency), lists datasets from
+`package_search`, and renders each from `package_show`, with CSV/TSV resources previewed
+through the template's `<Table />`. Calls run server-side, so the catalog is pre-rendered
+and statically deployable. See the
 [CKAN integration page](/ckan) and the
 [`examples/ckan`](https://github.com/datopian/portaljs/tree/main/examples/ckan) and
 [`examples/ckan-ssg`](https://github.com/datopian/portaljs/tree/main/examples/ckan-ssg)
@@ -30,10 +31,10 @@ examples.
 
 ## DKAN
 
-DKAN exposes a **CKAN-compatible API** (`/api/3/action/...`). Point the same
-`@portaljs/ckan` client (or plain `fetch`) at a DKAN instance's API root and the
-catalog/dataset pattern carries over. Confirm `package_search`/`package_show`
-availability on your DKAN version first.
+DKAN exposes a **CKAN-compatible API** (`/api/3/action/...`). Point the same `fetch`
+client `/connect-ckan` generates at a DKAN instance's API root and the catalog/dataset
+pattern carries over. Confirm `package_search`/`package_show` availability on your DKAN
+version first.
 
 ## OpenMetadata
 

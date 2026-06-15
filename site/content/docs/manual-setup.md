@@ -83,8 +83,9 @@ Everything the skills do, you can do by hand:
   showcase (`pages/[owner]/[slug].tsx`).
 - **Maps** — `npm install react-leaflet leaflet` and render a GeoJSON file as a view
   in the showcase.
-- **CKAN** — `npm install @portaljs/ckan` and pass a `datastoreConfig` to `Table`,
-  or build a catalog against the CKAN API. See [CKAN integration](/ckan).
+- **CKAN** — build a catalog against the CKAN REST API with a tiny server-side `fetch`
+  client (no dependency); `/connect-ckan` generates it for you. See
+  [CKAN integration](/ckan).
 
 For the conventions these follow — import paths, data loading, page structure —
 read the [`CLAUDE.md`](https://github.com/datopian/portaljs/blob/main/CLAUDE.md)
