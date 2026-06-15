@@ -41,7 +41,7 @@ export default function SocialProof() {
       srcDark: '/static/img/social-proof/uae_moei_eng-logo.png',
       srcLight: '/static/img/social-proof/uae_moei_eng-logo.png',
       url: 'https://opendata.moei.gov.ae/',
-      style: 'grayscale contrast-150',
+      style: 'grayscale brightness-75',
       width: 230,
     },
     {

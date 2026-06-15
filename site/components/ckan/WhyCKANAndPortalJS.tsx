@@ -37,9 +37,9 @@ export const WhyCKANAndPortalJS = () => {
   ]
 
   return (
-    <div className="py-24">
+    <div className="pt-8 pb-24">
       <div className="">
-        <H2 className="text-center">WHY CKAN & PortalJS?</H2>
+        <H2 className="text-center">Why CKAN & PortalJS?</H2>
         <H3 className="text-center !opacity-100 text-slate-600 dark:text-slate-400">CKAN is the world’s leading open-source data management system, trusted by governments and enterprises to catalog and publish data. PortalJS complements CKAN by providing a lightweight, customizable frontend layer that:</H3>
         <div className="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-12 lg:grid-cols-4 lg:gap-x-6">
           {features.map((feature) => (
