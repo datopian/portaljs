@@ -22,10 +22,10 @@ export default function ButtonLink({
   ...rest
 }: ButtonLinkProps) {
   let _className: string =
-    "inline-flex items-center justify-center px-4 py-2 border-0 text-base font-semibold text-center !rounded-[10px] transition duration-300 ";
+    "inline-flex items-center justify-center px-4 py-2 text-base font-semibold text-center !rounded-[10px] transition duration-300 ";
 
   if (style == "primary") {
-    _className += `bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)] hover:-translate-y-px`;
+    _className += `border-0 bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)] hover:-translate-y-px`;
   } else if (style == "secondary") {
     _className += `border border-slate-300 dark:border-slate-600 bg-transparent text-slate-700 dark:text-slate-300 hover:border-blue-400 hover:text-blue-600 dark:hover:border-blue-400 dark:hover:text-blue-400`;
   } else if (style == "tertiary") {
