@@ -77,7 +77,7 @@ export default function Community({ homePage }: { homePage: boolean }) {
             </p>
             <h2 className="mt-4 text-2xl font-bold">Contributors</h2>
             <p className="opacity-70 text-sm mt-4">
-              Join the team! and make an impact! 👩‍💻👨‍💻
+              Join the team! and make an impact! 👩‍💻
             </p>
           </a>
         </div>
