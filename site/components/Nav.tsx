@@ -144,6 +144,7 @@ export default function Nav() {
           <ButtonLink
             href="https://cloud.portaljs.com"
             title="PortalJS Cloud — fully managed hosting"
+            style="primary"
             className="text-sm !py-2 hidden lg:block"
             trackConversion={true}
           >
