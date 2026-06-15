@@ -30,19 +30,19 @@ export function NavItem({ item, target }) {
           <Link
             href={item.href}
             title={item.name}
-            className={`${item.name.includes("Open source") ? "text-blue-600 dark:hover:!text-slate-300 hover:text-secondary-hover dark:text-blue-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium transition duration-300" : "text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-blue-400 transition duration-300"}`}
+            className={`${item.name.includes("Open source") ? "text-blue-600 dark:hover:!text-slate-300 hover:text-secondary-hover dark:text-blue-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium transition duration-300" : "text-slate-600 dark:text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-blue-500 dark:hover:text-blue-400 transition duration-300"}`}
           >
             {item.name}
           </Link>
         ) : (
-          <div className="text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-slate-300 fill-slate-500 hover:fill-slate-600 transition duration-300">
+          <div className="text-slate-600 dark:text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-blue-500 dark:hover:text-blue-400 transition duration-300">
             {item.name}
             {Object.prototype.hasOwnProperty.call(item, "subItems") && (
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-4 w-4 ml-1 text-slate-400" 
-                fill="none" 
-                viewBox="0 0 24 24" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 ml-1 text-slate-600 dark:text-slate-400"
+                fill="none"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
