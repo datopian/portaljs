@@ -1,5 +1,11 @@
 # create-portaljs
 
+## 0.5.0
+
+### Minor Changes
+
+- [#1573](https://github.com/datopian/portaljs/pull/1573) [`2ca271e29939026b8cc4394981fcb70d7e4edd42`](https://github.com/datopian/portaljs/commit/2ca271e29939026b8cc4394981fcb70d7e4edd42) Thanks [@anuveyatsu](https://github.com/anuveyatsu)! - Bundle the new `/migrate` skill into scaffolds. `/migrate` harvests datasets from a CKAN instance or a DCAT-US `/data.json` catalog (DKAN, ArcGIS Hub, data.gov) into the static PortalJS catalog — link-by-URL by default, or download the files. Added to the skills allowlist so it ships in every scaffolded portal's `.claude/commands/` alongside the other skills.
+
 ## 0.4.0
 
 ### Minor Changes
