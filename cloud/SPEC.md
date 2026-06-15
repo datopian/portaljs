@@ -4,7 +4,7 @@ Status: **design** (epic `po-x8x`). Architecture locked 2026-06-15.
 
 PortalJS Cloud is Datopian-managed static hosting for PortalJS portals. The `/deploy`
 skill has **one target** — PortalJS Cloud. A user runs `/deploy`, authenticates once, and
-gets a live `https://<slug>.portaljs.com` serving their static build. Users who want their
+gets a live `https://<slug>.app.portaljs.com` serving their static build. Users who want their
 own host (Vercel, their own Cloudflare, Netlify, …) self-serve; the skill does not cover
 that.
 
@@ -15,7 +15,7 @@ locally testable with `wrangler dev` / Miniflare before real DNS is involved.
 
 ```
 $ /deploy
-→ first run: "Sign in to PortalJS Cloud" → cloud.portaljs.com → paste token (or device code)
+→ first run: "Sign in to PortalJS Cloud" → app.portaljs.com → paste token (or device code)
 → next build (static export) → out/
 → uploading to PortalJS Cloud…
 ✓ Live at https://my-portal.portaljs.com
@@ -30,7 +30,7 @@ Re-running `/deploy` updates the same site (idempotent, keyed on the project slu
    (in portal repo)                     POST /v1/deploy                       │
                                         validate token (D1)                   │
                                         record deployment (D1)                │
-        browser ◀── https://<slug>.portaljs.com ◀── Router Worker ◀──get──────┘
+        browser ◀── https://<slug>.app.portaljs.com ◀── Router Worker ◀──get──────┘
                          (wildcard *.portaljs.com → Worker, serves from R2)
 ```
 
@@ -42,7 +42,20 @@ Two Workers (or one Worker with two route groups), one R2 bucket, one D1 databas
 - **Deploy API (Worker)** — `POST /v1/deploy`; authenticates, writes the upload to R2,
   records the deployment.
 - **D1** — relational state: `users`, `tokens`, `projects`, `deployments`.
-- **Auth app** — `cloud.portaljs.com`: GitHub OAuth sign-up + API-token issuance.
+- **Auth app / dashboard** — `app.portaljs.com` (apex of the new namespace; a wildcard
+  `*.app.portaljs.com` does not match the apex, so the dashboard and tenant portals coexist):
+  GitHub OAuth sign-up + API-token issuance.
+
+### Hostnames (locked)
+
+| Purpose | Host | Notes |
+| ------- | ---- | ----- |
+| Tenant portals | `<slug>.app.portaljs.com` | wildcard → Router Worker |
+| Dashboard / auth | `app.portaljs.com` | apex; not matched by the wildcard |
+| Deploy API | `api.app.portaljs.com` | reserved label; more-specific Worker route beats the wildcard |
+
+> **Avoid `cloud.portaljs.com` and `api.portaljs.com`** — both are already used by the
+> legacy PortalJS Cloud app. Everything for the new system lives under `app.portaljs.com`.
 
 ### Why R2 + Worker (not Pages-per-project)
 Wildcard `*.portaljs.com` → one Worker means **zero per-tenant DNS/provisioning** and scale
@@ -115,28 +128,30 @@ of the previous deployment.
   index resolution, content-types, 404s.
 
 ### 2. Deploy API Worker (`cloud/api/`) — bead `po-bn9`
+- Served at `api.app.portaljs.com` (reserved label; a more-specific Worker route beats the
+  `*.app.portaljs.com` tenant wildcard).
 - `POST /v1/deploy` — multipart/tar body + `slug`; `Authorization: Bearer <token>`.
   1. Validate token (D1 `tokens` → `user_id`); 401 on failure.
   2. Resolve/allocate `<slug>` for this user; reject reserved slugs.
   3. Unpack the bundle; `put` each file to `portals/<user>/<slug>/…`; write `manifest.json`.
   4. Record a `deployments` row (status, file count, bytes, timestamp).
   5. Delete the prior deployment's orphaned objects (atomic-ish switch).
-  6. Return `{ url: "https://<slug>.portaljs.com", deployment_id, status }`.
+  6. Return `{ url: "https://<slug>.app.portaljs.com", deployment_id, status }`.
 - `GET /v1/deploy/:id` — status (for the skill to poll, if upload is async).
 - Limits: max bundle size, file count, per-user project cap (configurable).
 - **Local test:** `wrangler dev`; POST a sample `out/`; assert R2 contents + D1 row + URL.
 
-### 3. Auth — `cloud.portaljs.com` (`cloud/auth/`) — bead `po-5vk`
+### 3. Auth — `app.portaljs.com` (`cloud/auth/`) — bead `po-5vk`
 - GitHub OAuth → create `users` row; UI to generate/revoke API tokens.
 - Client login: `npx portaljs login` (or folded into the skill) → device-code or
-  paste-token → write `~/.portaljs/credentials` (`{ token, api }`). `PORTALJS_TOKEN` env
-  overrides (CI).
+  paste-token → write `~/.portaljs/credentials` (`{ token, api }`, where `api` defaults to
+  `https://api.app.portaljs.com`). `PORTALJS_TOKEN` env overrides (CI).
 - API tokens are opaque, hashed at rest in D1.
 
 ### 4. `/deploy` skill rewrite (`.claude/commands/deploy.md`) — bead `po-4yq`
 - Single target. Steps: ensure `output: 'export'` in `next.config.js` → `next build` →
   verify `out/` → ensure auth (run login if no creds) → tar `out/` → `POST /v1/deploy` →
-  poll → print `https://<slug>.portaljs.com`. Never report success on a failing build.
+  poll → print `https://<slug>.app.portaljs.com`. Never report success on a failing build.
 - Slug defaults to the project slug (from `package.json`/dir), overridable with a flag.
 - Drop the Vercel/static-host branching; add a one-line "to self-host elsewhere, run
   `next build && next export` and upload `out/` to any static host."
@@ -160,7 +175,7 @@ deployments(id TEXT PK, project_id TEXT, status TEXT, files INT, bytes INT, crea
 2. **Skill (po-4yq)** built against the API contract; tested against the local API.
 3. **Auth (po-5vk)** — GitHub OAuth needs a real app; can stub token validation locally.
 4. **Staging**: deploy to the real Cloudflare account on a staging subdomain
-   (`*.staging.portaljs.com`), end-to-end test.
+   (`*.staging.app.portaljs.com`), end-to-end test.
 5. Flip `*.portaljs.com` wildcard to the Router Worker.
 
 ## Infra handoff (Datopian-provisioned)

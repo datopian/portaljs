@@ -28,12 +28,15 @@ until these exist.
   (schema in `SPEC.md`). Staging counterpart.
 
 ## 5. Workers
-- Two Workers (or one with routes): **router** (`*.portaljs.com`) and **deploy API**
-  (`api.portaljs.com/v1/*` or `deploy.portaljs.com`). I author `wrangler.toml` with the R2
-  + D1 bindings; you confirm the route + binding names.
+- Two Workers (or one with routes): **router** (`*.app.portaljs.com/*`) and **deploy API**
+  (`api.app.portaljs.com/v1/*`). I author `wrangler.toml` with the R2 + D1 bindings; you
+  confirm the route + binding names.
+- **Avoid `cloud.portaljs.com` and `api.portaljs.com`** — both are used by the legacy
+  PortalJS Cloud app. The new system lives entirely under `app.portaljs.com`
+  (dashboard/auth at the `app.portaljs.com` apex, API at `api.app.portaljs.com`).
 
 ## 6. GitHub OAuth app (for auth)
-- A GitHub OAuth app for `cloud.portaljs.com` (callback `https://cloud.portaljs.com/auth/callback`).
+- A GitHub OAuth app for `app.portaljs.com` (callback `https://app.portaljs.com/auth/callback`).
 - Hand me the **client ID**; keep the **client secret** in the Worker secret store.
 
 ## Secrets I'll need (via `wrangler secret put`, not in the repo)
@@ -44,9 +47,11 @@ until these exist.
 
 ## Suggested order
 1. R2 bucket + D1 db (staging) → unblocks API/Worker staging tests.
-2. Wildcard `*.staging.portaljs.com` → staging router → end-to-end staging.
-3. GitHub OAuth app → real auth.
-4. Production R2/D1 + flip `*.portaljs.com` wildcard.
+2. Wildcard `*.staging.app.portaljs.com` → staging router (+ `api.staging.app.portaljs.com`
+   → staging deploy API) → end-to-end staging.
+3. GitHub OAuth app (`app.portaljs.com`) → real auth.
+4. Production R2/D1 + flip `*.app.portaljs.com` wildcard → router, and
+   `api.app.portaljs.com` → deploy API.
 
 Give me account ID + a scoped API token + the staging bucket/db names and I can wire and
 deploy to staging.
