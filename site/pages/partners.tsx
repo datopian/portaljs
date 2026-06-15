@@ -3,7 +3,8 @@ import { OrganizationJsonLd } from 'next-seo';
 import { generateNextSeo } from 'next-seo/pages';
 import Head from 'next/head';
 import ButtonLink from '@/components/ButtonLink';
-import { Player } from '@lottiefiles/react-lottie-player';
+import dynamic from 'next/dynamic'
+const Player = dynamic(() => import('@lottiefiles/react-lottie-player').then(mod => mod.Player), { ssr: false });
 import { useTheme } from 'next-themes';
 
 export default function Partners() {

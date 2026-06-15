@@ -7,7 +7,8 @@ import * as FaIcons from 'react-icons/fa'
 import { FAQ } from '@/components/FAQ'
 import { CASE_STUDY_TABLES } from '@/constants'
 import React, { useEffect } from 'react'
-import { Player } from '@lottiefiles/react-lottie-player'
+import dynamic from 'next/dynamic'
+const Player = dynamic(() => import('@lottiefiles/react-lottie-player').then(mod => mod.Player), { ssr: false })
 import { XCircleIcon } from '@heroicons/react/24/outline'
 import { useTheme } from 'next-themes'
 

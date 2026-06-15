@@ -70,5 +70,12 @@
   },
   "volta": {
     "node": "20.19.5"
+  },
+  "allowScripts": {
+    "puppeteer@18.2.1": true,
+    "sharp@0.34.5": true,
+    "sqlite3@5.1.7": true,
+    "@parcel/watcher@2.5.1": true,
+    "core-js@3.39.0": true
   }
 }
