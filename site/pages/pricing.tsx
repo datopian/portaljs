@@ -3,8 +3,6 @@ import PricingPlans from '@/components/PricingPlans'
 import AddOns from '@/components/AddOns'
 import { generateNextSeo } from 'next-seo/pages';
 import Head from 'next/head';
-import { H1, H3 } from '@/components/custom/header'
-import { H2 } from '@/components/custom/header'
 
 export default function Pricing() {
   return (
@@ -19,10 +17,12 @@ export default function Pricing() {
         <div className="">
           <div className="mx-auto ">
             <div className="relative z-10">
-              <H1 className="text-center">Find the best plan for you</H1>
-              <H2 sub={true} className="mx-auto my-4 text-center">
+              <h1 className="text-center text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+                Find the best plan for you
+              </h1>
+              <p className="mx-auto my-4 text-center text-[17px] text-slate-600 dark:text-slate-300">
                 Our plans cover all ranges of budgets and needs
-              </H2>
+              </p>
             </div>
             <PricingPlans />
           </div>
@@ -31,10 +31,12 @@ export default function Pricing() {
           <div className="mx-auto max-w-8xl mt-32 ">
             {/* Add-ons */}
             <div className="relative z-10">
-              <H2 className="text-center">Add-ons</H2>
-              <H3 sub={true} className="mx-auto mt-4 mb-8 text-center max-w-4xl">
-              Extend your data portal with features designed to make your work easier. Each add-on helps you manage, publish, or present your data more efficiently.
-              </H3>
+              <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+                Add-ons
+              </h2>
+              <p className="mx-auto mt-4 mb-8 text-center text-[17px] text-slate-600 dark:text-slate-300 max-w-4xl">
+                Extend your data portal with features designed to make your work easier. Each add-on helps you manage, publish, or present your data more efficiently.
+              </p>
             </div>
             <AddOns />
           </div>

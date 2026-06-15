@@ -16,20 +16,20 @@ const addOns = [
       'With the Data API add-on, your datasets become accessible for apps, dashboards, and websites. Instead of downloading files, users can retrieve the information they need quickly and build tools using your data.',
     href: 'https://datahub.io/docs/dms/data-api',
     icon: CloudIcon,
-    iconForeground: 'text-secondary',
-    iconBackground: 'bg-slate-100 dark:bg-slate-800',
+    iconForeground: 'text-blue-500',
+    iconBackground: 'bg-blue-50 dark:bg-blue-900/20',
     useCase:
       'Example use case: A government agency allows developers to build apps using open data.',
   },
   {
     title: 'Custom Dashboards',
-    subtitle: 'Showcase your data in a way that’s easy to understand.',
+    subtitle: "Showcase your data in a way that's easy to understand.",
     description:
       'Create beautiful, interactive dashboards with your datasets—no coding required. Share insights with your team, customers, or the public in a clear and engaging format.',
     href: 'https://datahub.io/docs/dms/dashboards',
     icon: PresentationChartBarIcon,
-    iconForeground: 'text-secondary',
-    iconBackground: 'bg-slate-100 dark:bg-slate-800',
+    iconForeground: 'text-violet-500',
+    iconBackground: 'bg-violet-50 dark:bg-violet-900/20',
     useCase: 'Example use case: A small business creates a visual sales report for investors.',
   },
   {
@@ -39,8 +39,8 @@ const addOns = [
       'No more manual updates! This add-on automates data collection, cleaning, and uploading, so your datasets are always up-to-date, structured, and ready to use.',
     href: 'https://datahub.io/docs/dms/flows',
     icon: CodeBracketSquareIcon,
-    iconForeground: 'text-secondary',
-    iconBackground: 'bg-slate-100 dark:bg-slate-800',
+    iconForeground: 'text-emerald-500',
+    iconBackground: 'bg-emerald-50 dark:bg-emerald-900/20',
     useCase:
       'Example use case: A logistics company automatically updates its warehouse inventory data.',
   },
@@ -51,8 +51,8 @@ const addOns = [
       'If you rely on data from other portals or sources, this add-on fetches and syncs information for you—eliminating the need for manual imports.',
     href: 'https://datahub.io/docs/dms/harvesting',
     icon: ArrowPathIcon,
-    iconForeground: 'text-secondary',
-    iconBackground: 'bg-slate-100 dark:bg-slate-800',
+    iconForeground: 'text-amber-500',
+    iconBackground: 'bg-amber-50 dark:bg-amber-900/20',
     useCase:
       'Example use case: A research organization gathers and updates datasets from multiple open data portals.',
   },
@@ -63,8 +63,8 @@ const addOns = [
     <p>Need a specific feature or tailored support? <a className='underline' href='https://calendar.app.google/sn2PU7ZvzjCPo1ok6' target='_blank'>Schedule a quick call with us</a> to describe your requirements.</p>,
     href: 'https://calendar.app.google/sn2PU7ZvzjCPo1ok6',
     icon: ChatBubbleBottomCenterIcon,
-    iconForeground: 'text-secondary',
-    iconBackground: 'bg-slate-100 dark:bg-slate-800',
+    iconForeground: 'text-sky-500',
+    iconBackground: 'bg-sky-50 dark:bg-sky-900/20',
     style: 'col-span-2',
   },
 ]
@@ -97,7 +97,7 @@ export default function Example() {
                 className={classNames(
                   addOn.iconBackground,
                   addOn.iconForeground,
-                  'inline-flex rounded-lg p-3 ring-4 ring-white dark:ring-slate-800'
+                  'inline-flex rounded-2xl p-3 ring-1 ring-inset ring-black/5 dark:ring-white/10'
                 )}
               >
                 <addOn.icon className="h-6 w-6" aria-hidden="true" />
@@ -123,7 +123,7 @@ export default function Example() {
             </div>
 
             <p className="mt-2 text-sm opacity-75 italic">{addOn.subtitle}</p>
-            <p className="mt-5 mb-3 text-sm opacity-75">{addOn.description}</p>
+            <div className="mt-5 mb-3 text-sm opacity-75">{addOn.description}</div>
           </div>
           <div
             title={addOn.title}

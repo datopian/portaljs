@@ -212,7 +212,7 @@ export default function PricingPlans() {
         <RadioGroup
           value={frequency}
           onChange={setFrequency}
-          className="grid grid-cols-2 gap-x-1 rounded-full bg-white/5 p-1 text-center text-xs font-semibold leading-5"
+          className="grid grid-cols-2 gap-x-1 rounded-full ring-1 ring-slate-200 dark:ring-slate-700 bg-white dark:bg-slate-800 p-1 text-center text-xs font-semibold leading-5"
         >
           <RadioGroup.Label className="sr-only">
             Payment frequency
@@ -223,12 +223,24 @@ export default function PricingPlans() {
               value={option}
               className={({ checked }) =>
                 classNames(
-                  checked ? 'bg-secondary text-black' : '',
-                  'cursor-pointer rounded-full px-2.5 py-1 text-sm'
+                  checked ? 'bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-400',
+                  'cursor-pointer rounded-full px-2.5 py-1 text-sm transition-all duration-150 flex items-center justify-center gap-2'
                 )
               }
             >
-              <span>{option.label}</span>
+              {({ checked }) => (
+                <>
+                  <span>{option.label}</span>
+                  {option.value === 'annually' && (
+                    <span className={classNames(
+                      checked ? 'bg-white/25 text-white' : 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+                      'text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none'
+                    )}>
+                      -16%
+                    </span>
+                  )}
+                </>
+              )}
             </RadioGroup.Option>
           ))}
         </RadioGroup>
@@ -249,14 +261,14 @@ export default function PricingPlans() {
             key={tier.id}
             className={classNames(
               tier.featured
-                ? ' bg-slate-200 dark:bg-slate-900 shadow-2xl ring-1 ring-gray-900/10 py-5'
-                : ' dark:bg-slate-900 ring-1 ring-slate-200 dark:ring-slate-800 dark:hover:bg-slate-800 hover:bg-slate-100 my-5 lg:bg-transparent lg:pb-14 shadow-lg',
-              'relative rounded-2xl bg-slate-100 '
+                ? ' bg-white dark:bg-slate-900 ring-2 ring-blue-500/40 dark:ring-blue-500/30 py-5'
+                : ' bg-white dark:bg-slate-900 ring-1 ring-slate-200 dark:ring-slate-800 dark:hover:bg-slate-800 hover:bg-slate-50 my-5 lg:pb-14',
+              'relative rounded-2xl '
             )}
           >
             {tier.featured ? (
-              <span className="bg-blue-400 dark:bg-blue-800 px-4 py-1 font-semibold rounded-full text-sm text-center absolute top-4 right-4">
-                MOST POPULAR
+              <span className="bg-gradient-to-br from-sky-400 to-blue-600 text-white px-3.5 py-1 text-[11px] font-semibold tracking-wide rounded-full absolute top-4 right-4">
+                Most Popular
               </span>
             ) : (
               ''
@@ -337,7 +349,7 @@ export default function PricingPlans() {
                     <div className="flex sm:flex-row flex-col md:mt-0 mt-2">
                       <span className="py-[1px] opacity-75 text-sm">
                         $
-                        {new Intl.NumberFormat().format(
+                        {new Intl.NumberFormat('en-US').format(
                           tier.price.annualPrice * 12
                         )}{' '}
                         billed annually
@@ -388,27 +400,19 @@ export default function PricingPlans() {
                 </ButtonLink>
               </div>
               {index !== 0 && index !== 3 && (
-                <p className="text-xs mt-5 -mb-3 sm:-mb-5 lg:-mb-11 text-center bg-blue-200 dark:bg-blue-700 rounded-full py-1 ">
+                <p className="text-xs mt-5 -mb-3 sm:-mb-5 lg:-mb-11 text-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full py-1">
                   14-day trial, no credit card required
                 </p>
               )}
               <div className="mt-8 flow-root sm:mt-14">
                 <ul
                   role="list"
-                  className={classNames(
-                    tier.featured
-                      ? 'divide-gray-900/5 border-gray-900/5'
-                      : 'divide-white/5 border-white/5 ',
-                    '-my-2 divide-y border-t text-sm leading-6 lg:border-t-0'
-                  )}
+                  className="-my-2 divide-y divide-slate-100 dark:divide-slate-800 border-t border-slate-100 dark:border-slate-800 text-sm leading-6 lg:border-t-0"
                 >
                   {tier.mainFeatures.map((mainFeature) => (
                     <li key={mainFeature.title} className="flex gap-x-3 py-2">
                       <CheckIcon
-                        className={classNames(
-                          tier.featured ? 'text-secondary' : '',
-                          'text-secondary h-6 w-5 flex-none'
-                        )}
+                        className="text-blue-500 h-6 w-5 flex-none"
                         aria-hidden="true"
                       />
                       <span>
