@@ -51,7 +51,11 @@ export function getResources(d: Dataset): Resource[] {
   return []
 }
 
-// Public URL of a resource's raw file (served statically from /public/data).
+// Public URL of a resource's raw file. A relative `path` is served statically from
+// /public/data; an absolute path is returned as-is, so a resource can point at a remote
+// file (e.g. a CKAN/DCAT download URL harvested by /migrate) or a site-root path without
+// copying bytes into the repo.
 export function resourceUrl(r: Resource): string {
+  if (/^(https?:)?\/\//.test(r.path) || r.path.startsWith('/')) return r.path
   return `/data/${r.path}`
 }

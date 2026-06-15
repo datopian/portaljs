@@ -65,6 +65,10 @@
         "href": "/docs/skills/connect-ckan"
       },
       {
+        "title": "/migrate",
+        "href": "/docs/skills/migrate"
+      },
+      {
         "title": "/define-schema",
         "href": "/docs/skills/define-schema"
       },

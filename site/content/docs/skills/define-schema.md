@@ -83,4 +83,4 @@ describe.
 - **[`/architect`](/docs/skills/architect)** — decide the metadata strategy (Frictionless,
   extended, custom, or multi-profile + DCAT) before authoring.
 
-<DocsPagination prev="/docs/skills/connect-ckan" next="/docs/skills/deploy" />
+<DocsPagination prev="/docs/skills/migrate" next="/docs/skills/deploy" />

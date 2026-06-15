@@ -74,4 +74,4 @@ It verifies the build before reporting success. When it finishes:
   backend.
 - **[`/deploy`](/docs/skills/deploy)** — publish the connected portal.
 
-<DocsPagination prev="/docs/skills/add-map" next="/docs/skills/define-schema" />
+<DocsPagination prev="/docs/skills/add-map" next="/docs/skills/migrate" />
