@@ -63,14 +63,14 @@ export default function Hero({ productName, description }: HeroProps) {
             </div>
 
             <div className="mt-16 mb-12 flex flex-col md:flex-row items-center justify-center gap-16">
-              <div className="bg-slate-800 dark:bg-slate-900 p-6 rounded-xl w-full md:w-1/2 relative">
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-slate-600 text-white text-[11px] font-semibold tracking-wide uppercase px-3.5 py-1 rounded-full shadow-sm">
+              <div className="bg-slate-800 dark:bg-slate-900 p-8 rounded-xl w-full md:w-1/2 relative">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-slate-600 text-white text-[11px] font-semibold tracking-wide uppercase px-4 py-1.5 rounded-full shadow-sm">
                   Without PortalJS
                 </div>
-                <h3 className="text-white text-lg mb-4">
+                <h3 className="text-white text-lg mb-5">
                   Technical {productName} UI
                 </h3>
-                <ul className="text-left text-slate-300 text-sm space-y-2">
+                <ul className="text-left text-slate-300 text-sm space-y-3">
                   <li className="flex items-start gap-2">
                     <svg className="shrink-0 mt-0.5 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" d="M4 4l8 8M12 4l-8 8"/></svg>
                     <span>Complex, developer-oriented UI</span>
@@ -86,14 +86,14 @@ export default function Hero({ productName, description }: HeroProps) {
                 </ul>
               </div>
 
-              <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-xl w-full md:w-1/2 relative">
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-br from-sky-400 to-blue-600 text-white text-[11px] font-semibold tracking-wide uppercase px-3.5 py-1 rounded-full shadow-sm">
+              <div className="bg-white dark:bg-slate-800 shadow-md ring-1 ring-blue-200 dark:ring-blue-800 p-8 rounded-xl w-full md:w-1/2 relative">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-br from-sky-400 to-blue-600 text-white text-[11px] font-semibold tracking-wide uppercase px-4 py-1.5 rounded-full shadow-sm">
                   With PortalJS
                 </div>
-                <h3 className="text-slate-800 dark:text-white text-lg mb-4">
+                <h3 className="text-slate-900 dark:text-white text-lg font-semibold mb-5">
                   Business-Friendly UI
                 </h3>
-                <ul className="text-left text-slate-700 dark:text-slate-300 text-sm space-y-2">
+                <ul className="text-left text-slate-700 dark:text-slate-200 text-sm font-medium space-y-3">
                   <li className="flex items-start gap-2">
                     <svg className="shrink-0 mt-0.5 w-4 h-4 text-blue-500" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M3 8l3.5 3.5L13 4.5"/></svg>
                     <span>Clean, user-friendly experience</span>
