@@ -6,7 +6,7 @@ import { DataPortalsStructuredData } from '@/components/schema/DataPortalStructu
 
 export default function DataPortalsPage() {
   return (
-    <Layout>
+    <Layout isHomePage={true}>
       <Head>
         {generateNextSeo({
           title: "Data Portals Showcase | PortalJS",
@@ -15,7 +15,11 @@ export default function DataPortalsPage() {
         })}
       </Head>
       <DataPortalsStructuredData />
-      <Showcases />
+      <div className="flex justify-center">
+        <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
+          <Showcases />
+        </div>
+      </div>
     </Layout>
   )
 }
