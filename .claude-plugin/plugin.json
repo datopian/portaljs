@@ -18,6 +18,7 @@
     "./.claude/commands/add-chart.md",
     "./.claude/commands/add-map.md",
     "./.claude/commands/connect-ckan.md",
+    "./.claude/commands/migrate.md",
     "./.claude/commands/define-schema.md",
     "./.claude/commands/deploy.md",
     "./.claude/commands/check-data-quality.md"

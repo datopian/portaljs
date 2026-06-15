@@ -23,6 +23,7 @@ const SKILLS = [
   'add-chart',
   'add-map',
   'connect-ckan',
+  'migrate',
   'define-schema',
   'deploy',
   'check-data-quality',
