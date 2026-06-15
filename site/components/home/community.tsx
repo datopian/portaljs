@@ -54,7 +54,7 @@ export default function Community({ homePage }: { homePage: boolean }) {
             <p className="text-5xl font-bold bg-gradient-to-br from-amber-400 to-amber-500 bg-clip-text text-transparent mt-4">
               {repoInfo?.stargazers_count}
             </p>
-            <h2 className="mt-3 text-xl font-bold text-slate-900 dark:text-white">Stars</h2>
+            <h2 className="mt-3 text-2xl font-bold text-slate-900 dark:text-white">Stars</h2>
             <p className="text-slate-400 dark:text-slate-500 text-sm mt-3">
               Thank you for your support!
             </p>
@@ -74,7 +74,7 @@ export default function Community({ homePage }: { homePage: boolean }) {
             <p className="text-5xl font-bold bg-gradient-to-br from-sky-400 to-blue-600 bg-clip-text text-transparent mt-4">
               {contributorsCount}
             </p>
-            <h2 className="mt-3 text-xl font-bold text-slate-900 dark:text-white">Contributors</h2>
+            <h2 className="mt-3 text-2xl font-bold text-slate-900 dark:text-white">Contributors</h2>
             <p className="text-slate-400 dark:text-slate-500 text-sm mt-3">
               Join the team and make an impact!
             </p>
