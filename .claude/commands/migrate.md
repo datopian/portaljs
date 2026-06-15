@@ -78,7 +78,7 @@ dead-end with a missing-input error.** For `--target ckan`, if the target URL or
 ### 1. Gather input from `$ARGUMENTS` (interview if thin)
 
 Extract:
-- `SOURCE_TYPE` — `ckan` | `dcat` (default: auto-detect in step 3).
+- `SOURCE_TYPE` — `ckan` | `dcat` | `socrata` | `ods` | `arcgis` (default: auto-detect in step 3).
 - `SOURCE_URL` — required; strip any trailing slash.
 - `ORG_FILTER` / `GROUP_FILTER` — lists (CKAN source only; default empty).
 - `TARGET` — `static` | `ckan` (default `static`).
@@ -334,7 +334,7 @@ success on a failing build. A common cause is a malformed `datasets.json` entry 
 ### 9. Report success
 
 Static target:
-```
+```text
 ✓ Migrated <N> datasets from <type>: <url>
   - Target:   PORTAL_DIR/datasets.json  (<total> entries now, <N> new/updated)
   - Mode:     link  (resources reference source URLs)   | download (files in /public/data)
@@ -348,7 +348,7 @@ Next:
 ```
 
 CKAN target:
-```
+```text
 ✓ Migrated <N> datasets from <type>: <src-url>  →  CKAN: <target-url>
   - Created <c> / updated <u> packages, <R> resources
   - Orgs:    <org-a> (created), <org-b> (existing)

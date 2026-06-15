@@ -49,13 +49,14 @@ any reader feeds any writer through the canonical shape.
 | Input | Required | Notes |
 | ----- | -------- | ----- |
 | Source URL | Yes | A CKAN base URL, or a DCAT `/data.json` URL. |
-| Source type | No | `ckan` or `dcat`; auto-detected from the URL if omitted. |
+| Source type | No | `ckan`, `dcat`, `socrata`, `ods`, or `arcgis`; auto-detected from the URL if omitted. |
 | Org / group filter | No | CKAN source only — restrict the harvest. |
 | `--target` | No | `static` (default) or `ckan`. |
 | Portal directory | No | Static target — defaults to the current directory. |
 | Copy mode | No | Static target — `link` (default) or `download`. |
 | Target CKAN URL | For `--target ckan` | The CKAN instance to write into. |
 | `CKAN_API_KEY` (env) | For `--target ckan` | A **write** API key, read from the environment — never passed on the command line. |
+| Owner org | No | CKAN target — file every dataset under this org (created if missing; defaults to each dataset's namespace). |
 | `--dry-run` | No | Preview what would be written, change nothing. |
 | `--replace` | No | Static target — clear existing entries first (default: upsert). |
 
