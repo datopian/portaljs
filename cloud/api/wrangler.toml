@@ -1,0 +1,25 @@
+# PortalJS Arc — Deploy API Worker (staging).
+name = "arc-api-staging"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+account_id = "83025b28472d6aa2bf5ae59f3724aa78"
+workers_dev = true
+
+[vars]
+ARC_HOST = "staging.arc.portaljs.com"
+MAX_FILES = "5000"
+MAX_BYTES = "104857600"
+
+[[r2_buckets]]
+binding = "ASSETS"
+bucket_name = "portaljs-arc-staging"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "portaljs-arc-staging"
+database_id = "9727b25f-471b-4942-8b16-b9da2391122a"
+
+# Custom route — enable once api.staging.arc.portaljs.com DNS + cert exist.
+# [[routes]]
+# pattern = "api.staging.arc.portaljs.com/*"
+# zone_name = "portaljs.com"

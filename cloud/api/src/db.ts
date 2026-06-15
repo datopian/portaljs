@@ -1,0 +1,61 @@
+// D1 helpers for the deploy API. Kept tiny and dependency-free.
+
+export async function sha256Hex(input: string): Promise<string> {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input))
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+// Resolve a bearer token to a user id, or null if unknown/revoked.
+export async function userForToken(db: D1Database, token: string): Promise<string | null> {
+  const hash = await sha256Hex(token)
+  const row = await db
+    .prepare('SELECT user_id FROM tokens WHERE hash = ? AND revoked_at IS NULL')
+    .bind(hash)
+    .first<{ user_id: string }>()
+  return row?.user_id ?? null
+}
+
+export type ProjectResult =
+  | { ok: true; projectId: string }
+  | { ok: false; reason: 'conflict' }
+
+// Find or create the project for (user, slug). A slug owned by another user is a conflict.
+export async function ensureProject(
+  db: D1Database,
+  userId: string,
+  slug: string
+): Promise<ProjectResult> {
+  const existing = await db
+    .prepare('SELECT id, user_id FROM projects WHERE slug = ?')
+    .bind(slug)
+    .first<{ id: string; user_id: string }>()
+  if (existing) {
+    if (existing.user_id !== userId) return { ok: false, reason: 'conflict' }
+    return { ok: true, projectId: existing.id }
+  }
+  const id = crypto.randomUUID()
+  await db.prepare('INSERT INTO projects (id, user_id, slug) VALUES (?, ?, ?)').bind(id, userId, slug).run()
+  return { ok: true, projectId: id }
+}
+
+export async function recordDeployment(
+  db: D1Database,
+  projectId: string,
+  status: string,
+  files: number,
+  bytes: number
+): Promise<string> {
+  const id = crypto.randomUUID()
+  await db
+    .prepare('INSERT INTO deployments (id, project_id, status, files, bytes) VALUES (?, ?, ?, ?, ?)')
+    .bind(id, projectId, status, files, bytes)
+    .run()
+  return id
+}
+
+export async function getDeployment(db: D1Database, id: string) {
+  return db
+    .prepare('SELECT id, project_id, status, files, bytes, created_at FROM deployments WHERE id = ?')
+    .bind(id)
+    .first()
+}
