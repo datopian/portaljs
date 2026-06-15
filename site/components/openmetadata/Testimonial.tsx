@@ -8,7 +8,7 @@ export function Testimonial() {
           What Our Clients Are Saying
         </h2>
         
-        <div className="max-w-4xl mx-auto rounded-xl bg-white dark:bg-slate-800 shadow-xl p-8 md:p-12 relative">
+        <div className="max-w-4xl mx-auto rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-8 md:p-12 relative">
           <div className="absolute top-6 left-8 text-7xl text-blue-300 opacity-40 font-serif">"</div>
           <div className="relative z-10">
             <p className="text-lg md:text-xl text-slate-700 dark:text-slate-200 italic mb-8 relative z-10">
