@@ -141,14 +141,13 @@ export default function Nav() {
               </GitHubButton>
             </div>
           )}
-          <ButtonLink
+          <a
             href="https://cloud.portaljs.com"
             title="PortalJS Cloud — fully managed hosting"
-            className="text-sm !py-2 hidden lg:block"
-            trackConversion={true}
+            className="hidden lg:inline-flex items-center justify-center rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
           >
             PortalJS Cloud
-          </ButtonLink>
+          </a>
         </div>
       </div>
     </header>
