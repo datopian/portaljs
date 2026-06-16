@@ -144,7 +144,9 @@ export default {
       const label = String(form.get('label') ?? 'token').slice(0, 60)
       const token = await createToken(env.DB, uid, label)
       const login = (await env.DB.prepare('SELECT login FROM users WHERE id = ?').bind(uid).first<{ login: string }>())?.login ?? 'you'
-      return html(dashboardPage(login, await listTokens(env.DB, uid), token))
+      // The response embeds the one-time cleartext token — never cache it.
+      const noStore = new Headers({ 'cache-control': 'no-store' })
+      return html(dashboardPage(login, await listTokens(env.DB, uid), token), 200, noStore)
     }
 
     if (path === '/tokens/revoke' && request.method === 'POST') {

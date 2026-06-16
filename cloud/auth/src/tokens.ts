@@ -10,20 +10,23 @@ export function generateToken(): string {
 }
 
 export async function upsertUser(db: D1Database, githubId: number, login: string): Promise<string> {
-  const existing = await db
-    .prepare('SELECT id FROM users WHERE github_id = ?')
-    .bind(githubId)
-    .first<{ id: string }>()
+  const find = () =>
+    db.prepare('SELECT id FROM users WHERE github_id = ?').bind(githubId).first<{ id: string }>()
+  const existing = await find()
   if (existing) {
     await db.prepare('UPDATE users SET login = ? WHERE id = ?').bind(login, existing.id).run()
     return existing.id
   }
+  // Atomic under concurrent OAuth callbacks for the same github_id: the loser's INSERT
+  // updates the login instead of failing the unique constraint. Re-read for the winner's id.
   const id = crypto.randomUUID()
   await db
-    .prepare('INSERT INTO users (id, github_id, login) VALUES (?, ?, ?)')
+    .prepare(
+      'INSERT INTO users (id, github_id, login) VALUES (?, ?, ?) ON CONFLICT(github_id) DO UPDATE SET login = excluded.login'
+    )
     .bind(id, githubId, login)
     .run()
-  return id
+  return (await find())?.id ?? id
 }
 
 // Create a token, store only its hash, return the clear-text token (shown once).
@@ -44,8 +47,10 @@ export interface TokenRow {
 }
 
 export async function listTokens(db: D1Database, userId: string): Promise<TokenRow[]> {
+  // COALESCE the label: the column is nullable but TokenRow.label is a string the
+  // dashboard passes straight to esc() — a NULL would crash the render.
   const res = await db
-    .prepare('SELECT id, label, created_at, revoked_at FROM tokens WHERE user_id = ? ORDER BY created_at DESC')
+    .prepare("SELECT id, COALESCE(label, 'token') AS label, created_at, revoked_at FROM tokens WHERE user_id = ? ORDER BY created_at DESC")
     .bind(userId)
     .all<TokenRow>()
   return res.results ?? []
