@@ -207,16 +207,18 @@ export const dataPortals = [
 
 export default function Showcases() {
   return (
-    <div className="max-w-8xl px-4 xl:px-12 mx-auto">
-      <div>
-        {/* <p className="text-sm font-bold text-blue-400">LONG READ</p> */}
-        <div className="flex items-center justify-start gap-2 transition blink">
-          <p className="text-start text-5xl sm:text-7xl sm:my-8 tracking-tight">
-            Discover <br />
-            data portals <br />
-            powered by PortalJS{' '}
-          </p>
-        </div>
+    <div>
+      <div className="py-16 sm:py-20 text-center lg:text-left">
+        <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
+          Data Portals
+        </span>
+        <h1 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-900 dark:text-white sm:text-5xl xl:text-6xl">
+          Discover <br />
+          <span className="bg-gradient-to-r from-sky-400 to-blue-600 bg-clip-text text-transparent">
+            data portals
+          </span> <br />
+          powered by PortalJS
+        </h1>
       </div>
       <div className="not-prose my-12 grid grid-cols-1 gap-[22px] sm:grid-cols-2">
         {dataPortals.map((item) => (

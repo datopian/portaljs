@@ -11,7 +11,7 @@ import { CaseStudiesStructuredData } from '@/components/schema/CaseStudiesStruct
 
 export default function CaseStudiesPage(casestudies) {
   return (
-    <Layout>
+    <Layout isHomePage={true}>
       <Head>
         {generateNextSeo({
           title: "Case Studies | PortalJS",
@@ -20,13 +20,19 @@ export default function CaseStudiesPage(casestudies) {
         })}
       </Head>
       <CaseStudiesStructuredData casestudies={casestudies.casestudies} />
-      <section className="">
-        <div>
-          <div className="flex items-center gap-2 transition blink">
-            <p className="text-start text-5xl sm:text-7xl max-w-lg sm:my-8 tracking-tight">
-              See our client stories{' '}
-            </p>
-          </div>
+      <div className="flex justify-center">
+        <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
+      <section className="py-16 sm:py-20">
+        <div className="text-center lg:text-left">
+          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
+            Case Studies
+          </span>
+          <h1 className="mt-4 text-4xl font-bold leading-[1.08] tracking-tight text-slate-900 dark:text-white sm:text-5xl xl:text-6xl">
+            See our <br />
+            <span className="bg-gradient-to-r from-sky-400 to-blue-600 bg-clip-text text-transparent">
+              client stories
+            </span>
+          </h1>
         </div>
         <div className="grid grid-cols-1 gap-12 min-w-full my-8">
           {casestudies &&
@@ -49,9 +55,9 @@ export default function CaseStudiesPage(casestudies) {
                     />
                   </Link>
                   <div className="">
-                    <p className="text-sm font-bold text-blue-400 mb-1">
-                      CASE STUDY
-                    </p>
+                    <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
+                      Case Study
+                    </span>
                     <div className="">
                       <Link
                         className="line-clamp-3 text-[#2A3342]  group-hover:text-[#60a5fa] dark:text-[#f3f4f6] dark:hover:text-[#60a5fa] text-2xl font-bold transition ease-in-out capitalize max-w-3xl"
@@ -69,6 +75,8 @@ export default function CaseStudiesPage(casestudies) {
             ))}
         </div>
       </section>
+        </div>
+      </div>
     </Layout>
   )
 }
