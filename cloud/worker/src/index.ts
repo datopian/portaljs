@@ -89,23 +89,38 @@ function notFound(message: string): Response {
   return new Response(html, { status: 404, headers: { 'content-type': 'text/html; charset=utf-8' } })
 }
 
+async function route(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url)
+  const slug = slugFromHost(url.hostname)
+  if (!slug) return notFound('No portal at this address.')
+
+  let candidates: string[]
+  try {
+    candidates = resolveCandidates(slug, url.pathname)
+  } catch {
+    // Malformed percent-encoding in the path (e.g. "/%") → 400, not an uncaught 500.
+    return new Response('Bad Request', { status: 400, headers: { 'content-type': 'text/plain' } })
+  }
+
+  for (const key of candidates) {
+    const obj = await env.ASSETS.get(key)
+    if (obj) return serve(key, obj)
+  }
+
+  // Per-site custom 404, else the branded fallback.
+  const custom = await env.ASSETS.get(`sites/${slug}/404.html`)
+  if (custom) return serve(`sites/${slug}/404.html`, custom, 404)
+  return notFound(`Portal "${slug}" not found.`)
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       return new Response('Method Not Allowed', { status: 405, headers: { allow: 'GET, HEAD' } })
     }
-    const url = new URL(request.url)
-    const slug = slugFromHost(url.hostname)
-    if (!slug) return notFound('No portal at this address.')
-
-    for (const key of resolveCandidates(slug, url.pathname)) {
-      const obj = await env.ASSETS.get(key)
-      if (obj) return serve(key, obj)
-    }
-
-    // Per-site custom 404, else the branded fallback.
-    const custom = await env.ASSETS.get(`sites/${slug}/404.html`)
-    if (custom) return serve(`sites/${slug}/404.html`, custom, 404)
-    return notFound(`Portal "${slug}" not found.`)
+    const res = await route(request, env)
+    // Workers don't auto-strip bodies for HEAD; do it explicitly (keep headers/status).
+    if (request.method === 'HEAD') return new Response(null, { status: res.status, headers: res.headers })
+    return res
   },
 }

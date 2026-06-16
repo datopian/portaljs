@@ -25,17 +25,29 @@ export async function ensureProject(
   userId: string,
   slug: string
 ): Promise<ProjectResult> {
-  const existing = await db
-    .prepare('SELECT id, user_id FROM projects WHERE slug = ?')
-    .bind(slug)
-    .first<{ id: string; user_id: string }>()
+  const find = () =>
+    db
+      .prepare('SELECT id, user_id FROM projects WHERE slug = ?')
+      .bind(slug)
+      .first<{ id: string; user_id: string }>()
+
+  const existing = await find()
   if (existing) {
     if (existing.user_id !== userId) return { ok: false, reason: 'conflict' }
     return { ok: true, projectId: existing.id }
   }
+
+  // Race window: two concurrent first-deploys of the same slug both pass the SELECT.
+  // Use INSERT … ON CONFLICT DO NOTHING, then re-read to resolve the winner.
   const id = crypto.randomUUID()
-  await db.prepare('INSERT INTO projects (id, user_id, slug) VALUES (?, ?, ?)').bind(id, userId, slug).run()
-  return { ok: true, projectId: id }
+  await db
+    .prepare('INSERT INTO projects (id, user_id, slug) VALUES (?, ?, ?) ON CONFLICT(slug) DO NOTHING')
+    .bind(id, userId, slug)
+    .run()
+  const row = await find()
+  if (!row) return { ok: false, reason: 'conflict' } // shouldn't happen, but fail closed
+  if (row.user_id !== userId) return { ok: false, reason: 'conflict' }
+  return { ok: true, projectId: row.id }
 }
 
 export async function recordDeployment(

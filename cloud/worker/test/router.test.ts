@@ -125,4 +125,19 @@ describe('fetch handler', () => {
     )
     expect(res.status).toBe(405)
   })
+
+  it('HEAD returns headers but no body', async () => {
+    const res = await worker.fetch(
+      new Request('https://acme.staging.arc.portaljs.com/', { method: 'HEAD' }),
+      env
+    )
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toMatch(/text\/html/)
+    expect(await res.text()).toBe('')
+  })
+
+  it('malformed percent-encoding → 400, not 500', async () => {
+    const res = await worker.fetch(get('acme.staging.arc.portaljs.com', '/%'), env)
+    expect(res.status).toBe(400)
+  })
 })

@@ -19,6 +19,13 @@ export interface Env {
 
 const RESERVED = new Set(['www', 'api', 'admin', 'staging', 'arc'])
 
+// Parse a numeric env var, falling back when unset or non-numeric (so a config typo
+// can't silently disable a limit by making it NaN).
+function intVar(v: string | undefined, fallback: number): number {
+  const n = Number(v)
+  return Number.isFinite(n) && n > 0 ? n : fallback
+}
+
 // DNS-label slug: lowercase alphanumeric + hyphens, not reserved.
 export function validSlug(slug: string): boolean {
   if (!slug || slug.length > 63 || RESERVED.has(slug)) return false
@@ -84,8 +91,8 @@ export async function handleDeploy(request: Request, env: Env): Promise<Response
     return json({ error: `could not read upload (expected .tar.gz): ${(e as Error).message}` }, 400)
   }
 
-  const maxFiles = Number(env.MAX_FILES ?? 5000)
-  const maxBytes = Number(env.MAX_BYTES ?? 100 * 1024 * 1024)
+  const maxFiles = intVar(env.MAX_FILES, 5000)
+  const maxBytes = intVar(env.MAX_BYTES, 100 * 1024 * 1024)
   const files = entries.filter((e) => safeEntryName(e.name) && e.data.length >= 0)
   const bytes = files.reduce((n, f) => n + f.data.length, 0)
   if (files.length === 0) return json({ error: 'no files in upload' }, 400)
