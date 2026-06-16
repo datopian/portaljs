@@ -48,7 +48,11 @@ is reserved or invalid, ask for a `--slug`.
 
 ```bash
 TOKEN="${PORTALJS_TOKEN:-}"
-[ -z "$TOKEN" ] && [ -f "$HOME/.portaljs/credentials" ] && TOKEN=$(node -e "try{process.stdout.write(require('$HOME/.portaljs/credentials').token||'')}catch{}" 2>/dev/null)
+# Read the credentials file as JSON (never require() it — that executes it as JS
+# and an extensionless file won't parse the documented {"token":"…"} shape).
+if [ -z "$TOKEN" ] && [ -f "$HOME/.portaljs/credentials" ]; then
+  TOKEN=$(node -e "const fs=require('fs');try{process.stdout.write(JSON.parse(fs.readFileSync(process.env.HOME+'/.portaljs/credentials','utf8')).token||'')}catch{}")
+fi
 ```
 If `TOKEN` is empty, **do not proceed** — tell the user:
 ```
@@ -67,8 +71,12 @@ Ensure `PORTAL_DIR/next.config.js` enables static export — it must set
 `output: 'export'` and `images: { unoptimized: true }` (the image optimizer needs a server).
 If those are missing, add them (preserve the rest of the config), and tell the user you did.
 
+Set shell variables to the values resolved in step 1, then build (these bash blocks are
+self-contained — set the variables in each block, since shell state doesn't persist):
+
 ```bash
-cd PORTAL_DIR
+PORTAL_DIR="."          # ← the portal directory from step 1
+cd "$PORTAL_DIR"
 npm run build > /tmp/arc-build.log 2>&1
 BUILD_EXIT=$?
 tail -30 /tmp/arc-build.log
@@ -85,13 +93,28 @@ a failing build. Confirm the export landed: `PORTAL_DIR/out/index.html` must exi
 Tar the export (gzip; exclude macOS AppleDouble files) and POST it to the Arc API:
 
 ```bash
-cd PORTAL_DIR
-COPYFILE_DISABLE=1 tar czf /tmp/arc-deploy.tgz -C out .
+PORTAL_DIR="."          # ← portal directory (step 1)
+SLUG="my-portal"        # ← validated slug (step 1)
 API="${PORTALJS_ARC_API:-https://api.arc.portaljs.com}"
-HTTP=$(curl -s -o /tmp/arc-resp.json -w "%{http_code}" -m 120 \
-  -X POST "$API/v1/deploy?slug=SLUG" \
-  -H "Authorization: Bearer $TOKEN" \
+
+# Re-resolve the token (self-contained block; see step 2 for the missing-token path).
+TOKEN="${PORTALJS_TOKEN:-}"
+if [ -z "$TOKEN" ] && [ -f "$HOME/.portaljs/credentials" ]; then
+  TOKEN=$(node -e "const fs=require('fs');try{process.stdout.write(JSON.parse(fs.readFileSync(process.env.HOME+'/.portaljs/credentials','utf8')).token||'')}catch{}")
+fi
+[ -z "$TOKEN" ] && { echo "No Arc token — see step 2."; exit 1; }
+
+cd "$PORTAL_DIR"
+COPYFILE_DISABLE=1 tar czf /tmp/arc-deploy.tgz -C out .
+
+# Pass the bearer token via a 0600 curl config file, not argv — so it doesn't leak
+# through the process list on shared/CI machines. Remove it right after.
+HDR=$(mktemp); chmod 600 "$HDR"
+printf 'header = "Authorization: Bearer %s"\n' "$TOKEN" > "$HDR"
+HTTP=$(curl -s -o /tmp/arc-resp.json -w "%{http_code}" -m 120 -K "$HDR" \
+  -X POST "$API/v1/deploy?slug=$SLUG" \
   --data-binary @/tmp/arc-deploy.tgz)
+rm -f "$HDR"
 echo "HTTP $HTTP"; cat /tmp/arc-resp.json
 ```
 

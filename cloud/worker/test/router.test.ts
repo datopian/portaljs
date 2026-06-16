@@ -46,6 +46,12 @@ describe('resolveCandidates', () => {
   it('maps root to index.html', () => {
     expect(resolveCandidates('acme', '/')).toEqual(['sites/acme/index.html'])
   })
+  it('trailing slash tries index.html then <path>.html', () => {
+    expect(resolveCandidates('acme', '/search/')).toEqual([
+      'sites/acme/search/index.html',
+      'sites/acme/search.html',
+    ])
+  })
   it('serves a file path directly', () => {
     expect(resolveCandidates('acme', '/data/x.csv')).toEqual(['sites/acme/data/x.csv'])
   })
@@ -87,6 +93,12 @@ describe('fetch handler', () => {
     const res = await worker.fetch(get('acme.staging.arc.portaljs.com', '/search'), env)
     expect(res.status).toBe(200)
     expect(res.headers.get('content-type')).toMatch(/text\/html/)
+    expect(await res.text()).toContain('Search')
+  })
+
+  it('serves <path>.html for the trailing-slash form too', async () => {
+    const res = await worker.fetch(get('acme.staging.arc.portaljs.com', '/search/'), env)
+    expect(res.status).toBe(200)
     expect(await res.text()).toContain('Search')
   })
 
