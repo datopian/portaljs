@@ -1,0 +1,22 @@
+# PortalJS Arc — auth worker / dashboard (staging). Served at arc.portaljs.com apex.
+name = "arc-auth-staging"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+account_id = "83025b28472d6aa2bf5ae59f3724aa78"
+workers_dev = true
+
+[vars]
+BASE_URL = "https://arc-auth-staging.datopian.workers.dev"
+# GITHUB_CLIENT_ID is set per-environment; GITHUB_CLIENT_SECRET + SESSION_SECRET
+# are secrets (wrangler secret put), never committed.
+GITHUB_CLIENT_ID = "REPLACE_AT_DEPLOY"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "portaljs-arc-staging"
+database_id = "9727b25f-471b-4942-8b16-b9da2391122a"
+
+# Production route (added with the GitHub OAuth app at go-live):
+# [[routes]]
+# pattern = "arc.portaljs.com/*"
+# zone_name = "portaljs.com"

@@ -54,9 +54,15 @@ scheme like `arc-<slug>.portaljs.com` is covered by Universal SSL — but it giv
   PortalJS Cloud app. The new system lives entirely under `arc.portaljs.com`
   (dashboard/auth at the `arc.portaljs.com` apex, API at `api.arc.portaljs.com`).
 
-## 6. GitHub OAuth app (for auth)
-- A GitHub OAuth app for `arc.portaljs.com` (callback `https://arc.portaljs.com/auth/callback`).
-- Hand me the **client ID**; keep the **client secret** in the Worker secret store.
+## 6. GitHub OAuth app (for auth — bead po-5vk)
+The `cloud/auth` worker is built + deployed to staging; it just needs a GitHub OAuth app to
+complete the live sign-in. Create one (Settings → Developer settings → OAuth Apps):
+- **Staging** callback: `https://arc-auth-staging.datopian.workers.dev/auth/callback`
+  (or a second app); **Production**: `https://arc.portaljs.com/auth/callback`.
+- Hand me the **client ID** — I set it as the `GITHUB_CLIENT_ID` var and the
+  **client secret** + a `SESSION_SECRET` (auto-generated) via `wrangler secret put`
+  (`SESSION_SECRET` is already set on staging).
+- Scope needed: `read:user` (just to identify the GitHub account).
 
 ## Secrets (via `wrangler secret put`, not in the repo)
 - Deploys: I authenticate with `wrangler login` (OAuth) — **no `CLOUDFLARE_API_TOKEN` needed**.
