@@ -1,6 +1,5 @@
 import { Disclosure, Tab } from '@headlessui/react'
 import ReactMarkdown from 'react-markdown'
-import { H1 } from 'components/custom/header'
 import Layout from '@/components/Layout'
 import React from 'react'
 import { generateNextSeo } from 'next-seo/pages';
@@ -238,7 +237,7 @@ See more details on our [pricing page](https://portaljs.com/pricing).`,
 
 export default function FAQ() {
   return (
-    <Layout>
+    <Layout isHomePage={true}>
       <Head>
         {generateNextSeo({
           title: "FAQ",
@@ -246,20 +245,25 @@ export default function FAQ() {
         })}
       </Head>
       <FaqStructuredData />
+      <div className="flex justify-center">
+        <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
       <Tab.Group>
-        <div className="mx-auto lg:my-20">
-          <section className="flex flex-col lg:flex-row gap-10 items-center lg:items-start w-full">
-            <div className="flex flex-col items-center lg:items-start shrink-0 ">
-              <H1 className="mb-10  text-center lg:text-start font-semibold dark:text-white max-w-sm shrink-0">
+        <div className="mx-auto py-16 sm:py-20">
+          <section className="flex flex-col lg:flex-row gap-10 items-start w-full">
+            <div className="flex flex-col items-start shrink-0">
+              <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
+                FAQ
+              </span>
+              <h1 className="mt-4 mb-10 text-4xl font-bold leading-[1.08] tracking-tight text-slate-900 dark:text-white sm:text-5xl xl:text-6xl max-w-sm">
                 Frequently Asked Questions
-              </H1>
+              </h1>
               <Tab.List className="grid sm:grid-cols-2  gap-x-3 lg:flex lg:flex-col lg:items-start  lg:space-y-6">
                 {questions.map((category, categoryIndex) => (
                   <Tab as={React.Fragment} key={categoryIndex}>
                     {({ selected }) => (
                       <button
                         className={`${selected ? 'text-blue-400' : 'text-gray-500'
-                          } transition lg:text-xl font-semibold focus:outline-hidden`}
+                          } cursor-pointer transition lg:text-xl font-semibold focus:outline-hidden`}
                       >
                         {category.category}
                       </button>
@@ -279,7 +283,7 @@ export default function FAQ() {
                     >
                       {({ open }) => (
                         <>
-                          <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-lg font-medium text-left dark:text-white focus:outline-hidden focus-visible:ring focus-visible:ring-primary-500/75 text-2xl p-10 group min-w-full">
+                          <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-lg font-medium text-left dark:text-white focus:outline-hidden focus-visible:ring focus-visible:ring-primary-500/75 text-2xl p-10 group min-w-full cursor-pointer">
                             <span className="group-hover:text-blue-400 transition">
                               {question.question}
                             </span>
@@ -314,6 +318,8 @@ export default function FAQ() {
           </section>
         </div>
       </Tab.Group>
+        </div>
+      </div>
     </Layout>
   )
 }
