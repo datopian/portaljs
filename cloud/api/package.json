@@ -1,0 +1,18 @@
+{
+  "name": "arc-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "migrate:staging": "wrangler d1 migrations apply portaljs-arc-staging --remote"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240909.0",
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.1",
+    "wrangler": "^3.78.0"
+  }
+}

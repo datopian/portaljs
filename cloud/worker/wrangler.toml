@@ -1,0 +1,19 @@
+# PortalJS Arc — Router Worker (staging).
+# Serves tenant static sites from R2 at *.staging.arc.portaljs.com.
+# Production config (the *.arc.portaljs.com route + portaljs-arc bucket) is added at
+# go-live; see cloud/INFRA.md.
+name = "arc-router-staging"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+account_id = "83025b28472d6aa2bf5ae59f3724aa78"
+
+workers_dev = true
+
+[[r2_buckets]]
+binding = "ASSETS"
+bucket_name = "portaljs-arc-staging"
+
+# Tenant wildcard route (DNS record *.staging.arc → 100:: proxied now exists).
+[[routes]]
+pattern = "*.staging.arc.portaljs.com/*"
+zone_name = "portaljs.com"
