@@ -1,46 +1,38 @@
 ---
-metatitle: Deploy a PortalJS Portal – Vercel or Static Hosting
-metadescription: Publish your PortalJS portal with /deploy — to Vercel for SSR/ISR, or as a fully static site for GitHub Pages, Netlify, Cloudflare, S3, or nginx. Or deploy by hand.
+metatitle: Deploy a PortalJS Portal – PortalJS Arc or Self-Hosted
+metadescription: Publish your PortalJS portal with /deploy to PortalJS Arc (managed hosting on Cloudflare, a live <slug>.arc.portaljs.com URL), or self-host the static export on Vercel, Netlify, Cloudflare, S3, or nginx.
 title: Deploy
-description: Publish to Vercel or any static host — with /deploy, or by hand.
+description: Publish to PortalJS Arc with /deploy, or self-host the static export anywhere.
 ---
 
-**Goal:** take the portal live. Two targets: **Vercel** (handles SSR/ISR natively) or
-a **fully static** export you can host anywhere.
+**Goal:** take the portal live. The fast path is [`/deploy`](/docs/skills/deploy) to
+[**PortalJS Arc**](/docs/arc) — Datopian-managed hosting. Or self-host the static export on
+any host you like.
 
-> [!info] Which target?
-> Use **Vercel** for portals that may grow server-side features, or any CKAN/SSR portal
-> that relies on `getServerSideProps`. Use **static** for fully client-rendered portals
-> — GitHub Pages, Netlify, Cloudflare Pages, S3 + CloudFront, or plain nginx.
-
-## The AI path — `/deploy`
+## The AI path — `/deploy` → PortalJS Arc
 
 ```
 /deploy
 ```
 
-[`/deploy`](/docs/skills/deploy) auto-detects the target (a `.vercel/` link or
-`output: 'export'` in `next.config.js`), builds, verifies the build passes, and either
-publishes to Vercel or produces a ready-to-upload `out/` directory. It **never reports
-success on a failing build**.
+[`/deploy`](/docs/skills/deploy) builds a static export, uploads it to
+[PortalJS Arc](/docs/arc), and prints a live `https://<slug>.arc.portaljs.com` URL. It
+**never reports success on a failing build**, and re-running redeploys the same slug in
+place.
 
-Force a target if you want:
+You need a PortalJS Arc token — sign in at [arc.portaljs.com](https://arc.portaljs.com),
+generate one, and set `PORTALJS_TOKEN` (or save it to `~/.portaljs/credentials`). See the
+[`/deploy` skill](/docs/skills/deploy) for details.
 
-```
-/deploy --target static
-```
+> [!info] Static only (for now)
+> Arc serves static exports. The catalog template, `/add-dataset`, `/migrate`, and
+> `/connect-ckan` (SSG) all export cleanly. A portal that relies on `getServerSideProps`
+> (SSR) isn't hosted on Arc yet — self-host it (below).
 
-## The by-hand path
+## The self-host path
 
-**Vercel** — Vercel builds on its own infrastructure, so no local build is needed:
-
-```bash
-npx vercel        # preview
-npx vercel --prod # production
-```
-
-**Static export** — set `output: 'export'` and `images: { unoptimized: true }` in
-`next.config.js`, then build:
+Arc is optional — a portal is a standard static Next.js export you can host anywhere. Set
+`output: 'export'` and `images: { unoptimized: true }` in `next.config.js`, then build:
 
 ```bash
 npm run build     # writes the static site to out/
@@ -50,27 +42,28 @@ npx serve out     # preview locally
 Upload `out/` to any static host:
 
 ```bash
-npx gh-pages -d out                      # GitHub Pages
+npx vercel --prod                        # Vercel
+npx wrangler pages deploy out            # your own Cloudflare Pages
 netlify deploy --dir=out --prod          # Netlify
-npx wrangler pages deploy out            # Cloudflare Pages
+npx gh-pages -d out                      # GitHub Pages
 ```
+
+(For an SSR/CKAN portal that needs a server, deploy to Vercel with `npx vercel` instead of a
+static export, and set env vars like `DMS` in the Vercel dashboard.)
 
 ## Notes
 
 - **Dynamic routes under static export** need `getStaticPaths` returning
-  `{ fallback: false }`. `/add-dataset` writes one file per dataset specifically to
-  avoid this; the [catalog template](/docs/templates) pre-renders every manifest entry.
-- **CKAN / SSR portals can't use static** if they rely on API routes or
-  `getServerSideProps` — use Vercel.
-- **Environment variables** (e.g. `DMS` for CKAN portals) must be set in the Vercel
-  dashboard or via `vercel env add`; for static export, inline client-side values at
-  build time with `NEXT_PUBLIC_*`.
+  `{ fallback: false }`. The [catalog template](/docs/templates) pre-renders every manifest
+  entry, so `/add-dataset` and `/migrate` portals export cleanly.
+- **Environment variables:** for static export, inline client-side values at build time with
+  `NEXT_PUBLIC_*`; for a Vercel/SSR deploy, set them in the Vercel dashboard.
 - **GitHub Pages subpath:** if deploying to `https://user.github.io/repo/`, also set
   `basePath` and `assetPrefix` in `next.config.js`.
 
 ## Where to go next
 
+- **[PortalJS Arc](/docs/arc)** — how the managed hosting works.
 - **[Theming](/docs/guides/theming)** — brand the portal before you ship it.
-- **[Templates](/docs/templates)** — the single-page vs. catalog template.
 
 <DocsPagination prev="/docs/guides/connect-a-ckan-backend" next="/docs/guides/theming" />

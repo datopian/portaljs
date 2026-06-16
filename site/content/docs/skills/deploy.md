@@ -1,41 +1,31 @@
 ---
-metatitle: /deploy – Publish a PortalJS Portal to Vercel or Static Hosting
-metadescription: The /deploy skill detects your target, builds the portal, and publishes it to Vercel or any static host — never reporting success on a failing build, with a live URL at the end.
+metatitle: /deploy – Publish a PortalJS Portal to PortalJS Arc
+metadescription: The /deploy skill builds a static export of your portal and publishes it to PortalJS Arc — Datopian-managed hosting on Cloudflare — returning a live <slug>.arc.portaljs.com URL. One command, one target.
 title: /deploy
-description: Build and publish the portal to Vercel or any static host — with a live URL at the end.
+description: Build a static export and publish it to PortalJS Arc — a live <slug>.arc.portaljs.com URL in one command.
 ---
 
-`/deploy` takes a PortalJS portal live in one shot. It detects the target, builds,
-verifies the build passes, and either publishes (Vercel) or produces a ready-to-
-upload `out/` directory (static hosting). It never reports success on a failing
-build.
+`/deploy` takes a PortalJS portal live on [**PortalJS Arc**](/docs/arc) — Datopian's
+managed static hosting on Cloudflare. It builds a static export, uploads it, and prints a
+live `https://<slug>.arc.portaljs.com` URL. Re-running redeploys the same portal in place.
+
+It is a **single-target** skill: it publishes to PortalJS Arc only. If you'd rather host
+the portal yourself, the build output in `out/` is a plain static site you can upload to any
+host (Vercel, your own Cloudflare, Netlify, S3, …) — you don't need this skill for that.
 
 ## When to use it
 
-Run it once the portal looks right locally. It's the last step in the typical flow
-after [`/new-portal`](/docs/skills/new-portal),
-[`/add-dataset`](/docs/skills/add-dataset), and any enrichment skills.
+Run it once the portal looks right locally — the last step after
+[`/new-portal`](/docs/skills/new-portal), [`/add-dataset`](/docs/skills/add-dataset) /
+[`/migrate`](/docs/skills/migrate), and any enrichment skills.
 
 ## Inputs
 
 | Input | Required | Notes |
 | ----- | -------- | ----- |
-| Portal directory | No | Path to the portal project. Defaults to the current directory; must contain a Next.js `package.json`. |
-| Target | No | `vercel` or `static`. If omitted, the skill auto-detects and tells you what it chose. |
-
-**Two targets:**
-
-- **`vercel`** — pushes to Vercel via the `vercel` CLI. Handles SSR/ISR natively
-  and gives a live `*.vercel.app` URL (or your custom domain). Best default for
-  portals that may grow server-side features. Requires the CLI installed and logged
-  in (`vercel login`).
-- **`static`** — builds a fully static site (`output: 'export'` → `out/`) suitable
-  for any static host: GitHub Pages, Netlify, S3 + CloudFront, Cloudflare Pages, or
-  plain nginx. No server required.
-
-Auto-detection prefers Vercel if a `.vercel/` link exists, static if
-`next.config.js` already sets `output: 'export'`, and otherwise Vercel when its CLI
-is available (falling back to static).
+| Portal directory | No | Path to the portal project. Defaults to the current directory; must be a Next.js portal. |
+| Slug | No | The subdomain to publish under (`<slug>.arc.portaljs.com`). Defaults to the project name; override with `--slug <name>`. |
+| Arc token | Yes | A PortalJS Arc token, read from `PORTALJS_TOKEN` or `~/.portaljs/credentials`. Get one by signing in at [arc.portaljs.com](https://arc.portaljs.com). |
 
 ## Example
 
@@ -43,39 +33,49 @@ is available (falling back to static).
 /deploy
 ```
 
-Force a target, or promote a preview to production:
+Publish under a specific slug:
 
 ```
-/deploy --static
-/deploy --prod
+/deploy --slug auckland-open-data
 ```
 
 ## What it produces
 
-- **Vercel:** no files changed; a deployment is created and a live URL printed.
+The skill ensures a static export (`output: 'export'`), builds and verifies it (never
+reporting success on a failing build), uploads `out/` to Arc, and reports:
 
-  ```
-  ✓ Deployed to Vercel
-    URL: https://auckland-council-open-data.vercel.app
-  ```
+```
+✓ Deployed to PortalJS Arc
+  - URL:   https://auckland-open-data.arc.portaljs.com
+  - Files: 44   (820 KB uploaded)
+  - Slug:  auckland-open-data  (re-run /deploy to update)
+```
 
-- **Static:** `next.config.js` may be edited (to add `output: 'export'`,
-  `images: { unoptimized: true }`, and a base path if needed); an `out/` directory
-  of static HTML is produced. Nothing is uploaded unless you name a host.
+## Auth
 
-  ```
-  ✓ Static site built: out/  (12 pages)
-    Preview locally: npx serve out
-  ```
+Deploying needs a PortalJS Arc token. Sign in at [arc.portaljs.com](https://arc.portaljs.com)
+with GitHub, generate a token, and either:
 
-> CKAN or SSR portals that rely on `getServerSideProps` need a server — use the
-> `vercel` target for those. Set env vars (e.g. `DMS`) in the Vercel dashboard
-> before deploying.
+```bash
+export PORTALJS_TOKEN=<token>
+# …or save it for re-use:
+mkdir -p ~/.portaljs && printf '{"token":"<token>"}\n' > ~/.portaljs/credentials
+```
+
+The token is never committed to your repo.
+
+## Notes
+
+- **Static only (for now).** Arc serves static exports — the catalog template,
+  `/add-dataset`, `/migrate`, and `/connect-ckan` (SSG) all export cleanly. A portal that
+  relies on `getServerSideProps` (SSR) isn't hosted on Arc yet; self-host it instead.
+- **Idempotent.** The slug is your portal's permanent address; re-deploying replaces the
+  site in place.
 
 ## Where to go next
 
-- **[Skills reference](/docs/skills)** — the full set of skills.
-- **[`/connect-ckan`](/docs/skills/connect-ckan)** — point the portal at a live
-  backend before deploying.
+- **[PortalJS Arc](/docs/arc)** — what the managed hosting is and how it works.
+- **[`/connect-ckan`](/docs/skills/connect-ckan)** — point the portal at a live backend
+  before deploying.
 
 <DocsPagination prev="/docs/skills/define-schema" />

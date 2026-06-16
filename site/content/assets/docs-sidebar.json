@@ -125,6 +125,10 @@
       {
         "title": "Backends",
         "href": "/docs/backends"
+      },
+      {
+        "title": "PortalJS Arc (hosting)",
+        "href": "/docs/arc"
       }
     ]
   },

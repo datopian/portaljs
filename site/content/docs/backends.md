@@ -92,4 +92,4 @@ you can model a new backend skill on [`/connect-ckan`](/docs/skills/connect-ckan
 - **[Authoring skills](/docs/authoring-skills)** — package your backend integration as
   a reusable skill.
 
-<DocsPagination prev="/docs/authoring-skills" />
+<DocsPagination prev="/docs/authoring-skills" next="/docs/arc" />
