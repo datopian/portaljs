@@ -49,9 +49,10 @@ describe('resolveCandidates', () => {
   it('serves a file path directly', () => {
     expect(resolveCandidates('acme', '/data/x.csv')).toEqual(['sites/acme/data/x.csv'])
   })
-  it('tries extensionless as file then directory index', () => {
+  it('tries extensionless as file, then <path>.html, then directory index', () => {
     expect(resolveCandidates('acme', '/about')).toEqual([
       'sites/acme/about',
+      'sites/acme/about.html',
       'sites/acme/about/index.html',
     ])
   })
@@ -77,8 +78,16 @@ describe('fetch handler', () => {
   const env = envWith({
     'sites/acme/index.html': '<h1>Acme</h1>',
     'sites/acme/data/pop.csv': 'a,b\n1,2',
+    'sites/acme/search.html': '<h1>Search</h1>', // Next export: /search → search.html
     'sites/acme/about/index.html': '<h1>About</h1>',
     'sites/acme/404.html': '<h1>custom 404</h1>',
+  })
+
+  it('serves a Next-export <path>.html for an extensionless route', async () => {
+    const res = await worker.fetch(get('acme.staging.arc.portaljs.com', '/search'), env)
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toMatch(/text\/html/)
+    expect(await res.text()).toContain('Search')
   })
 
   it('serves the home page', async () => {

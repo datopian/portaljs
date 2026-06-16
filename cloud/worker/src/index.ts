@@ -30,7 +30,9 @@ export function resolveCandidates(slug: string, pathname: string): string[] {
   if (p.endsWith('/')) return [`${base}${p}index.html`]
   const last = p.split('/').pop() ?? ''
   if (last.includes('.')) return [`${base}${p}`] // looks like a file
-  return [`${base}${p}`, `${base}${p}/index.html`] // try as file, then as a directory
+  // Extensionless: exact file, then Next static-export's `<path>.html` (the default,
+  // no trailing slash), then a directory index (trailingSlash: true builds).
+  return [`${base}${p}`, `${base}${p}.html`, `${base}${p}/index.html`]
 }
 
 const TYPES: Record<string, string> = {
