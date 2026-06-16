@@ -27,10 +27,19 @@ export function resolveCandidates(slug: string, pathname: string): string[] {
   let p = decodeURIComponent(pathname)
   if (!p.startsWith('/')) p = '/' + p
   const base = `sites/${slug}`
-  if (p.endsWith('/')) return [`${base}${p}index.html`]
+  if (p.endsWith('/')) {
+    // Directory index, plus the trimmed `<path>.html` — a default Next export stores
+    // `/search` as `search.html`, so `/search/` must reach it too (not just index.html).
+    const trimmed = p.slice(0, -1)
+    const candidates = [`${base}${p}index.html`]
+    if (trimmed) candidates.push(`${base}${trimmed}.html`)
+    return candidates
+  }
   const last = p.split('/').pop() ?? ''
   if (last.includes('.')) return [`${base}${p}`] // looks like a file
-  return [`${base}${p}`, `${base}${p}/index.html`] // try as file, then as a directory
+  // Extensionless: exact file, then Next static-export's `<path>.html` (the default,
+  // no trailing slash), then a directory index (trailingSlash: true builds).
+  return [`${base}${p}`, `${base}${p}.html`, `${base}${p}/index.html`]
 }
 
 const TYPES: Record<string, string> = {
