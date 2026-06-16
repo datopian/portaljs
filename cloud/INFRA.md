@@ -45,9 +45,11 @@ scheme like `arc-<slug>.portaljs.com` is covered by Universal SSL — but it giv
   `SPEC.md`), plus `portaljs-arc-staging`.
 
 ## 5. Workers
-- Two Workers (or one with routes): **router** (`*.arc.portaljs.com/*`) and **deploy API**
-  (`api.arc.portaljs.com/v1/*`). I author `wrangler.toml` with the R2 + D1 bindings; you
-  confirm the route + binding names.
+- Three Workers (or one with routes): **router** (`*.arc.portaljs.com/*`), **deploy API**
+  (`api.arc.portaljs.com/v1/*`), and the **auth app / dashboard** (`arc.portaljs.com` apex —
+  GitHub OAuth + token issuance, bead po-5vk; the router + API are live first, auth lands
+  with po-5vk). I author each `wrangler.toml` with the R2/D1 bindings; you confirm the
+  routes + binding names.
 - **Avoid `cloud.portaljs.com` and `api.portaljs.com`** — both are used by the legacy
   PortalJS Cloud app. The new system lives entirely under `arc.portaljs.com`
   (dashboard/auth at the `arc.portaljs.com` apex, API at `api.arc.portaljs.com`).

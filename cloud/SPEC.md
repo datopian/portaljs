@@ -18,7 +18,7 @@ $ /deploy
 → first run: "Sign in to PortalJS Arc" → arc.portaljs.com → paste token (or device code)
 → next build (static export) → out/
 → uploading to PortalJS Arc…
-✓ Live at https://my-portal.portaljs.com
+✓ Live at https://my-portal.arc.portaljs.com
 ```
 
 Re-running `/deploy` updates the same site (idempotent, keyed on the project slug).
@@ -26,18 +26,19 @@ Re-running `/deploy` updates the same site (idempotent, keyed on the project slu
 ## Architecture
 
 ```
-  /deploy skill ──tar(out/)+token──▶  Deploy API (Worker)  ──put──▶  R2: portals/<user>/<slug>/…
+  /deploy skill ──tar(out/)+token──▶  Deploy API (Worker)  ──put──▶  R2: sites/<slug>/…
    (in portal repo)                     POST /v1/deploy                       │
                                         validate token (D1)                   │
                                         record deployment (D1)                │
         browser ◀── https://<slug>.arc.portaljs.com ◀── Router Worker ◀──get──────┘
-                         (wildcard *.portaljs.com → Worker, serves from R2)
+                       (wildcard *.arc.portaljs.com → Worker, serves from R2)
 ```
 
 Two Workers (or one Worker with two route groups), one R2 bucket, one D1 database.
 
-- **R2** — object store for all tenants' static files: `portals/<user>/<slug>/<path>`.
-- **Router Worker** — bound to `*.portaljs.com`; resolves the hostname's `<slug>` to a
+- **R2** — object store for all tenants' static files: `sites/<slug>/<path>` (slug-addressable
+  so the router needs no DB on the request path; ownership lives in D1).
+- **Router Worker** — bound to `*.arc.portaljs.com`; resolves the hostname's `<slug>` to a
   tenant and streams assets from R2.
 - **Deploy API (Worker)** — `POST /v1/deploy`; authenticates, writes the upload to R2,
   records the deployment.
@@ -58,7 +59,7 @@ Two Workers (or one Worker with two route groups), one R2 bucket, one D1 databas
 > legacy PortalJS Cloud app. Everything for the new system lives under `arc.portaljs.com`.
 
 ### Why R2 + Worker (not Pages-per-project)
-Wildcard `*.portaljs.com` → one Worker means **zero per-tenant DNS/provisioning** and scale
+Wildcard `*.arc.portaljs.com` → one Worker means **zero per-tenant DNS/provisioning** and scale
 to many thousands of portals, with no Cloudflare Pages project/custom-domain limits. Pages
 becomes an implementation detail we've wrapped away.
 
@@ -100,12 +101,15 @@ the production `*.arc.portaljs.com` wildcard.
 ## R2 layout
 
 ```
-portals/<user_id>/<slug>/
+sites/<slug>/
   index.html
   _next/static/…            # hashed assets, immutable
   data/…                    # /public/data files (download-mode portals)
   …                         # everything from out/
 ```
+
+Slug-addressable (not `portals/<user>/<slug>/`) so the Router Worker serves by hostname
+with no DB lookup on the request path; ownership/quota live in D1 (`projects.slug`).
 
 Object metadata carries `content-type` (from extension) and a `deployment_id` for cache
 busting. A small `manifest.json` per deploy lists files for atomic switchover and cleanup
@@ -114,7 +118,7 @@ of the previous deployment.
 ## Components
 
 ### 1. Router Worker (`cloud/worker/`) — bead `po-2xm`
-- Bound to `*.portaljs.com`. Extract `<slug>` from `Host`.
+- Bound to `*.arc.portaljs.com`. Extract `<slug>` from `Host`.
 - Reserved/marketing hostnames → pass through / 404 (not served from R2).
 - Look up `<slug>` → `<user_id>` (D1, cached in the Worker's in-memory/KV cache).
 - Resolve the request path in R2:
@@ -133,7 +137,7 @@ of the previous deployment.
 - `POST /v1/deploy` — multipart/tar body + `slug`; `Authorization: Bearer <token>`.
   1. Validate token (D1 `tokens` → `user_id`); 401 on failure.
   2. Resolve/allocate `<slug>` for this user; reject reserved slugs.
-  3. Unpack the bundle; `put` each file to `portals/<user>/<slug>/…`; write `manifest.json`.
+  3. Unpack the bundle; `put` each file to `sites/<slug>/…`; write `manifest.json`.
   4. Record a `deployments` row (status, file count, bytes, timestamp).
   5. Delete the prior deployment's orphaned objects (atomic-ish switch).
   6. Return `{ url: "https://<slug>.arc.portaljs.com", deployment_id, status }`.
@@ -176,7 +180,7 @@ deployments(id TEXT PK, project_id TEXT, status TEXT, files INT, bytes INT, crea
 3. **Auth (po-5vk)** — GitHub OAuth needs a real app; can stub token validation locally.
 4. **Staging**: deploy to the real Cloudflare account on a staging subdomain
    (`*.staging.arc.portaljs.com`), end-to-end test.
-5. Flip `*.portaljs.com` wildcard to the Router Worker.
+5. Flip `*.arc.portaljs.com` wildcard to the Router Worker.
 
 ## Infra handoff (Datopian-provisioned)
 
