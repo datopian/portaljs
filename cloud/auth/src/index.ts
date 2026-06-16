@@ -51,6 +51,14 @@ async function currentUser(request: Request, env: Env): Promise<string | null> {
   return c ? verifySession(c, env.SESSION_SECRET, SESSION_MAX_AGE, now()) : null
 }
 
+// CSRF guard for state-changing POSTs. SameSite=Lax does NOT protect against a
+// *same-site* request from a tenant subdomain (`evil.arc.portaljs.com`), which is the
+// multi-tenant risk here — so require the Origin to match the dashboard. Allow a missing
+// Origin (some same-origin form posts omit it); reject only a present, mismatched one.
+export function isAllowedOrigin(origin: string | null, baseUrl: string): boolean {
+  return !origin || origin === baseUrl
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
@@ -122,6 +130,13 @@ export default {
     }
 
     // --- Token management (auth required) ---
+    // CSRF: state-changing POSTs must originate from the dashboard itself.
+    if ((path === '/tokens' || path === '/tokens/revoke') && request.method === 'POST') {
+      if (!isAllowedOrigin(request.headers.get('origin'), env.BASE_URL)) {
+        return new Response('Forbidden', { status: 403 })
+      }
+    }
+
     if (path === '/tokens' && request.method === 'POST') {
       const uid = await currentUser(request, env)
       if (!uid) return redirect('/')
