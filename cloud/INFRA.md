@@ -64,21 +64,28 @@ complete the live sign-in. Create one (Settings → Developer settings → OAuth
   (`SESSION_SECRET` is already set on staging).
 - Scope needed: `read:user` (just to identify the GitHub account).
 
-## Secrets (via `wrangler secret put`, not in the repo)
-- Deploys: I authenticate with `wrangler login` (OAuth) — **no `CLOUDFLARE_API_TOKEN` needed**.
-  Only needed for headless CI, and then via a local gitignored env file, never in chat.
-- `GITHUB_OAUTH_CLIENT_ID` / `GITHUB_OAUTH_CLIENT_SECRET` (auth worker).
-- A signing secret for API tokens (`TOKEN_SIGNING_KEY`).
+## Config + secrets
+Naming matches what the workers actually read (`cloud/{auth,api,worker}/src`):
+- **Deploys**: authenticate with `wrangler login` (OAuth) — **no `CLOUDFLARE_API_TOKEN` needed**.
+  Only for headless CI, and then via a local gitignored env file, never in chat.
+- `GITHUB_CLIENT_ID` — a committed `[vars]` value, **not a secret** (it rides in the OAuth
+  redirect URL). Per-environment: staging is pinned in `cloud/auth/wrangler.toml`; production
+  gets its own OAuth app + ID.
+- `GITHUB_CLIENT_SECRET` — secret (`wrangler secret put`), auth worker.
+- `SESSION_SECRET` — secret, auth worker; signs the dashboard session cookie. Auto-generated.
+- **API tokens have no signing key.** They are random `arc_…` strings stored as a SHA-256
+  hash in D1 (`tokens.hash`); the deploy API validates by hashing the bearer token and
+  matching the row. Nothing to provision.
 
 ## Suggested order
 1. R2 bucket + D1 db (staging) → unblocks API/Worker staging tests. ✅ done
 2. Wildcard `*.staging.arc.portaljs.com` (proxied) → staging router. ✅ done
-3. **Enable ACM + order a `*.staging.arc.portaljs.com` cert** → unblocks HTTPS on staging
-   tenant URLs (currently blocked by the TLS handshake failure). ← **next**
-4. (+ `api.staging.arc.portaljs.com` → staging deploy API) → end-to-end staging.
-5. GitHub OAuth app (`arc.portaljs.com`) → real auth.
-6. Production: R2/D1 (`portaljs-arc`) + ACM cert for `*.arc.portaljs.com` + flip the
-   `*.arc.portaljs.com` wildcard → router, and `api.arc.portaljs.com` → deploy API.
+3. ACM cert covering `*.staging.arc.portaljs.com` (+ `*.arc.portaljs.com`, `arc.portaljs.com`). ✅ done
+4. GitHub OAuth app + auth/api/router deployed → **end-to-end staging verified 2026-06-17**
+   (deploy → R2 → router serves HTTPS; OAuth → dashboard → token issuance). ✅ done
+5. Production: R2/D1 (`portaljs-arc`) + ACM cert for `*.arc.portaljs.com` + flip the
+   `*.arc.portaljs.com` wildcard → router, `api.arc.portaljs.com` → deploy API, and a
+   production GitHub OAuth app (callback `https://arc.portaljs.com/auth/callback`). ← **next**
 
 Auth: I use `wrangler login` (OAuth) for deploys — no API token needed. If a token is ever
 required (CI), provide it via a local gitignored env file, never in chat.
