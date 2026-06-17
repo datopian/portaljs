@@ -26,9 +26,9 @@ const GRID_PAGE_SIZE = 9
 // ─────────────────────────────────────────────────────────────────────────────
 const FEATURED_SLUGS = [
   'talk-to-your-data-portal-in-plain-english-introducing-queryless-ai', // Position 1 — large card
-  'mcp-server-ai-assistants-to-improve-data-portals',                   // Position 2 — mini top
-  'the-open-spending-revamp-behind-the-scenes',                          // Position 3 — mini middle
-  'how-to-reduce-data-portal-costs-by-90-percent',                       // Position 4 — mini bottom
+  'portaljs-cloud-apis',                                                 // Position 2 — mini top
+  'portaljs-cloud-geospatial',                                           // Position 3 — mini middle
+  'the-new-look-of-portaljs-cloud',                                      // Position 4 — mini bottom
 ]
 
 // Human-readable label for each segment ID (no hyphens, proper casing)
