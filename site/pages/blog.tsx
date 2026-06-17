@@ -28,7 +28,7 @@ const FEATURED_SLUGS = [
   'talk-to-your-data-portal-in-plain-english-introducing-queryless-ai', // Position 1 — large card
   'portaljs-cloud-apis',                                                 // Position 2 — mini top
   'portaljs-cloud-geospatial',                                           // Position 3 — mini middle
-  'the-new-look-of-portaljs-cloud',                                      // Position 4 — mini bottom
+  'keep-your-portal-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api', // Position 4 — mini bottom
 ]
 
 // Human-readable label for each segment ID (no hyphens, proper casing)
