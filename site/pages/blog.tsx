@@ -10,6 +10,27 @@ import BlogCard from '@/components/blog/BlogCard'
 
 const GRID_PAGE_SIZE = 9
 
+// ─────────────────────────────────────────────────────────────────────────────
+// FEATURED POSTS — edit these 4 slugs to control the hero cluster at the top
+// of the blog page. The order matters:
+//
+//   Position 1 → large card on the left  (most prominent)
+//   Position 2 → top mini card on the right
+//   Position 3 → middle mini card on the right
+//   Position 4 → bottom mini card on the right
+//
+// How to find a post's slug: it's the last part of the URL.
+//   e.g. /blog/my-post-title  →  slug is  my-post-title
+//
+// All other posts appear in the grid below the hero cluster as usual.
+// ─────────────────────────────────────────────────────────────────────────────
+const FEATURED_SLUGS = [
+  'talk-to-your-data-portal-in-plain-english-introducing-queryless-ai', // Position 1 — large card
+  'mcp-server-ai-assistants-to-improve-data-portals',                   // Position 2 — mini top
+  'the-open-spending-revamp-behind-the-scenes',                          // Position 3 — mini middle
+  'how-to-reduce-data-portal-costs-by-90-percent',                       // Position 4 — mini bottom
+]
+
 // Human-readable label for each segment ID (no hyphens, proper casing)
 const SEGMENT_DISPLAY: Record<string, string> = {
   dev: 'Open Source',
@@ -133,14 +154,18 @@ export default function Blog({ blogs }) {
     setVisibleCount(GRID_PAGE_SIZE)
   }
 
-  // Hero cluster: always the 4 newest posts
-  const [featured, ...allRest] = blogs
-  const miniPosts = allRest.slice(0, 3)
+  // Hero cluster: driven by FEATURED_SLUGS
+  const featuredSet = new Set(FEATURED_SLUGS)
+  const featuredPosts = FEATURED_SLUGS.map((slug) =>
+    blogs.find((b) => getPostSlug(b) === slug)
+  ).filter(Boolean)
+  const [featured, ...miniPosts] = featuredPosts
 
-  // Grid: filter by segment; when 'all', show all posts after cluster
+  // Grid: all posts NOT in the hero cluster (filtered by segment when active)
+  const nonFeatured = blogs.filter((b) => !featuredSet.has(getPostSlug(b)))
   const gridSource =
     activeSegment === 'all'
-      ? allRest.slice(3)
+      ? nonFeatured
       : blogs.filter((b) => getPostSegments(b).includes(activeSegment))
 
   const gridPosts = gridSource.slice(0, visibleCount)
