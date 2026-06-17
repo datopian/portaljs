@@ -9,7 +9,7 @@ workers_dev = true
 BASE_URL = "https://arc-auth-staging.datopian.workers.dev"
 # GITHUB_CLIENT_ID is set per-environment; GITHUB_CLIENT_SECRET + SESSION_SECRET
 # are secrets (wrangler secret put), never committed.
-GITHUB_CLIENT_ID = "REPLACE_AT_DEPLOY"
+GITHUB_CLIENT_ID = "Ov23liXuXnCuAnyuIucc"
 
 [[d1_databases]]
 binding = "DB"
