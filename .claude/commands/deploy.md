@@ -26,8 +26,8 @@ for that.
   the project's `package.json` `name` (or the directory name), slugified. Override with
   `--slug <name>`.
 - **Auth** — a PortalJS Arc token. Read from `PORTALJS_TOKEN`, else `~/.portaljs/credentials`
-  (`{ "token": "…" }`). If neither is present, **stop and tell the user how to sign in** (see
-  step 2) rather than failing cryptically.
+  (`{ "token": "…" }`). If neither is present, **run `/login`** (one browser click — device
+  flow) to obtain and store one, then continue. Don't ask the user to copy a token by hand.
 
 ## Steps
 
@@ -54,10 +54,12 @@ if [ -z "$TOKEN" ] && [ -f "$HOME/.portaljs/credentials" ]; then
   TOKEN=$(node -e "const fs=require('fs');try{process.stdout.write(JSON.parse(fs.readFileSync(process.env.HOME+'/.portaljs/credentials','utf8')).token||'')}catch{}")
 fi
 ```
-If `TOKEN` is empty, **do not proceed** — tell the user:
+If `TOKEN` is empty, **run `/login`** (the device-authorization flow — one browser click, no
+token copying) to sign in and write `~/.portaljs/credentials`, then re-read the token with the
+snippet above and continue. Only if `/login` is unavailable, fall back to telling the user:
 ```
-To deploy to PortalJS Arc you need a token. Sign in at https://arc.portaljs.com to get one,
-then either:
+To deploy to PortalJS Arc you need a token. Run /login (one browser click), or sign in at
+https://arc.portaljs.com and either:
   export PORTALJS_TOKEN=<token>
 or save it to ~/.portaljs/credentials as {"token":"<token>"}.
 Then re-run /deploy.
@@ -120,7 +122,9 @@ echo "HTTP $HTTP"; cat /tmp/arc-resp.json
 
 Handle the response:
 - **200** — parse `url` from the JSON; that's the live portal.
-- **401** — token invalid/expired → tell the user to re-auth (step 2).
+- **401** — token invalid/expired/revoked → **auto-run `/login` once** to re-authenticate, then
+  re-read the token and retry the upload a single time. If it 401s again, stop and surface the
+  error (don't loop).
 - **409** — the slug is taken by another account → ask for a different `--slug`.
 - **400 / 413** — bad slug or upload too large → surface the JSON `error`.
 - anything else — print the body and stop; don't claim success.

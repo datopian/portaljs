@@ -194,6 +194,9 @@ See `cloud/INFRA.md`.
   SaaS / CNAME.) Out of scope for v1, but the data model should not preclude it.
 - **Quotas/pricing** — free tier limits (projects, bytes, bandwidth)? Ties into the pricing
   page.
-- **Auth UX** — device-code flow vs paste-token for v1. Paste-token is simplest to ship.
+- ~~**Auth UX** — device-code flow vs paste-token for v1.~~ **Resolved (po-j57):** shipped the
+  GitHub-style **device-authorization flow** (`/login` skill → `POST /device/code` → browser
+  `/activate` → `POST /device/token`), with server-side auto-labelled tokens. Paste-token + the
+  dashboard "generate token" UI stay as the power-user / CI fallback (`PORTALJS_TOKEN`).
 - **Repo location** — keep `cloud/` in the monorepo, or extract to `datopian/portaljs-cloud`
   once it stabilizes? (Defaulting to monorepo for now.)

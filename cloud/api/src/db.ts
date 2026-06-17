@@ -15,6 +15,19 @@ export async function userForToken(db: D1Database, token: string): Promise<strin
   return row?.user_id ?? null
 }
 
+// Resolve a bearer token straight to the owner's GitHub login (for `whoami` /
+// "Logged in as @user"), or null if the token is unknown/revoked. One round-trip.
+export async function loginForToken(db: D1Database, token: string): Promise<string | null> {
+  const hash = await sha256Hex(token)
+  const row = await db
+    .prepare(
+      'SELECT u.login AS login FROM tokens t JOIN users u ON u.id = t.user_id WHERE t.hash = ? AND t.revoked_at IS NULL'
+    )
+    .bind(hash)
+    .first<{ login: string }>()
+  return row?.login ?? null
+}
+
 export type ProjectResult =
   | { ok: true; projectId: string }
   | { ok: false; reason: 'conflict' }

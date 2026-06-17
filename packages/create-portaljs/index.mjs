@@ -25,6 +25,7 @@ const SKILLS = [
   'connect-ckan',
   'migrate',
   'define-schema',
+  'login',
   'deploy',
   'check-data-quality',
 ]

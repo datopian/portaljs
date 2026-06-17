@@ -1,6 +1,7 @@
 // Minimal light-theme dashboard for PortalJS Arc. No framework — server-rendered HTML.
 
 import type { TokenRow } from './tokens'
+import type { ApproveResult } from './device'
 
 function esc(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
@@ -37,6 +38,42 @@ export function landingPage(): string {
 <div class="card">
   <p>Sign in to create an API token for the <code>/deploy</code> skill.</p>
   <a class="btn btn-primary" href="/auth/login">Sign in with GitHub</a>
+</div>`
+  )
+}
+
+// Device-flow confirmation page: a signed-in user enters/confirms the code shown in their
+// terminal. `code` prefills from the verification_uri_complete link so it's usually one click.
+export function activatePage(code: string): string {
+  return SHELL(
+    'PortalJS Arc — Authorize device',
+    `<h1>Authorize <span class="brand">Arc</span> CLI</h1>
+<p class="muted">Confirm the code shown in your terminal to finish signing in.</p>
+<div class="card">
+  <form method="post" action="/activate" style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+    <input type="text" name="code" placeholder="XXXX-XXXX" value="${esc(code)}" autofocus
+      autocomplete="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase;letter-spacing:.1em">
+    <button class="btn btn-primary" type="submit">Authorize</button>
+  </form>
+  <p class="muted" style="margin-top:.8rem">Only authorize a code you started yourself in a terminal you trust.</p>
+</div>`
+  )
+}
+
+export function activateResultPage(result: ApproveResult, code: string): string {
+  const ok = result === 'approved'
+  const msg: Record<ApproveResult, string> = {
+    approved: `Device <code>${esc(code)}</code> authorized. Return to your terminal — the CLI will finish automatically.`,
+    not_found: `No pending request for <code>${esc(code)}</code>. Check the code in your terminal and try again.`,
+    expired: `That code expired. Re-run <code>portaljs login</code> in your terminal to get a fresh one.`,
+    already: `That code was already used. Re-run <code>portaljs login</code> to start over.`,
+  }
+  return SHELL(
+    ok ? 'PortalJS Arc — Authorized' : 'PortalJS Arc — Try again',
+    `<h1>${ok ? '✓ Authorized' : 'Couldn’t authorize'}</h1>
+<div class="card" ${ok ? 'style="border-color:#38bdf8"' : ''}>
+  <p>${msg[result]}</p>
+  ${ok ? '' : '<a class="btn btn-ghost" href="/activate">Enter a code</a>'}
 </div>`
   )
 }

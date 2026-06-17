@@ -7,7 +7,7 @@
 // Served at api.arc.portaljs.com (api.staging.arc.portaljs.com on staging).
 
 import { untar } from './untar'
-import { userForToken, ensureProject, recordDeployment, getDeployment } from './db'
+import { userForToken, loginForToken, ensureProject, recordDeployment, getDeployment } from './db'
 
 export interface Env {
   ASSETS: R2Bucket
@@ -126,6 +126,14 @@ export default {
       })
     }
     if (url.pathname === '/healthz') return json({ ok: true })
+    // whoami — let the CLI/skill confirm a stored token and show "Logged in as @user".
+    if (url.pathname === '/v1/whoami' && request.method === 'GET') {
+      const auth = request.headers.get('authorization') ?? ''
+      const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : ''
+      if (!token) return json({ error: 'missing bearer token' }, 401)
+      const login = await loginForToken(env.DB, token)
+      return login ? json({ login }) : json({ error: 'invalid token' }, 401)
+    }
     if (url.pathname === '/v1/deploy' && request.method === 'POST') return handleDeploy(request, env)
     const m = url.pathname.match(/^\/v1\/deploy\/([\w-]+)$/)
     if (m && request.method === 'GET') {
