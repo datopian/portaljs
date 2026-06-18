@@ -192,21 +192,21 @@ export default function PortalJSvsCKAN() {
     <Layout isHomePage={true}>
       {/* SEO */}
       <OrganizationJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
       <Head>
         {generateNextSeo({
           title: "PortalJS vs CKAN Classic | Modern Frontend vs Monolithic Architecture",
           description: "Compare PortalJS with CKAN Classic: See how our decoupled frontend approach delivers better performance, developer experience, and user experience than monolithic CKAN.",
-          canonical: "https://portaljs.com/compare/ckan",
+          canonical: "https://www.portaljs.com/compare/ckan",
           openGraph: {
-          url: 'https://portaljs.com/compare/ckan',
+          url: 'https://www.portaljs.com/compare/ckan',
           title: 'PortalJS vs CKAN Classic | Modern Frontend vs Monolithic Architecture',
           description: 'Compare PortalJS with CKAN Classic: See how our decoupled frontend approach delivers better performance, developer experience, and user experience than monolithic CKAN.',
           images: [
             {
-              url: 'https://portaljs.com/static/img/seo.webp',
+              url: 'https://www.portaljs.com/static/img/seo.webp',
               width: 1200,
               height: 630,
               alt: 'PortalJS vs CKAN Classic Comparison',
@@ -225,11 +225,11 @@ export default function PortalJSvsCKAN() {
           },
           {
             name: 'Compare',
-            item: 'https://portaljs.com/compare',
+            item: 'https://www.portaljs.com/compare',
           },
           {
             name: 'CKAN Classic',
-            item: 'https://portaljs.com/compare/ckan',
+            item: 'https://www.portaljs.com/compare/ckan',
           }
         ]}
       />

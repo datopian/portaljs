@@ -24,19 +24,19 @@ export function FaqStructuredData() {
       />
       <Head>
         {generateNextSeo({
-          title: "FAQ",
-          description: "Frequently Asked Questions about PortalJS Cloud. Get answers about pricing, features, deployment, and more.",
+          title: "FAQ | PortalJS Cloud — Pricing, Features & Deployment",
+          description: "Frequently Asked Questions about PortalJS Cloud. Get answers about pricing, features, deployment, migration, security, and more.",
           canonical: "https://www.portaljs.com/faq",
           openGraph: {
           url: 'https://www.portaljs.com/faq',
-          title: 'FAQ',
-          description: 'Frequently Asked Questions about PortalJS Cloud. Get answers about pricing, features, deployment, and more.',
+          title: 'FAQ | PortalJS Cloud — Pricing, Features & Deployment',
+          description: 'Frequently Asked Questions about PortalJS Cloud. Get answers about pricing, features, deployment, migration, security, and more.',
           site_name: 'PortalJS',
           type: 'website',
           images: [
             {
-              url: 'https://portaljs.com/static/img/seo.webp',
-              alt: 'PortalJS Cloud',
+              url: 'https://www.portaljs.com/static/img/seo.webp',
+              alt: 'PortalJS Cloud FAQ',
               width: 1280,
               height: 720,
               type: 'image/webp',

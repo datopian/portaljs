@@ -192,21 +192,21 @@ export default function PortalJSvsCustomSolution() {
     <Layout isHomePage={true}>
       {/* SEO */}
       <OrganizationJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
       <Head>
         {generateNextSeo({
           title: "PortalJS vs Custom Data Portal Development | Build vs Buy Comparison",
           description: "Compare PortalJS with building a custom data portal from scratch: See how our platform delivers faster time-to-market, lower costs, and reduced risk vs custom development.",
-          canonical: "https://portaljs.com/compare/custom-solution",
+          canonical: "https://www.portaljs.com/compare/custom-solution",
           openGraph: {
-          url: 'https://portaljs.com/compare/custom-solution',
+          url: 'https://www.portaljs.com/compare/custom-solution',
           title: 'PortalJS vs Custom Data Portal Development | Build vs Buy Comparison',
           description: 'Compare PortalJS with building a custom data portal from scratch: See how our platform delivers faster time-to-market, lower costs, and reduced risk vs custom development.',
           images: [
             {
-              url: 'https://portaljs.com/static/img/seo.webp',
+              url: 'https://www.portaljs.com/static/img/seo.webp',
               width: 1200,
               height: 630,
               alt: 'PortalJS vs Custom Solution Comparison',
@@ -225,11 +225,11 @@ export default function PortalJSvsCustomSolution() {
           },
           {
             name: 'Compare',
-            item: 'https://portaljs.com/compare',
+            item: 'https://www.portaljs.com/compare',
           },
           {
             name: 'Custom Solution',
-            item: 'https://portaljs.com/compare/custom-solution',
+            item: 'https://www.portaljs.com/compare/custom-solution',
           }
         ]}
       />

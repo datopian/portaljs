@@ -75,14 +75,14 @@ export default function Partners() {
         {generateNextSeo({
           title: "PortalJS Partnership Program | Collaborate on Open Data Portals",
           description: "Join the PortalJS Partnership Program to deliver innovative open data solutions across governments, non-profits, academia, and businesses.",
-          canonical: "https://portaljs.com/partners",
+          canonical: "https://www.portaljs.com/partners",
           openGraph: {
-            url: 'https://portaljs.com/partners',
+            url: 'https://www.portaljs.com/partners',
             title: 'PortalJS Partnership Program | Collaborate on Open Data Portals',
             description: 'Join the PortalJS Partnership Program to deliver innovative open data solutions across governments, non-profits, academia, and businesses.',
             images: [
               {
-                url: 'https://portaljs.com/static/img/seo.webp',
+                url: 'https://www.portaljs.com/static/img/seo.webp',
                 width: 1200,
                 height: 630,
                 alt: 'PortalJS Partnerships',
@@ -93,8 +93,8 @@ export default function Partners() {
         })}
       </Head>
       <OrganizationJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
 
       {/* Hero */}

@@ -33,8 +33,8 @@ export function HomePageStructuredData() {
           type: 'website',
           images: [
             {
-              url: 'https://portaljs.com/static/img/seo.webp',
-              alt: 'PortalJS Cloud',
+              url: 'https://www.portaljs.com/static/img/seo.webp',
+              alt: 'PortalJS — Modern Open Data Portals',
               width: 1280,
               height: 720,
               type: 'image/webp',

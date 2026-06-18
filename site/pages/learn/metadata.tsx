@@ -38,9 +38,9 @@ const MetadataLearnPage = () => {
         {generateNextSeo({
           title: "Metadata Fundamentals | Learn Data Management",
           description: "Master the fundamentals of metadata—what it is, how it works, and why it's essential for data discovery and management. Learn about metadata schemas, standards, and best practices.",
-          canonical: "https://portaljs.com/learn/metadata",
+          canonical: "https://www.portaljs.com/learn/metadata",
           openGraph: {
-          url: 'https://portaljs.com/learn/metadata',
+          url: 'https://www.portaljs.com/learn/metadata',
           title: 'Metadata Fundamentals | Learn Data Management',
           description: 'Master the fundamentals of metadata—what it is, how it works, and why it\'s essential for data discovery and management. Learn about metadata schemas, standards, and best practices.',
           site_name: 'PortalJS',

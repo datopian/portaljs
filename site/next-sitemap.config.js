@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://portaljs.com',
+  siteUrl: process.env.SITE_URL || 'https://www.portaljs.com',
   generateRobotsTxt: true,
   robotsTxtOptions: {
     policies: [

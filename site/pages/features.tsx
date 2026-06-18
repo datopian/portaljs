@@ -16,6 +16,8 @@ import { TiCloudStorage } from "react-icons/ti";
 import { AiOutlineDatabase } from "react-icons/ai";
 import { MdVerified } from "react-icons/md";
 import { FaSyncAlt } from "react-icons/fa";
+import Head from "next/head";
+import { generateNextSeo } from "next-seo/pages";
 
 import Layout from "@/components/Layout";
 
@@ -141,6 +143,33 @@ const statsData = [
 const StatsPage = () => {
   return (
     <Layout>
+      <Head>
+        {generateNextSeo({
+          title: "Features | PortalJS Cloud — Open Data Portal Capabilities",
+          description: "Explore all PortalJS Cloud features: 5-minute deployment, 99.9% uptime, unlimited datasets, built-in search, API access, security compliance, and managed infrastructure.",
+          canonical: "https://www.portaljs.com/features",
+          openGraph: {
+            url: 'https://www.portaljs.com/features',
+            title: 'Features | PortalJS Cloud — Open Data Portal Capabilities',
+            description: 'Explore all PortalJS Cloud features: 5-minute deployment, 99.9% uptime, unlimited datasets, built-in search, API access, security compliance, and managed infrastructure.',
+            site_name: 'PortalJS',
+            type: 'website',
+            images: [
+              {
+                url: 'https://www.portaljs.com/static/img/seo.webp',
+                alt: 'PortalJS Cloud Features',
+                width: 1280,
+                height: 720,
+                type: 'image/webp',
+              },
+            ],
+          },
+          twitter: {
+            cardType: 'summary_large_image',
+            site: '@PortalJS_',
+          },
+        })}
+      </Head>
       <div>
         <h1
           className="text-4xl font-bold text-center text-primary dark:text-primary-dark"

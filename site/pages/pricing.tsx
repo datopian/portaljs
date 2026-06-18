@@ -9,8 +9,29 @@ export default function Pricing() {
     <Layout>
       <Head>
         {generateNextSeo({
-          title: "Pricing",
-          description: "Find the best plan for you, our plans cover all ranges of budgets and needs. Leverage your Open Data Portal with optional add-ons.",
+          title: "Pricing | PortalJS Cloud — Open Data Portal Plans",
+          description: "Simple, transparent pricing for PortalJS Cloud. Managed open data portals for governments, nonprofits, and enterprises — pay-as-you-go with no infrastructure overhead.",
+          canonical: "https://www.portaljs.com/pricing",
+          openGraph: {
+            url: 'https://www.portaljs.com/pricing',
+            title: 'Pricing | PortalJS Cloud — Open Data Portal Plans',
+            description: 'Simple, transparent pricing for PortalJS Cloud. Managed open data portals for governments, nonprofits, and enterprises — pay-as-you-go with no infrastructure overhead.',
+            site_name: 'PortalJS',
+            type: 'website',
+            images: [
+              {
+                url: 'https://www.portaljs.com/static/img/seo.webp',
+                alt: 'PortalJS Cloud Pricing',
+                width: 1280,
+                height: 720,
+                type: 'image/webp',
+              },
+            ],
+          },
+          twitter: {
+            cardType: 'summary_large_image',
+            site: '@PortalJS_',
+          },
         })}
       </Head>
       <div className="overflow-hidden">

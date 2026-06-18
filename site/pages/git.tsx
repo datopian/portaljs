@@ -17,17 +17,17 @@ export default function Git() {
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           {/* 1. Your logo structured data */}
           <OrganizationJsonLd
-            url="https://portaljs.com"
-            logo="https://portaljs.com/icon.png"
+            url="https://www.portaljs.com"
+            logo="https://www.portaljs.com/icon.png"
           />
           {/* 2. Base SEO tags */}
           <Head>
             {generateNextSeo({
               title: "Git-Backed Data Portals | Version-Controlled Data with PortalJS",
               description: "Build modern data portals using Git as your data source. Leverage GitHub, GitLab, or any Git repository for version-controlled, collaborative data management with PortalJS.",
-              canonical: "https://portaljs.com/git",
+              canonical: "https://www.portaljs.com/git",
               openGraph: {
-              url: 'https://portaljs.com/git',
+              url: 'https://www.portaljs.com/git',
               title: 'Git-Backed Data Portals | Version-Controlled Data with PortalJS',
               description: 'Build modern data portals using Git as your data source. Leverage GitHub, GitLab, or any Git repository for version-controlled, collaborative data management with PortalJS.',
               site_name: 'PortalJS',
@@ -43,7 +43,7 @@ export default function Git() {
               },
               {
                 name: 'Git Integration',
-                item: 'https://portaljs.com/git',
+                item: 'https://www.portaljs.com/git',
               },
             ]}
           />

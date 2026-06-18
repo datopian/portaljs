@@ -192,21 +192,21 @@ export default function PortalJSvsDataverse() {
     <Layout isHomePage={true}>
       {/* SEO */}
       <OrganizationJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
       <Head>
         {generateNextSeo({
           title: "PortalJS vs Dataverse | Open Data Portal vs Research Data Repository",
           description: "Compare PortalJS with Dataverse research data repository: See how our open data portal approach delivers better public engagement and user experience for sharing research data.",
-          canonical: "https://portaljs.com/compare/dataverse",
+          canonical: "https://www.portaljs.com/compare/dataverse",
           openGraph: {
-          url: 'https://portaljs.com/compare/dataverse',
+          url: 'https://www.portaljs.com/compare/dataverse',
           title: 'PortalJS vs Dataverse | Open Data Portal vs Research Data Repository',
           description: 'Compare PortalJS with Dataverse research data repository: See how our open data portal approach delivers better public engagement and user experience for sharing research data.',
           images: [
             {
-              url: 'https://portaljs.com/static/img/seo.webp',
+              url: 'https://www.portaljs.com/static/img/seo.webp',
               width: 1200,
               height: 630,
               alt: 'PortalJS vs Dataverse Comparison',
@@ -225,11 +225,11 @@ export default function PortalJSvsDataverse() {
           },
           {
             name: 'Compare',
-            item: 'https://portaljs.com/compare',
+            item: 'https://www.portaljs.com/compare',
           },
           {
             name: 'Dataverse',
-            item: 'https://portaljs.com/compare/dataverse',
+            item: 'https://www.portaljs.com/compare/dataverse',
           }
         ]}
       />
