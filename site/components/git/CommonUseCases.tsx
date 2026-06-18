@@ -30,7 +30,7 @@ export const CommonUseCases = () => {
   ]
 
   return (
-    <div className="py-24">
+    <div className="pt-24 pb-6">
       <div className="">
         <H2 className="text-center mb-4">Common Use Cases</H2>
         <H3 className="text-center !opacity-100 text-slate-600 dark:text-slate-400">

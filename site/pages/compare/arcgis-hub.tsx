@@ -312,7 +312,7 @@ export default function PortalJSvsArcGISHub() {
 
       {/* Comparison Table */}
       <div className="w-full">
-        <div className="pt-8 pb-24">
+        <div className="pt-8 pb-6">
           <div className="mx-auto px-4 sm:px-8 xl:px-12 max-w-8xl">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-slate-900 dark:text-white">
@@ -374,7 +374,7 @@ export default function PortalJSvsArcGISHub() {
       </div>
 
       {/* CTA Section */}
-      <section className="w-full py-10 flex justify-center">
+      <section className="w-full pt-2 pb-0 flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-6 py-4">
             <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">Explore more:</span>
