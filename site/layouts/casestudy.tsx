@@ -303,7 +303,7 @@ function HeroSection({
               <ReactMarkdown>{description}</ReactMarkdown>
             </div>
             <div className="mt-6 flex flex-wrap gap-3.5">
-              {portal && (
+              {portal && portal[2] && (
                 <a
                   href={portal[2]}
                   target="_blank"
