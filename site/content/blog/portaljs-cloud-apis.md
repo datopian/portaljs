@@ -11,7 +11,7 @@ keywords: PortalJS Cloud API, CKAN API migration, open data portal API
 description: "Migrating from CKAN to PortalJS Cloud and worried about your API integrations? Here's exactly what stays the same, what changes, and what you need to know before you migrate."
 authors: ['Yoana Popova']
 canonical: https://www.portaljs.com/blog/portaljs-cloud-apis
-image: /static/img/blog/2026-05-26-portaljs-cloud-apis/og-image.png
+image: /static/img/blog/2026-05-26-portaljs-cloud-apis/hero.png
 filetype: 'blog'
 ---
 

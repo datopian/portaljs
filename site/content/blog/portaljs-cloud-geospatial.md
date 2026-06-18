@@ -11,7 +11,7 @@ keywords: PortalJS Cloud geospatial, open data portal map visualization, GeoJSON
 description: "Does PortalJS Cloud support geospatial visualizations? A clear breakdown of what works out of the box, what requires extension, and how to handle complex mapping requirements."
 authors: ['Yoana Popova']
 canonical: https://www.portaljs.com/blog/portaljs-cloud-geospatial
-image: /static/img/blog/2026-05-25-portaljs-cloud-geospatial/og-image.png
+image: /static/img/blog/2026-05-25-portaljs-cloud-geospatial/hero.png
 filetype: 'blog'
 ---
 
