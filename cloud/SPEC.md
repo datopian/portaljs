@@ -147,14 +147,15 @@ of the previous deployment.
 
 ### 3. Auth — `arc.portaljs.com` (`cloud/auth/`) — bead `po-5vk`
 - GitHub OAuth → create `users` row; UI to generate/revoke API tokens.
-- Client login: `npx portaljs login` (or folded into the skill) → device-code or
-  paste-token → write `~/.portaljs/credentials` (`{ token, api }`, where `api` defaults to
-  `https://api.arc.portaljs.com`). `PORTALJS_TOKEN` env overrides (CI).
+- Client login: folded into the `/deploy` skill (device-code flow, run inline on first
+  deploy) → write `~/.portaljs/credentials` (`{ token, api }`, where `api` defaults to
+  `https://api.arc.portaljs.com`). `PORTALJS_TOKEN` env overrides (CI). Paste-token via the
+  dashboard stays as the power-user/CI fallback.
 - API tokens are opaque, hashed at rest in D1.
 
 ### 4. `/deploy` skill rewrite (`.claude/commands/deploy.md`) — bead `po-4yq`
 - Single target. Steps: ensure `output: 'export'` in `next.config.js` → `next build` →
-  verify `out/` → ensure auth (run login if no creds) → tar `out/` → `POST /v1/deploy` →
+  verify `out/` → ensure auth (run the device flow inline if no creds) → tar `out/` → `POST /v1/deploy` →
   poll → print `https://<slug>.arc.portaljs.com`. Never report success on a failing build.
 - Slug defaults to the project slug (from `package.json`/dir), overridable with a flag.
 - Drop the Vercel/static-host branching; add a one-line "to self-host elsewhere, run
@@ -195,8 +196,8 @@ See `cloud/INFRA.md`.
 - **Quotas/pricing** — free tier limits (projects, bytes, bandwidth)? Ties into the pricing
   page.
 - ~~**Auth UX** — device-code flow vs paste-token for v1.~~ **Resolved (po-j57):** shipped the
-  GitHub-style **device-authorization flow** (`/login` skill → `POST /device/code` → browser
-  `/activate` → `POST /device/token`), with server-side auto-labelled tokens. Paste-token + the
+  GitHub-style **device-authorization flow** (run inline by `/deploy` → `POST /device/code` →
+  browser `/activate` → `POST /device/token`), with server-side auto-labelled tokens. Paste-token + the
   dashboard "generate token" UI stay as the power-user / CI fallback (`PORTALJS_TOKEN`).
 - **Repo location** — keep `cloud/` in the monorepo, or extract to `datopian/portaljs-cloud`
   once it stabilizes? (Defaulting to monorepo for now.)
