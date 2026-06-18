@@ -76,7 +76,7 @@ Do not silently continue past a hard failure. Do not use placeholder values to p
 In v1, skills are user-invoked and do not call each other programmatically. If a skill's output is the natural input to another skill, say so at the end:
 
 ```
-Done. Next: run /add-dataset to load your client's CSV into this portal.
+Done. Next: run /portaljs-add-dataset to load your client's CSV into this portal.
 ```
 
 ## Datopian-internal skills

@@ -1,8 +1,8 @@
 # Installing PortalJS skills
 
 PortalJS ships a set of [Claude Code](https://docs.claude.com/en/docs/claude-code) skills
-that scaffold and extend data portals: `/new-portal`, `/add-dataset`, `/add-chart`,
-`/add-map`, and `/deploy`. They run **from any project** — `/new-portal` fetches the
+that scaffold and extend data portals: `/portaljs-new-portal`, `/portaljs-add-dataset`, `/portaljs-add-chart`,
+`/portaljs-add-map`, and `/portaljs-deploy`. They run **from any project** — `/portaljs-new-portal` fetches the
 template from GitHub when you're not inside a clone of this repo.
 
 There are three ways to install them, from quickest to most integrated.
@@ -10,7 +10,7 @@ There are three ways to install them, from quickest to most integrated.
 ## 1. Run from a clone (no install)
 
 If you've cloned this repo, the skills are already available inside it — Claude Code
-auto-discovers `.claude/commands/`. Just open the repo and run `/new-portal`.
+auto-discovers `.claude/commands/`. Just open the repo and run `/portaljs-new-portal`.
 
 ## 2. Personal scope — install into `~/.claude/commands/`
 
@@ -36,7 +36,7 @@ re-run it to update. Overrides:
 | `CLAUDE_COMMANDS_DIR` | `$HOME/.claude/commands` | Where to install the skills |
 | `PORTALJS_SKILLS_REF` | `main` | Git ref to download from (remote mode) |
 
-Restart Claude Code (or open a new session) and run `/new-portal`.
+Restart Claude Code (or open a new session) and run `/portaljs-new-portal`.
 
 ## 3. Claude Code plugin
 
@@ -52,7 +52,7 @@ Plugin commands are namespaced — run them as `/portaljs:new-portal`,
 
 ## Notes
 
-- `/new-portal` prefers a local checkout of the template when run inside this repo, and
+- `/portaljs-new-portal` prefers a local checkout of the template when run inside this repo, and
   otherwise fetches it remotely via `npx tiged`. Override the template ref with
   `PORTALJS_TEMPLATE_REF` (default `main`). Requires **Node.js >= 18**.
 - Only the OSS skills are packaged. Gas Town internal commands (`done`, `handoff`,
