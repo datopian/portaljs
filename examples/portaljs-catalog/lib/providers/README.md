@@ -62,7 +62,7 @@ can't live in a public static bundle.
 
 - **CKAN** — `listDatasets`/`getDataset` map to `package_list`/`package_show`,
   `search` to `package_search` (`capabilities.search = true`). Adds `rbac` and, via
-  the datastore, `query`. Wired by the `/connect-ckan` skill.
+  the datastore, `query`. Wired by the `/portaljs-connect-ckan` skill.
 - **OpenMetadata** — its REST API for catalog + governance metadata; owns its own
   `rbac`.
 - **git-LFS + object store (R2)** — same model as `StaticProvider` (datasets.json +

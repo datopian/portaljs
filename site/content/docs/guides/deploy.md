@@ -1,33 +1,33 @@
 ---
 metatitle: Deploy a PortalJS Portal – PortalJS Arc or Self-Hosted
-metadescription: Publish your PortalJS portal with /deploy to PortalJS Arc (managed hosting on Cloudflare, a live <slug>.arc.portaljs.com URL), or self-host the static export on Vercel, Netlify, Cloudflare, S3, or nginx.
+metadescription: Publish your PortalJS portal with /portaljs-deploy to PortalJS Arc (managed hosting on Cloudflare, a live <slug>.arc.portaljs.com URL), or self-host the static export on Vercel, Netlify, Cloudflare, S3, or nginx.
 title: Deploy
-description: Publish to PortalJS Arc with /deploy, or self-host the static export anywhere.
+description: Publish to PortalJS Arc with /portaljs-deploy, or self-host the static export anywhere.
 ---
 
-**Goal:** take the portal live. The fast path is [`/deploy`](/docs/skills/deploy) to
+**Goal:** take the portal live. The fast path is [`/portaljs-deploy`](/docs/skills/deploy) to
 [**PortalJS Arc**](/docs/arc) — Datopian-managed hosting. Or self-host the static export on
 any host you like.
 
-## The AI path — `/deploy` → PortalJS Arc
+## The AI path — `/portaljs-deploy` → PortalJS Arc
 
 ```
-/deploy
+/portaljs-deploy
 ```
 
-[`/deploy`](/docs/skills/deploy) builds a static export, uploads it to
+[`/portaljs-deploy`](/docs/skills/deploy) builds a static export, uploads it to
 [PortalJS Arc](/docs/arc), and prints a live `https://<slug>.arc.portaljs.com` URL. It
 **never reports success on a failing build**, and re-running redeploys the same slug in
 place.
 
-No separate login step — the first `/deploy` on a new machine signs you in on demand (one
+No separate login step — the first `/portaljs-deploy` on a new machine signs you in on demand (one
 browser click via GitHub), saves the token to `~/.portaljs/credentials`, and reuses it on
 later deploys. For CI, set `PORTALJS_TOKEN` instead. See the
-[`/deploy` skill](/docs/skills/deploy) for details.
+[`/portaljs-deploy` skill](/docs/skills/deploy) for details.
 
 > [!info] Static only (for now)
-> Arc serves static exports. The catalog template, `/add-dataset`, `/migrate`, and
-> `/connect-ckan` (SSG) all export cleanly. A portal that relies on `getServerSideProps`
+> Arc serves static exports. The catalog template, `/portaljs-add-dataset`, `/portaljs-migrate`, and
+> `/portaljs-connect-ckan` (SSG) all export cleanly. A portal that relies on `getServerSideProps`
 > (SSR) isn't hosted on Arc yet — self-host it (below).
 
 ## The self-host path
@@ -56,7 +56,7 @@ static export, and set env vars like `DMS` in the Vercel dashboard.)
 
 - **Dynamic routes under static export** need `getStaticPaths` returning
   `{ fallback: false }`. The [catalog template](/docs/templates) pre-renders every manifest
-  entry, so `/add-dataset` and `/migrate` portals export cleanly.
+  entry, so `/portaljs-add-dataset` and `/portaljs-migrate` portals export cleanly.
 - **Environment variables:** for static export, inline client-side values at build time with
   `NEXT_PUBLIC_*`; for a Vercel/SSR deploy, set them in the Vercel dashboard.
 - **GitHub Pages subpath:** if deploying to `https://user.github.io/repo/`, also set

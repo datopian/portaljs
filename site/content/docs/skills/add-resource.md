@@ -1,13 +1,13 @@
 ---
-metatitle: /add-resource – Add Another File to a PortalJS Dataset
-metadescription: The /add-resource skill attaches an extra file (data dictionary, methodology, additional data) to an existing dataset. The dataset becomes multi-resource and its showcase renders a section per file.
-title: /add-resource
+metatitle: /portaljs-add-resource – Add Another File to a PortalJS Dataset
+metadescription: The /portaljs-add-resource skill attaches an extra file (data dictionary, methodology, additional data) to an existing dataset. The dataset becomes multi-resource and its showcase renders a section per file.
+title: /portaljs-add-resource
 description: Attach another file to an existing dataset — a data dictionary, methodology, or additional data. The showcase then renders one section per resource.
 ---
 
-`/add-resource` adds a **resource** (an additional file) to a dataset that already exists in
-your portal. Where [`/add-dataset`](/docs/skills/add-dataset) creates a *new* dataset from
-one file, `/add-resource` attaches a file to an *existing* one — for datasets that are more
+`/portaljs-add-resource` adds a **resource** (an additional file) to a dataset that already exists in
+your portal. Where [`/portaljs-add-dataset`](/docs/skills/add-dataset) creates a *new* dataset from
+one file, `/portaljs-add-resource` attaches a file to an *existing* one — for datasets that are more
 than a single file: data + a data dictionary + methodology, or quarterly/yearly files under
 one dataset.
 
@@ -38,12 +38,12 @@ Supported formats: **CSV, TSV, JSON (array), GeoJSON**.
 - The dataset's `datasets.json` entry updated: the new resource appended to `resources[]`
   (migrating a single-file dataset to `resources[]` on the first add, losslessly).
 - A new **section on the showcase** for that resource — preview, its Frictionless schema
-  (if defined via [`/define-schema`](/docs/skills/define-schema)), and a download link.
+  (if defined via [`/portaljs-define-schema`](/docs/skills/define-schema)), and a download link.
 
 ## Example
 
 ```
-/add-resource orders ./data/orders-data-dictionary.csv
+/portaljs-add-resource orders ./data/orders-data-dictionary.csv
 ```
 
 Attaches a data dictionary to the existing `orders` dataset. If `orders` was a single CSV,
@@ -52,7 +52,7 @@ section for each. With no arguments, the skill lists your datasets and asks whic
 
 ## Where to go next
 
-- **[`/define-schema`](/docs/skills/define-schema)** — describe a resource's fields.
-- **[`/add-chart`](/docs/skills/add-chart)** / **[`/add-map`](/docs/skills/add-map)** — add a view.
+- **[`/portaljs-define-schema`](/docs/skills/define-schema)** — describe a resource's fields.
+- **[`/portaljs-add-chart`](/docs/skills/add-chart)** / **[`/portaljs-add-map`](/docs/skills/add-map)** — add a view.
 
 <DocsPagination prev="/docs/skills/add-dataset" next="/docs/skills/add-chart" />

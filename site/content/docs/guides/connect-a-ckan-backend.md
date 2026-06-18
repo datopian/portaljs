@@ -1,8 +1,8 @@
 ---
 metatitle: Connect a CKAN Backend to PortalJS – The Decoupled Path
-metadescription: Wire your PortalJS portal to a live CKAN instance over its API with /connect-ckan — the decoupled path. Lists and renders datasets straight from CKAN, no static files.
+metadescription: Wire your PortalJS portal to a live CKAN instance over its API with /portaljs-connect-ckan — the decoupled path. Lists and renders datasets straight from CKAN, no static files.
 title: Connect a CKAN backend
-description: Wire the portal to a live CKAN instance over its API — the decoupled path, with /connect-ckan or by hand.
+description: Wire the portal to a live CKAN instance over its API — the decoupled path, with /portaljs-connect-ckan or by hand.
 ---
 
 **Goal:** stop reading static files from `/public/data/` and instead list and render
@@ -10,23 +10,23 @@ datasets straight from a live [CKAN](/ckan) instance over its REST API — the
 decoupled, "any backend" path.
 
 > [!info] Before you start
-> You need a portal scaffolded with [`/new-portal`](/docs/skills/new-portal) and the
+> You need a portal scaffolded with [`/portaljs-new-portal`](/docs/skills/new-portal) and the
 > **root URL of a publicly reachable CKAN instance** (e.g.
 > `https://demo.dev.datopian.com`). The skill appends `/api/3/action/...` itself.
 
-## The AI path — `/connect-ckan`
+## The AI path — `/portaljs-connect-ckan`
 
 ```
-/connect-ckan https://demo.dev.datopian.com
+/portaljs-connect-ckan https://demo.dev.datopian.com
 ```
 
 Optionally restrict the catalog to one or more organizations or groups:
 
 ```
-/connect-ckan https://demo.dev.datopian.com — orgs: my-org
+/portaljs-connect-ckan https://demo.dev.datopian.com — orgs: my-org
 ```
 
-[`/connect-ckan`](/docs/skills/connect-ckan) verifies the CKAN API is reachable,
+[`/portaljs-connect-ckan`](/docs/skills/connect-ckan) verifies the CKAN API is reachable,
 generates a tiny `lib/ckan.ts` fetch client (no runtime dependency), and rewrites the
 catalog (`/search`) and the dataset showcase route to fetch from CKAN. It runs a full
 `next build` and reports how many dataset pages were generated.

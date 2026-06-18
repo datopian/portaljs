@@ -1,11 +1,11 @@
 ---
-metatitle: /add-map – Render a GeoJSON Dataset on an Interactive Map in PortalJS
-metadescription: The /add-map skill installs react-leaflet, generates a reusable Map component, and adds a map view to a dataset's showcase — rendering GeoJSON on an interactive Leaflet map.
-title: /add-map
+metatitle: /portaljs-add-map – Render a GeoJSON Dataset on an Interactive Map in PortalJS
+metadescription: The /portaljs-add-map skill installs react-leaflet, generates a reusable Map component, and adds a map view to a dataset's showcase — rendering GeoJSON on an interactive Leaflet map.
+title: /portaljs-add-map
 description: Render a GeoJSON dataset on an interactive Leaflet map as a view on its showcase.
 ---
 
-`/add-map` adds an interactive map view of a GeoJSON dataset to an existing PortalJS
+`/portaljs-add-map` adds an interactive map view of a GeoJSON dataset to an existing PortalJS
 portal. It copies the GeoJSON into `/public/data/`, installs `react-leaflet` /
 `leaflet` (once), generates a reusable `Map` component, and adds a map view into the
 **Views** section of the dataset's showcase (`pages/[owner]/[slug].tsx`).
@@ -14,7 +14,7 @@ portal. It copies the GeoJSON into `/public/data/`, installs `react-leaflet` /
 
 Use it when your data is geographic (points, lines, polygons) and you want a map
 view of it. If the GeoJSON isn't yet in the portal, add it first with
-[`/add-dataset`](/docs/skills/add-dataset); the map is added as a view alongside the
+[`/portaljs-add-dataset`](/docs/skills/add-dataset); the map is added as a view alongside the
 dataset's other views, so a single showcase can offer both a properties table and a
 map.
 
@@ -29,18 +29,18 @@ map.
 
 The skill validates that the target is a PortalJS portal and that the source is
 valid GeoJSON before doing anything; non-GeoJSON sources are rejected with a
-pointer to `/add-dataset`.
+pointer to `/portaljs-add-dataset`.
 
 ## Example
 
 ```
-/add-map ./data/auckland-suburbs.geojson
+/portaljs-add-map ./data/auckland-suburbs.geojson
 ```
 
 From a public URL with a name:
 
 ```
-/add-map https://example.com/cities.geojson — Major cities
+/portaljs-add-map https://example.com/cities.geojson — Major cities
 ```
 
 ## What it produces
@@ -69,7 +69,7 @@ It runs the build before reporting success. When it finishes:
 
 ## Where to go next
 
-- **[`/add-chart`](/docs/skills/add-chart)** — add a chart to a tabular dataset.
-- **[`/deploy`](/docs/skills/deploy)** — publish the portal.
+- **[`/portaljs-add-chart`](/docs/skills/add-chart)** — add a chart to a tabular dataset.
+- **[`/portaljs-deploy`](/docs/skills/deploy)** — publish the portal.
 
 <DocsPagination prev="/docs/skills/add-chart" next="/docs/skills/connect-ckan" />

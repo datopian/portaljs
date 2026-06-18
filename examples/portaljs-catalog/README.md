@@ -76,7 +76,7 @@ the metadata label on the showcase.
 
 ## Placeholder tokens
 
-`/new-portal` replaces these at scaffold time:
+`/portaljs-new-portal` replaces these at scaffold time:
 
 | Token | Replaced with |
 |-------|--------------|

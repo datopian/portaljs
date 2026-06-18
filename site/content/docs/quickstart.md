@@ -1,6 +1,6 @@
 ---
 metatitle: PortalJS Quickstart – Build a Portal with AI in Minutes
-metadescription: Install the PortalJS skills, scaffold a portal with /new-portal, add your data with /add-dataset, and go live — all from your AI assistant.
+metadescription: Install the PortalJS skills, scaffold a portal with /portaljs-new-portal, add your data with /portaljs-add-dataset, and go live — all from your AI assistant.
 title: Quickstart — the AI path
 description: Install the PortalJS skills, scaffold a portal, add your data, and go live in minutes — your AI assistant does the assembly.
 ---
@@ -29,9 +29,9 @@ instead.
 
 ## 1. Install the skills
 
-The skills are Claude Code commands — `/architect`, `/new-portal`, `/add-dataset`,
-`/add-chart`, `/add-map`, `/connect-ckan`, `/define-schema`, `/deploy`, and
-`/check-data-quality`. Install them all once into your personal scope so they're
+The skills are Claude Code commands — `/portaljs-architect`, `/portaljs-new-portal`, `/portaljs-add-dataset`,
+`/portaljs-add-chart`, `/portaljs-add-map`, `/portaljs-connect-ckan`, `/portaljs-define-schema`, `/portaljs-deploy`, and
+`/portaljs-check-data-quality`. Install them all once into your personal scope so they're
 available in every project:
 
 ```bash
@@ -51,10 +51,10 @@ Restart Claude Code (or open a new session) so it picks up the new commands.
 In Claude Code, describe the portal you want:
 
 ```
-/new-portal Auckland Council Open Data Portal — public datasets for the Auckland region
+/portaljs-new-portal Auckland Council Open Data Portal — public datasets for the Auckland region
 ```
 
-`/new-portal` fetches the latest canonical catalog template, substitutes your project
+`/portaljs-new-portal` fetches the latest canonical catalog template, substitutes your project
 name and description, installs dependencies, and verifies the build. You get a
 real Next.js project — plain, editable code you own.
 
@@ -67,25 +67,25 @@ npm run dev
 
 ## 3. Add your data
 
-Point `/add-dataset` at a local file or a public URL. It copies the data into
+Point `/portaljs-add-dataset` at a local file or a public URL. It copies the data into
 `/public/data/`, generates a dataset page, and registers it on the home page
 catalog:
 
 ```
-/add-dataset ./data/population.csv — Auckland population by area
+/portaljs-add-dataset ./data/population.csv — Auckland population by area
 ```
 
 ```
-/add-dataset https://example.com/air-quality.csv — Air quality monitoring
+/portaljs-add-dataset https://example.com/air-quality.csv — Air quality monitoring
 ```
 
 Supported formats: **CSV, TSV, JSON (array), and GeoJSON**.
 
 ## 4. Make it richer (optional)
 
-- `/add-chart` — add a line, bar, area, pie, or scatter chart to a dataset page.
-- `/add-map` — render a GeoJSON dataset on an interactive Leaflet map.
-- `/connect-ckan` — wire the portal to a [CKAN](/ckan) backend over its API
+- `/portaljs-add-chart` — add a line, bar, area, pie, or scatter chart to a dataset page.
+- `/portaljs-add-map` — render a GeoJSON dataset on an interactive Leaflet map.
+- `/portaljs-connect-ckan` — wire the portal to a [CKAN](/ckan) backend over its API
   instead of static files.
 
 Every skill writes plain, readable code — nothing it produces is hidden behind a
@@ -96,10 +96,10 @@ runtime you can't see or edit.
 When you're ready to go live:
 
 ```
-/deploy
+/portaljs-deploy
 ```
 
-`/deploy` detects your target (Vercel or static hosting), builds the portal, and
+`/portaljs-deploy` detects your target (Vercel or static hosting), builds the portal, and
 publishes it — you get a live URL at the end.
 
 ## Where to go next

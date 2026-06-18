@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 
-// Populated by /add-dataset. Each entry: { slug, name, description }
+// Populated by /portaljs-add-dataset. Each entry: { slug, name, description }
 const datasets: { slug: string; name: string; description?: string }[] = []
 
 export default function Home() {
@@ -20,7 +20,7 @@ export default function Home() {
           <div className="rounded-lg border-2 border-dashed border-gray-200 p-12 text-center text-gray-400">
             <p className="text-lg font-medium">No datasets yet</p>
             <p className="mt-1 text-sm">
-              Run <code className="bg-gray-100 px-1 rounded">/add-dataset</code> to add your first dataset.
+              Run <code className="bg-gray-100 px-1 rounded">/portaljs-add-dataset</code> to add your first dataset.
             </p>
           </div>
         ) : (

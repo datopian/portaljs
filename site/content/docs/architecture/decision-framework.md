@@ -11,7 +11,7 @@ architecture the build skills can then scaffold. It is opinionated by default an
 explicit about when to deviate.
 
 > Status: **design / Phase 1.** This document specifies the framework and the
-> `/architect` skill. It is the contract the build layer (data provider, data query,
+> `/portaljs-architect` skill. It is the contract the build layer (data provider, data query,
 > metadata, RBAC) is designed against — see the [Roadmap](https://github.com/datopian/portaljs/blob/main/ROADMAP.md).
 
 ## Three questions
@@ -75,7 +75,7 @@ When in doubt, PortalJS recommends the **open, cheap, composable** path:
 ## Cost & lock-in: why we push compute to the data
 
 The defaults above aren't just an aesthetic preference for open source — they follow
-from how the bill works. It's the main reason `/architect` reaches for DuckDB over a
+from how the bill works. It's the main reason `/portaljs-architect` reaches for DuckDB over a
 warehouse, and worth weighing explicitly when you architect a portal.
 
 **Cloud warehouses bill per scan.** Snowflake, BigQuery, Databricks et al. charge for
@@ -106,7 +106,7 @@ implementation for it. The point isn't *never a warehouse*; it's **don't pay a w
 to re-scan a billion rows every 15 minutes when DuckDB over Parquet does it for the price
 of object storage.** When unsure, the cheap, portable path is the default.
 
-## The `/architect` skill (design)
+## The `/portaljs-architect` skill (design)
 
 A new advisory skill that runs the framework as an interview and emits an
 **architecture brief**, then hands off to the build skills.
@@ -120,9 +120,9 @@ A new advisory skill that runs the framework as an interview and emits an
 **Output — an architecture brief:** the five-slot recommendation above, the reasoning
 per axis, and the deviations chosen. Echoed for confirmation.
 
-**Handoff:** the brief parameterizes the build skills — `/new-portal` (surfaces +
+**Handoff:** the brief parameterizes the build skills — `/portaljs-new-portal` (surfaces +
 namespace mode), the storage/compute choice (Git-LFS+R2 / lakehouse / datastore), the
-metadata profile (`/define-schema`), and any backend wiring (`/connect-ckan`,
+metadata profile (`/portaljs-define-schema`), and any backend wiring (`/portaljs-connect-ckan`,
 `/connect-openmetadata`). The advisory layer decides; the build layer executes.
 
 > The framework is intentionally small. It should give a confident default in seconds

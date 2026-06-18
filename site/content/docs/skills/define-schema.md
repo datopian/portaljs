@@ -1,12 +1,12 @@
 ---
-metatitle: /define-schema – Author a Dataset's Frictionless Metadata Profile
-metadescription: The /define-schema skill infers a Frictionless Table Schema from your data, adds Data Package metadata (license, sources, keywords), and writes it into datasets.json so the showcase renders a typed field reference. Extend or customize via the L0→L3 profile ladder.
-title: /define-schema
+metatitle: /portaljs-define-schema – Author a Dataset's Frictionless Metadata Profile
+metadescription: The /portaljs-define-schema skill infers a Frictionless Table Schema from your data, adds Data Package metadata (license, sources, keywords), and writes it into datasets.json so the showcase renders a typed field reference. Extend or customize via the L0→L3 profile ladder.
+title: /portaljs-define-schema
 description: Describe what a dataset's data means — infer a Frictionless Table Schema from the file, add license/source/keyword metadata, and surface a typed field table on the showcase.
 ---
 
-`/define-schema` is the **authoring** skill for the metadata-profile contract. Where
-[`/add-dataset`](/docs/skills/add-dataset) registers *that a dataset exists*, this skill
+`/portaljs-define-schema` is the **authoring** skill for the metadata-profile contract. Where
+[`/portaljs-add-dataset`](/docs/skills/add-dataset) registers *that a dataset exists*, this skill
 describes *what its data means*: it infers a Frictionless **Table Schema** (fields, types,
 constraints) from the data, adds the **Data Package** descriptor fields a catalog surfaces
 (title, licenses, sources, keywords), and writes them onto the dataset's entry in
@@ -23,7 +23,7 @@ accept the inferred schema as-is.
 
 ## When to use it
 
-Run it after [`/add-dataset`](/docs/skills/add-dataset), once a dataset is in the catalog
+Run it after [`/portaljs-add-dataset`](/docs/skills/add-dataset), once a dataset is in the catalog
 and you want its showcase to document the columns — their types, meaning, and constraints —
 and carry proper license/source metadata. Skip it for a quick throwaway preview; reach for
 it when the dataset is something other people will read or reuse.
@@ -67,7 +67,7 @@ Nothing is required — with no input it lists your datasets and asks which to d
 ## Example
 
 ```
-/define-schema population-2022
+/portaljs-define-schema population-2022
 ```
 
 The skill reads `public/data/population-2022.csv`, infers the fields (e.g.
@@ -79,8 +79,8 @@ describe.
 
 ## Where to go next
 
-- **[`/add-dataset`](/docs/skills/add-dataset)** — add another dataset to describe.
-- **[`/architect`](/docs/skills/architect)** — decide the metadata strategy (Frictionless,
+- **[`/portaljs-add-dataset`](/docs/skills/add-dataset)** — add another dataset to describe.
+- **[`/portaljs-architect`](/docs/skills/architect)** — decide the metadata strategy (Frictionless,
   extended, custom, or multi-profile + DCAT) before authoring.
 
 <DocsPagination prev="/docs/skills/migrate" next="/docs/skills/deploy" />

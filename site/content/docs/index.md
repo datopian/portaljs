@@ -19,8 +19,8 @@ PortalJS gives you two things:
 - **A lightweight, customizable template** — plain Next.js + Tailwind + React, no
   heavy component library to fight.
 - **A set of agentic skills** — Claude Code commands that do the assembly:
-  `/new-portal`, `/add-dataset`, `/add-chart`, `/add-map`, `/connect-ckan`,
-  `/deploy`.
+  `/portaljs-new-portal`, `/portaljs-add-dataset`, `/portaljs-add-chart`, `/portaljs-add-map`, `/portaljs-connect-ckan`,
+  `/portaljs-deploy`.
 
 You describe the portal you want; your AI assistant scaffolds it, loads your data,
 generates pages, and wires up a backend. Everything it writes is **plain, editable

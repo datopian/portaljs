@@ -9,7 +9,7 @@ Today's scaffold paths each have friction (issue #1556, po-pd1):
 
 - `npx tiged datopian/portaljs/examples/portaljs-catalog my-portal` — works, but `tiged`
   is obscure, no prompts, no token substitution, no git/install, no "what next".
-- `/new-portal` — great, but requires Claude Code (the AI path).
+- `/portaljs-new-portal` — great, but requires Claude Code (the AI path).
 - clone the repo — scaffolds *inside* the framework repo.
 
 `create-portaljs` is the DX developers expect (cf. `create-next-app`, `create-vite`): one
@@ -23,8 +23,8 @@ directory, substitute project tokens, set the namespace mode, optionally init gi
 deps, and print next steps.
 
 **Non-goals (handled elsewhere):** adding datasets/charts/maps/backends (the `/add-*` and
-`/connect-*` skills), the architecture interview (`/architect`), deployment (`/deploy`).
-This is *scaffold only* — the same artifact `/new-portal` produces, without the AI.
+`/connect-*` skills), the architecture interview (`/portaljs-architect`), deployment (`/portaljs-deploy`).
+This is *scaffold only* — the same artifact `/portaljs-new-portal` produces, without the AI.
 
 ## Usage
 
@@ -71,8 +71,8 @@ Any option provided on the CLI skips its prompt. With `--yes`, all prompts are s
 5. **Set namespace mode.** Rewrite `NAMESPACE_TYPE` in `lib/datasets.ts` to the chosen
    `theme` | `owner`.
 6. **Optional `git init`** (+ an initial commit) and **`npm install`**.
-7. **Print next steps:** `cd <dir>`, `npm run dev`, and pointers to `/add-dataset` /
-   `/add-resource` / `/connect-ckan` / `/deploy`.
+7. **Print next steps:** `cd <dir>`, `npm run dev`, and pointers to `/portaljs-add-dataset` /
+   `/portaljs-add-resource` / `/portaljs-connect-ckan` / `/portaljs-deploy`.
 
 ## Implementation notes
 

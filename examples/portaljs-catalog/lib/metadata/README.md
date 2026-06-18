@@ -161,6 +161,6 @@ schema. That asymmetry is intrinsic to DCAT.
 
 ## Out of scope here
 
-- `/define-schema` authoring skill (the interview/build layer) — see that skill.
+- `/portaljs-define-schema` authoring skill (the interview/build layer) — see that skill.
 - A full DCAT-AP profile (mandatory EU-portal classes/properties) — this is the
   pragmatic DCAT-3 core; extend `dcat.ts` for a specific national/domain profile.

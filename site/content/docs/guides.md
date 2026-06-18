@@ -12,7 +12,7 @@ editable code.
 
 If you're just starting, read [Get started](/docs) and the
 [Quickstart](/docs/quickstart) first — these guides assume you already have a portal
-scaffolded with [`/new-portal`](/docs/skills/new-portal).
+scaffolded with [`/portaljs-new-portal`](/docs/skills/new-portal).
 
 ## The guides
 

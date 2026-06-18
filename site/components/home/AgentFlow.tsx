@@ -21,19 +21,19 @@ type Step = CmdStep | OutStep | OkStep | PreviewStep
 // Mirrors the README example brief. More intermediate `out` lines = more for
 // the visitor to read between commands.
 const SEQ: Step[] = [
-  { t: 'cmd', text: '/new-portal "Auckland Council open data portal"' },
+  { t: 'cmd', text: '/portaljs-new-portal "Auckland Council open data portal"' },
   { t: 'out', text: '◐ reading brief · planning structure' },
   { t: 'out', text: '◐ scaffolding Next.js app · Tailwind + Frictionless' },
   { t: 'ok', text: '✓ portal ready · **14 files** generated' },
-  { t: 'cmd', text: '/add-dataset ./data/air-quality.csv' },
+  { t: 'cmd', text: '/portaljs-add-dataset ./data/air-quality.csv' },
   { t: 'out', text: '◐ reading air-quality.csv · 8,742 rows' },
   { t: 'out', text: '◐ profiling columns · inferring types' },
   { t: 'ok', text: '✓ added **Air quality** · 6 fields · table + chart' },
-  { t: 'cmd', text: '/add-dataset https://example.com/parks.geojson' },
+  { t: 'cmd', text: '/portaljs-add-dataset https://example.com/parks.geojson' },
   { t: 'out', text: '◐ fetching GeoJSON · 312 features' },
   { t: 'out', text: '◐ rendering interactive map' },
   { t: 'ok', text: '✓ added **Parks & reserves** · GeoJSON · mapped' },
-  { t: 'cmd', text: '/deploy' },
+  { t: 'cmd', text: '/portaljs-deploy' },
   { t: 'out', text: '◐ building static catalog · optimizing' },
   { t: 'out', text: '◐ uploading to Vercel' },
   { t: 'ok', text: '✓ live → **auckland.portaljs.app**' },

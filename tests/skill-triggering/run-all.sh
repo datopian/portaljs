@@ -8,16 +8,16 @@ PROMPTS="$SCRIPT_DIR/prompts"
 
 # One entry per shipped skill (.claude/commands/*.md).
 SKILLS=(
-  architect
-  new-portal
-  add-dataset
-  add-resource
-  add-chart
-  add-map
-  connect-ckan
-  define-schema
-  deploy
-  check-data-quality
+  portaljs-architect
+  portaljs-new-portal
+  portaljs-add-dataset
+  portaljs-add-resource
+  portaljs-add-chart
+  portaljs-add-map
+  portaljs-connect-ckan
+  portaljs-define-schema
+  portaljs-deploy
+  portaljs-check-data-quality
 )
 
 echo "=== PortalJS skill-triggering tests ==="

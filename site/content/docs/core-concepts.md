@@ -30,7 +30,7 @@ actually published) so visitors who don't know what to type still get moving.
 - **Scales to:** featured/most-popular datasets, themes, recent additions, stats.
 
 **In PortalJS:** `pages/index.tsx` at `/` — a search input whose submit routes to
-`/search`, plus suggested-query chips. Built by **`/new-portal`**.
+`/search`, plus suggested-query chips. Built by **`/portaljs-new-portal`**.
 
 ## 2. Catalog — search & discovery
 
@@ -50,7 +50,7 @@ from a sophisticated one:
 
 **In PortalJS:** `pages/search.tsx` at `/search` — client-side full-text search over
 the static `datasets.json` index, structured so a backend (e.g. CKAN) can replace
-the index later via **`/connect-ckan`** without changing the frontend.
+the index later via **`/portaljs-connect-ckan`** without changing the frontend.
 
 ## 3. Showcase — the dataset page
 
@@ -67,8 +67,8 @@ it. A good showcase covers:
 
 **In PortalJS:** `pages/[owner]/[slug].tsx`, served at **`/@<namespace>/<slug>`** —
 metadata block, a `Table` data preview, a Download & API section, and a **Views**
-slot. Built incrementally: **`/add-dataset`** creates the dataset, **`/add-chart`**
-and **`/add-map`** add views.
+slot. Built incrementally: **`/portaljs-add-dataset`** creates the dataset, **`/portaljs-add-chart`**
+and **`/portaljs-add-map`** add views.
 
 ### Why dataset URLs start with `@`
 
@@ -87,9 +87,9 @@ Using exactly one keeps every `(@namespace, slug)` pair unique.
 
 | Surface | Route | Skill(s) that build it |
 |---------|-------|------------------------|
-| Home | `/` | `/new-portal` |
-| Catalog | `/search` | `/new-portal` (static) · `/connect-ckan` (backend) |
-| Showcase | `/@<namespace>/<slug>` | `/add-dataset`, then `/add-chart` · `/add-map` |
+| Home | `/` | `/portaljs-new-portal` |
+| Catalog | `/search` | `/portaljs-new-portal` (static) · `/portaljs-connect-ckan` (backend) |
+| Showcase | `/@<namespace>/<slug>` | `/portaljs-add-dataset`, then `/portaljs-add-chart` · `/portaljs-add-map` |
 
 Start with all three as static surfaces, then grow each one independently — a richer
 home, a search backend behind the catalog, more views on each showcase.
@@ -105,7 +105,7 @@ These three surfaces are delivered the PortalJS way:
   [Manual setup](/docs/manual-setup).
 - **Decoupled by default.** The frontend talks to the backend over an API — CKAN,
   DKAN, OpenMetadata, Purview, DataHub, GitHub, Frictionless, plain JSON, or custom.
-  Start static, point at a real catalog later with [`/connect-ckan`](/ckan).
+  Start static, point at a real catalog later with [`/portaljs-connect-ckan`](/ckan).
 - **Bring your own stack.** Adopt the whole template, or lift the skills and the
   three-surface model into an app you already have.
 

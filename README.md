@@ -45,13 +45,13 @@ curl -fsSL https://raw.githubusercontent.com/datopian/portaljs/main/scripts/inst
 Then, in a Claude Code session from any directory:
 
 ```text
-/architect    not sure what stack you need? start here
-/new-portal   "Auckland Council open data portal"
-/add-dataset  ./data/air-quality.csv
+/portaljs-architect    not sure what stack you need? start here
+/portaljs-new-portal   "Auckland Council open data portal"
+/portaljs-add-dataset  ./data/air-quality.csv
 ```
 
-`/new-portal` scaffolds the three surfaces; `/add-dataset` (or `/add-resource`) loads data;
-`/connect-ckan` points it at a CKAN backend; `/deploy` ships it. ([All skills + install →](.claude/INSTALL.md))
+`/portaljs-new-portal` scaffolds the three surfaces; `/portaljs-add-dataset` (or `/portaljs-add-resource`) loads data;
+`/portaljs-connect-ckan` points it at a CKAN backend; `/portaljs-deploy` ships it. ([All skills + install →](.claude/INSTALL.md))
 
 **Prefer the bare template** — plain Next.js, no AI, no lock-in:
 
@@ -95,7 +95,7 @@ PortalJS community.
         │
         ▼
 ╭─ 🤖  AGENTIC SKILLS ──────────────────────────────────  decide + build
-│   /architect · /new-portal · /add-dataset · /add-chart · /add-map …
+│   /portaljs-architect · /portaljs-new-portal · /portaljs-add-dataset · /portaljs-add-chart · /portaljs-add-map …
 ╰─  generates plain, editable Next.js code — no lock-in
         │
         ▼
@@ -128,7 +128,7 @@ files today, a CKAN or lakehouse backend tomorrow — can change without touchin
 
 See [`ROADMAP.md`](ROADMAP.md) for the full model and the
 [architecture decision framework](https://www.portaljs.com/docs/architecture/decision-framework)
-for how `/architect` turns your needs into a stack.
+for how `/portaljs-architect` turns your needs into a stack.
 
 ## Build a portal with your AI assistant
 
@@ -153,15 +153,15 @@ running straight from a clone of this repo).
 If you're not sure how to set up your portal, start with the advisor, then build:
 
 ```text
-/architect    we have ~200 public CSVs, updated quarterly, and must publish DCAT-AP
-/new-portal   "Auckland Council open data portal"
-/add-dataset  ./data/air-quality.csv
-/add-dataset  https://example.com/parks.geojson
+/portaljs-architect    we have ~200 public CSVs, updated quarterly, and must publish DCAT-AP
+/portaljs-new-portal   "Auckland Council open data portal"
+/portaljs-add-dataset  ./data/air-quality.csv
+/portaljs-add-dataset  https://example.com/parks.geojson
 ```
 
 The skills are **interactive** — if your brief is thin, they interview you in short rounds
-rather than erroring. `/architect` recommends a stack and hands off; `/new-portal`
-scaffolds the three surfaces; `/add-dataset` appends to the `datasets.json` manifest and
+rather than erroring. `/portaljs-architect` recommends a stack and hands off; `/portaljs-new-portal`
+scaffolds the three surfaces; `/portaljs-add-dataset` appends to the `datasets.json` manifest and
 the showcase renders automatically at `/@<namespace>/<slug>`. Run `npm run dev` and you
 have a portal.
 
@@ -178,14 +178,14 @@ npm create portaljs@latest my-portal
 
 | Skill | What it does |
 |-------|--------------|
-| [`/architect`](.claude/commands/architect.md) | Recommend an architecture (storage/compute/catalog/access/hosting/metadata) from your needs, then hand off — the advisory entry point |
-| [`/new-portal`](.claude/commands/new-portal.md) | Scaffold a new portal (Home + Catalog + Showcase) from a brief |
-| [`/add-dataset`](.claude/commands/add-dataset.md) | Add a CSV, TSV, JSON, or GeoJSON dataset — appends to the manifest; its showcase renders automatically |
-| [`/add-chart`](.claude/commands/add-chart.md) | Add a chart to a dataset's showcase Views section |
-| [`/add-map`](.claude/commands/add-map.md) | Render GeoJSON on an interactive map in the showcase |
-| [`/connect-ckan`](.claude/commands/connect-ckan.md) | Feed the catalog and showcases from a CKAN backend |
-| [`/deploy`](.claude/commands/deploy.md) | Deploy to Cloudflare Pages, Vercel, or static hosting |
-| [`/check-data-quality`](.claude/commands/check-data-quality.md) | Audit a dataset for quality issues (schema, nulls, types) |
+| [`/portaljs-architect`](.claude/commands/portaljs-architect.md) | Recommend an architecture (storage/compute/catalog/access/hosting/metadata) from your needs, then hand off — the advisory entry point |
+| [`/portaljs-new-portal`](.claude/commands/portaljs-new-portal.md) | Scaffold a new portal (Home + Catalog + Showcase) from a brief |
+| [`/portaljs-add-dataset`](.claude/commands/portaljs-add-dataset.md) | Add a CSV, TSV, JSON, or GeoJSON dataset — appends to the manifest; its showcase renders automatically |
+| [`/portaljs-add-chart`](.claude/commands/portaljs-add-chart.md) | Add a chart to a dataset's showcase Views section |
+| [`/portaljs-add-map`](.claude/commands/portaljs-add-map.md) | Render GeoJSON on an interactive map in the showcase |
+| [`/portaljs-connect-ckan`](.claude/commands/portaljs-connect-ckan.md) | Feed the catalog and showcases from a CKAN backend |
+| [`/portaljs-deploy`](.claude/commands/portaljs-deploy.md) | Deploy to Cloudflare Pages, Vercel, or static hosting |
+| [`/portaljs-check-data-quality`](.claude/commands/portaljs-check-data-quality.md) | Audit a dataset for quality issues (schema, nulls, types) |
 
 More skill families — metadata schemas (Frictionless/DCAT), more backends (OpenMetadata,
 git-LFS+R2), a DuckDB data layer, and access control — are on the [roadmap](ROADMAP.md).
@@ -210,7 +210,7 @@ the three surfaces and the `DataProvider` seam live — read it before building.
 ## What makes it different
 
 - 🌱 **Open source, MIT, no lock-in** — every skill emits plain Next.js you can fork and own.
-- 🧭 **Advisory, not just generative** — `/architect` helps you _decide_ the infrastructure, not only scaffold a UI.
+- 🧭 **Advisory, not just generative** — `/portaljs-architect` helps you _decide_ the infrastructure, not only scaffold a UI.
 - 🦆 **Open lakehouse by default** — git + R2 + Parquet + DuckLake + DuckDB over a heavy warehouse, with DuckDB as the query engine. A datastore/warehouse stays a supported choice.
 - ☁️ **Cloudflare-first, portable** — R2 / Workers / D1 / Pages as the default substrate, but object storage stays S3-compatible.
 - 🧩 **Decoupled, any backend** — one `DataProvider` contract in front of [CKAN](https://ckan.org/), [DKAN](https://getdkan.org/), [OpenMetadata](https://open-metadata.org/), [DataHub](https://datahubproject.io/), GitHub, [Frictionless](https://frictionlessdata.io/), plain files — or your own.

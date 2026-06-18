@@ -185,7 +185,7 @@ export default function DatasetPage({ dataset }: { dataset: Dataset }) {
         )}
 
         {/* Views placeholder — charts and maps are added here by the
-            /add-chart and /add-map skills. */}
+            /portaljs-add-chart and /portaljs-add-map skills. */}
         <section className="mt-10 border-t border-gray-200 pt-6">
           <h2 className="text-lg font-semibold text-gray-900">Views</h2>
           <p className="mt-2 text-sm text-gray-400">

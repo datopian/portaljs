@@ -12,22 +12,24 @@ const TEXT_EXT = new Set(['.ts', '.tsx', '.js', '.mjs', '.json', '.css', '.md', 
 
 // Where the agentic skills live in the repo, and the OSS allowlist we bundle into
 // the scaffold's project-local .claude/commands/ (so `claude` in the new portal
-// sees /add-dataset, /connect-ckan, … with no separate install step). Kept in sync
+// sees /portaljs-add-dataset, /portaljs-connect-ckan, … with no separate install step). Kept in sync
 // with .claude-plugin/plugin.json and scripts/install-portaljs-skills.sh.
 const SKILLS_SRC = '.claude/commands'
+// Uniform `portaljs-` prefix across the whole suite. Fresh scaffolds bundle only the
+// canonical prefixed names — the bare alias stubs (kept one release for existing installs)
+// are intentionally pruned so new projects start clean.
 const SKILLS = [
-  'architect',
-  'new-portal',
-  'add-dataset',
-  'add-resource',
-  'add-chart',
-  'add-map',
-  'connect-ckan',
-  'migrate',
-  'define-schema',
-  'login',
-  'deploy',
-  'check-data-quality',
+  'portaljs-architect',
+  'portaljs-new-portal',
+  'portaljs-add-dataset',
+  'portaljs-add-resource',
+  'portaljs-add-chart',
+  'portaljs-add-map',
+  'portaljs-connect-ckan',
+  'portaljs-migrate',
+  'portaljs-define-schema',
+  'portaljs-deploy',
+  'portaljs-check-data-quality',
 ]
 
 function parseArgs(argv) {
@@ -353,9 +355,9 @@ Next:
 
 Then run \`claude\` in the project — the PortalJS skills are bundled in
 .claude/commands/, so these work right away:
-  /add-dataset   ./data/your-file.csv     add data (or /add-resource for more files)
-  /connect-ckan  <ckan-url>               point at a CKAN backend instead
-  /deploy                                 publish (Cloudflare Pages recommended)
+  /portaljs-add-dataset   ./data/your-file.csv   add data (or /portaljs-add-resource for more files)
+  /portaljs-connect-ckan  <ckan-url>             point at a CKAN backend instead
+  /portaljs-deploy                               publish (Cloudflare Pages recommended)
 `)
 }
 

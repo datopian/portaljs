@@ -1,28 +1,28 @@
 ---
 metatitle: Add Tabular Data to PortalJS – CSV, TSV, JSON Tables
-metadescription: Add a CSV, TSV, or JSON dataset to your PortalJS portal and render it as a sortable, paginated table — with /add-dataset, or by hand with the Table component.
+metadescription: Add a CSV, TSV, or JSON dataset to your PortalJS portal and render it as a sortable, paginated table — with /portaljs-add-dataset, or by hand with the Table component.
 title: Add tabular data
-description: Add a CSV, TSV, or JSON dataset and render it as a sortable table — with /add-dataset, or by hand.
+description: Add a CSV, TSV, or JSON dataset and render it as a sortable table — with /portaljs-add-dataset, or by hand.
 ---
 
 **Goal:** add a CSV, TSV, or JSON file to your portal and render it as a table in its
 dataset showcase, discoverable from the `/search` catalog.
 
 > [!info] Before you start
-> You need a portal scaffolded with [`/new-portal`](/docs/skills/new-portal). Tabular
+> You need a portal scaffolded with [`/portaljs-new-portal`](/docs/skills/new-portal). Tabular
 > formats supported: **CSV, TSV, and JSON (array)**. For GeoJSON, see
 > [Render a map](/docs/guides/render-a-map).
 
-## The AI path — `/add-dataset`
+## The AI path — `/portaljs-add-dataset`
 
-Point [`/add-dataset`](/docs/skills/add-dataset) at a local file or a public URL:
-
-```
-/add-dataset ./data/population.csv — Auckland population by area
-```
+Point [`/portaljs-add-dataset`](/docs/skills/add-dataset) at a local file or a public URL:
 
 ```
-/add-dataset https://example.com/air-quality.csv — Air quality monitoring
+/portaljs-add-dataset ./data/population.csv — Auckland population by area
+```
+
+```
+/portaljs-add-dataset https://example.com/air-quality.csv — Air quality monitoring
 ```
 
 It copies the data into `/public/data/` and appends an entry to `datasets.json`

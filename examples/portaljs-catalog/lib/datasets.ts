@@ -20,7 +20,7 @@ export const NAMESPACE_TYPE: 'theme' | 'owner' = 'theme'
 //   'duckdb' — load the file into in-browser DuckDB-Wasm and expose a SQL query
 //              view (filter/aggregate/join over CSV/Parquet, no server).
 // This is the "compute" slot on the storage+compute spectrum (see ROADMAP.md);
-// `/architect` flips it to 'duckdb' when the portal needs querying, not just
+// `/portaljs-architect` flips it to 'duckdb' when the portal needs querying, not just
 // preview. DuckDB only loads in the browser and only when a showcase renders.
 export const DATA_QUERY: 'flat' | 'duckdb' = 'flat'
 
@@ -53,7 +53,7 @@ export function getResources(d: Dataset): Resource[] {
 
 // Public URL of a resource's raw file. A relative `path` is served statically from
 // /public/data; an absolute path is returned as-is, so a resource can point at a remote
-// file (e.g. a CKAN/DCAT download URL harvested by /migrate) or a site-root path without
+// file (e.g. a CKAN/DCAT download URL harvested by /portaljs-migrate) or a site-root path without
 // copying bytes into the repo.
 export function resourceUrl(r: Resource): string {
   if (/^(https?:)?\/\//.test(r.path) || r.path.startsWith('/')) return r.path

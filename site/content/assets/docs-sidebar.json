@@ -37,43 +37,43 @@
         "href": "/docs/skills"
       },
       {
-        "title": "/architect",
+        "title": "/portaljs-architect",
         "href": "/docs/skills/architect"
       },
       {
-        "title": "/new-portal",
+        "title": "/portaljs-new-portal",
         "href": "/docs/skills/new-portal"
       },
       {
-        "title": "/add-dataset",
+        "title": "/portaljs-add-dataset",
         "href": "/docs/skills/add-dataset"
       },
       {
-        "title": "/add-resource",
+        "title": "/portaljs-add-resource",
         "href": "/docs/skills/add-resource"
       },
       {
-        "title": "/add-chart",
+        "title": "/portaljs-add-chart",
         "href": "/docs/skills/add-chart"
       },
       {
-        "title": "/add-map",
+        "title": "/portaljs-add-map",
         "href": "/docs/skills/add-map"
       },
       {
-        "title": "/connect-ckan",
+        "title": "/portaljs-connect-ckan",
         "href": "/docs/skills/connect-ckan"
       },
       {
-        "title": "/migrate",
+        "title": "/portaljs-migrate",
         "href": "/docs/skills/migrate"
       },
       {
-        "title": "/define-schema",
+        "title": "/portaljs-define-schema",
         "href": "/docs/skills/define-schema"
       },
       {
-        "title": "/deploy",
+        "title": "/portaljs-deploy",
         "href": "/docs/skills/deploy"
       }
     ]

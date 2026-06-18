@@ -84,7 +84,7 @@ Everything the skills do, you can do by hand:
 - **Maps** — `npm install react-leaflet leaflet` and render a GeoJSON file as a view
   in the showcase.
 - **CKAN** — build a catalog against the CKAN REST API with a tiny server-side `fetch`
-  client (no dependency); `/connect-ckan` generates it for you. See
+  client (no dependency); `/portaljs-connect-ckan` generates it for you. See
   [CKAN integration](/ckan).
 
 For the conventions these follow — import paths, data loading, page structure —

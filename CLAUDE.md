@@ -7,7 +7,7 @@ PortalJS is a Next.js framework for building data portals and catalogs. This fil
 Every data portal is built from three surfaces. The template and routes map directly onto them; reason in these terms:
 
 1. **Home** (`/`, `pages/index.tsx`) — what the portal is + a search box that routes to the catalog.
-2. **Catalog** (`/search`, `pages/search.tsx`) — find/browse datasets. Static = full-text filter over `datasets.json`; scales to a search backend (CKAN/Solr) via `/connect-ckan`.
+2. **Catalog** (`/search`, `pages/search.tsx`) — find/browse datasets. Static = full-text filter over `datasets.json`; scales to a search backend (CKAN/Solr) via `/portaljs-connect-ckan`.
 3. **Showcase** (`/@<namespace>/<slug>`, `pages/[owner]/[slug].tsx`) — one dataset: metadata, a `Table` preview, download/API, and a Views slot for charts/maps.
 
 Datasets are `@`-namespaced so they never collide with content pages. See `docs/core-concepts`.
@@ -209,14 +209,14 @@ Add `npm install react-leaflet leaflet @types/leaflet` and import directly. No m
 ## Skills
 
 See `.claude/commands/` for available slash commands:
-- `/architect` — recommend a data architecture (storage/compute/catalog/access/hosting/metadata) from your needs, then hand off to the build skills (the advisory entry point)
-- `/new-portal` — scaffold a new PortalJS data portal from a brief
-- `/add-dataset` — add a dataset (CSV/TSV/JSON/GeoJSON) to an existing portal
-- `/add-chart` — add a chart (line/bar/area/pie/scatter) to a dataset page via recharts
-- `/add-map` — render a GeoJSON dataset on an interactive Leaflet map
-- `/deploy` — one-shot deploy to Vercel or static hosting
-- `/connect-ckan` — wire a portal to a CKAN backend over its API (decoupled / any backend)
-- `/check-data-quality` — audit a dataset for quality issues (schema, nulls, types)
+- `/portaljs-architect` — recommend a data architecture (storage/compute/catalog/access/hosting/metadata) from your needs, then hand off to the build skills (the advisory entry point)
+- `/portaljs-new-portal` — scaffold a new PortalJS data portal from a brief
+- `/portaljs-add-dataset` — add a dataset (CSV/TSV/JSON/GeoJSON) to an existing portal
+- `/portaljs-add-chart` — add a chart (line/bar/area/pie/scatter) to a dataset page via recharts
+- `/portaljs-add-map` — render a GeoJSON dataset on an interactive Leaflet map
+- `/portaljs-deploy` — one-shot deploy to Vercel or static hosting
+- `/portaljs-connect-ckan` — wire a portal to a CKAN backend over its API (decoupled / any backend)
+- `/portaljs-check-data-quality` — audit a dataset for quality issues (schema, nulls, types)
 
 The skills interview you for missing input (rounds of questions) rather than erroring, and build around the three surfaces. These skills run from any project, not just a clone of this repo — see
 [`.claude/INSTALL.md`](.claude/INSTALL.md) for the three install paths (run-from-clone,

@@ -1,11 +1,11 @@
 ---
-metatitle: /add-chart – Add a Line, Bar, Area, Pie, or Scatter Chart to PortalJS
-metadescription: The /add-chart skill installs recharts, writes a reusable Chart component, and adds a chart view to a dataset's showcase — reading the same data the table already uses.
-title: /add-chart
+metatitle: /portaljs-add-chart – Add a Line, Bar, Area, Pie, or Scatter Chart to PortalJS
+metadescription: The /portaljs-add-chart skill installs recharts, writes a reusable Chart component, and adds a chart view to a dataset's showcase — reading the same data the table already uses.
+title: /portaljs-add-chart
 description: Add a line, bar, area, pie, or scatter chart as a view on a dataset's showcase, reading the same data the table already uses.
 ---
 
-`/add-chart` adds a chart view to an existing dataset's showcase. It installs
+`/portaljs-add-chart` adds a chart view to an existing dataset's showcase. It installs
 `recharts`, writes a reusable client-side `Chart` component into the portal's
 `components/`, and adds a `<Chart />` into the **Views** section of the showcase
 route (`pages/[owner]/[slug].tsx`), keyed to the chosen `(namespace, slug)`. The
@@ -14,7 +14,7 @@ data is duplicated.
 
 ## When to use it
 
-Run it after [`/add-dataset`](/docs/skills/add-dataset) has added the dataset
+Run it after [`/portaljs-add-dataset`](/docs/skills/add-dataset) has added the dataset
 you want to chart.
 
 ## Inputs
@@ -36,13 +36,13 @@ charts.
 ## Example
 
 ```
-/add-chart country-codes --x year --y population --type line
+/portaljs-add-chart country-codes --x year --y population --type line
 ```
 
 In natural language:
 
 ```
-/add-chart the population dataset — plot population over year as a line chart
+/portaljs-add-chart the population dataset — plot population over year as a line chart
 ```
 
 ## What it produces
@@ -72,7 +72,7 @@ finishes:
 
 ## Where to go next
 
-- **[`/add-map`](/docs/skills/add-map)** — render geographic data on a map instead.
-- **[`/deploy`](/docs/skills/deploy)** — publish the portal once it looks right.
+- **[`/portaljs-add-map`](/docs/skills/add-map)** — render geographic data on a map instead.
+- **[`/portaljs-deploy`](/docs/skills/deploy)** — publish the portal once it looks right.
 
 <DocsPagination prev="/docs/skills/add-resource" next="/docs/skills/add-map" />

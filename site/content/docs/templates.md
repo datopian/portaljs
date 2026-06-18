@@ -8,7 +8,7 @@ description: The default catalog vs the minimal single-page variant — a manife
 PortalJS ships two starting points. Both are real Next.js projects with the same
 lightweight `components/Table.tsx`, Tailwind setup, and Next 14 config — they differ
 in whether they include the catalog and per-dataset showcase pages.
-[`/new-portal`](/docs/skills/new-portal) picks the right one for your brief; you can
+[`/portaljs-new-portal`](/docs/skills/new-portal) picks the right one for your brief; you can
 also clone either by hand. For the surfaces these build — Home, Catalog, Showcase —
 see [Core concepts](/docs/core-concepts).
 
@@ -39,7 +39,7 @@ Each entry carries a `namespace`. A portal uses **one** namespace mode for all
 datasets — `theme` (group by subject) or `owner` (group by publisher) — set via
 `NAMESPACE_TYPE` in `lib/datasets.ts`. It only changes the showcase's metadata label;
 the URL is always `/@<namespace>/<slug>`. See [Core concepts](/docs/core-concepts) for
-the rationale. [`/add-dataset`](/docs/skills/add-dataset) appends a manifest entry
+the rationale. [`/portaljs-add-dataset`](/docs/skills/add-dataset) appends a manifest entry
 against this template.
 
 Scaffold it with the CLI (recommended):
@@ -70,7 +70,7 @@ npx tiged datopian/portaljs/examples/portaljs-template my-portal
 - **Any portal with a catalog of datasets** → the **default catalog**.
 - **A single landing page you'll grow by hand** → the **minimal variant**.
 - **A live backend (CKAN, etc.)** → start from the catalog, then run
-  [`/connect-ckan`](/docs/guides/connect-a-ckan-backend) — it rewrites the showcase
+  [`/portaljs-connect-ckan`](/docs/guides/connect-a-ckan-backend) — it rewrites the showcase
   route to fetch from the backend.
 
 The catalog static-exports cleanly (it pre-renders every manifest entry via

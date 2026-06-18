@@ -1,11 +1,11 @@
 ---
-metatitle: /connect-ckan – Wire a PortalJS Portal to a CKAN Backend over its API
-metadescription: The /connect-ckan skill generates a tiny server-side fetch client (no runtime dependency), feeds the catalog at /search and dataset showcases at /@<namespace>/<slug> from CKAN as plain editable code, and verifies the build — the decoupled, any-backend path.
-title: /connect-ckan
+metatitle: /portaljs-connect-ckan – Wire a PortalJS Portal to a CKAN Backend over its API
+metadescription: The /portaljs-connect-ckan skill generates a tiny server-side fetch client (no runtime dependency), feeds the catalog at /search and dataset showcases at /@<namespace>/<slug> from CKAN as plain editable code, and verifies the build — the decoupled, any-backend path.
+title: /portaljs-connect-ckan
 description: Wire a portal to a CKAN backend over its API instead of static files — the decoupled, any-backend path.
 ---
 
-`/connect-ckan` connects an existing PortalJS portal to a live [CKAN](/ckan)
+`/portaljs-connect-ckan` connects an existing PortalJS portal to a live [CKAN](/ckan)
 backend. The portal stops reading the static `datasets.json` manifest and
 `/public/data/` files, and instead feeds both surfaces — the catalog at `/search`
 and the dataset showcases at `/@<namespace>/<slug>` — straight from a CKAN
@@ -35,13 +35,13 @@ before generating code.
 ## Example
 
 ```
-/connect-ckan https://demo.dev.datopian.com
+/portaljs-connect-ckan https://demo.dev.datopian.com
 ```
 
 Restricted to specific organizations:
 
 ```
-/connect-ckan https://demo.dev.datopian.com --org transport,environment
+/portaljs-connect-ckan https://demo.dev.datopian.com --org transport,environment
 ```
 
 ## What it produces
@@ -72,6 +72,6 @@ It verifies the build before reporting success. When it finishes:
 
 - **[Core concepts](/docs/core-concepts)** — why the frontend is decoupled from the
   backend.
-- **[`/deploy`](/docs/skills/deploy)** — publish the connected portal.
+- **[`/portaljs-deploy`](/docs/skills/deploy)** — publish the connected portal.
 
 <DocsPagination prev="/docs/skills/add-map" next="/docs/skills/migrate" />

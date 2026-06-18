@@ -14,7 +14,7 @@ in the repo.
 ## Where skills live
 
 - `.claude/commands/` — open-source skills (no Datopian keys required). The filename
-  becomes the slash command, so `add-dataset.md` → `/add-dataset`.
+  becomes the slash command, so `add-dataset.md` → `/portaljs-add-dataset`.
 - `.claude/datopian/` — Datopian-internal skills that need API access. These carry a
   header marking them internal and aren't for general OSS use.
 
@@ -81,7 +81,7 @@ In v1, skills are user-invoked and don't call each other programmatically. If a 
 output is the natural input to another, point there at the end:
 
 ```
-Done. Next: run /add-dataset to load a CSV into this portal.
+Done. Next: run /portaljs-add-dataset to load a CSV into this portal.
 ```
 
 ## Definition of done
@@ -93,7 +93,7 @@ with a "next step" pointer if another skill naturally follows.
 
 > [!note] Editing the template vs. editing the skill
 > When you change *page layouts, styles, or component usage*, edit the
-> [template](/docs/templates) files directly — `/new-portal` picks them up
+> [template](/docs/templates) files directly — `/portaljs-new-portal` picks them up
 > automatically. Only edit a skill file when you change *how* the skill works (its
 > steps, error handling, or argument parsing).
 

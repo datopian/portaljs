@@ -1,11 +1,11 @@
 ---
-metatitle: /add-dataset – Add a CSV, TSV, JSON, or GeoJSON Dataset to PortalJS
-metadescription: The /add-dataset skill copies your data into the portal and appends an entry to datasets.json, so the dataset's showcase renders automatically at /@<namespace>/<slug> — all as plain, editable code.
-title: /add-dataset
+metatitle: /portaljs-add-dataset – Add a CSV, TSV, JSON, or GeoJSON Dataset to PortalJS
+metadescription: The /portaljs-add-dataset skill copies your data into the portal and appends an entry to datasets.json, so the dataset's showcase renders automatically at /@<namespace>/<slug> — all as plain, editable code.
+title: /portaljs-add-dataset
 description: Add a CSV, TSV, JSON, or GeoJSON dataset — copies the data in and appends a datasets.json entry, so its showcase renders automatically.
 ---
 
-`/add-dataset` adds a dataset to an existing PortalJS portal. It copies the data
+`/portaljs-add-dataset` adds a dataset to an existing PortalJS portal. It copies the data
 into `/public/data/` and appends an entry to the `datasets.json` manifest. The
 showcase page then renders automatically at `/@<namespace>/<slug>` and the dataset
 appears in the `/search` catalog — both are driven by the manifest, so no new page
@@ -13,9 +13,9 @@ file is created.
 
 ## When to use it
 
-Run it after [`/new-portal`](/docs/skills/new-portal), once per dataset you want to
+Run it after [`/portaljs-new-portal`](/docs/skills/new-portal), once per dataset you want to
 publish. For geographic data you'd rather show on a map, use
-[`/add-map`](/docs/skills/add-map) instead (or in addition).
+[`/portaljs-add-map`](/docs/skills/add-map) instead (or in addition).
 
 ## Inputs
 
@@ -33,19 +33,19 @@ rejected with a clear message to convert it first.
 ## Example
 
 ```
-/add-dataset ./data/air-quality.csv
+/portaljs-add-dataset ./data/air-quality.csv
 ```
 
 With a name and description:
 
 ```
-/add-dataset ./data/population.csv — Auckland population by area
+/portaljs-add-dataset ./data/population.csv — Auckland population by area
 ```
 
 From a public URL:
 
 ```
-/add-dataset https://example.com/air-quality.csv — Air quality monitoring
+/portaljs-add-dataset https://example.com/air-quality.csv — Air quality monitoring
 ```
 
 ## What it produces
@@ -70,7 +70,7 @@ When it finishes:
 
 ## Where to go next
 
-- **[`/add-chart`](/docs/skills/add-chart)** — add a chart to the dataset's showcase.
-- **[`/add-map`](/docs/skills/add-map)** — show geographic data on a map.
+- **[`/portaljs-add-chart`](/docs/skills/add-chart)** — add a chart to the dataset's showcase.
+- **[`/portaljs-add-map`](/docs/skills/add-map)** — show geographic data on a map.
 
 <DocsPagination prev="/docs/skills/new-portal" next="/docs/skills/add-resource" />

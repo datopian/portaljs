@@ -1,9 +1,9 @@
 const skills = [
-  { cmd: '/new-portal', desc: 'Scaffold a portal from a brief' },
-  { cmd: '/add-dataset', desc: 'Add a CSV, TSV, JSON, or GeoJSON dataset' },
-  { cmd: '/add-chart', desc: 'Drop in a line, bar, area, pie, or scatter chart' },
-  { cmd: '/add-map', desc: 'Render GeoJSON on an interactive map' },
-  { cmd: '/deploy', desc: 'One-shot deploy to Vercel or static hosting' },
+  { cmd: '/portaljs-new-portal', desc: 'Scaffold a portal from a brief' },
+  { cmd: '/portaljs-add-dataset', desc: 'Add a CSV, TSV, JSON, or GeoJSON dataset' },
+  { cmd: '/portaljs-add-chart', desc: 'Drop in a line, bar, area, pie, or scatter chart' },
+  { cmd: '/portaljs-add-map', desc: 'Render GeoJSON on an interactive map' },
+  { cmd: '/portaljs-deploy', desc: 'One-shot deploy to Vercel or static hosting' },
 ]
 
 export default function Skills() {

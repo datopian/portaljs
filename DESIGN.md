@@ -29,7 +29,7 @@ What the page must land, in order of priority:
 - **Subhead:** Describe the portal you want — your AI assistant scaffolds it and loads your data. Open source, no lock-in.
 - **Primary CTA:** "Get started" → docs quickstart (self-host the OSS framework).
 - **Secondary CTA:** "PortalJS Cloud" → the managed option. Followed by a caption clarifying the two paths (self-host vs managed). OSS stays the dominant, filled CTA; managed is the outline/secondary.
-- **Visual:** terminal-style animation of the agent flow (`/new-portal …` → `/add-dataset …` → live portal). This is the hero moment — show, don't tell.
+- **Visual:** terminal-style animation of the agent flow (`/portaljs-new-portal …` → `/portaljs-add-dataset …` → live portal). This is the hero moment — show, don't tell.
 
 ### 2. The agent workflow (how it works)
 - Three steps, left to right: **Describe → Scaffold → Publish.**
@@ -114,7 +114,7 @@ Page-level application of the [Brand foundations](#brand-foundations) above.
 ## Decisions
 
 - **Headline:** "The AI-native framework for data portals."
-- **Hero:** custom animated agent-flow terminal (typed `/new-portal → /add-dataset → /deploy`, then a live preview card) — not a recorded clip.
+- **Hero:** custom animated agent-flow terminal (typed `/portaljs-new-portal → /portaljs-add-dataset → /portaljs-deploy`, then a live preview card) — not a recorded clip.
 - **Showcase:** Malmö, Ann Arbor, Transport Data Commons, Open Data Nepal.
 
 ## Open questions

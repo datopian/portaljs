@@ -13,13 +13,13 @@ frontend. See [Core concepts](/docs/core-concepts) for the model.
 
 > [!info] Start static, connect later
 > The default — no backend — reads CSV/JSON from `/public/data/`. When you're ready,
-> wire a real catalog with a skill like [`/connect-ckan`](/docs/guides/connect-a-ckan-backend).
+> wire a real catalog with a skill like [`/portaljs-connect-ckan`](/docs/guides/connect-a-ckan-backend).
 > The pattern (fetch server-side in `getStaticProps`/`getStaticPaths`, pass plain props
 > to components) is the same for any backend.
 
 ## CKAN
 
-The first-class, skill-supported path. [`/connect-ckan`](/docs/guides/connect-a-ckan-backend)
+The first-class, skill-supported path. [`/portaljs-connect-ckan`](/docs/guides/connect-a-ckan-backend)
 generates a tiny server-side `fetch` client (no dependency), lists datasets from
 `package_search`, and renders each from `package_show`, with CSV/TSV resources previewed
 through the template's `<Table />`. Calls run server-side, so the catalog is pre-rendered
@@ -32,7 +32,7 @@ examples.
 ## DKAN
 
 DKAN exposes a **CKAN-compatible API** (`/api/3/action/...`). Point the same `fetch`
-client `/connect-ckan` generates at a DKAN instance's API root and the catalog/dataset
+client `/portaljs-connect-ckan` generates at a DKAN instance's API root and the catalog/dataset
 pattern carries over. Confirm `package_search`/`package_show` availability on your DKAN
 version first.
 
@@ -82,7 +82,7 @@ Any system with an HTTP API works. The recipe is always the same:
    or your own components.
 
 Because the output is plain editable code, there's no framework wiring to fight — and
-you can model a new backend skill on [`/connect-ckan`](/docs/skills/connect-ckan); see
+you can model a new backend skill on [`/portaljs-connect-ckan`](/docs/skills/connect-ckan); see
 [Authoring skills](/docs/authoring-skills).
 
 ## Where to go next

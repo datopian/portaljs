@@ -34,7 +34,7 @@ These run the live model, so they **cost tokens and are non-deterministic** — 
 ```bash
 tests/skill-triggering/run-all.sh
 # or one skill:
-tests/skill-triggering/run-test.sh new-portal tests/skill-triggering/prompts/new-portal.txt
+tests/skill-triggering/run-test.sh portaljs-new-portal tests/skill-triggering/prompts/portaljs-new-portal.txt
 # robustness check on a smaller model:
 CLAUDE_MODEL=claude-haiku-4-5 tests/skill-triggering/run-all.sh
 ```

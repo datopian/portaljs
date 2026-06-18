@@ -1,9 +1,9 @@
-# PortalJS Arc — managed static hosting + `/deploy`
+# PortalJS Arc — managed static hosting + `/portaljs-deploy`
 
 Status: **design** (epic `po-x8x`). Architecture locked 2026-06-15.
 
-PortalJS Arc is Datopian-managed static hosting for PortalJS portals. The `/deploy`
-skill has **one target** — PortalJS Arc. A user runs `/deploy`, authenticates once, and
+PortalJS Arc is Datopian-managed static hosting for PortalJS portals. The `/portaljs-deploy`
+skill has **one target** — PortalJS Arc. A user runs `/portaljs-deploy`, authenticates once, and
 gets a live `https://<slug>.arc.portaljs.com` serving their static build. Users who want their
 own host (Vercel, their own Cloudflare, Netlify, …) self-serve; the skill does not cover
 that.
@@ -14,19 +14,19 @@ locally testable with `wrangler dev` / Miniflare before real DNS is involved.
 ## User experience
 
 ```
-$ /deploy
+$ /portaljs-deploy
 → first run: "Sign in to PortalJS Arc" → arc.portaljs.com → paste token (or device code)
 → next build (static export) → out/
 → uploading to PortalJS Arc…
 ✓ Live at https://my-portal.arc.portaljs.com
 ```
 
-Re-running `/deploy` updates the same site (idempotent, keyed on the project slug).
+Re-running `/portaljs-deploy` updates the same site (idempotent, keyed on the project slug).
 
 ## Architecture
 
 ```
-  /deploy skill ──tar(out/)+token──▶  Deploy API (Worker)  ──put──▶  R2: sites/<slug>/…
+  /portaljs-deploy skill ──tar(out/)+token──▶  Deploy API (Worker)  ──put──▶  R2: sites/<slug>/…
    (in portal repo)                     POST /v1/deploy                       │
                                         validate token (D1)                   │
                                         record deployment (D1)                │
@@ -147,13 +147,13 @@ of the previous deployment.
 
 ### 3. Auth — `arc.portaljs.com` (`cloud/auth/`) — bead `po-5vk`
 - GitHub OAuth → create `users` row; UI to generate/revoke API tokens.
-- Client login: folded into the `/deploy` skill (device-code flow, run inline on first
+- Client login: folded into the `/portaljs-deploy` skill (device-code flow, run inline on first
   deploy) → write `~/.portaljs/credentials` (`{ token, api }`, where `api` defaults to
   `https://api.arc.portaljs.com`). `PORTALJS_TOKEN` env overrides (CI). Paste-token via the
   dashboard stays as the power-user/CI fallback.
 - API tokens are opaque, hashed at rest in D1.
 
-### 4. `/deploy` skill rewrite (`.claude/commands/deploy.md`) — bead `po-4yq`
+### 4. `/portaljs-deploy` skill rewrite (`.claude/commands/portaljs-deploy.md`) — bead `po-4yq`
 - Single target. Steps: ensure `output: 'export'` in `next.config.js` → `next build` →
   verify `out/` → ensure auth (run the device flow inline if no creds) → tar `out/` → `POST /v1/deploy` →
   poll → print `https://<slug>.arc.portaljs.com`. Never report success on a failing build.
@@ -162,7 +162,7 @@ of the previous deployment.
   `next build && next export` and upload `out/` to any static host."
 
 ### 5. Docs (`site/content/docs/…`) — bead `po-xqq`
-- Rewrite the `/deploy` skill page to the single target; add a PortalJS Arc concept page.
+- Rewrite the `/portaljs-deploy` skill page to the single target; add a PortalJS Arc concept page.
 
 ## D1 schema (draft)
 
@@ -196,7 +196,7 @@ See `cloud/INFRA.md`.
 - **Quotas/pricing** — free tier limits (projects, bytes, bandwidth)? Ties into the pricing
   page.
 - ~~**Auth UX** — device-code flow vs paste-token for v1.~~ **Resolved (po-j57):** shipped the
-  GitHub-style **device-authorization flow** (run inline by `/deploy` → `POST /device/code` →
+  GitHub-style **device-authorization flow** (run inline by `/portaljs-deploy` → `POST /device/code` →
   browser `/activate` → `POST /device/token`), with server-side auto-labelled tokens. Paste-token + the
   dashboard "generate token" UI stay as the power-user / CI fallback (`PORTALJS_TOKEN`).
 - **Repo location** — keep `cloud/` in the monorepo, or extract to `datopian/portaljs-cloud`

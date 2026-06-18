@@ -23,29 +23,29 @@ And scaffolding is only the start. The same model — describe intent, get plain
 ## Roadmap
 
 ### Now — agentic skills v1
-- [x] `/new-portal` — scaffold a portal from a brief
-- [x] `/add-dataset` — add CSV/TSV/JSON/GeoJSON datasets and register them
+- [x] `/portaljs-new-portal` — scaffold a portal from a brief
+- [x] `/portaljs-add-dataset` — add CSV/TSV/JSON/GeoJSON datasets and register them
 - [x] Canonical lightweight template (`examples/portaljs-template`)
 - [x] AI development guide (`CLAUDE.md`) and skill authoring guide (`.claude/AUTHORING.md`)
 
 ### Next — make skills installable anywhere
-Today the skills are **repo-local**: they run from inside a clone of this repo because `/new-portal` resolves the template via `git rev-parse --show-toplevel`. To let users run them from any project:
-- [x] Fetch the template remotely (`npx tiged`) instead of from the local checkout, so `/new-portal` works outside this repo
+Today the skills are **repo-local**: they run from inside a clone of this repo because `/portaljs-new-portal` resolves the template via `git rev-parse --show-toplevel`. To let users run them from any project:
+- [x] Fetch the template remotely (`npx tiged`) instead of from the local checkout, so `/portaljs-new-portal` works outside this repo
 - [x] Support installing the commands into `~/.claude/commands/` (personal scope), with docs ([`.claude/INSTALL.md`](.claude/INSTALL.md))
 - [x] Package the skills + template as a distributable Claude Code plugin (`.claude-plugin/`)
 
 ### Now — core skill set
-- [x] `/add-chart` — add a visualization to a dataset page
-- [x] `/add-map` — render GeoJSON on an interactive map
-- [x] `/connect-ckan` — wire a portal to a CKAN backend (the headline "decoupled" path)
-- [x] `/deploy` — one-shot deploy to Vercel or static hosting
+- [x] `/portaljs-add-chart` — add a visualization to a dataset page
+- [x] `/portaljs-add-map` — render GeoJSON on an interactive map
+- [x] `/portaljs-connect-ckan` — wire a portal to a CKAN backend (the headline "decoupled" path)
+- [x] `/portaljs-deploy` — one-shot deploy to Vercel or static hosting
 
 ### Next — template variants
 - [x] Catalog template with dynamic dataset routes (`[slug].tsx` + `getStaticPaths`) for portals with many datasets (`examples/portaljs-catalog`)
 - [ ] Modernized CKAN-backed and GitHub-backed catalog templates
 
 ### Later — skill composition (v2)
-- [ ] Skills that chain: `/new-portal` runs `/add-dataset` for each dataset in the brief, end to end
+- [ ] Skills that chain: `/portaljs-new-portal` runs `/portaljs-add-dataset` for each dataset in the brief, end to end
 - [ ] Shared conventions so third-party skills compose cleanly with the built-ins
 
 ### Ongoing — keep the repo honest
@@ -63,7 +63,7 @@ Pull existing catalogs and datasets into a PortalJS **static catalog** from the 
 
 ### Wrangle & transform
 Prepare data without leaving the assistant:
-- **Data quality & validation** — `/check-data-quality` (`.claude/commands/check-data-quality.md` + `scripts/check-data-quality.sh`).
+- **Data quality & validation** — `/portaljs-check-data-quality` (`.claude/commands/portaljs-check-data-quality.md` + `scripts/check-data-quality.sh`).
 - **CSV wrangling** — common operations: clean headers, fix types, dedupe, filter, sort, join, reshape, split/merge columns.
 - **Format transforms** — CSV ⇄ TSV ⇄ JSON ⇄ Parquet, plus Excel (xlsx), XML, and other tabular sources.
 - **SQL over files** (e.g. DuckDB) for slicing and aggregating before publish.
@@ -83,7 +83,7 @@ Keep frontend assembly straightforward, and make branding trivial:
 - **Bring your own `DESIGN.md`** — point a skill at a brand/design spec (see [`DESIGN.md`](DESIGN.md) and its Brand foundations) and have the portal themed to match. Branding becomes a single-file input, not a CSS slog.
 
 ### How it composes
-These families chain: **ingest → wrangle → describe → visualize → build & brand → deploy**. `/new-portal` becomes the entry point to an orchestrated pipeline, and third-party skills compose with the built-ins through shared conventions (see [`.claude/AUTHORING.md`](.claude/AUTHORING.md)). The framework stays small; the skill library grows.
+These families chain: **ingest → wrangle → describe → visualize → build & brand → deploy**. `/portaljs-new-portal` becomes the entry point to an orchestrated pipeline, and third-party skills compose with the built-ins through shared conventions (see [`.claude/AUTHORING.md`](.claude/AUTHORING.md)). The framework stays small; the skill library grows.
 
 ## How to help
 

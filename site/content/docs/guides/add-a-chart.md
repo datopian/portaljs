@@ -1,30 +1,30 @@
 ---
 metatitle: Add a Chart to PortalJS – Line, Bar, Area, Pie, Scatter
-metadescription: Add a visualization to a PortalJS dataset page — line, bar, area, pie, or scatter — with /add-chart, or by hand with a small charting library. Reads the same data the table uses.
+metadescription: Add a visualization to a PortalJS dataset page — line, bar, area, pie, or scatter — with /portaljs-add-chart, or by hand with a small charting library. Reads the same data the table uses.
 title: Add a chart
-description: Add a line, bar, area, pie, or scatter chart to a dataset page — with /add-chart, or by hand.
+description: Add a line, bar, area, pie, or scatter chart to a dataset page — with /portaljs-add-chart, or by hand.
 ---
 
 **Goal:** add a chart to an existing dataset page, reading the same `/public/data/`
 file the table already uses — no data duplicated.
 
 > [!info] Before you start
-> Run [`/add-dataset`](/docs/guides/add-tabular-data) first so the dataset page
+> Run [`/portaljs-add-dataset`](/docs/guides/add-tabular-data) first so the dataset page
 > exists. You'll chart it by its slug (e.g. `country-codes`).
 
-## The AI path — `/add-chart`
+## The AI path — `/portaljs-add-chart`
 
-Tell [`/add-chart`](/docs/skills/add-chart) which dataset, which columns, and the
+Tell [`/portaljs-add-chart`](/docs/skills/add-chart) which dataset, which columns, and the
 chart type:
 
 ```
-/add-chart country-codes --x year --y population --type line
+/portaljs-add-chart country-codes --x year --y population --type line
 ```
 
 …or in natural language:
 
 ```
-/add-chart the population dataset — plot population over year as a line chart
+/portaljs-add-chart the population dataset — plot population over year as a line chart
 ```
 
 It validates that the columns exist, installs a lightweight charting library, writes a

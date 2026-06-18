@@ -1,17 +1,17 @@
 ---
-metatitle: /migrate – Harvest Datasets from CKAN or DCAT into a PortalJS Catalog
-metadescription: The /migrate skill harvests datasets from a CKAN instance or a DCAT-US /data.json catalog (DKAN, ArcGIS Hub, data.gov) into a static PortalJS catalog — link by URL or download the files, as plain editable datasets.json entries.
-title: /migrate
+metatitle: /portaljs-migrate – Harvest Datasets from CKAN or DCAT into a PortalJS Catalog
+metadescription: The /portaljs-migrate skill harvests datasets from a CKAN instance or a DCAT-US /data.json catalog (DKAN, ArcGIS Hub, data.gov) into a static PortalJS catalog — link by URL or download the files, as plain editable datasets.json entries.
+title: /portaljs-migrate
 description: Harvest datasets from a CKAN instance or a DCAT /data.json catalog into the static PortalJS catalog — the copy-into-the-portal path.
 ---
 
-`/migrate` harvests datasets from an external open-data platform **into** an existing
+`/portaljs-migrate` harvests datasets from an external open-data platform **into** an existing
 `portaljs-catalog` portal. It reads the source over its API, maps each dataset to the
 template's canonical shape, and writes the results into `datasets.json` — so the `/search`
 catalog and the `/@<namespace>/<slug>` showcases render them like any hand-added dataset.
 
-It's the inverse of [`/connect-ckan`](/docs/skills/connect-ckan): connect-ckan keeps the
-source authoritative and reads it live at build time; `/migrate` takes a one-time
+It's the inverse of [`/portaljs-connect-ckan`](/docs/skills/connect-ckan): connect-ckan keeps the
+source authoritative and reads it live at build time; `/portaljs-migrate` takes a one-time
 (re-runnable) **snapshot** into the static catalog, so the portal stands alone with no
 backend.
 
@@ -65,34 +65,34 @@ any reader feeds any writer through the canonical shape.
 Harvest a whole CKAN instance:
 
 ```
-/migrate https://demo.dev.datopian.com
+/portaljs-migrate https://demo.dev.datopian.com
 ```
 
 Harvest one CKAN organization, downloading the files into the repo:
 
 ```
-/migrate https://demo.dev.datopian.com --org transport --download
+/portaljs-migrate https://demo.dev.datopian.com --org transport --download
 ```
 
 Harvest a DCAT catalog (DKAN / ArcGIS Hub / data.gov):
 
 ```
-/migrate https://hub.arcgis.com/data.json --source dcat
+/portaljs-migrate https://hub.arcgis.com/data.json --source dcat
 ```
 
 Harvest a Socrata site, an OpenDataSoft portal, or a single ArcGIS service:
 
 ```
-/migrate https://data.cityofnewyork.us --source socrata
-/migrate https://data.opendatasoft.com --source ods
-/migrate https://services.arcgis.com/…/FeatureServer --source arcgis
+/portaljs-migrate https://data.cityofnewyork.us --source socrata
+/portaljs-migrate https://data.opendatasoft.com --source ods
+/portaljs-migrate https://services.arcgis.com/…/FeatureServer --source arcgis
 ```
 
 Move one CKAN instance's datasets into another CKAN (set the write key first):
 
 ```
 export CKAN_API_KEY=…           # write key for the destination
-/migrate https://source-ckan.example --target ckan --target-url https://dest-ckan.example --owner-org my-org
+/portaljs-migrate https://source-ckan.example --target ckan --target-url https://dest-ckan.example --owner-org my-org
 ```
 
 > Copy modes apply to the **static** target. For `--target ckan`, see *CKAN target* below.
@@ -120,7 +120,7 @@ generated before declaring success.
 
 ## CKAN target
 
-With `--target ckan`, `/migrate` pushes the canonical datasets into a CKAN instance instead
+With `--target ckan`, `/portaljs-migrate` pushes the canonical datasets into a CKAN instance instead
 of writing `datasets.json`: it ensures the owner organization exists, then `package_create`
 (or `package_update` on re-run) for each dataset and `resource_create` for each resource,
 authenticating with the `CKAN_API_KEY` env var. The slug becomes CKAN's package `name`;
@@ -130,25 +130,25 @@ first auth/permission error rather than half-migrating.
 
 ## After migrating
 
-- [`/check-data-quality`](/docs/skills/check-data-quality) — validate the harvested data.
-- [`/define-schema`](/docs/skills/define-schema) — add Frictionless schemas (sources rarely
+- [`/portaljs-check-data-quality`](/docs/skills/check-data-quality) — validate the harvested data.
+- [`/portaljs-define-schema`](/docs/skills/define-schema) — add Frictionless schemas (sources rarely
   ship them).
-- [`/add-chart`](/docs/skills/add-chart) / [`/add-map`](/docs/skills/add-map) — they work on
+- [`/portaljs-add-chart`](/docs/skills/add-chart) / [`/portaljs-add-map`](/docs/skills/add-map) — they work on
   migrated datasets exactly as on hand-added ones.
-- [`/deploy`](/docs/skills/deploy) — publish the catalog.
+- [`/portaljs-deploy`](/docs/skills/deploy) — publish the catalog.
 
 ## Notes
 
 - **Large catalogs** make many static pages and a slow build. Use the CKAN org/group filters
   (or a DCAT source already scoped to a site) to migrate a subset; the skill reports how many
   were imported vs. available.
-- **Schemas** aren't inferred during the harvest — add them afterward with `/define-schema`.
+- **Schemas** aren't inferred during the harvest — add them afterward with `/portaljs-define-schema`.
 - **Formats.** CSV/TSV/JSON/GeoJSON preview in the showcase; any other format is kept and
   shown as a download link.
 
 ## Where to go next
 
-- **[`/connect-ckan`](/docs/skills/connect-ckan)** — the live read-through alternative.
+- **[`/portaljs-connect-ckan`](/docs/skills/connect-ckan)** — the live read-through alternative.
 - **[Backends](/docs/backends)** — integration notes per platform.
 
 <DocsPagination prev="/docs/skills/connect-ckan" next="/docs/skills/define-schema" />

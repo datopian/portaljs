@@ -19,7 +19,7 @@ The product is organized into three layers:
 
 | Layer | What it does | Built from |
 |-------|--------------|-----------|
-| **Decision** | Advises on architecture from the team's needs | Advisory skills (e.g. `/architect`) |
+| **Decision** | Advises on architecture from the team's needs | Advisory skills (e.g. `/portaljs-architect`) |
 | **Build** | Scaffolds + wires the chosen stack | Generative skills + the contracts below |
 | **Presentation** | The portal users see | The three surfaces (Home / Catalog / Showcase) |
 
@@ -85,11 +85,11 @@ The static-first → runtime fork is concretely **Pages → Workers**.
 ## Sequencing
 
 1. **Advisory / decision layer** *(next — Phase 1)* — the needs→architecture framework
-   and an `/architect` interview skill. Defines *what* the build layer produces. See
+   and an `/portaljs-architect` interview skill. Defines *what* the build layer produces. See
    [decision-framework.md](site/content/docs/architecture/decision-framework.md).
 2. **Data-provider contract** — the storage+compute+catalog seam every surface consumes;
    refactor the static path onto it; design-in giftless/LFS+R2 (wire later); refactor
-   `/connect-ckan` onto it.
+   `/portaljs-connect-ckan` onto it.
 3. **Metadata profile layer** ∥ **DuckDB data query** — parallel; both static-friendly,
    high visible value.
 4. **DCAT interop** — export then import, layered on the profile layer (interop over a

@@ -3,7 +3,7 @@
 # make Claude fire the expected PortalJS skill?
 #
 # Usage: ./run-test.sh <skill-name> <prompt-file> [max-turns]
-# Example: ./run-test.sh new-portal ./prompts/new-portal.txt
+# Example: ./run-test.sh portaljs-new-portal ./prompts/portaljs-new-portal.txt
 #
 # Requires: the `claude` CLI on PATH and an ANTHROPIC_API_KEY.
 # Set CLAUDE_MODEL to test triggering on a specific model (e.g. a small one).
@@ -44,7 +44,7 @@ echo "=== Skill-triggering: $SKILL_NAME (max-turns=$MAX_TURNS${CLAUDE_MODEL:+, m
     --output-format stream-json \
     "${MODEL_ARGS[@]}" > "$LOG" 2>&1 ) || true
 
-# Match "skill":"new-portal" or "skill":"portaljs:new-portal" — but only on a
+# Match "skill":"portaljs-new-portal" or "skill":"portaljs:portaljs-new-portal" — but only on a
 # line that is also the Skill tool-call, so the two fragments can't satisfy the
 # check from different stream-json events. (stream-json = one JSON record/line.)
 SKILL_PATTERN='"skill":"([^"]*:)?'"${SKILL_NAME}"'"'

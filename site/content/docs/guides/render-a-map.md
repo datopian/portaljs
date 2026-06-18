@@ -1,24 +1,24 @@
 ---
 metatitle: Render a Map in PortalJS – Interactive GeoJSON Maps
-metadescription: Render a GeoJSON dataset on an interactive Leaflet map in your PortalJS portal — with /add-map, or by hand with react-leaflet and a client-only Map component.
+metadescription: Render a GeoJSON dataset on an interactive Leaflet map in your PortalJS portal — with /portaljs-add-map, or by hand with react-leaflet and a client-only Map component.
 title: Render a map
-description: Put a GeoJSON dataset on an interactive map — with /add-map, or by hand with react-leaflet.
+description: Put a GeoJSON dataset on an interactive map — with /portaljs-add-map, or by hand with react-leaflet.
 ---
 
 **Goal:** render a GeoJSON dataset (points, lines, or polygons) on an interactive map
 as a view in the dataset's showcase.
 
 > [!info] Before you start
-> You need a portal scaffolded with [`/new-portal`](/docs/skills/new-portal). The
+> You need a portal scaffolded with [`/portaljs-new-portal`](/docs/skills/new-portal). The
 > source must be **GeoJSON** — a `Feature`, `FeatureCollection`, or geometry object.
 > For tabular data, see [Add tabular data](/docs/guides/add-tabular-data).
 
-## The AI path — `/add-map`
+## The AI path — `/portaljs-add-map`
 
-Point [`/add-map`](/docs/skills/add-map) at a local file or a public URL:
+Point [`/portaljs-add-map`](/docs/skills/add-map) at a local file or a public URL:
 
 ```
-/add-map ./data/regions.geojson — Auckland region boundaries
+/portaljs-add-map ./data/regions.geojson — Auckland region boundaries
 ```
 
 It validates the GeoJSON, copies it into `/public/data/`, installs
@@ -27,7 +27,7 @@ adds the map as a view in the dataset's showcase (`pages/[owner]/[slug].tsx`, in
 Views section). It runs a full `next build` before reporting success.
 
 > [!note] Map and table of the same file
-> `/add-dataset` renders GeoJSON as a properties table; `/add-map` renders it on a
+> `/portaljs-add-dataset` renders GeoJSON as a properties table; `/portaljs-add-map` renders it on a
 > map. Run both on the same dataset to offer both views in the same showcase.
 
 ## The by-hand path

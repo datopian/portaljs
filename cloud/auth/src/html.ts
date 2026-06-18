@@ -36,7 +36,7 @@ export function landingPage(): string {
     `<h1>PortalJS <span class="brand">Arc</span></h1>
 <p class="muted">Deploy a PortalJS portal to a live <code>&lt;slug&gt;.arc.portaljs.com</code> URL.</p>
 <div class="card">
-  <p>Sign in to create an API token for the <code>/deploy</code> skill.</p>
+  <p>Sign in to create an API token for the <code>/portaljs-deploy</code> skill.</p>
   <a class="btn btn-primary" href="/auth/login">Sign in with GitHub</a>
 </div>`
   )
@@ -83,7 +83,7 @@ export function dashboardPage(login: string, tokens: TokenRow[], newToken?: stri
     ? `<div class="card" style="border-color:#38bdf8">
   <strong>New token — copy it now, it won't be shown again:</strong>
   <pre>${esc(newToken)}</pre>
-  <p class="muted">Use it with the <code>/deploy</code> skill:</p>
+  <p class="muted">Use it with the <code>/portaljs-deploy</code> skill:</p>
   <pre>mkdir -p ~/.portaljs &amp;&amp; printf '{"token":"${esc(newToken)}"}\\n' &gt; ~/.portaljs/credentials</pre>
   <p class="muted">…or <code>export PORTALJS_TOKEN=${esc(newToken)}</code></p>
 </div>`

@@ -1,15 +1,15 @@
 ---
-metatitle: /architect – Recommend a Data-Portal Architecture from Your Needs
-metadescription: The /architect skill interviews you about what you're building, what your data is, and what it's for, then recommends a concrete stack — storage, compute, catalog, access, hosting, metadata — and hands off to the build skills.
-title: /architect
+metatitle: /portaljs-architect – Recommend a Data-Portal Architecture from Your Needs
+metadescription: The /portaljs-architect skill interviews you about what you're building, what your data is, and what it's for, then recommends a concrete stack — storage, compute, catalog, access, hosting, metadata — and hands off to the build skills.
+title: /portaljs-architect
 description: The advisory entry point — turns three questions about your needs into a concrete, scaffoldable architecture, then hands off to the build skills.
 ---
 
-`/architect` is the **advisory** skill. Before you scaffold anything, it works out
+`/portaljs-architect` is the **advisory** skill. Before you scaffold anything, it works out
 *what* to build: from what you're building, what your data is, and what it's for, it
 recommends a concrete architecture across six slots — storage, catalog, compute, access,
 hosting, and metadata — then hands off to the build skills like
-[`/new-portal`](/docs/skills/new-portal). It **decides**; it doesn't build.
+[`/portaljs-new-portal`](/docs/skills/new-portal). It **decides**; it doesn't build.
 
 It's interactive: if your brief is thin it interviews you in short rounds, echoes an
 architecture brief back for confirmation, and never dead-ends on missing input — every
@@ -22,7 +22,7 @@ model it encodes.
 Run it **first**, when you're unsure how to set up a portal — especially the data
 infrastructure underneath it (files vs Git-LFS vs a lakehouse vs a warehouse; static vs
 runtime; which metadata standard). If you already know what you want, skip straight to
-[`/new-portal`](/docs/skills/new-portal).
+[`/portaljs-new-portal`](/docs/skills/new-portal).
 
 ## Inputs
 
@@ -42,13 +42,13 @@ Nothing is required — with no input it runs the four-round interview.
   `git + giftless/R2 + Parquet + DuckLake + DuckDB`, static on Cloudflare Pages, with
   Frictionless metadata — kept S3-compatible so R2 is never a hard lock-in.
 - An `ARCHITECTURE.md` written to your project documenting the decision.
-- A **handoff**: the exact next commands (`/new-portal` with the inferred namespace mode,
-  `/add-dataset`, `/connect-ckan`, `/deploy`, …), and an offer to run the first one.
+- A **handoff**: the exact next commands (`/portaljs-new-portal` with the inferred namespace mode,
+  `/portaljs-add-dataset`, `/portaljs-connect-ckan`, `/portaljs-deploy`, …), and an offer to run the first one.
 
 ## Example
 
 ```
-/architect We're a national statistics office. ~200 datasets, mostly large CSVs
+/portaljs-architect We're a national statistics office. ~200 datasets, mostly large CSVs
 (some GBs), updated quarterly, all public, and we must publish DCAT-AP for the EU
 data portal.
 ```
@@ -57,4 +57,4 @@ It infers a multi-publisher open-data portal with analytics-grade data and harve
 needs, and recommends **Parquet on R2 + DuckLake + DuckDB**, static on **Cloudflare
 Pages**, **Frictionless + DCAT-AP** metadata, and an `owner` namespace — flagging the
 DCAT export and Git-LFS ingest as designed-in but built later — then hands off to
-[`/new-portal`](/docs/skills/new-portal).
+[`/portaljs-new-portal`](/docs/skills/new-portal).
