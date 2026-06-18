@@ -3,25 +3,21 @@ import { NavbarTitle } from '../Nav'
 import { RiDiscordFill } from 'react-icons/ri'
 
 const navigation = {
-  resources: [
+  product: [
+    { name: 'Pricing', href: '/pricing' },
     { name: 'Case Studies', href: '/case-studies' },
     { name: 'Data Portals', href: '/data-portals' },
-    { name: 'Learn', href: '/learn' },
-    { name: 'Documentation', href: '/docs' },
-    { name: 'Blog', href: '/blog' },
     { name: 'FAQ', href: '/faq' },
-    { name: 'Open Source', href: '/opensource' },
   ],
-  integrations: [
-    { name: 'CKAN Integration', href: '/ckan' },
-    { name: 'OpenMetadata Integration', href: '/openmetadata' },
-    { name: 'Comparison Overview', href: '/compare' },
-    { name: 'PortalJS vs OpenDataSoft', href: '/compare/opendatasoft' },
+  resources: [
+    { name: 'Blog', href: '/blog' },
+    { name: 'Documentation', href: '/docs' },
+    { name: 'Learn', href: '/learn' },
+    { name: 'Open Source', href: '/opensource' },
   ],
   companyLegal: [
     { name: 'About Us', href: 'https://www.datopian.com/about' },
     { name: 'Contact', href: 'https://www.datopian.com/contact' },
-    { name: 'Pricing', href: '/pricing' },
     { name: 'Privacy Policy', href: 'https://www.datopian.com/privacy' },
     { name: 'Terms of Use', href: 'https://www.datopian.com/terms' },
   ],
@@ -132,9 +128,9 @@ export default function Footer() {
           </div>
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 xl:col-span-2 xl:mt-0">
             <div className="mt-10 md:mt-0">
-              <h3 className="text-sm font-semibold leading-6">Resources</h3>
+              <h3 className="text-sm font-semibold leading-6">Product</h3>
               <ul role="list" className="mt-6 space-y-4">
-                {navigation.resources.map((item) => (
+                {navigation.product.map((item) => (
                   <li key={item.name}>
                     <a
                       href={item.href}
@@ -148,13 +144,12 @@ export default function Footer() {
               </ul>
             </div>
             <div className="mt-10 md:mt-0">
-              <h3 className="text-sm font-semibold leading-6">Integrations & Comparisons</h3>
+              <h3 className="text-sm font-semibold leading-6">Resources</h3>
               <ul role="list" className="mt-6 space-y-4">
-                {navigation.integrations.map((item: any) => (
+                {navigation.resources.map((item: any) => (
                   <li key={item.name}>
                     <a
                       href={item.href}
-                      target={item.target || '_self'}
                       className="text-sm leading-6 opacity-75 hover:opacity-100"
                     >
                       {item.name}
