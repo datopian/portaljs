@@ -49,6 +49,15 @@ portal:
     'MOEI unveils a cutting-edge open data portal, developed with Datopian using PortalJS and CKAN, to empower citizens, researchers, and developers with seamless access to bilingual, structured, and actionable government data.',
     'https://opendata.moei.gov.ae',
   ]
+faqs:
+  - question: 'Does PortalJS support Arabic and right-to-left (RTL) layouts?'
+    answer: 'Yes. MOEI''s portal is fully bilingual — Arabic and English — with complete RTL layout support. Users switch languages instantly, and metadata is represented consistently in both languages throughout the catalogue.'
+  - question: 'Can PortalJS be deployed on our existing Azure infrastructure?'
+    answer: 'Yes. MOEI''s portal runs on their existing Azure environment. PortalJS integrates cleanly with Azure-hosted services, Active Directory (Entra ID) for authentication, and Azure Blob Storage — no cloud migration required.'
+  - question: 'Can non-technical ministry staff manage the portal without developer support?'
+    answer: 'Yes. MOEI''s team manages datasets, content updates, and portal configuration through an intuitive admin dashboard. Day-to-day operations — publishing data, updating pages, managing users — require no developer involvement.'
+  - question: 'How does the API access work for developers integrating government data?'
+    answer: 'CKAN auto-generates RESTful API endpoints for every published dataset. The portal includes a developer experience component with code snippets and documentation, making it straightforward for developers and data scientists to integrate MOEI datasets into applications and analytics tools.'
 table: moei
 fullCaseStudy: "https://www.datopian.com/showcase/case-studies/making-government-data-usable-moei-ckan-open-data-portal"
 ---

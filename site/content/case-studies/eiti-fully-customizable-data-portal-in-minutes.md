@@ -70,6 +70,15 @@ portal:
     'As part of its open data strategy, EITI officially launches the data portal built on PortalJS with consulting by Datopian.',
     'https://eiti.portaljs.com',
   ]
+faqs:
+  - question: 'How quickly can a portal like EITI''s be launched?'
+    answer: 'PortalJS Cloud can be deployed and configured in days, not months. EITI''s portal was live rapidly with full data access — no infrastructure setup, no DevOps overhead required from the EITI team.'
+  - question: 'Can the portal be customised to match our organisation''s brand?'
+    answer: 'Yes — PortalJS Cloud is fully white-labelled. EITI''s portal reflects their visual identity, colour scheme, and navigation structure. Customisation is handled without requiring frontend development expertise on your side.'
+  - question: 'How does the platform handle multi-country extractive industry data?'
+    answer: 'The portal ingests structured datasets from multiple countries and formats, making cross-country comparison straightforward for researchers and civil society. CKAN''s metadata system keeps everything organised and searchable at scale.'
+  - question: 'What data visualisation options are built in?'
+    answer: 'PortalJS supports embedded charts, map layers, and dataset previews out of the box. Stakeholders can explore extractive industry data visually without needing to download files first.'
 table: default
 ---
 
