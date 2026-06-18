@@ -12,7 +12,7 @@
     {
       "name": "portaljs",
       "source": ".",
-      "description": "Scaffold and extend PortalJS data portals: /new-portal, /add-dataset, /add-chart, /add-map, /deploy."
+      "description": "Scaffold and extend PortalJS data portals: /portaljs-new-portal, /portaljs-add-dataset, /portaljs-add-chart, /portaljs-add-map, /portaljs-deploy."
     }
   ]
 }
