@@ -8,7 +8,7 @@ tags:
   - data portals
   - AI
   - QuerylessAI
-image: "/static/img/blog/2026-03-06-talk-to-your-data-portal-in-plain-english-introducing-querylessai/chat-interface.png"
+image: "/static/img/blog/2026-03-06-talk-to-your-data-portal-in-plain-english-introducing-querylessai/hero.png"
 filetype: 'blog'
 ---
 
