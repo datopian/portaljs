@@ -17,6 +17,7 @@ import { AiOutlineDatabase } from "react-icons/ai";
 import { MdVerified } from "react-icons/md";
 import { FaSyncAlt } from "react-icons/fa";
 import Head from "next/head";
+import Link from "next/link";
 import { generateNextSeo } from "next-seo/pages";
 
 import Layout from "@/components/Layout";
@@ -177,10 +178,15 @@ const StatsPage = () => {
         >
           Everything You Need to Manage Your Data Effortlessly
         </h1>
-        <h2 className="text-lg text-center my-4 font-semibold text-slate-400">
+        <p className="text-lg text-center my-4 font-semibold text-slate-400">
           Save time, reduce costs, and scale your data portal with a fully
           managed, customizable platform
-        </h2>
+        </p>
+        <p className="text-center text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-8 text-[15px]">
+          PortalJS Cloud is a fully managed open data portal platform built for governments, nonprofits, and enterprises. Deploy in minutes, handle unlimited datasets, and meet compliance standards — without managing infrastructure.{' '}
+          <Link href="/pricing" className="text-blue-600 hover:underline">See pricing</Link> or{' '}
+          <Link href="/case-studies" className="text-blue-600 hover:underline">read customer stories</Link>.
+        </p>
         <div className="grid my-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-20">
           {statsData.slice(0, 12).map((stat) => (
             <div key={stat.statsTitle}>

@@ -374,6 +374,16 @@ export default function PortalJSvsArcGISHub() {
       </div>
 
       {/* CTA Section */}
+      <section className="w-full py-10 flex justify-center">
+        <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 px-6 py-4">
+            <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">Explore more:</span>
+            <Link href="/case-studies" className="text-sm text-blue-600 hover:underline font-medium">Customer stories →</Link>
+            <Link href="/pricing" className="text-sm text-blue-600 hover:underline font-medium">View pricing →</Link>
+            <Link href="/compare" className="text-sm text-blue-600 hover:underline font-medium">All comparisons →</Link>
+          </div>
+        </div>
+      </section>
       <section className="w-full pb-[88px] pt-[30px]">
         <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-12">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0b1830] via-[#10254a] to-[#173a78] px-7 py-12 text-center sm:px-14 sm:py-16">

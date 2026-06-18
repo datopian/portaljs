@@ -3,6 +3,7 @@ import PricingPlans from '@/components/PricingPlans'
 import AddOns from '@/components/AddOns'
 import { generateNextSeo } from 'next-seo/pages';
 import Head from 'next/head';
+import Link from 'next/link';
 
 export default function Pricing() {
   return (
@@ -60,6 +61,32 @@ export default function Pricing() {
               </p>
             </div>
             <AddOns />
+          </div>
+        </div>
+
+        {/* Internal navigation strip */}
+        <div className="mx-auto max-w-4xl mt-24 mb-8 px-4">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-8">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+              Before you decide — explore more
+            </h2>
+            <p className="text-slate-600 dark:text-slate-300 mb-6 text-sm">
+              Not sure which plan fits? See what PortalJS Cloud can do, how it compares to alternatives, and what other organisations have built with it.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/features" className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:border-blue-400 hover:text-blue-700 dark:hover:text-blue-400 transition-colors">
+                All features →
+              </Link>
+              <Link href="/case-studies" className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:border-blue-400 hover:text-blue-700 dark:hover:text-blue-400 transition-colors">
+                Customer stories →
+              </Link>
+              <Link href="/compare" className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:border-blue-400 hover:text-blue-700 dark:hover:text-blue-400 transition-colors">
+                Compare alternatives →
+              </Link>
+              <Link href="/faq" className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:border-blue-400 hover:text-blue-700 dark:hover:text-blue-400 transition-colors">
+                Pricing FAQ →
+              </Link>
+            </div>
           </div>
         </div>
       </div>
