@@ -6,7 +6,6 @@ import * as FaIcons from 'react-icons/fa'
 import { CASE_STUDY_TABLES } from '@/constants'
 import React, { useEffect } from 'react'
 import { XCircleIcon } from '@heroicons/react/24/outline'
-import Head from 'next/head'
 
 // SVG icon paths — keyed to the `icon` field in case study frontmatter
 const ICONS: Record<string, React.ReactNode> = {
@@ -128,42 +127,8 @@ const ICONS: Record<string, React.ReactNode> = {
   ),
 }
 
-export default function CaseStudyLayout({ children, ...frontMatter }) {
-  const {
-    title,
-    description,
-    image,
-    readingTime,
-    keystats,
-    problem,
-    solution,
-    results,
-    quote,
-    portal,
-    authorsDetails,
-    features,
-    images,
-    table,
-    highlight,
-    longRead = true,
-    longReadLink,
-    longReadTitle,
-    longReadSummary,
-    fullCaseStudy = false,
-    faqs,
-  } = frontMatter
-
-  const [mainTitle, mainSubtitle] = title.split('/')
-  const tableData = CASE_STUDY_TABLES.filter((item) => item.table === table)
-
-  useEffect(() => {
-    const slideContainer = document.querySelector('.slider-container')
-    if (slideContainer && !slideContainer.classList.contains('group')) {
-      slideContainer.classList.add('group')
-    }
-  }, [])
-
-  const FeatureIcon = ({ name }: { name: string }) => (
+function FeatureIcon({ name }: { name: string }) {
+  return (
     <svg
       viewBox="0 0 24 24"
       fill="none"
@@ -177,8 +142,10 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
       {ICONS[name] ?? <circle cx="12" cy="12" r="9" />}
     </svg>
   )
+}
 
-  const Tables = ({ tableData }: { tableData: any[] }) => (
+function Tables({ tableData }: { tableData: any[] }) {
+  return (
     <div className="mx-auto max-w-8xl px-4 sm:px-8 xl:px-12 pb-16">
       {tableData.map((tbl, index) => (
         <div className="flex flex-col items-center mt-16" key={index}>
@@ -210,8 +177,20 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
       ))}
     </div>
   )
+}
 
-  const Journey = () => (
+function Journey({
+  problem,
+  solution,
+  results,
+  fullCaseStudy,
+}: {
+  problem: string
+  solution: string
+  results: string
+  fullCaseStudy: string | false
+}) {
+  return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
         <div className="rounded-xl bg-white dark:bg-slate-800 p-8 shadow-md ring-1 ring-slate-200 dark:ring-slate-700">
@@ -274,8 +253,38 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
       )}
     </div>
   )
+}
 
-  const HeroSection = () => (
+function HeroSection({
+  title,
+  mainTitle,
+  mainSubtitle,
+  description,
+  portal,
+  authorsDetails,
+  readingTime,
+  keystats,
+  fullCaseStudy,
+  image,
+  problem,
+  solution,
+  results,
+}: {
+  title: string
+  mainTitle: string
+  mainSubtitle: string
+  description: string
+  portal: string[] | undefined
+  authorsDetails: any[]
+  readingTime: string
+  keystats: string[]
+  fullCaseStudy: string | false
+  image: string
+  problem: string
+  solution: string
+  results: string
+}) {
+  return (
     <section className="max-w-2xl px-4 sm:max-w-8xl justify-center mx-auto sm:px-8 xl:px-12 pb-16">
       <div className="flex flex-col md:flex-row w-full relative overflow-hidden gap-10">
         <div>
@@ -362,244 +371,247 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
         ))}
       </ul>
 
-      {/* Journey */}
-      <Journey />
+      <Journey
+        problem={problem}
+        solution={solution}
+        results={results}
+        fullCaseStudy={fullCaseStudy}
+      />
     </section>
   )
+}
 
-  const Features = () => {
-    if (!features || features.length === 0) return null
-    return (
-      <section className="w-full border-y border-slate-200 bg-slate-50 py-20 dark:border-slate-800 dark:bg-slate-900/40 sm:py-[88px]">
-        <div className="mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
-          <div className="max-w-[680px]">
-            <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
-              What we delivered
-            </span>
-            <h2 className="mt-3.5 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-              Everything we built.
-            </h2>
-          </div>
-          <div className="mt-11 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((item, index) =>
-              item ? (
-                <div
-                  key={index}
-                  className="rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:-translate-y-[3px] hover:border-slate-300 hover:shadow-[0_16px_36px_-20px_rgba(15,23,42,0.28)] dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700"
-                >
-                  <div className="mb-4 grid h-[42px] w-[42px] place-items-center rounded-[11px] bg-gradient-to-br from-sky-400/20 to-blue-600/15 text-blue-800 dark:text-blue-300">
-                    <FeatureIcon name={item.icon} />
-                  </div>
-                  <h3 className="mb-[7px] text-[17.5px] font-semibold text-slate-900 dark:text-white">
-                    {item.title}
-                  </h3>
-                  <div className="text-[14.5px] text-slate-600 dark:text-slate-300">
-                    <ReactMarkdown>{item.text}</ReactMarkdown>
-                  </div>
-                </div>
-              ) : null
-            )}
-          </div>
-          {highlight && (
-            <div className="mt-16 max-w-4xl">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                Why PortalJS Cloud + CKAN is the perfect pair?
-              </h3>
-              <div className="prose prose-headings:font-headings dark:prose-invert prose-a:break-word mt-6 text-slate-600 dark:text-slate-300">
-                <ReactMarkdown>{highlight}</ReactMarkdown>
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-    )
-  }
-
-  const Testimonial = () => {
-    if (!quote || !quote[0]) return null
-    return (
-      <section className="py-20 border-b border-slate-200 dark:border-slate-800">
-        <div className="mx-auto max-w-4xl px-4 sm:px-8 xl:px-12">
-          <figure className="relative">
-            <div
-              className="pointer-events-none absolute -left-2 -top-4 select-none text-8xl leading-none text-blue-200 dark:text-blue-900 font-serif"
-              aria-hidden="true"
-            >
-              &ldquo;
-            </div>
-            <blockquote className="relative pl-8 text-xl font-medium leading-relaxed text-slate-900 dark:text-white sm:text-2xl">
-              {quote[0]}
-            </blockquote>
-            <figcaption className="mt-8 pl-8 flex items-center gap-4">
-              {quote[1] && (
-                <img
-                  src={quote[1]}
-                  alt=""
-                  className="h-12 w-12 rounded-full object-contain ring-1 ring-slate-200 dark:ring-slate-700 bg-white p-1"
-                />
-              )}
-              <span className="text-base font-semibold text-slate-700 dark:text-slate-300">
-                {quote[2]}
-              </span>
-            </figcaption>
-          </figure>
-        </div>
-      </section>
-    )
-  }
-
-  const SeeLive = () => {
-    if (!portal && (!images || images.length === 0)) return null
-    const displayUrl = portal?.[2] ? portal[2].replace(/^https?:\/\//, '') : null
-    return (
-      <section className="border-y border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 py-20">
-        <div className="mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
+function Features({
+  features,
+  highlight,
+}: {
+  features: { title: string; text: string; icon: string }[]
+  highlight?: string
+}) {
+  if (!features || features.length === 0) return null
+  return (
+    <section className="w-full border-y border-slate-200 bg-slate-50 py-20 dark:border-slate-800 dark:bg-slate-900/40 sm:py-[88px]">
+      <div className="mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
+        <div className="max-w-[680px]">
           <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
-            See it live
+            What we delivered
           </span>
-          <div className="mt-8 grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_2fr]">
-            {portal && (
-              <div className="lg:pt-4">
-                <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                  {portal[0]}
-                </h2>
-                <p className="mt-4 text-[16px] leading-relaxed text-slate-600 dark:text-slate-300">
-                  {portal[1]}
-                </p>
-                {portal[2] && (
-                  <a
-                    href={portal[2]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 inline-flex items-center gap-2 rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
+          <h2 className="mt-3.5 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+            Everything we built.
+          </h2>
+        </div>
+        <div className="mt-11 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((item, index) =>
+            item ? (
+              <div
+                key={index}
+                className="rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:-translate-y-[3px] hover:border-slate-300 hover:shadow-[0_16px_36px_-20px_rgba(15,23,42,0.28)] dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700"
+              >
+                <div className="mb-4 grid h-[42px] w-[42px] place-items-center rounded-[11px] bg-gradient-to-br from-sky-400/20 to-blue-600/15 text-blue-800 dark:text-blue-300">
+                  <FeatureIcon name={item.icon} />
+                </div>
+                <h3 className="mb-[7px] text-[17.5px] font-semibold text-slate-900 dark:text-white">
+                  {item.title}
+                </h3>
+                <div className="text-[14.5px] text-slate-600 dark:text-slate-300">
+                  <ReactMarkdown>{item.text}</ReactMarkdown>
+                </div>
+              </div>
+            ) : null
+          )}
+        </div>
+        {highlight && (
+          <div className="mt-16 max-w-4xl">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+              Why PortalJS Cloud + CKAN is the perfect pair?
+            </h3>
+            <div className="prose prose-headings:font-headings dark:prose-invert prose-a:break-word mt-6 text-slate-600 dark:text-slate-300">
+              <ReactMarkdown>{highlight}</ReactMarkdown>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function Testimonial({ quote }: { quote: string[] | undefined }) {
+  if (!quote || !quote[0]) return null
+  return (
+    <section className="py-20 border-b border-slate-200 dark:border-slate-800">
+      <div className="mx-auto max-w-4xl px-4 sm:px-8 xl:px-12">
+        <figure className="relative">
+          <div
+            className="pointer-events-none absolute -left-2 -top-4 select-none text-8xl leading-none text-blue-200 dark:text-blue-900 font-serif"
+            aria-hidden="true"
+          >
+            &ldquo;
+          </div>
+          <blockquote className="relative pl-8 text-xl font-medium leading-relaxed text-slate-900 dark:text-white sm:text-2xl">
+            {quote[0]}
+          </blockquote>
+          <figcaption className="mt-8 pl-8 flex items-center gap-4">
+            {quote[1] && (
+              <img
+                src={quote[1]}
+                alt=""
+                className="h-12 w-12 rounded-full object-contain ring-1 ring-slate-200 dark:ring-slate-700 bg-white p-1"
+              />
+            )}
+            <span className="text-base font-semibold text-slate-700 dark:text-slate-300">
+              {quote[2]}
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  )
+}
+
+function SeeLive({
+  portal,
+  images,
+}: {
+  portal: string[] | undefined
+  images: string[] | undefined
+}) {
+  if (!portal && (!images || images.length === 0)) return null
+  const displayUrl = portal?.[2] ? portal[2].replace(/^https?:\/\//, '') : null
+  return (
+    <section className="border-y border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 py-20">
+      <div className="mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
+        <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+          See it live
+        </span>
+        <div className="mt-8 grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_2fr]">
+          {portal && (
+            <div className="lg:pt-4">
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                {portal[0]}
+              </h2>
+              <p className="mt-4 text-[16px] leading-relaxed text-slate-600 dark:text-slate-300">
+                {portal[1]}
+              </p>
+              {portal[2] && (
+                <a
+                  href={portal[2]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
+                >
+                  Visit live portal
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-3.5 w-3.5"
                   >
-                    Visit live portal
-                    <svg
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-3.5 w-3.5"
-                    >
-                      <path d="M3 8h10M9 4l4 4-4 4" />
-                    </svg>
-                  </a>
+                    <path d="M3 8h10M9 4l4 4-4 4" />
+                  </svg>
+                </a>
+              )}
+            </div>
+          )}
+          {images && images.length > 0 && (
+            <div className="overflow-hidden rounded-2xl shadow-[0_24px_60px_-20px_rgba(15,23,42,0.30)] ring-1 ring-slate-200 dark:ring-slate-700">
+              {/* Browser chrome */}
+              <div className="flex items-center gap-2.5 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-3">
+                <div className="flex gap-1.5">
+                  <div className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-600" />
+                  <div className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-600" />
+                  <div className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-600" />
+                </div>
+                {displayUrl && (
+                  <div className="ml-1 flex-1 truncate rounded-md bg-slate-200 dark:bg-slate-700 px-3 py-1 text-xs text-slate-500 dark:text-slate-400">
+                    {displayUrl}
+                  </div>
                 )}
               </div>
-            )}
-            {images && images.length > 0 && (
-              <div className="overflow-hidden rounded-2xl shadow-[0_24px_60px_-20px_rgba(15,23,42,0.30)] ring-1 ring-slate-200 dark:ring-slate-700">
-                {/* Browser chrome */}
-                <div className="flex items-center gap-2.5 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-3">
-                  <div className="flex gap-1.5">
-                    <div className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-600" />
-                    <div className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-600" />
-                    <div className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-600" />
-                  </div>
-                  {displayUrl && (
-                    <div className="ml-1 flex-1 truncate rounded-md bg-slate-200 dark:bg-slate-700 px-3 py-1 text-xs text-slate-500 dark:text-slate-400">
-                      {displayUrl}
-                    </div>
-                  )}
-                </div>
-                <img
-                  src={images[0]}
-                  alt={portal ? portal[0] : 'Portal screenshot'}
-                  className="block w-full"
-                />
-              </div>
-            )}
-          </div>
-          {images && images.length > 1 && (
-            <div
-              className={`mt-6 grid gap-4 ${
-                images.slice(1).length >= 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'
-              }`}
-            >
-              {images.slice(1).map((img: string, i: number) => (
-                <div
-                  key={i}
-                  className="overflow-hidden rounded-xl ring-1 ring-slate-200 dark:ring-slate-700 shadow-md"
-                >
-                  <img src={img} alt={`Screenshot ${i + 2}`} className="block w-full" />
-                </div>
-              ))}
+              <img
+                src={images[0]}
+                alt={portal ? portal[0] : 'Portal screenshot'}
+                className="block w-full"
+              />
             </div>
           )}
         </div>
-      </section>
-    )
-  }
-
-  const FAQSection = () => {
-    if (!faqs || faqs.length === 0) return null
-    const schemaData = {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: faqs.map((f: any) => ({
-        '@type': 'Question',
-        name: f.question,
-        acceptedAnswer: { '@type': 'Answer', text: f.answer },
-      })),
-    }
-    return (
-      <section className="border-y border-slate-200 dark:border-slate-800 bg-white dark:bg-transparent py-20">
-        <Head>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-          />
-        </Head>
-        <div className="mx-auto max-w-4xl px-4 sm:px-8 xl:px-12">
-          <div className="mb-12">
-            <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
-              FAQs
-            </span>
-            <h2 className="mt-3.5 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-              Questions answered.
-            </h2>
-          </div>
-          <div className="divide-y divide-slate-200 dark:divide-slate-800">
-            {faqs.map((faq: any, index: number) => (
-              <Disclosure key={index}>
-                {({ open }) => (
-                  <div className="py-5">
-                    <Disclosure.Button className="flex w-full items-start justify-between text-left">
-                      <span className="text-[17px] font-semibold text-slate-900 dark:text-white pr-8">
-                        {faq.question}
-                      </span>
-                      <span className="ml-6 flex h-7 shrink-0 items-center">
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className={`h-5 w-5 text-blue-500 transition-transform duration-200 ${open ? 'rotate-45' : ''}`}
-                        >
-                          <path d="M12 5v14M5 12h14" />
-                        </svg>
-                      </span>
-                    </Disclosure.Button>
-                    <Disclosure.Panel className="mt-4 pr-12">
-                      <p className="text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
-                        {faq.answer}
-                      </p>
-                    </Disclosure.Panel>
-                  </div>
-                )}
-              </Disclosure>
+        {images && images.length > 1 && (
+          <div
+            className={`mt-6 grid gap-4 ${
+              images.slice(1).length >= 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'
+            }`}
+          >
+            {images.slice(1).map((img: string, i: number) => (
+              <div
+                key={i}
+                className="overflow-hidden rounded-xl ring-1 ring-slate-200 dark:ring-slate-700 shadow-md"
+              >
+                <img src={img} alt={`Screenshot ${i + 2}`} className="block w-full" />
+              </div>
             ))}
           </div>
-        </div>
-      </section>
-    )
-  }
+        )}
+      </div>
+    </section>
+  )
+}
 
-  const Cta = () => (
+function FAQSection({ faqs }: { faqs: { question: string; answer: string }[] | undefined }) {
+  if (!faqs || faqs.length === 0) return null
+  return (
+    <section className="border-y border-slate-200 dark:border-slate-800 bg-white dark:bg-transparent py-20">
+      <div className="mx-auto max-w-4xl px-4 sm:px-8 xl:px-12">
+        <div className="mb-12">
+          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+            FAQs
+          </span>
+          <h2 className="mt-3.5 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+            Questions answered.
+          </h2>
+        </div>
+        <div className="divide-y divide-slate-200 dark:divide-slate-800">
+          {faqs.map((faq, index) => (
+            <Disclosure key={index}>
+              {({ open }) => (
+                <div className="py-5">
+                  <Disclosure.Button className="flex w-full items-start justify-between text-left">
+                    <span className="text-[17px] font-semibold text-slate-900 dark:text-white pr-8">
+                      {faq.question}
+                    </span>
+                    <span className="ml-6 flex h-7 shrink-0 items-center">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`h-5 w-5 text-blue-500 transition-transform duration-200 ${open ? 'rotate-45' : ''}`}
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </span>
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="mt-4 pr-12">
+                    <p className="text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
+                      {faq.answer}
+                    </p>
+                  </Disclosure.Panel>
+                </div>
+              )}
+            </Disclosure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Cta() {
+  return (
     <section className="w-full pb-[88px] pt-16">
       <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-12">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0b1830] via-[#10254a] to-[#173a78] px-7 py-12 text-center sm:px-14 sm:py-16">
@@ -638,14 +650,64 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
       </div>
     </section>
   )
+}
+
+export default function CaseStudyLayout({ children, ...frontMatter }) {
+  const {
+    title,
+    description,
+    image,
+    readingTime,
+    keystats,
+    problem,
+    solution,
+    results,
+    quote,
+    portal,
+    authorsDetails,
+    features,
+    images,
+    table,
+    highlight,
+    longRead = true,
+    longReadLink,
+    longReadTitle,
+    longReadSummary,
+    fullCaseStudy = false,
+    faqs,
+  } = frontMatter
+
+  const [mainTitle, mainSubtitle] = title.split('/')
+  const tableData = CASE_STUDY_TABLES.filter((item) => item.table === table)
+
+  useEffect(() => {
+    const slideContainer = document.querySelector('.slider-container')
+    if (slideContainer && !slideContainer.classList.contains('group')) {
+      slideContainer.classList.add('group')
+    }
+  }, [])
 
   return (
     <article>
-      <HeroSection />
-      <Features />
-      <Testimonial />
-      <SeeLive />
-      <FAQSection />
+      <HeroSection
+        title={title}
+        mainTitle={mainTitle}
+        mainSubtitle={mainSubtitle}
+        description={description}
+        portal={portal}
+        authorsDetails={authorsDetails}
+        readingTime={readingTime}
+        keystats={keystats}
+        fullCaseStudy={fullCaseStudy}
+        image={image}
+        problem={problem}
+        solution={solution}
+        results={results}
+      />
+      <Features features={features} highlight={highlight} />
+      <Testimonial quote={quote} />
+      <SeeLive portal={portal} images={images} />
+      <FAQSection faqs={faqs} />
       {longRead && !fullCaseStudy && (longReadLink ? (
         <section className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-transparent">
           <div className="mx-auto max-w-8xl px-4 sm:px-8 xl:px-12 py-14">
