@@ -20,8 +20,9 @@ any host you like.
 **never reports success on a failing build**, and re-running redeploys the same slug in
 place.
 
-You need a PortalJS Arc token — sign in at [arc.portaljs.com](https://arc.portaljs.com),
-generate one, and set `PORTALJS_TOKEN` (or save it to `~/.portaljs/credentials`). See the
+No separate login step — the first `/deploy` on a new machine signs you in on demand (one
+browser click via GitHub), saves the token to `~/.portaljs/credentials`, and reuses it on
+later deploys. For CI, set `PORTALJS_TOKEN` instead. See the
 [`/deploy` skill](/docs/skills/deploy) for details.
 
 > [!info] Static only (for now)

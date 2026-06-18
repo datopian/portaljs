@@ -25,7 +25,7 @@ Run it once the portal looks right locally — the last step after
 | ----- | -------- | ----- |
 | Portal directory | No | Path to the portal project. Defaults to the current directory; must be a Next.js portal. |
 | Slug | No | The subdomain to publish under (`<slug>.arc.portaljs.com`). Defaults to the project name; override with `--slug <name>`. |
-| Arc token | Yes | A PortalJS Arc token, read from `PORTALJS_TOKEN` or `~/.portaljs/credentials`. Get one by signing in at [arc.portaljs.com](https://arc.portaljs.com). |
+| Arc token | No | A PortalJS Arc token, read from `PORTALJS_TOKEN` or `~/.portaljs/credentials`. If neither is set, `/deploy` signs you in on demand — one browser click, no separate step. |
 
 ## Example
 
@@ -53,8 +53,15 @@ reporting success on a failing build), uploads `out/` to Arc, and reports:
 
 ## Auth
 
-Deploying needs a PortalJS Arc token. Sign in at [arc.portaljs.com](https://arc.portaljs.com)
-with GitHub, generate a token, and either:
+Auth happens on demand — there's no separate login step. The first time you `/deploy` on a
+machine with no token, it runs a device-authorization flow (the `gh auth login` /
+`wrangler login` model): it opens your browser, you sign in with GitHub and click **Authorize**
+once, and the token is saved to `~/.portaljs/credentials` (mode 0600). Later deploys reuse it
+silently; if a token is revoked or expires, the next `/deploy` re-authenticates automatically.
+
+For CI or non-interactive use, skip the browser flow by setting `PORTALJS_TOKEN` (mint a token
+in the dashboard at [arc.portaljs.com](https://arc.portaljs.com)) — it takes precedence over
+the credentials file:
 
 ```bash
 export PORTALJS_TOKEN=<token>

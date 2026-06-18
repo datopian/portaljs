@@ -27,9 +27,12 @@ replaces the site in place.
 
 ## Auth
 
-Sign in at [arc.portaljs.com](https://arc.portaljs.com) with GitHub and generate an API
-token. `/deploy` reads it from `PORTALJS_TOKEN` or `~/.portaljs/credentials`; it's never
-committed to your repo. See the [`/deploy` skill](/docs/skills/deploy) for the exact setup.
+Auth is on demand — `/deploy` handles it, there's no separate login step. The first deploy on
+a new machine opens your browser for a one-click GitHub authorization (a device-authorization
+flow), then saves the token to `~/.portaljs/credentials` and reuses it on later deploys. For CI,
+set `PORTALJS_TOKEN` instead (mint a token at [arc.portaljs.com](https://arc.portaljs.com)). The
+token is never committed to your repo. See the [`/deploy` skill](/docs/skills/deploy) for the
+exact flow.
 
 ## Scope today
 
