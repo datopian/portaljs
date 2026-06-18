@@ -151,6 +151,7 @@ export default function Footer() {
                     <a
                       href={item.href}
                       className="text-sm leading-6 opacity-75 hover:opacity-100"
+                      aria-label={`link to ${item.name}`}
                     >
                       {item.name}
                     </a>
@@ -167,6 +168,7 @@ export default function Footer() {
                       href={item.href}
                       target={item.target || '_self'}
                       className="text-sm leading-6 opacity-75 hover:opacity-100"
+                      aria-label={`link to ${item.name}`}
                     >
                       {item.name}
                     </a>
