@@ -6,7 +6,7 @@ description: Datopian-managed static hosting for PortalJS portals — /portaljs-
 ---
 
 **PortalJS Arc** is managed hosting for PortalJS portals, run by Datopian on Cloudflare. You
-build a portal, run [`/portaljs-deploy`](/docs/skills/deploy), and it goes live at
+build a portal, run [`/portaljs-deploy`](/docs/skills/portaljs-deploy), and it goes live at
 `https://<slug>.arc.portaljs.com` — no servers, no infrastructure to set up.
 
 > [!info] One command
@@ -31,7 +31,7 @@ Auth is on demand — `/portaljs-deploy` handles it, there's no separate login s
 a new machine opens your browser for a one-click GitHub authorization (a device-authorization
 flow), then saves the token to `~/.portaljs/credentials` and reuses it on later deploys. For CI,
 set `PORTALJS_TOKEN` instead (mint a token at [arc.portaljs.com](https://arc.portaljs.com)). The
-token is never committed to your repo. See the [`/portaljs-deploy` skill](/docs/skills/deploy) for the
+token is never committed to your repo. See the [`/portaljs-deploy` skill](/docs/skills/portaljs-deploy) for the
 exact flow.
 
 ## Scope today
@@ -48,7 +48,7 @@ Cloudflare, Netlify, S3, or any static host. `/portaljs-deploy` simply automates
 
 ## Where to go next
 
-- **[`/portaljs-deploy`](/docs/skills/deploy)** — publish your portal.
+- **[`/portaljs-deploy`](/docs/skills/portaljs-deploy)** — publish your portal.
 - **[Backends](/docs/backends)** — connect a live data backend before deploying.
 
-<DocsPagination prev="/docs/backends" next="/docs/skills/deploy" />
+<DocsPagination prev="/docs/backends" next="/docs/skills/portaljs-deploy" />

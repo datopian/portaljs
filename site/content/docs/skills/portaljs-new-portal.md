@@ -13,7 +13,7 @@ working project, not a blank page.
 ## When to use it
 
 This is the first skill you run. Use it to create a new portal project; then load
-data with [`/portaljs-add-dataset`](/docs/skills/add-dataset) and enrich from there.
+data with [`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset) and enrich from there.
 
 It works **both inside a clone of the portaljs repo and from any other project**:
 it prefers a local checkout of the template and otherwise fetches it from GitHub.
@@ -66,8 +66,8 @@ When it finishes:
 
 ## Where to go next
 
-- **[`/portaljs-add-dataset`](/docs/skills/add-dataset)** — load your first dataset into the
+- **[`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset)** — load your first dataset into the
   new portal.
 - **[Manual setup](/docs/manual-setup)** — the same project, built by hand.
 
-<DocsPagination prev="/docs/skills" next="/docs/skills/add-dataset" />
+<DocsPagination prev="/docs/skills" next="/docs/skills/portaljs-add-dataset" />

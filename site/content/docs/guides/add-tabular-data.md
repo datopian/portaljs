@@ -9,13 +9,13 @@ description: Add a CSV, TSV, or JSON dataset and render it as a sortable table �
 dataset showcase, discoverable from the `/search` catalog.
 
 > [!info] Before you start
-> You need a portal scaffolded with [`/portaljs-new-portal`](/docs/skills/new-portal). Tabular
+> You need a portal scaffolded with [`/portaljs-new-portal`](/docs/skills/portaljs-new-portal). Tabular
 > formats supported: **CSV, TSV, and JSON (array)**. For GeoJSON, see
 > [Render a map](/docs/guides/render-a-map).
 
 ## The AI path — `/portaljs-add-dataset`
 
-Point [`/portaljs-add-dataset`](/docs/skills/add-dataset) at a local file or a public URL:
+Point [`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset) at a local file or a public URL:
 
 ```
 /portaljs-add-dataset ./data/population.csv — Auckland population by area

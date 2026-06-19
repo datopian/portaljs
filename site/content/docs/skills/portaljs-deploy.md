@@ -16,8 +16,8 @@ host (Vercel, your own Cloudflare, Netlify, S3, …) — you don't need this ski
 ## When to use it
 
 Run it once the portal looks right locally — the last step after
-[`/portaljs-new-portal`](/docs/skills/new-portal), [`/portaljs-add-dataset`](/docs/skills/add-dataset) /
-[`/portaljs-migrate`](/docs/skills/migrate), and any enrichment skills.
+[`/portaljs-new-portal`](/docs/skills/portaljs-new-portal), [`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset) /
+[`/portaljs-migrate`](/docs/skills/portaljs-migrate), and any enrichment skills.
 
 ## Inputs
 
@@ -82,7 +82,7 @@ The token is never committed to your repo.
 ## Where to go next
 
 - **[PortalJS Arc](/docs/arc)** — what the managed hosting is and how it works.
-- **[`/portaljs-connect-ckan`](/docs/skills/connect-ckan)** — point the portal at a live backend
+- **[`/portaljs-connect-ckan`](/docs/skills/portaljs-connect-ckan)** — point the portal at a live backend
   before deploying.
 
-<DocsPagination prev="/docs/skills/define-schema" />
+<DocsPagination prev="/docs/skills/portaljs-check-data-quality" />

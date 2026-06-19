@@ -72,6 +72,6 @@ It verifies the build before reporting success. When it finishes:
 
 - **[Core concepts](/docs/core-concepts)** — why the frontend is decoupled from the
   backend.
-- **[`/portaljs-deploy`](/docs/skills/deploy)** — publish the connected portal.
+- **[`/portaljs-deploy`](/docs/skills/portaljs-deploy)** — publish the connected portal.
 
-<DocsPagination prev="/docs/skills/add-map" next="/docs/skills/migrate" />
+<DocsPagination prev="/docs/skills/portaljs-add-map" next="/docs/skills/portaljs-migrate" />

@@ -10,7 +10,7 @@ description: Harvest datasets from a CKAN instance or a DCAT /data.json catalog 
 template's canonical shape, and writes the results into `datasets.json` — so the `/search`
 catalog and the `/@<namespace>/<slug>` showcases render them like any hand-added dataset.
 
-It's the inverse of [`/portaljs-connect-ckan`](/docs/skills/connect-ckan): connect-ckan keeps the
+It's the inverse of [`/portaljs-connect-ckan`](/docs/skills/portaljs-connect-ckan): connect-ckan keeps the
 source authoritative and reads it live at build time; `/portaljs-migrate` takes a one-time
 (re-runnable) **snapshot** into the static catalog, so the portal stands alone with no
 backend.
@@ -130,12 +130,12 @@ first auth/permission error rather than half-migrating.
 
 ## After migrating
 
-- [`/portaljs-check-data-quality`](/docs/skills/check-data-quality) — validate the harvested data.
-- [`/portaljs-define-schema`](/docs/skills/define-schema) — add Frictionless schemas (sources rarely
+- [`/portaljs-check-data-quality`](/docs/skills/portaljs-check-data-quality) — validate the harvested data.
+- [`/portaljs-define-schema`](/docs/skills/portaljs-define-schema) — add Frictionless schemas (sources rarely
   ship them).
-- [`/portaljs-add-chart`](/docs/skills/add-chart) / [`/portaljs-add-map`](/docs/skills/add-map) — they work on
+- [`/portaljs-add-chart`](/docs/skills/portaljs-add-chart) / [`/portaljs-add-map`](/docs/skills/portaljs-add-map) — they work on
   migrated datasets exactly as on hand-added ones.
-- [`/portaljs-deploy`](/docs/skills/deploy) — publish the catalog.
+- [`/portaljs-deploy`](/docs/skills/portaljs-deploy) — publish the catalog.
 
 ## Notes
 
@@ -148,7 +148,7 @@ first auth/permission error rather than half-migrating.
 
 ## Where to go next
 
-- **[`/portaljs-connect-ckan`](/docs/skills/connect-ckan)** — the live read-through alternative.
+- **[`/portaljs-connect-ckan`](/docs/skills/portaljs-connect-ckan)** — the live read-through alternative.
 - **[Backends](/docs/backends)** — integration notes per platform.
 
-<DocsPagination prev="/docs/skills/connect-ckan" next="/docs/skills/define-schema" />
+<DocsPagination prev="/docs/skills/portaljs-connect-ckan" next="/docs/skills/portaljs-define-schema" />

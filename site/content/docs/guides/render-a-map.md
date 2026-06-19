@@ -9,13 +9,13 @@ description: Put a GeoJSON dataset on an interactive map — with /portaljs-add-
 as a view in the dataset's showcase.
 
 > [!info] Before you start
-> You need a portal scaffolded with [`/portaljs-new-portal`](/docs/skills/new-portal). The
+> You need a portal scaffolded with [`/portaljs-new-portal`](/docs/skills/portaljs-new-portal). The
 > source must be **GeoJSON** — a `Feature`, `FeatureCollection`, or geometry object.
 > For tabular data, see [Add tabular data](/docs/guides/add-tabular-data).
 
 ## The AI path — `/portaljs-add-map`
 
-Point [`/portaljs-add-map`](/docs/skills/add-map) at a local file or a public URL:
+Point [`/portaljs-add-map`](/docs/skills/portaljs-add-map) at a local file or a public URL:
 
 ```
 /portaljs-add-map ./data/regions.geojson — Auckland region boundaries

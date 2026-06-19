@@ -12,7 +12,7 @@ editable code.
 
 If you're just starting, read [Get started](/docs) and the
 [Quickstart](/docs/quickstart) first — these guides assume you already have a portal
-scaffolded with [`/portaljs-new-portal`](/docs/skills/new-portal).
+scaffolded with [`/portaljs-new-portal`](/docs/skills/portaljs-new-portal).
 
 ## The guides
 
@@ -32,4 +32,4 @@ scaffolded with [`/portaljs-new-portal`](/docs/skills/new-portal).
 - **[Core concepts](/docs/core-concepts)** — the ideas that make the by-hand path as
   first-class as the AI path.
 
-<DocsPagination prev="/docs/skills/deploy" next="/docs/guides/add-tabular-data" />
+<DocsPagination prev="/docs/skills/portaljs-deploy" next="/docs/guides/add-tabular-data" />

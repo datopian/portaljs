@@ -14,7 +14,7 @@ data is duplicated.
 
 ## When to use it
 
-Run it after [`/portaljs-add-dataset`](/docs/skills/add-dataset) has added the dataset
+Run it after [`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset) has added the dataset
 you want to chart.
 
 ## Inputs
@@ -72,7 +72,7 @@ finishes:
 
 ## Where to go next
 
-- **[`/portaljs-add-map`](/docs/skills/add-map)** — render geographic data on a map instead.
-- **[`/portaljs-deploy`](/docs/skills/deploy)** — publish the portal once it looks right.
+- **[`/portaljs-add-map`](/docs/skills/portaljs-add-map)** — render geographic data on a map instead.
+- **[`/portaljs-deploy`](/docs/skills/portaljs-deploy)** — publish the portal once it looks right.
 
-<DocsPagination prev="/docs/skills/add-resource" next="/docs/skills/add-map" />
+<DocsPagination prev="/docs/skills/portaljs-add-resource" next="/docs/skills/portaljs-add-map" />

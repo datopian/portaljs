@@ -14,7 +14,7 @@ portal. It copies the GeoJSON into `/public/data/`, installs `react-leaflet` /
 
 Use it when your data is geographic (points, lines, polygons) and you want a map
 view of it. If the GeoJSON isn't yet in the portal, add it first with
-[`/portaljs-add-dataset`](/docs/skills/add-dataset); the map is added as a view alongside the
+[`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset); the map is added as a view alongside the
 dataset's other views, so a single showcase can offer both a properties table and a
 map.
 
@@ -69,7 +69,7 @@ It runs the build before reporting success. When it finishes:
 
 ## Where to go next
 
-- **[`/portaljs-add-chart`](/docs/skills/add-chart)** — add a chart to a tabular dataset.
-- **[`/portaljs-deploy`](/docs/skills/deploy)** — publish the portal.
+- **[`/portaljs-add-chart`](/docs/skills/portaljs-add-chart)** — add a chart to a tabular dataset.
+- **[`/portaljs-deploy`](/docs/skills/portaljs-deploy)** — publish the portal.
 
-<DocsPagination prev="/docs/skills/add-chart" next="/docs/skills/connect-ckan" />
+<DocsPagination prev="/docs/skills/portaljs-add-chart" next="/docs/skills/portaljs-connect-ckan" />

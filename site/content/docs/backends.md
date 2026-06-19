@@ -82,7 +82,7 @@ Any system with an HTTP API works. The recipe is always the same:
    or your own components.
 
 Because the output is plain editable code, there's no framework wiring to fight — and
-you can model a new backend skill on [`/portaljs-connect-ckan`](/docs/skills/connect-ckan); see
+you can model a new backend skill on [`/portaljs-connect-ckan`](/docs/skills/portaljs-connect-ckan); see
 [Authoring skills](/docs/authoring-skills).
 
 ## Where to go next

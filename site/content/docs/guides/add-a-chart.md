@@ -14,7 +14,7 @@ file the table already uses — no data duplicated.
 
 ## The AI path — `/portaljs-add-chart`
 
-Tell [`/portaljs-add-chart`](/docs/skills/add-chart) which dataset, which columns, and the
+Tell [`/portaljs-add-chart`](/docs/skills/portaljs-add-chart) which dataset, which columns, and the
 chart type:
 
 ```

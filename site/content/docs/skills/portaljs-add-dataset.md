@@ -13,9 +13,9 @@ file is created.
 
 ## When to use it
 
-Run it after [`/portaljs-new-portal`](/docs/skills/new-portal), once per dataset you want to
+Run it after [`/portaljs-new-portal`](/docs/skills/portaljs-new-portal), once per dataset you want to
 publish. For geographic data you'd rather show on a map, use
-[`/portaljs-add-map`](/docs/skills/add-map) instead (or in addition).
+[`/portaljs-add-map`](/docs/skills/portaljs-add-map) instead (or in addition).
 
 ## Inputs
 
@@ -70,7 +70,7 @@ When it finishes:
 
 ## Where to go next
 
-- **[`/portaljs-add-chart`](/docs/skills/add-chart)** — add a chart to the dataset's showcase.
-- **[`/portaljs-add-map`](/docs/skills/add-map)** — show geographic data on a map.
+- **[`/portaljs-add-chart`](/docs/skills/portaljs-add-chart)** — add a chart to the dataset's showcase.
+- **[`/portaljs-add-map`](/docs/skills/portaljs-add-map)** — show geographic data on a map.
 
-<DocsPagination prev="/docs/skills/new-portal" next="/docs/skills/add-resource" />
+<DocsPagination prev="/docs/skills/portaljs-new-portal" next="/docs/skills/portaljs-add-resource" />

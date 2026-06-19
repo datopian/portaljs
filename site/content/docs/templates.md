@@ -8,7 +8,7 @@ description: The default catalog vs the minimal single-page variant — a manife
 PortalJS ships two starting points. Both are real Next.js projects with the same
 lightweight `components/Table.tsx`, Tailwind setup, and Next 14 config — they differ
 in whether they include the catalog and per-dataset showcase pages.
-[`/portaljs-new-portal`](/docs/skills/new-portal) picks the right one for your brief; you can
+[`/portaljs-new-portal`](/docs/skills/portaljs-new-portal) picks the right one for your brief; you can
 also clone either by hand. For the surfaces these build — Home, Catalog, Showcase —
 see [Core concepts](/docs/core-concepts).
 
@@ -39,7 +39,7 @@ Each entry carries a `namespace`. A portal uses **one** namespace mode for all
 datasets — `theme` (group by subject) or `owner` (group by publisher) — set via
 `NAMESPACE_TYPE` in `lib/datasets.ts`. It only changes the showcase's metadata label;
 the URL is always `/@<namespace>/<slug>`. See [Core concepts](/docs/core-concepts) for
-the rationale. [`/portaljs-add-dataset`](/docs/skills/add-dataset) appends a manifest entry
+the rationale. [`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset) appends a manifest entry
 against this template.
 
 Scaffold it with the CLI (recommended):

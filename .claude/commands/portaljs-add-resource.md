@@ -8,7 +8,7 @@ allowed-tools: Read, Write, Edit, Bash, WebFetch
 Add a **resource** (an additional file) to a dataset that already exists in a
 `portaljs-catalog` portal. Use this when a dataset is more than one file — data + a data
 dictionary + a methodology doc, or quarterly/yearly files under one dataset. Where
-[`/portaljs-add-dataset`](/docs/skills/add-dataset) creates a **new** dataset (one file), this adds
+[`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset) creates a **new** dataset (one file), this adds
 a file to an **existing** one.
 
 Mirrors the Frictionless Data Package model: a dataset holds a `resources[]` array, and the
@@ -124,7 +124,7 @@ was moved into `resources[]` (no data lost).
 
 - **One source of truth.** Resources live on the dataset's `datasets.json` entry. No page
   edits — the showcase loops `getResources(dataset)`.
-- **Per-resource schema.** Describe a resource's fields with [`/portaljs-define-schema`](/docs/skills/define-schema)
+- **Per-resource schema.** Describe a resource's fields with [`/portaljs-define-schema`](/docs/skills/portaljs-define-schema)
   — its Frictionless Table Schema renders under that resource's section.
 - **Single-file stays simple.** Datasets with one file keep the plain `file`/`format`
   shape; migration to `resources[]` only happens when a second file is added.

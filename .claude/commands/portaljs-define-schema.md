@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Bash
 # /portaljs-define-schema
 
 The **authoring** skill for the metadata-profile contract (`lib/metadata`). Where
-[`/portaljs-add-dataset`](/docs/skills/add-dataset) registers *that a dataset exists*, this skill
+[`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset) registers *that a dataset exists*, this skill
 describes *what its data means*: it infers a Frictionless **Table Schema** (fields, types,
 constraints) from the data, adds the **Data Package** descriptor fields a catalog surfaces
 (title, licenses, sources, keywords), and writes them onto the dataset's entry in

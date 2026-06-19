@@ -10,7 +10,7 @@ datasets straight from a live [CKAN](/ckan) instance over its REST API — the
 decoupled, "any backend" path.
 
 > [!info] Before you start
-> You need a portal scaffolded with [`/portaljs-new-portal`](/docs/skills/new-portal) and the
+> You need a portal scaffolded with [`/portaljs-new-portal`](/docs/skills/portaljs-new-portal) and the
 > **root URL of a publicly reachable CKAN instance** (e.g.
 > `https://demo.dev.datopian.com`). The skill appends `/api/3/action/...` itself.
 
@@ -26,7 +26,7 @@ Optionally restrict the catalog to one or more organizations or groups:
 /portaljs-connect-ckan https://demo.dev.datopian.com — orgs: my-org
 ```
 
-[`/portaljs-connect-ckan`](/docs/skills/connect-ckan) verifies the CKAN API is reachable,
+[`/portaljs-connect-ckan`](/docs/skills/portaljs-connect-ckan) verifies the CKAN API is reachable,
 generates a tiny `lib/ckan.ts` fetch client (no runtime dependency), and rewrites the
 catalog (`/search`) and the dataset showcase route to fetch from CKAN. It runs a full
 `next build` and reports how many dataset pages were generated.

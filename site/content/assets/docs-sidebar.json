@@ -38,43 +38,47 @@
       },
       {
         "title": "/portaljs-architect",
-        "href": "/docs/skills/architect"
+        "href": "/docs/skills/portaljs-architect"
       },
       {
         "title": "/portaljs-new-portal",
-        "href": "/docs/skills/new-portal"
+        "href": "/docs/skills/portaljs-new-portal"
       },
       {
         "title": "/portaljs-add-dataset",
-        "href": "/docs/skills/add-dataset"
+        "href": "/docs/skills/portaljs-add-dataset"
       },
       {
         "title": "/portaljs-add-resource",
-        "href": "/docs/skills/add-resource"
+        "href": "/docs/skills/portaljs-add-resource"
       },
       {
         "title": "/portaljs-add-chart",
-        "href": "/docs/skills/add-chart"
+        "href": "/docs/skills/portaljs-add-chart"
       },
       {
         "title": "/portaljs-add-map",
-        "href": "/docs/skills/add-map"
+        "href": "/docs/skills/portaljs-add-map"
       },
       {
         "title": "/portaljs-connect-ckan",
-        "href": "/docs/skills/connect-ckan"
+        "href": "/docs/skills/portaljs-connect-ckan"
       },
       {
         "title": "/portaljs-migrate",
-        "href": "/docs/skills/migrate"
+        "href": "/docs/skills/portaljs-migrate"
       },
       {
         "title": "/portaljs-define-schema",
-        "href": "/docs/skills/define-schema"
+        "href": "/docs/skills/portaljs-define-schema"
+      },
+      {
+        "title": "/portaljs-check-data-quality",
+        "href": "/docs/skills/portaljs-check-data-quality"
       },
       {
         "title": "/portaljs-deploy",
-        "href": "/docs/skills/deploy"
+        "href": "/docs/skills/portaljs-deploy"
       }
     ]
   },

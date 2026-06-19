@@ -5,7 +5,7 @@ title: Deploy
 description: Publish to PortalJS Arc with /portaljs-deploy, or self-host the static export anywhere.
 ---
 
-**Goal:** take the portal live. The fast path is [`/portaljs-deploy`](/docs/skills/deploy) to
+**Goal:** take the portal live. The fast path is [`/portaljs-deploy`](/docs/skills/portaljs-deploy) to
 [**PortalJS Arc**](/docs/arc) — Datopian-managed hosting. Or self-host the static export on
 any host you like.
 
@@ -15,7 +15,7 @@ any host you like.
 /portaljs-deploy
 ```
 
-[`/portaljs-deploy`](/docs/skills/deploy) builds a static export, uploads it to
+[`/portaljs-deploy`](/docs/skills/portaljs-deploy) builds a static export, uploads it to
 [PortalJS Arc](/docs/arc), and prints a live `https://<slug>.arc.portaljs.com` URL. It
 **never reports success on a failing build**, and re-running redeploys the same slug in
 place.
@@ -23,7 +23,7 @@ place.
 No separate login step — the first `/portaljs-deploy` on a new machine signs you in on demand (one
 browser click via GitHub), saves the token to `~/.portaljs/credentials`, and reuses it on
 later deploys. For CI, set `PORTALJS_TOKEN` instead. See the
-[`/portaljs-deploy` skill](/docs/skills/deploy) for details.
+[`/portaljs-deploy` skill](/docs/skills/portaljs-deploy) for details.
 
 > [!info] Static only (for now)
 > Arc serves static exports. The catalog template, `/portaljs-add-dataset`, `/portaljs-migrate`, and

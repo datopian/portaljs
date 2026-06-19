@@ -6,7 +6,7 @@ description: Describe what a dataset's data means — infer a Frictionless Table
 ---
 
 `/portaljs-define-schema` is the **authoring** skill for the metadata-profile contract. Where
-[`/portaljs-add-dataset`](/docs/skills/add-dataset) registers *that a dataset exists*, this skill
+[`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset) registers *that a dataset exists*, this skill
 describes *what its data means*: it infers a Frictionless **Table Schema** (fields, types,
 constraints) from the data, adds the **Data Package** descriptor fields a catalog surfaces
 (title, licenses, sources, keywords), and writes them onto the dataset's entry in
@@ -23,7 +23,7 @@ accept the inferred schema as-is.
 
 ## When to use it
 
-Run it after [`/portaljs-add-dataset`](/docs/skills/add-dataset), once a dataset is in the catalog
+Run it after [`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset), once a dataset is in the catalog
 and you want its showcase to document the columns — their types, meaning, and constraints —
 and carry proper license/source metadata. Skip it for a quick throwaway preview; reach for
 it when the dataset is something other people will read or reuse.
@@ -79,8 +79,8 @@ describe.
 
 ## Where to go next
 
-- **[`/portaljs-add-dataset`](/docs/skills/add-dataset)** — add another dataset to describe.
-- **[`/portaljs-architect`](/docs/skills/architect)** — decide the metadata strategy (Frictionless,
+- **[`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset)** — add another dataset to describe.
+- **[`/portaljs-architect`](/docs/skills/portaljs-architect)** — decide the metadata strategy (Frictionless,
   extended, custom, or multi-profile + DCAT) before authoring.
 
-<DocsPagination prev="/docs/skills/migrate" next="/docs/skills/deploy" />
+<DocsPagination prev="/docs/skills/portaljs-migrate" next="/docs/skills/portaljs-check-data-quality" />
