@@ -92,10 +92,8 @@ async function main() {
   if (!start.ok) throw new Error(`device/code failed: HTTP ${start.status}`)
   const { device_code, user_code, verification_uri, verification_uri_complete, interval, expires_in } = await start.json()
 
-  console.log(`\n  Authorize this device at:  ${verification_uri}`)
-  console.log(`  Your code:                 ${user_code}\n`)
-  console.log('  Opening your browser… (sign in with GitHub, then click Authorize)')
-  console.log('  Headless/SSH? Open the URL above on any device and enter the code.\n')
+  console.log('\n  Opening your browser… sign in with GitHub, then click "Authorize this device".')
+  console.log(`  Didn't get a browser? Open ${verification_uri} and enter: ${user_code}\n`)
   openBrowser(verification_uri_complete || verification_uri)
 
   const deadline = Date.now() + (expires_in || 900) * 1000

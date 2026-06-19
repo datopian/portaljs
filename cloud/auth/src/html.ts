@@ -42,19 +42,31 @@ export function landingPage(): string {
   )
 }
 
-// Device-flow confirmation page: a signed-in user enters/confirms the code shown in their
-// terminal. `code` prefills from the verification_uri_complete link so it's usually one click.
+// Device-flow authorization page. `code` prefills from the verification_uri_complete link the
+// CLI opened, so the common path is one click: the code is shown read-only (for transparency)
+// and the user just confirms "Authorize this device?". We never ask the user to compare it
+// against the terminal — the CLI opened this page on the same machine. The form still requires
+// one explicit signed-in click; a bare GET /activate?code=… never self-approves.
+// When `code` is absent (headless/manual fallback), we show an editable input instead.
 export function activatePage(code: string): string {
+  const body = code
+    ? `<form method="post" action="/activate">
+    <input type="hidden" name="code" value="${esc(code)}">
+    <p class="muted">You're about to authorize this device:</p>
+    <p><code style="font-size:1.2rem;letter-spacing:.1em">${esc(code)}</code></p>
+    <button class="btn btn-primary" type="submit">Authorize this device</button>
+  </form>`
+    : `<form method="post" action="/activate" style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+    <input type="text" name="code" placeholder="XXXX-XXXX" autofocus
+      autocomplete="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase;letter-spacing:.1em">
+    <button class="btn btn-primary" type="submit">Authorize</button>
+  </form>`
   return SHELL(
     'PortalJS Arc — Authorize device',
     `<h1>Authorize <span class="brand">Arc</span> CLI</h1>
-<p class="muted">Confirm the code shown in your terminal to finish signing in.</p>
+<p class="muted">${code ? 'Finish signing in to the Arc CLI.' : 'Enter the code shown in your terminal to finish signing in.'}</p>
 <div class="card">
-  <form method="post" action="/activate" style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
-    <input type="text" name="code" placeholder="XXXX-XXXX" value="${esc(code)}" autofocus
-      autocomplete="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase;letter-spacing:.1em">
-    <button class="btn btn-primary" type="submit">Authorize</button>
-  </form>
+  ${body}
   <p class="muted" style="margin-top:.8rem">Only authorize a code you started yourself in a terminal you trust.</p>
 </div>`
   )
