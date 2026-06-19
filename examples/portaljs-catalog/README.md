@@ -84,6 +84,25 @@ the metadata label on the showcase.
 | `__PROJECT_SLUG__` | URL-safe slug |
 | `__DESCRIPTION__` | One-sentence portal description |
 
+## Branding (placeholder — swap it)
+
+The template ships with the **PortalJS** mark as a clearly-swappable placeholder so a fresh
+portal looks intentional before you customize it: a favicon, a navbar logo (with a tasteful
+spin on hover that respects `prefers-reduced-motion`), and social/PWA icons.
+
+To make it your own, replace the icon files in `public/` with your own brand marks — the
+links in `pages/_document.tsx` and the logo in `components/Navbar.tsx` then need no changes:
+
+| File | Used for |
+|------|----------|
+| `public/icon.svg` | navbar logo + modern-browser favicon (scalable) |
+| `public/favicon.ico` | classic browser-tab favicon (16/32/48) |
+| `public/apple-touch-icon.png` | iOS home-screen icon (180×180) |
+| `public/icon-512.png` | PWA / social card (512×512) |
+
+The navbar's brand text uses the same `__PROJECT_NAME__` token, so it is already set to your
+portal name after scaffolding.
+
 ## Structure
 
 ```
@@ -92,6 +111,10 @@ lib/datasets.ts            — typed loader (getDatasets / getDataset / datasetH
 pages/index.tsx            — landing page: hero + search CTA + suggested chips
 pages/search.tsx           — searchable dataset list, reads manifest via getStaticProps
 pages/[owner]/[slug].tsx   — dynamic dataset showcase (/@<namespace>/<slug>)
+pages/_app.tsx             — renders the Navbar on every page
+pages/_document.tsx        — favicon / icon links + default meta description
 public/data/               — dataset files
+public/{icon.svg,favicon.ico,apple-touch-icon.png,icon-512.png} — branding (placeholder)
+components/Navbar.tsx       — site navbar: logo (hover-spin) + name + link to /search
 components/Table.tsx       — interactive table (search, sort, paginate)
 ```

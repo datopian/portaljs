@@ -202,6 +202,15 @@ find "./$PROJECT_SLUG" -type f \( -name "*.tsx" -o -name "*.ts" -o -name "*.json
 Optionally tailor the `SUGGESTED_QUERIES` array near the top of `pages/index.tsx` to the
 portal's topics (from Round 1) — these are the suggested-search chips under the hero.
 
+**Branding is a placeholder.** The template ships with the PortalJS mark as default branding
+(favicon, navbar logo with a hover-spin, and PWA/social icons) so a fresh portal looks
+intentional out of the box. `__PROJECT_NAME__` substitution already sets the navbar's brand
+text. The icon files are deliberately swappable — tell the user they can replace
+`public/icon.svg`, `public/favicon.ico`, `public/apple-touch-icon.png`, and
+`public/icon-512.png` with their own marks (no code change needed; the links live in
+`pages/_document.tsx` and `components/Navbar.tsx`). Do **not** leave a client portal
+permanently wearing the PortalJS logo.
+
 ### 6. Set the namespace mode
 
 Edit `./$PROJECT_SLUG/lib/datasets.ts` and set `NAMESPACE_TYPE` from the interview:
@@ -277,6 +286,8 @@ Do not report success while type-checking still fails. (A full `next build` happ
   - Catalog:  /search                 (pages/search.tsx — filters datasets.json)
   - Showcase: /@<namespace>/<slug>    (pages/[owner]/[slug].tsx)
   - Namespace mode: NAMESPACE_TYPE
+✓ Branding: PortalJS placeholder mark (favicon + navbar logo) — swap the files in
+  public/ (icon.svg, favicon.ico, apple-touch-icon.png, icon-512.png) for your own.
 ✓ Run: cd PROJECT_SLUG && npm run dev  →  http://localhost:3000
 ```
 
