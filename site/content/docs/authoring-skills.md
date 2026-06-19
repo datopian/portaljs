@@ -99,7 +99,7 @@ with a "next step" pointer if another skill naturally follows.
 
 ## Where to go next
 
-- **[Skills reference](/docs/skills)** — the six skills to model yours on.
+- **[Skills reference](/docs/skills)** — the full skill suite to model yours on.
 - **[The PortalJS vision](https://github.com/datopian/portaljs/blob/main/VISION.md)** —
   the roadmap of upcoming skill families.
 
