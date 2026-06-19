@@ -1,68 +1,656 @@
-import ButtonLink from '@/components/ButtonLink'
-import { H1, H2 } from '@/components/custom/header'
+import { H1 } from '@/components/custom/header'
 import ReactMarkdown from 'react-markdown'
 import { Disclosure } from '@headlessui/react'
 import { Avatar } from '@/components/Avatar'
 import * as FaIcons from 'react-icons/fa'
-import { FAQ } from '@/components/FAQ'
 import { CASE_STUDY_TABLES } from '@/constants'
 import React, { useEffect } from 'react'
-import dynamic from 'next/dynamic'
-const Player = dynamic(() => import('@lottiefiles/react-lottie-player').then(mod => mod.Player), { ssr: false })
 import { XCircleIcon } from '@heroicons/react/24/outline'
-import { useTheme } from 'next-themes'
 
-const questions = [
-  {
-    question: 'How does the migration process work?',
-    answer:
-      'Our streamlined CKAN migration ensures a secure and smooth transition from your self-hosted setup to a fully managed PortalJS Cloud platform. We start with a brief consultation to assess your current environment, then develop a customized migration plan that includes data transfer, validation, and testing—all designed to minimize downtime and disruption. Whether you’re moving from AWS or another hosting solution, our process ensures a seamless switch to a scalable, hassle-free open data portal.',
-  },
-  {
-    question: 'What’s included in the managed service?',
-    answer:
-      'Our fully managed open data platform takes care of everything so you don’t have to. This includes secure hosting, routine maintenance, performance monitoring, and regular security updates. Whether you’re on the Foundation, Institution, or Enterprise plan, your team can focus on data transparency and engagement without worrying about the tech. For detailed features and options, visit our Pricing Page.',
-  },
-  {
-    question: 'What level of customization is possible?',
-    answer:
-      'With PortalJS Cloud, the customization possibilities are endless! On the Foundation Plan, you can tweak the basics—logos, fonts, and colors—so it feels like your own. Need something more personalized? The Institution Plan gives you advanced branding and custom dashboard options. And if you are looking for something truly unique, our Enterprise Plan offers fully bespoke development—basically, if you can imagine it, we can build it! Your portal will be 100% tailored to your needs and vision.',
-  },
-  {
-    question: 'How quickly can I launch my open data portal?',
-    answer:
-      'With PortalJS Cloud, you can launch a fully functional, scalable open data portal in just 5 minutes—faster than any other platform. This rapid open data portal setup means you can immediately start sharing your datasets and engaging your community without delays.',
-  },
-  {
-    question: 'How does PortalJS Cloud compare to a self-hosted CKAN solution?',
-    answer:
-      'Unlike self-hosted CKAN, PortalJS Cloud is a fully managed solution that reduces operational complexity, slashes AWS costs, and improves security and performance. It lets your team focus on data curation and civic engagement rather than technical maintenance.',
-  },
-  {
-    question: 'What support options are available?',
-    answer:
-      'We offer comprehensive support tailored to your chosen plan—from standard support with a 48-hour response time on the Foundation plan to priority assistance with a 24-hour response time on the Institution plan. Enterprise clients also benefit from dedicated account management and bespoke support options.',
-  },
-  {
-    question: 'What pricing tiers are available for PortalJS Cloud?',
-    answer: `PortalJS Cloud offers a range of pricing tiers to suit different needs and budgets.
+// SVG icon paths — keyed to the `icon` field in case study frontmatter
+const ICONS: Record<string, React.ReactNode> = {
+  api: (
+    <>
+      <polyline points="16 18 22 12 16 6" />
+      <polyline points="8 6 2 12 8 18" />
+    </>
+  ),
+  browser: (
+    <>
+      <rect x="2" y="3" width="20" height="14" rx="2" />
+      <path d="M8 21h8M12 17v4" />
+    </>
+  ),
+  'cloud-network': (
+    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z" />
+  ),
+  database: (
+    <>
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5v14c0 1.657 4.03 3 9 3s9-1.343 9-3V5" />
+      <path d="M3 12c0 1.657 4.03 3 9 3s9-1.343 9-3" />
+    </>
+  ),
+  ewallet: (
+    <>
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <path d="M2 10h20" />
+      <circle cx="16.5" cy="14.5" r=".5" fill="currentColor" />
+    </>
+  ),
+  expand: <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />,
+  favorite: (
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  ),
+  hexagonal: (
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+  ),
+  key: (
+    <path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4" />
+  ),
+  layers: (
+    <>
+      <polygon points="12 2 2 7 12 12 22 7 12 2" />
+      <polyline points="2 17 12 22 22 17" />
+      <polyline points="2 12 12 17 22 12" />
+    </>
+  ),
+  magnify: (
+    <>
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.35-4.35" />
+    </>
+  ),
+  menu: <path d="M4 6h16M4 12h16M4 18h16" />,
+  'paint-roller': (
+    <>
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </>
+  ),
+  'presentation-1': (
+    <>
+      <rect x="2" y="3" width="20" height="13" rx="2" />
+      <path d="M8 21h8M12 16v5" />
+    </>
+  ),
+  'presentation-3': (
+    <>
+      <rect x="2" y="3" width="20" height="13" rx="2" />
+      <path d="M8 21h8M12 16v5" />
+    </>
+  ),
+  'presentation-4': (
+    <>
+      <rect x="2" y="3" width="20" height="13" rx="2" />
+      <path d="M8 21h8M12 16v5" />
+    </>
+  ),
+  puzzle: (
+    <>
+      <rect x="2" y="2" width="9" height="9" rx="1" />
+      <rect x="13" y="2" width="9" height="9" rx="1" />
+      <rect x="2" y="13" width="9" height="9" rx="1" />
+      <path d="M18 13v2M16 15h4M18 17v2" />
+    </>
+  ),
+  'repair-tools': (
+    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+  ),
+  rocket: (
+    <>
+      <path d="M4.5 16.5c-1.5 1.3-1.5 3.2 0 4.5" />
+      <path d="M9 11.5C9 7 10.5 3.5 12 2c1.5 1.5 3 5 3 9.5" />
+      <path d="M6.5 14.5C5 13 4 11 4 9c0-4 3.5-7 8-7s8 3 8 7c0 2-1 4-2.5 5.5" />
+      <path d="M9 17.5h6" />
+      <circle cx="12" cy="12" r="1.5" />
+    </>
+  ),
+  server: (
+    <>
+      <rect x="2" y="2" width="20" height="8" rx="2" />
+      <rect x="2" y="14" width="20" height="8" rx="2" />
+      <path d="M6 6h.01M6 18h.01" />
+    </>
+  ),
+  standards: (
+    <>
+      <path d="M9 11l3 3L22 4" />
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+    </>
+  ),
+  verified: (
+    <>
+      <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z" />
+      <path d="m9 12 2 2 4-4" />
+    </>
+  ),
+}
 
-- Forever Free (Open Source): Self-hosted, community-supported version for those who want to build it their way.
+function FeatureIcon({ name }: { name: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-[22px] w-[22px]"
+      aria-hidden="true"
+    >
+      {ICONS[name] ?? <circle cx="12" cy="12" r="9" />}
+    </svg>
+  )
+}
 
-- Foundation Plan: A fully managed solution at $99/month with essential features and basic branding.
+function Tables({ tableData }: { tableData: any[] }) {
+  return (
+    <div className="mx-auto max-w-8xl px-4 sm:px-8 xl:px-12 pb-16">
+      {tableData.map((tbl, index) => (
+        <div className="flex flex-col items-center mt-16" key={index}>
+          <div className="text-2xl font-bold text-slate-900 dark:text-white">{tbl.title}</div>
+          <div className="text-lg text-center mt-4 text-slate-600 dark:text-slate-300">{tbl.description}</div>
+          <table className="mt-12 prose prose-headings:font-headings dark:prose-invert prose-a:break-word text-xs sm:text-base max-w-none w-full text-slate-600 dark:text-slate-300">
+            <thead>
+              <tr className="bg-slate-100 dark:bg-[#1d283a]">
+                {tbl.headers.map((header, idx) => (
+                  <th key={idx} className="whitespace-nowrap px-6 py-4 uppercase text-slate-500 text-sm">
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {tbl.rows.map((row, idx) => (
+                <tr key={idx} className={idx % 2 === 0 ? 'bg-[#fafafa] dark:bg-[#070e19]' : ''}>
+                  {row.map((cell, cellIdx) => (
+                    <td key={cellIdx} className="px-6 py-4 text-sm">
+                      {cellIdx === 0 ? <strong>{cell}</strong> : cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+    </div>
+  )
+}
 
-- Institution Plan: At $299/month, it adds advanced branding, increased storage, and priority support for growing organizations.
+function Journey({
+  problem,
+  solution,
+  results,
+  fullCaseStudy,
+}: {
+  problem: string
+  solution: string
+  results: string
+  fullCaseStudy: string | false
+}) {
+  return (
+    <div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
+        <div className="rounded-xl bg-white dark:bg-slate-800 p-8 shadow-md ring-1 ring-slate-200 dark:ring-slate-700">
+          <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700">
+            <XCircleIcon className="h-6 w-6 text-slate-600 dark:text-slate-300" />
+          </div>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">The Challenge</h3>
+          <div className="prose prose-headings:font-headings dark:prose-invert prose-a:break-word text-slate-600 dark:text-slate-300 leading-relaxed">
+            <ReactMarkdown>{problem}</ReactMarkdown>
+          </div>
+        </div>
 
-- Enterprise Plan: Custom-priced for organizations needing dedicated instances, bespoke development, advanced security, and comprehensive SLAs.
+        <div className="rounded-xl bg-white dark:bg-slate-800 p-8 shadow-md ring-1 ring-slate-200 dark:ring-slate-700">
+          <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-sky-50 dark:bg-sky-900/30">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-6 w-6 text-sky-600 dark:text-sky-400"
+            >
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">The Solution</h3>
+          <div className="prose prose-headings:font-headings dark:prose-invert prose-a:break-word text-slate-600 dark:text-slate-300 leading-relaxed">
+            <ReactMarkdown>{solution}</ReactMarkdown>
+          </div>
+        </div>
 
-Please see our [Pricing Page](https://www.portaljs.com/pricing) for more details or contact us at [portaljs@datopian.com](mailto:portaljs@datopian.com). `,
-  },
-  {
-    question: 'Are there any discounts for annual billing?',
-    answer:
-      'Yes, if you choose annual billing, you can save 16%—effectively getting 2 months free compared to monthly payments.',
-  },
-]
+        <div className="rounded-xl bg-white dark:bg-slate-800 p-8 shadow-md ring-1 ring-slate-200 dark:ring-slate-700">
+          <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-6 w-6 text-blue-600 dark:text-blue-400"
+            >
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <path d="m9 11 3 3L22 4" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">The Impact</h3>
+          <div className="prose prose-headings:font-headings dark:prose-invert prose-a:break-word text-slate-600 dark:text-slate-300 leading-relaxed">
+            <ReactMarkdown>{results}</ReactMarkdown>
+          </div>
+        </div>
+      </div>
+      {fullCaseStudy && (
+        <div className="mt-8 text-blue-400 justify-self-end text-[16px]">
+          <a href={fullCaseStudy} target="_blank" rel="noopener noreferrer">
+            Read the full story →
+          </a>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function HeroSection({
+  title,
+  mainTitle,
+  mainSubtitle,
+  description,
+  portal,
+  authorsDetails,
+  readingTime,
+  keystats,
+  fullCaseStudy,
+  image,
+  problem,
+  solution,
+  results,
+}: {
+  title: string
+  mainTitle: string
+  mainSubtitle: string
+  description: string
+  portal: string[] | undefined
+  authorsDetails: any[]
+  readingTime: string
+  keystats: string[]
+  fullCaseStudy: string | false
+  image: string
+  problem: string
+  solution: string
+  results: string
+}) {
+  return (
+    <section className="max-w-2xl px-4 sm:max-w-8xl justify-center mx-auto sm:px-8 xl:px-12 pb-16">
+      <div className="flex flex-col md:flex-row w-full relative overflow-hidden gap-10">
+        <div>
+          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+            CASE STUDY
+          </span>
+          <h1 className="mt-3 max-w-xl text-4xl font-bold leading-[1.08] tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+            {mainTitle}
+          </h1>
+          <div className="text-slate-600 dark:text-slate-400 sm:text-xl mt-4 max-w-2xl font-medium">
+            {mainSubtitle}
+          </div>
+          <div>
+            <H1 className="sr-only">{title}</H1>
+            <div className="mt-4 text-[16px] leading-6 text-slate-600 dark:text-slate-400 prose prose-headings:font-headings dark:prose-invert prose-a:break-word max-w-none prose-a:text-blue-400 prose-a:no-underline prose-a:font-normal">
+              <ReactMarkdown>{description}</ReactMarkdown>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3.5">
+              {portal && portal[2] && (
+                <a
+                  href={portal[2]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
+                >
+                  See the portal
+                </a>
+              )}
+              <a
+                href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
+                className="inline-flex items-center gap-1.5 rounded-[10px] border border-slate-300 bg-white px-[18px] py-2.5 text-[14.5px] font-semibold text-slate-700 transition-all duration-150 hover:-translate-y-px hover:border-blue-400 hover:text-blue-600"
+              >
+                Book a demo
+              </a>
+              {fullCaseStudy && (
+                <a
+                  href={fullCaseStudy}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-[10px] bg-slate-900 px-[18px] py-2.5 text-[14.5px] font-semibold text-white transition-all duration-150 hover:-translate-y-px hover:bg-slate-700"
+                >
+                  Read full case study
+                </a>
+              )}
+            </div>
+            <div className="flex gap-2.5 items-center mt-8">
+              {authorsDetails && (
+                <div className="flex flex-wrap items-center -space-x-4">
+                  {authorsDetails.map(({ avatar, isDraft, url_path }) => (
+                    <Avatar
+                      key={url_path}
+                      name={null}
+                      img={avatar}
+                      href={url_path && !isDraft ? `/${url_path}` : undefined}
+                    />
+                  ))}
+                </div>
+              )}
+              <div className="flex gap-4 mt-2">
+                <div className="font-semibold">
+                  {readingTime == '1' ? readingTime + ' min read' : readingTime + ' mins read'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <img src={image} alt={title} className="h-fit md:max-w-[50%] rounded-lg" />
+      </div>
+
+      {/* Keystats */}
+      <ul className="grid grid-cols-1 sm:grid-cols-3 my-8 gap-x-16 gap-y-8 w-full mt-10">
+        {keystats.map((stat, index) => (
+          <li
+            key={index}
+            className="text-center ring-1 ring-slate-200 dark:ring-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl p-8 shadow-lg"
+          >
+            <span className="text-2xl lg:text-3xl block w-full font-bold text-blue-600 dark:text-blue-400">
+              {stat.split('/n')[0]}
+            </span>
+            <span className="text-sm block w-full mt-2 text-slate-600 dark:text-slate-400 font-medium">
+              {stat.split('/n')[1]}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <Journey
+        problem={problem}
+        solution={solution}
+        results={results}
+        fullCaseStudy={fullCaseStudy}
+      />
+    </section>
+  )
+}
+
+function Features({
+  features,
+  highlight,
+}: {
+  features: { title: string; text: string; icon: string }[]
+  highlight?: string
+}) {
+  if (!features || features.length === 0) return null
+  return (
+    <section className="w-full border-y border-slate-200 bg-slate-50 py-20 dark:border-slate-800 dark:bg-slate-900/40 sm:py-[88px]">
+      <div className="mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
+        <div className="max-w-[680px]">
+          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+            What we delivered
+          </span>
+          <h2 className="mt-3.5 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+            Everything we built.
+          </h2>
+        </div>
+        <div className="mt-11 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((item, index) =>
+            item ? (
+              <div
+                key={index}
+                className="rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:-translate-y-[3px] hover:border-slate-300 hover:shadow-[0_16px_36px_-20px_rgba(15,23,42,0.28)] dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700"
+              >
+                <div className="mb-4 grid h-[42px] w-[42px] place-items-center rounded-[11px] bg-gradient-to-br from-sky-400/20 to-blue-600/15 text-blue-800 dark:text-blue-300">
+                  <FeatureIcon name={item.icon} />
+                </div>
+                <h3 className="mb-[7px] text-[17.5px] font-semibold text-slate-900 dark:text-white">
+                  {item.title}
+                </h3>
+                <div className="text-[14.5px] text-slate-600 dark:text-slate-300">
+                  <ReactMarkdown>{item.text}</ReactMarkdown>
+                </div>
+              </div>
+            ) : null
+          )}
+        </div>
+        {highlight && (
+          <div className="mt-16 max-w-4xl">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+              Why PortalJS Cloud + CKAN is the perfect pair?
+            </h3>
+            <div className="prose prose-headings:font-headings dark:prose-invert prose-a:break-word mt-6 text-slate-600 dark:text-slate-300">
+              <ReactMarkdown>{highlight}</ReactMarkdown>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function Testimonial({ quote }: { quote: string[] | undefined }) {
+  if (!quote || !quote[0]) return null
+  return (
+    <section className="py-20 border-b border-slate-200 dark:border-slate-800">
+      <div className="mx-auto max-w-4xl px-4 sm:px-8 xl:px-12">
+        <figure className="relative">
+          <div
+            className="pointer-events-none absolute -left-2 -top-4 select-none text-8xl leading-none text-blue-200 dark:text-blue-900 font-serif"
+            aria-hidden="true"
+          >
+            &ldquo;
+          </div>
+          <blockquote className="relative pl-8 text-xl font-medium leading-relaxed text-slate-900 dark:text-white sm:text-2xl">
+            {quote[0]}
+          </blockquote>
+          <figcaption className="mt-8 pl-8 flex items-center gap-4">
+            {quote[1] && (
+              <img
+                src={quote[1]}
+                alt=""
+                className="h-12 w-12 rounded-full object-contain ring-1 ring-slate-200 dark:ring-slate-700 bg-white p-1"
+              />
+            )}
+            <span className="text-base font-semibold text-slate-700 dark:text-slate-300">
+              {quote[2]}
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  )
+}
+
+function SeeLive({
+  portal,
+  images,
+}: {
+  portal: string[] | undefined
+  images: string[] | undefined
+}) {
+  if (!portal && (!images || images.length === 0)) return null
+  const displayUrl = portal?.[2] ? portal[2].replace(/^https?:\/\//, '') : null
+  return (
+    <section className="border-y border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 py-20">
+      <div className="mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
+        <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+          See it live
+        </span>
+        <div className="mt-8 grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_2fr]">
+          {portal && (
+            <div className="lg:pt-4">
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                {portal[0]}
+              </h2>
+              <p className="mt-4 text-[16px] leading-relaxed text-slate-600 dark:text-slate-300">
+                {portal[1]}
+              </p>
+              {portal[2] && (
+                <a
+                  href={portal[2]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
+                >
+                  Visit live portal
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path d="M3 8h10M9 4l4 4-4 4" />
+                  </svg>
+                </a>
+              )}
+            </div>
+          )}
+          {images && images.length > 0 && (
+            <div className="overflow-hidden rounded-2xl shadow-[0_24px_60px_-20px_rgba(15,23,42,0.30)] ring-1 ring-slate-200 dark:ring-slate-700">
+              {/* Browser chrome */}
+              <div className="flex items-center gap-2.5 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-3">
+                <div className="flex gap-1.5">
+                  <div className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-600" />
+                  <div className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-600" />
+                  <div className="h-3 w-3 rounded-full bg-slate-300 dark:bg-slate-600" />
+                </div>
+                {displayUrl && (
+                  <div className="ml-1 flex-1 truncate rounded-md bg-slate-200 dark:bg-slate-700 px-3 py-1 text-xs text-slate-500 dark:text-slate-400">
+                    {displayUrl}
+                  </div>
+                )}
+              </div>
+              <img
+                src={images[0]}
+                alt={portal ? portal[0] : 'Portal screenshot'}
+                className="block w-full"
+              />
+            </div>
+          )}
+        </div>
+        {images && images.length > 1 && (
+          <div
+            className={`mt-6 grid gap-4 ${
+              images.slice(1).length >= 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'
+            }`}
+          >
+            {images.slice(1).map((img: string, i: number) => (
+              <div
+                key={i}
+                className="overflow-hidden rounded-xl ring-1 ring-slate-200 dark:ring-slate-700 shadow-md"
+              >
+                <img src={img} alt={`Screenshot ${i + 2}`} className="block w-full" />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function FAQSection({ faqs }: { faqs: { question: string; answer: string }[] | undefined }) {
+  if (!faqs || faqs.length === 0) return null
+  return (
+    <section className="border-y border-slate-200 dark:border-slate-800 bg-white dark:bg-transparent py-20">
+      <div className="mx-auto max-w-4xl px-4 sm:px-8 xl:px-12">
+        <div className="mb-12">
+          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+            FAQs
+          </span>
+          <h2 className="mt-3.5 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+            Questions answered.
+          </h2>
+        </div>
+        <div className="divide-y divide-slate-200 dark:divide-slate-800">
+          {faqs.map((faq, index) => (
+            <Disclosure key={index}>
+              {({ open }) => (
+                <div className="py-5">
+                  <Disclosure.Button className="flex w-full items-start justify-between text-left">
+                    <span className="text-[17px] font-semibold text-slate-900 dark:text-white pr-8">
+                      {faq.question}
+                    </span>
+                    <span className="ml-6 flex h-7 shrink-0 items-center">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`h-5 w-5 text-blue-500 transition-transform duration-200 ${open ? 'rotate-45' : ''}`}
+                      >
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </span>
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="mt-4 pr-12">
+                    <p className="text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
+                      {faq.answer}
+                    </p>
+                  </Disclosure.Panel>
+                </div>
+              )}
+            </Disclosure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Cta() {
+  return (
+    <section className="w-full pb-[88px] pt-16">
+      <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-12">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0b1830] via-[#10254a] to-[#173a78] px-7 py-12 text-center sm:px-14 sm:py-16">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{ background: 'radial-gradient(50% 90% at 50% -10%,rgba(125,211,252,0.22),transparent 70%)' }}
+          />
+          <div className="relative z-10">
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Ready to build your portal in minutes?
+            </h2>
+            <p className="mx-auto mt-4 max-w-[48ch] text-[17px] text-[#b9c9e4]">
+              Let's discuss how PortalJS can meet your needs.
+            </p>
+            <div className="mt-[30px] flex flex-wrap justify-center gap-3.5">
+              <a
+                href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
+              >
+                Request a Demo
+              </a>
+              <a
+                href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-[10px] border border-white/20 bg-white/[0.06] px-[18px] py-2.5 text-[14.5px] font-semibold text-white transition-all duration-150 hover:-translate-y-px hover:bg-white/[0.12]"
+              >
+                Book a Consultation
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 export default function CaseStudyLayout({ children, ...frontMatter }) {
   const {
@@ -86,107 +674,11 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
     longReadTitle,
     longReadSummary,
     fullCaseStudy = false,
-    faqs
+    faqs,
   } = frontMatter
 
-  const { theme } = useTheme()
-  const _keystats = [
-    ['50% reduction', 'in cloud costs'],
-    ['Zero maintenance', 'overhead'],
-    ['Enhanced UI/UX', '& acessibility'],
-  ]
-
-  const _stats = [
-    { id: 1, name: 'Institutions worldwide', value: '100+' },
-    { id: 2, name: 'Saved per year', value: '$5,000+ ' },
-    { id: 3, name: 'Client satisfaction rate', value: '95%' },
-  ]
-
   const [mainTitle, mainSubtitle] = title.split('/')
-
-  const IconWrapper: React.FC<any> = ({ features }) => {
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 mt-14 mb-20">
-        {features.map((item, index) => {
-          if (item) {
-            const IconComponent = ({ className }) => (
-              <Player
-                autoplay
-                loop
-                src={`/static/icons/${theme}/${item.icon}.json`}
-                style={{ height: '60px', width: '60px' }}
-                className={className}
-              />
-            )
-
-            return IconComponent ? (
-              <div key={index} className="flex items-center gap-3">
-                <div className="flex justify-center items-center p-3 ">
-                  <IconComponent className="mr-2 text-blue-400 min-w-4 min-h-4 dark:-rotate-[4deg] " />
-                </div>
-
-                <div>
-                  <h5 className="text-lg font-bold">
-                    <ReactMarkdown>{item.title}</ReactMarkdown>
-                  </h5>
-                  <p className="text-gray-300 font-medium mt-[2px]">
-                    <ReactMarkdown>{item.text}</ReactMarkdown>
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div key={index}>Icon not found</div>
-            )
-          }
-          return null
-        })}
-      </div>
-    )
-  }
-
   const tableData = CASE_STUDY_TABLES.filter((item) => item.table === table)
-
-  const Tables = ({ tableData }) => {
-    return (
-      <div>
-        {tableData.map((table, index) => (
-          <div className="flex flex-col items-center mt-16" key={index}>
-            <div className="text-2xl font-bold">{table.title}</div>
-            <div className="text-lg text-center mt-4">{table.description}</div>
-            <table className="mt-12 prose prose-headings:font-headings dark:prose-invert prose-a:break-word text-xs sm:text-base max-w-none w-full text-slate-400">
-              <thead>
-                <tr className="bg-slate-100 dark:bg-[#1d283a]">
-                  {table.headers.map((header, idx) => (
-                    <th
-                      key={idx}
-                      className="whitespace-nowrap px-6 py-4 uppercase text-slate-500 text-sm"
-                    >
-                      {header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {table.rows.map((row, idx) => (
-                  <tr
-                    key={idx}
-                    className={`${idx % 2 === 0 ? 'bg-[#fafafa] dark:bg-[#070e19]' : ''
-                      } `}
-                  >
-                    {row.map((cell, cellIdx) => (
-                      <td key={cellIdx} className="px-6 py-4 text-sm">
-                        {cellIdx === 0 ? <strong>{cell}</strong> : cell}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ))}
-      </div>
-    )
-  }
 
   useEffect(() => {
     const slideContainer = document.querySelector('.slider-container')
@@ -195,383 +687,70 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
     }
   }, [])
 
-  const Header = () => {
-    return (
-      <section className="max-w-2xl px-4 sm:max-w-8xl justify-center mx-auto sm:px-8 xl:px-12">
-        <div className="flex flex-col md:flex-row w-full object-cover relative overflow-hidden gap-10">
-          <div className="   ">
-            <span className="text-sm font-bold text-blue-400">CASE STUDY</span>
-            <h1 className="!dark:text-white max-w-xl text-3xl lg:text-6xl font-semibold tracking-tight  drop-shadow font-bold ">
-              {mainTitle}
-            </h1>
-            <div className="dark:text-white sm:text-2xl mt-4 prose dark:prose-invert max-w-2xl font-semibold">
-              {mainSubtitle}
-            </div>
-            <div className="">
-              <H1 className="sr-only">{title}</H1>
-              <H2
-                sub
-                className="mt-4 text-base dark:text-slate-400 dark:opacity-100 prose prose-headings:font-headings dark:prose-invert prose-a:break-word max-w-none prose-a:text-blue-400 prose-a:no-underline prose-a:font-normal text-[16px] leading-6"
-              >
-                <ReactMarkdown>{description}</ReactMarkdown>
-              </H2>
-
-              <div className="flex items-center justify-start mt-6">
-                <div className="flex gap-4">
-                  {portal && (
-                    <ButtonLink
-                      href={portal[2]}
-                      title="Get started with PortalJS Cloud"
-                      className="text-sm"
-                      target="_blank"
-                    >
-                      See the portal
-                    </ButtonLink>
-                  )}
-                  <ButtonLink
-                    href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
-                    title="Book a demo"
-                    style="secondary"
-                    className="text-sm"
-                  >
-                    Book a demo
-                  </ButtonLink>
-                  {fullCaseStudy && <ButtonLink
-                    href={fullCaseStudy}
-                    title="Full case study"
-                    style="tertiary"
-                    className="text-sm z-20"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Read full case study
-                  </ButtonLink>}
-                </div>
-              </div>
-              <div className="flex gap-2.5 items-center mt-8">
-                {authorsDetails && (
-                  <div className="flex flex-wrap items-center -space-x-4  ">
-                    {authorsDetails.map(({ avatar, isDraft, url_path }) => (
-                      <Avatar
-                        key={url_path}
-                        name={null}
-                        img={avatar}
-                        href={url_path && !isDraft ? `/${url_path}` : undefined}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                <div className=" flex gap-4 mt-2">
-                  <div className="font-semibold">
-                    {readingTime == '1'
-                      ? readingTime + ' min read'
-                      : readingTime + ' mins read'}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <img
-            src={image}
-            alt={title}
-            className="h-fit md:max-w-[50%] rounded-lg"
-          />
-        </div>
-
-        <div className=" flex flex-col w-full justify-center mt-8">
-          <ul className="grid grid-cols-1 sm:grid-cols-3 my-8 gap-x-16 gap-y-8 w-full">
-            {keystats.map((stat, index) => (
-              <li
-                key={index}
-                className="text-center ring-1 ring-slate-200 dark:ring-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl p-8 shadow-lg"
-              >
-                <span className="text-xl lg:text-3xl block w-full font-semibold text-blue-400">
-                  {stat.split('/n')[0]}
-                </span>
-                <span className="text-xl lg:text-xl block w-full mt-2">
-                  {stat.split('/n')[1]}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <Journey />
-
-        <div className="text-2xl font-bold mt-20 max-w-5xl mx-auto">Why PortalJS Cloud?</div>
-
-        <div className="flex max-w-5xl justify-self-center ">
-          <IconWrapper features={features} />
-        </div>
-
-        {highlight && (
-          <div className='max-w-5xl mx-auto'>
-            <div className="text-2xl font-bold mt-8 ">
-              Why PortalJS Cloud + CKAN is the perfect pair?
-            </div>
-            <div className="prose prose-headings:font-headings dark:prose-invert prose-a:break-word mt-8">
-              <ReactMarkdown>{highlight}</ReactMarkdown>
-            </div>
-          </div>
-        )}
-        <div className="w-full flex flex-col items-center mt-32">
-          <div className="max-w-4xl relative">
-            <p className=" text-2xl ring-1 ring-slate-200 dark:ring-slate-800 rounded-xl p-10 bg-zinc-50 dark:bg-slate-800/75 shadow-lg ">
-              {quote[0]}
-            </p>
-            <div className="w-full max-w-4xl flex items-center justify-center sm:justify-end mt-6 gap-4 ">
-              {quote[1] != '' && <img
-                src={quote[1]}
-                alt="quote"
-                className="w-12 h-12 object-contain bg-white rounded-full ring-1 ring-slate-200 dark:ring-slate-800"
-              />}
-              <p className="max-4w-xl text-base font-semibold">{quote[2]}</p>
-              <div className="absolute w-16 h-16 sm:w-32 sm:h-32 text-[96px] left-0 sm:-left-16 -top-24 opacity-15 z-10 text-blue-300 rotate-180">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  shapeRendering="geometricPrecision"
-                  textRendering="geometricPrecision"
-                  imageRendering="optimizeQuality"
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  viewBox="0 0 512 379.51"
-                  fill="currentColor"
-                >
-                  <path d="M299.73 345.54c81.25-22.55 134.13-69.68 147.28-151.7 3.58-22.31-1.42-5.46-16.55 5.86-49.4 36.97-146.53 23.88-160.01-60.55C243.33-10.34 430.24-36.22 485.56 46.34c12.87 19.19 21.39 41.59 24.46 66.19 13.33 106.99-41.5 202.28-137.82 247.04-17.82 8.28-36.6 14.76-56.81 19.52-10.12 2.04-17.47-3.46-20.86-12.78-2.87-7.95-3.85-16.72 5.2-20.77zm-267.78 0c81.25-22.55 134.14-69.68 147.28-151.7 3.58-22.31-1.42-5.46-16.55 5.86-49.4 36.97-146.53 23.88-160-60.55-27.14-149.49 159.78-175.37 215.1-92.81 12.87 19.19 21.39 41.59 24.46 66.19 13.33 106.99-41.5 202.28-137.82 247.04-17.82 8.28-36.59 14.76-56.81 19.52-10.12 2.04-17.47-3.46-20.86-12.78-2.87-7.95-3.85-16.72 5.2-20.77z" />
-                </svg>
-              </div>
-              <div className="absolute w-16 h-16 sm:w-32 sm:h-32 text-[96px] right-0 sm:-right-16  opacity-15 z-10 text-blue-300 ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  shape-rendering="geometricPrecision"
-                  text-rendering="geometricPrecision"
-                  image-rendering="optimizeQuality"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  viewBox="0 0 512 379.51"
-                  fill="currentColor"
-                >
-                  <path d="M299.73 345.54c81.25-22.55 134.13-69.68 147.28-151.7 3.58-22.31-1.42-5.46-16.55 5.86-49.4 36.97-146.53 23.88-160.01-60.55C243.33-10.34 430.24-36.22 485.56 46.34c12.87 19.19 21.39 41.59 24.46 66.19 13.33 106.99-41.5 202.28-137.82 247.04-17.82 8.28-36.6 14.76-56.81 19.52-10.12 2.04-17.47-3.46-20.86-12.78-2.87-7.95-3.85-16.72 5.2-20.77zm-267.78 0c81.25-22.55 134.14-69.68 147.28-151.7 3.58-22.31-1.42-5.46-16.55 5.86-49.4 36.97-146.53 23.88-160-60.55-27.14-149.49 159.78-175.37 215.1-92.81 12.87 19.19 21.39 41.59 24.46 66.19 13.33 106.99-41.5 202.28-137.82 247.04-17.82 8.28-36.59 14.76-56.81 19.52-10.12 2.04-17.47-3.46-20.86-12.78-2.87-7.95-3.85-16.72 5.2-20.77z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {portal && (
-            <div className="flex flex-col items-center mt-16 max-w-2xl">
-              <h2 className="text-3xl font-bold text-center">{portal[0]}</h2>
-              <p className="text-lg text-center mt-4">{portal[1]}</p>
-              {portal[2] && <ButtonLink
-                href={portal[2]}
-                title="Explore"
-                className="mt-6 text-sm"
-                style="secondary"
-                target="_blank"
-              >
-                Explore
-              </ButtonLink>}
-            </div>
-          )}
-          {images && (
-            <div className="flex flex-col items-center gap-8 mt-16">
-              {images.map((image: string, index: number) => (
-                <img
-                  key={index}
-                  src={image}
-                  alt={`Image ${index + 1}`}
-                  className="w-full max-w-4xl rounded-xl object-cover"
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {table && <Tables tableData={tableData} />}
-      </section>
-    )
-  }
-
-  const Cta = () => {
-    return (
-      <div className="!max-w-none ring-1 ring-slate-200 dark:ring-slate-800 py-24 bg-zinc-50 dark:bg-slate-800/75 mt-24 relative overflow-hidden">
-        <div className="flex flex-col items-center px-4">
-          <div className="text-3xl font-bold text-center sm">
-            Ready to build your portal in minutes?
-          </div>
-          <p className="mt-8 text-lg text-center sm:text-start">
-            Let’s discuss how PortalJS can meet your needs.
-          </p>
-          <div className="mt-8 flex gap-4">
-            <ButtonLink
-              href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
-              title="Get started with PortalJS Cloud"
-              className="text-sm z-20"
-            >
-              Request a Demo
-            </ButtonLink>
-            <ButtonLink
-              href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
-              title="Book a demo"
-              style="secondary"
-              className="text-sm z-20"
-            >
-              Book a Consultation
-            </ButtonLink>
-          </div>
-        </div>
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 -top-16 z-10 flex transform-gpu justify-center overflow-hidden blur-3xl"
-        >
-          <div
-            style={{
-              clipPath:
-                'polygon(73.6% 51.7%, 91.7% 11.8%, 100% 46.4%, 97.4% 82.2%, 92.5% 84.9%, 75.7% 64%, 55.3% 47.5%, 46.5% 49.4%, 45% 62.9%, 50.3% 87.2%, 21.3% 64.1%, 0.1% 100%, 5.4% 51.1%, 21.4% 63.9%, 58.9% 0.2%, 73.6% 51.7%)',
-            }}
-            className="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-[#80caff] to-[#4f46e5] opacity-25"
-          />
-        </div>
-      </div>
-    )
-  }
-
-  const Stats = () => {
-    return (
-      <div className="py-24">
-        <div className="mx-auto max-w-8xl px-6 lg:px-8">
-          <dl className="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
-            {_stats.map((stat) => (
-              <div
-                key={stat.id}
-                className="mx-auto flex max-w-xs flex-col gap-y-4"
-              >
-                <dt className="text-xl">{stat.name}</dt>
-                <dd className="order-first text-3xl font-semibold sm:text-5xl ">
-                  {stat.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </div>
-    )
-  }
-
-  const Journey = () => {
-    return (
-      <div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
-          <div className="border-t-4 border-red-500 rounded-t-xl p-8 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-800 rounded-xl shadow-lg">
-            <div className="flex gap-4 items-center">
-              <div className="bg-red-900/10 dark:bg-red-900/40 rounded-full h-14 w-14 p-3">
-                <XCircleIcon className="text-red-500" />
-              </div>
-
-              <h3 className="text-xl font-bold"> The Problem</h3>
-            </div>
-
-            <p className="mt-6 prose prose-headings:font-headings dark:prose-invert prose-a:break-word">
-              <ReactMarkdown>{problem}</ReactMarkdown>
-            </p>
-          </div>
-          <div className="border-t-4 border-blue-500 rounded-t-xl p-8 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-800 rounded-xl shadow-lg">
-            <div className="flex gap-4 items-center">
-              <div className="bg-blue-900/10 dark:bg-blue-900/40 rounded-full h-14 w-14 p-3 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  className="lucide lucide-zap h-6 w-6 text-blue-500"
-                >
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                </svg>
-              </div>
-
-              <h3 className="text-xl font-bold"> The Solution</h3>
-            </div>
-
-            <p className="mt-6 prose prose-headings:font-headings dark:prose-invert prose-a:break-word">
-              <ReactMarkdown>{solution}</ReactMarkdown>
-            </p>
-          </div>
-          <div className="border-t-4 border-green-500  rounded-t-xl p-8 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-800 rounded-xl shadow-lg">
-            <div className="flex gap-4 items-center">
-              <div className="bg-green-900/10 dark:bg-green-900/40 rounded-full h-14 w-14 p-3 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  className="lucide lucide-check-circle h-6 w-6 text-green-500"
-                >
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                  <path d="m9 11 3 3L22 4"></path>
-                </svg>
-              </div>
-
-              <h3 className="text-xl font-bold"> The Impact</h3>
-            </div>
-
-            <p className="mt-6 prose prose-headings:font-headings dark:prose-invert prose-a:break-word">
-              <ReactMarkdown>{results}</ReactMarkdown>
-            </p>
-          </div>
-        </div>
-        {fullCaseStudy && <div className='mt-8 text-blue-400 justify-self-end text-[16px]'>
-          <a href={fullCaseStudy} target="_blank" rel="noopener noreferrer">
-            Read the full story →
-          </a>
-        </div>}
-      </div>
-    )
-  }
-
   return (
     <article>
-      <Header />
-      <Cta />
+      <HeroSection
+        title={title}
+        mainTitle={mainTitle}
+        mainSubtitle={mainSubtitle}
+        description={description}
+        portal={portal}
+        authorsDetails={authorsDetails}
+        readingTime={readingTime}
+        keystats={keystats}
+        fullCaseStudy={fullCaseStudy}
+        image={image}
+        problem={problem}
+        solution={solution}
+        results={results}
+      />
+      <Features features={features} highlight={highlight} />
+      <Testimonial quote={quote} />
+      <SeeLive portal={portal} images={images} />
+      <FAQSection faqs={faqs} />
       {longRead && !fullCaseStudy && (longReadLink ? (
-        <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
-          <div className="px-8 py-12 sm:px-12 flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-14">
-            <div>
-              <p className="text-xs font-semibold tracking-widest uppercase text-blue-400 mb-2.5">
-                Full Case Study
-              </p>
-              <h3 className="text-xl sm:text-[22px] font-bold text-slate-900 dark:text-white leading-snug max-w-sm">
-                {longReadTitle || 'Read the full case study'}
-              </h3>
-              {longReadSummary && (
-                <p className="mt-2.5 text-sm text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed">
-                  {longReadSummary}
-                </p>
-              )}
+        <section className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-transparent">
+          <div className="mx-auto max-w-8xl px-4 sm:px-8 xl:px-12 py-14">
+            <div className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 p-8 sm:p-10">
+              {/* left accent */}
+              <div className="absolute inset-y-0 left-0 w-1 rounded-l-2xl bg-gradient-to-b from-sky-400 to-blue-600" />
+              <div className="pl-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+                <div className="max-w-2xl">
+                  <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+                    Deep dive
+                  </span>
+                  <h3 className="mt-2 text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-snug">
+                    {longReadTitle || 'Read the full case study'}
+                  </h3>
+                  {longReadSummary && (
+                    <p className="mt-3 text-[15px] leading-relaxed text-slate-600 dark:text-slate-300 max-w-xl">
+                      {longReadSummary}
+                    </p>
+                  )}
+                </div>
+                <a
+                  href={longReadLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex shrink-0 items-center gap-2 rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
+                >
+                  Read the full story
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-4 h-4"
+                  >
+                    <path d="M3 8h10M9 4l4 4-4 4" />
+                  </svg>
+                </a>
+              </div>
             </div>
-            <a
-              href={longReadLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-[#111] text-sm font-semibold px-6 py-3.5 rounded-lg hover:bg-slate-700 dark:hover:bg-slate-100 transition-colors shrink-0"
-            >
-              Read the full story
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                <path d="M3 8h10M9 4l4 4-4 4"/>
-              </svg>
-            </a>
           </div>
-        </main>
+        </section>
       ) : (
         <main className="flex flex-col mt-16 w-full mx-auto max-w-8xl px-4 sm:px-8 xl:px-12">
           <Disclosure>
@@ -583,7 +762,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                       <p className="text-sm font-bold text-blue-400">LONG READ</p>
                       <div className="flex items-center gap-2">
                         <p className="text-2xl">Hide</p>
-                        <FaIcons.FaAngleDoubleUp className="text-blue-400 mt-1 " />
+                        <FaIcons.FaAngleDoubleUp className="text-blue-400 mt-1" />
                       </div>
                     </div>
                   ) : (
@@ -592,7 +771,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                       <div className="flex items-center gap-2 transition blink">
                         <p className="text-start text-5xl sm:text-7xl max-w-lg sm:mb-16 tracking-tight">
                           Click to read the detailed case study{' '}
-                          <FaIcons.FaAngleDoubleDown className=" inline text-blue-400 -ml-3 mt-1 sm:h-16 sm:w-16 " />
+                          <FaIcons.FaAngleDoubleDown className="inline text-blue-400 -ml-3 mt-1 sm:h-16 sm:w-16" />
                         </p>
                       </div>
                     </div>
@@ -603,8 +782,7 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
                     A Detailed Case Study for a Deep Dive
                   </div>
                   <div className="flex justify-center">
-                    {' '}
-                    <div className="max-w-4xl docs mt-6 prose prose-headings:font-headings dark:prose-invert prose-a:break-word ">
+                    <div className="max-w-4xl docs mt-6 prose prose-headings:font-headings dark:prose-invert prose-a:break-word">
                       {children}
                     </div>
                   </div>
@@ -614,8 +792,8 @@ export default function CaseStudyLayout({ children, ...frontMatter }) {
           </Disclosure>
         </main>
       ))}
-      <Stats />
-      <FAQ faqItems={faqs || questions} />
+      <Cta />
+      {table && <Tables tableData={tableData} />}
     </article>
   )
 }
