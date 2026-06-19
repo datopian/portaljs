@@ -17,3 +17,19 @@ bucket_name = "portaljs-arc-staging"
 [[routes]]
 pattern = "*.staging.arc.portaljs.com/*"
 zone_name = "portaljs.com"
+
+# --- Production --- deploy with: wrangler deploy --env production
+# Prereq: proxied DNS record for *.arc.portaljs.com (e.g. AAAA 100:: proxied) + ACM cert
+# for *.arc.portaljs.com (already enabled). Named envs do NOT inherit top-level bindings/
+# routes — everything is redeclared below.
+[env.production]
+name = "arc-router"
+workers_dev = false
+
+[[env.production.r2_buckets]]
+binding = "ASSETS"
+bucket_name = "portaljs-arc"
+
+[[env.production.routes]]
+pattern = "*.arc.portaljs.com/*"
+zone_name = "portaljs.com"

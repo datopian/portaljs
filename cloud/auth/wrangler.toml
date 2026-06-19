@@ -16,7 +16,24 @@ binding = "DB"
 database_name = "portaljs-arc-staging"
 database_id = "9727b25f-471b-4942-8b16-b9da2391122a"
 
-# Production route (added with the GitHub OAuth app at go-live):
-# [[routes]]
-# pattern = "arc.portaljs.com/*"
-# zone_name = "portaljs.com"
+# --- Production --- deploy with: wrangler deploy --env production
+# Prereq: proxied DNS record for arc.portaljs.com + ACM cert (already enabled) + a
+# PRODUCTION GitHub OAuth app (callback https://arc.portaljs.com/auth/callback). Set
+# GITHUB_CLIENT_ID below to that app's client ID before first prod deploy; set
+# GITHUB_CLIENT_SECRET + SESSION_SECRET via `wrangler secret put --env production`.
+[env.production]
+name = "arc-auth"
+workers_dev = false
+
+[env.production.vars]
+BASE_URL = "https://arc.portaljs.com"
+GITHUB_CLIENT_ID = "REPLACE_WITH_PROD_OAUTH_CLIENT_ID"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "portaljs-arc"
+database_id = "ce13c71f-d039-45f3-95d0-f8005ed986e4"
+
+[[env.production.routes]]
+pattern = "arc.portaljs.com/*"
+zone_name = "portaljs.com"

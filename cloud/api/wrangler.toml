@@ -23,3 +23,27 @@ database_id = "9727b25f-471b-4942-8b16-b9da2391122a"
 # [[routes]]
 # pattern = "api.staging.arc.portaljs.com/*"
 # zone_name = "portaljs.com"
+
+# --- Production --- deploy with: wrangler deploy --env production
+# Prereq: proxied DNS record for api.arc.portaljs.com + ACM cert (covered by *.arc).
+[env.production]
+name = "arc-api"
+workers_dev = false
+
+[env.production.vars]
+ARC_HOST = "arc.portaljs.com"
+MAX_FILES = "5000"
+MAX_BYTES = "104857600"
+
+[[env.production.r2_buckets]]
+binding = "ASSETS"
+bucket_name = "portaljs-arc"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "portaljs-arc"
+database_id = "ce13c71f-d039-45f3-95d0-f8005ed986e4"
+
+[[env.production.routes]]
+pattern = "api.arc.portaljs.com/*"
+zone_name = "portaljs.com"
