@@ -57,6 +57,15 @@ portal:
    'The London Borough of Hounslow collaborated with Datopian to deploy a fully managed data portal leveraging the capabilities of PortalJS Cloud.',
     'https://data.hounslow.gov.uk',
   ]
+faqs:
+  - question: 'How much can a council realistically save by moving to PortalJS Cloud?'
+    answer: 'The London Borough of Hounslow cut its cloud infrastructure costs by 50% after migrating from self-hosted CKAN on AWS. Savings come from eliminating EC2, RDS, S3, and the associated DevOps overhead — moving to a predictable managed service cost instead.'
+  - question: 'Does our IT team still need to manage anything after migration?'
+    answer: 'No. PortalJS Cloud handles all infrastructure management, security patches, updates, and uptime monitoring. Your team focuses on data quality and publishing — not platform maintenance.'
+  - question: 'Will our existing portal URL and dataset links still work?'
+    answer: 'Yes. URL continuity is maintained during migration. Hounslow''s portal remained at data.hounslow.gov.uk and all existing dataset download links stayed fully functional for residents and researchers.'
+  - question: 'Is PortalJS Cloud a good fit for other UK local authorities?'
+    answer: 'Absolutely. PortalJS Cloud is used by multiple UK councils looking to reduce cost and complexity while maintaining a high-quality, accessible open data service for citizens. The managed model is especially well-suited to smaller authorities without dedicated technical teams.'
 table: default
 fullCaseStudy: ""
 ---

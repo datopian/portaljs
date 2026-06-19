@@ -57,6 +57,15 @@ portal:
   [
    'SSEN Open Data Portal', 'Designed for flexibility and scalability, PortalJS allows the frontend to evolve independently from the backend, ensuring seamless updates and a user-centric experience.','https://data.ssen.co.uk'
   ]
+faqs:
+  - question: 'How does PortalJS handle 1TB+ of energy data processed every day?'
+    answer: 'PortalJS is decoupled from the data ingestion layer. SSEN''s 1TB/day ETL pipeline feeds into CKAN''s datastore, while PortalJS serves as a lightweight, cached frontend — meaning data volume does not affect portal performance or user experience.'
+  - question: 'Can the platform reliably serve 10,000+ published datasets?'
+    answer: 'Yes. The CKAN backend scales horizontally for large catalogues. SSEN''s 10K+ datasets with 3.8 million endpoints are served reliably through optimised search, faceting, and API access — without degrading response times.'
+  - question: 'How is sensitive grid infrastructure data protected?'
+    answer: 'Access controls are managed at the CKAN level with role-based permissions. Sensitive operational data can be restricted to authenticated users while public datasets remain openly accessible — all within the same portal, with no additional infrastructure needed.'
+  - question: 'How does open energy data support net-zero goals?'
+    answer: 'By making energy data openly accessible and machine-readable, SSEN enables researchers, planners, and partners to build evidence-based tools that support the energy transition — from grid capacity planning to EV infrastructure modelling and renewable integration analysis.'
 table: ssen
 fullCaseStudy: "https://www.datopian.com/showcase/case-studies/empowering-energy-sector-ckan-portaljs-scottish-southern-electricity-networks"
 ---

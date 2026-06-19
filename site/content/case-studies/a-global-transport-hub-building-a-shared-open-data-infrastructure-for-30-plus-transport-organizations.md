@@ -16,16 +16,14 @@ keystats:
     '80% less manual work/n through automation and workflows',
   ]
 faqs:
-  - question: 'Is PortalJS only for CKAN?'
-    answer: 'No — PortalJS is backend-agnostic. It works equally well with CKAN, OpenMetadata, or custom APIs.'
-  - question: 'Do I need a developer to manage the portal?'
-    answer: 'Not for everyday content. Editors can manage FAQs, About pages, and more via GitHub or your preferred CMS.'
-  - question: 'How long does a PortalJS portal take to launch?'
-    answer: 'Most deployments go live in 1–2 weeks, depending on the features needed.'
-  - question: 'Can we manage our own hosting later?'
-    answer: 'Yes. Many clients start with Datopian-hosted and then move to internal infrastructure. We help with migration.'
-  - question: 'What makes this better than just CKAN?'
-    answer: 'CKAN is great for metadata and APIs. PortalJS adds the human layer — modern search, visualizations, dashboards, and guided user experiences.'
+  - question: 'How does the portal manage data contributions from 30+ transport organisations?'
+    answer: 'PortalJS with CKAN''s multi-organisation model gives each TDC member its own publishing space — with role-based access, structured contribution workflows, and shared metadata standards. One portal, many contributors, full governance and oversight for the central team.'
+  - question: 'What is SDMX and why does it matter for transport data?'
+    answer: 'SDMX (Statistical Data and Metadata eXchange) is an international standard for sharing structured data. TDC uses SDMX-compliant metadata to ensure datasets from different countries and organisations are comparable, interoperable, and machine-readable — enabling consistent cross-border analysis.'
+  - question: 'How does the 80% automation in data ingestion work?'
+    answer: 'Datopian built automated ETL pipelines that ingest, validate, and publish datasets from member organisations without manual intervention. Around 80% of the ingestion workflow runs automatically — reducing staff overhead and ensuring data stays current without human bottlenecks.'
+  - question: 'What does multi-organisation publishing look like in practice?'
+    answer: 'Member organisations log in with their own credentials, upload datasets to their dedicated space, and follow structured publishing flows. Central administrators maintain oversight of metadata quality and access controls — without processing every submission manually.'
 problem:
   'Transport and sustainability data was scattered across disconnected systems—PDFs, spreadsheets, and portals with limited structure. There was no unified place to find consistent, high-quality datasets. Without shared metadata standards or clear contribution processes, organizations struggled to collaborate, often duplicating work. Analysts spent more time cleaning data than analyzing it.'
 solution:

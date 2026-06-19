@@ -50,6 +50,15 @@ portal: [
   'As part of its digital transformation strategy, Lincolnshire County Council migrated to PortalJS Cloud with consulting and migration services by Datopian.',
   'https://data.lincolnshire.gov.uk',
 ]
+faqs:
+  - question: 'How does the migration from CKAN to PortalJS Cloud actually work?'
+    answer: 'Datopian handles the full migration — datasets, resources, organisations, and all metadata transfer seamlessly. Lincolnshire''s 60+ datasets, 10 topic categories, and all download links remained fully intact. The process is designed for minimal disruption with no downtime for end users.'
+  - question: 'How long does a migration like this take?'
+    answer: 'For a catalogue of Lincolnshire''s size, the migration can be completed within a few weeks. The timeline depends on the volume of datasets and any customisation requirements for the new portal design and branding.'
+  - question: 'What are the real cost benefits of PortalJS Cloud over self-hosting?'
+    answer: 'Moving from a dedicated CKAN instance eliminates server administration, security patching, and infrastructure management. For smaller councils without a dedicated technical team, the total cost of ownership is significantly lower — freeing staff to focus on publishing data rather than running servers.'
+  - question: 'Does PortalJS Cloud support publishing to data.gov.uk?'
+    answer: 'Yes. PortalJS Cloud is built to support UK open data requirements, including compatibility with data.gov.uk harvesting workflows and the DCAT metadata standards expected by national data catalogues.'
 table: default
 longReadLink: 'https://www.datopian.com/showcase/case-studies/lincolnshire-county-council-portaljs-cloud-migration'
 longReadTitle: 'How Lincolnshire County Council Modernised Its Open Data Portal with PortalJS Cloud'
