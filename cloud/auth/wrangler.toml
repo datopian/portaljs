@@ -27,7 +27,7 @@ workers_dev = false
 
 [env.production.vars]
 BASE_URL = "https://arc.portaljs.com"
-GITHUB_CLIENT_ID = "REPLACE_WITH_PROD_OAUTH_CLIENT_ID"
+GITHUB_CLIENT_ID = "Ov23liIIMttPpNtaa9o7"
 
 [[env.production.d1_databases]]
 binding = "DB"
