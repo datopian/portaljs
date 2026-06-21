@@ -8,6 +8,7 @@
     "dev": "next dev",
     "prebuild": "npm run generate:dcat",
     "build": "next build",
+    "check-export": "node scripts/check-export.mjs",
     "start": "next start"
   },
   "dependencies": {

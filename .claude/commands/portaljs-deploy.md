@@ -173,7 +173,46 @@ a failing build. Confirm the export landed: `PORTAL_DIR/out/index.html` must exi
 > `fallback: false` (the templates do). If the build complains about a dynamic route, that's
 > the cause.
 
-### 4. Package + upload
+**Large data stays in R2 — do not pull it into the export.** If the portal uses Git LFS for
+data (`.lfsconfig` present, or `git lfs ls-files` returns entries — epic po-g9y), do **not**
+run `git lfs pull` before building. The deployed portal serves large data straight from
+Cloudflare R2: each big dataset's `resource.path` (or `file`) in `datasets.json` is an
+**absolute R2 URL**, which `resourceUrl()` passes through unchanged, so the bytes are fetched
+in the browser from R2 and never copied into `out/`. Pulling LFS bytes into the working tree
+would inline them into the static export (bloat); leaving them as pointers would ship broken
+130-byte stubs. Either way the next step catches it. A large dataset still referenced by a
+*relative* `public/data/...` path is a misconfiguration for deploy — re-add it with
+`/portaljs-add-dataset` (which writes the absolute R2 URL) or, for an OSS self-host without
+R2, keep it genuinely inline (small).
+
+### 4. Verify the export serves data from R2 (no bloat)
+
+A deployed portal must carry **zero dataset bytes** — large data is served from R2, not the
+export. Gate the upload on the export-hygiene check, which fails on (1) Git LFS pointer leaks
+(an LFS-tracked file exported as its stub) and (2) data files at/over the size budget (bytes
+that should live in R2). Framework chunks under `_next/` (incl. duckdb-wasm) are exempt.
+
+```bash
+PORTAL_DIR="."          # ← the portal directory from step 1
+cd "$PORTAL_DIR"
+# Prefer the portal's own script (template ships scripts/check-export.mjs); fall back to a
+# direct node invocation if an older portal doesn't have the npm script wired.
+if npm run | grep -q '^  check-export'; then
+  npm run check-export
+else
+  node scripts/check-export.mjs out 2>/dev/null || true
+fi
+CHECK_EXIT=$?
+```
+
+If the check fails (non-zero), **stop — do not upload**. Surface its message: it names the
+offending files and the fix (reference large data by its absolute R2 URL in `datasets.json`
+via `/portaljs-add-dataset`; don't `git lfs pull` into the export). Re-run from step 3 once
+fixed. If a flagged file is a legitimately large *app* asset (not data), raise the budget:
+`MAX_FILE_MB=<n> npm run check-export`. Portals scaffolded before this check shipped won't
+have the script — skip the gate (the `|| true` above) rather than blocking the deploy.
+
+### 5. Package + upload
 
 Tar the export (gzip; exclude macOS AppleDouble files) and POST it to the Arc API:
 
@@ -212,12 +251,13 @@ Handle the response:
 - **400 / 413** — bad slug or upload too large → surface the JSON `error`.
 - anything else — print the body and stop; don't claim success.
 
-### 5. Report
+### 6. Report
 
 ```
 ✓ Deployed to PortalJS Arc
   - URL:   https://SLUG.arc.portaljs.com
   - Files: <n>   (<bytes> uploaded)
+  - Data:  <k> dataset(s) served from R2, <m> inline   (from the step 4 check)
   - Slug:  SLUG  (re-run /portaljs-deploy to update)
 
 Open the URL to view your live portal.
@@ -232,4 +272,9 @@ Open the URL to view your live portal.
   and manage tokens.
 - **Self-hosting.** Arc is optional. The build output in `out/` is a plain static site you can
   host anywhere; this skill just automates the Arc path.
+- **Large data serves from R2 (epic po-g9y).** The static export ships no dataset bytes — big
+  data is fetched in the browser from Cloudflare R2 via the absolute URLs in `datasets.json`
+  (`resourceUrl()` passthrough). Deploy never pulls LFS bytes into the export, and step 4 gates
+  the upload on an export-hygiene check (no LFS pointer leaks, no oversized files). Set large
+  datasets up with `/portaljs-add-dataset`; the bundled `public/data/` sample stays inline.
 - **Custom domains / SSR.** Not in v1. Arc serves `*.arc.portaljs.com` static sites today.

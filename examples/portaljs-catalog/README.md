@@ -76,6 +76,11 @@ ships every byte. So the template wires large data through **Git LFS → Cloudfl
   the repo or the static export. R2 CORS + range headers are configured and verified
   (`giftless/r2-cors.json`), which also unlocks the DuckDB-Wasm range-query tier.
 
+- **Deploy:** `/portaljs-deploy` serves large data from R2 too — it never pulls LFS bytes into
+  the static export and gates the upload on `npm run check-export` (`scripts/check-export.mjs`),
+  which fails on LFS pointer leaks or oversized files in `out/`. The export stays lean; the
+  bytes stay in R2.
+
 `/portaljs-add-dataset` automates this routing: local files → R2 via LFS by default;
 remote URLs → recorded as-is (passthrough) by default, or adopted into R2 on request.
 Inline storage is a fenced exception for bundled sample data.
