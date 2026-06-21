@@ -54,6 +54,29 @@ That's it. `getStaticPaths` picks up the new `(namespace, slug)` pair at build t
 `/@reference/my-data` renders automatically. CSV and TSV files are previewed in an
 interactive `<Table />`; other formats (`json`, `geojson`) show a download link.
 
+The bundled sample files under `public/data/` are the small reference data that ships
+inline so the portal runs offline. For **large data**, see below.
+
+## Large data (Git LFS → R2)
+
+Committing big files to `public/data/` doesn't scale — git bloats and the static export
+ships every byte. So the template wires large data through **Git LFS → Cloudflare R2**
+(epic po-g9y):
+
+- **`.gitattributes`** routes large data formats (`.csv`, `.tsv`, `.parquet`, `.xlsx`,
+  `.geojson`) through Git LFS. The bundled `public/data/` sample is a fenced exception —
+  it stays inline so the portal runs offline with zero credentials.
+- **`.lfsconfig`** points LFS at the [Giftless](../../giftless) endpoint, which streams
+  the bytes to R2 and leaves a tiny pointer in git. It carries **no credentials** — auth
+  is local-only (see `giftless/README.md`).
+- **Serving:** the browser fetches the bytes straight from R2. A dataset whose data lives
+  in R2 sets its `resource.path` (or `file`) to the **absolute R2 URL** — `resourceUrl()`
+  in `lib/datasets.ts` passes absolute URLs through unchanged, so no bytes are copied into
+  the repo or the static export. R2 CORS + range headers are configured and verified
+  (`giftless/r2-cors.json`), which also unlocks the DuckDB-Wasm range-query tier.
+
+`/portaljs-add-dataset` automates the size-aware routing (small → inline, large → LFS/R2).
+
 ## Why dataset URLs start with `@`
 
 Dataset showcase URLs are namespaced under `@` (`/@<owner-or-theme>/<dataset>`) so they
@@ -113,8 +136,10 @@ pages/search.tsx           — searchable dataset list, reads manifest via getSt
 pages/[owner]/[slug].tsx   — dynamic dataset showcase (/@<namespace>/<slug>)
 pages/_app.tsx             — renders the Navbar on every page
 pages/_document.tsx        — favicon / icon links + default meta description
-public/data/               — dataset files
+public/data/               — bundled SAMPLE data (inline, offline-friendly)
 public/{icon.svg,favicon.ico,apple-touch-icon.png,icon-512.png} — branding (placeholder)
 components/Navbar.tsx       — site navbar: logo (hover-spin) + name + link to /search
 components/Table.tsx       — interactive table (search, sort, paginate)
+.gitattributes             — routes large data formats through Git LFS (→ R2)
+.lfsconfig                 — Git LFS endpoint (Giftless → R2); no credentials
 ```

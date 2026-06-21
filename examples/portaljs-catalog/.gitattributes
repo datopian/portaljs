@@ -1,0 +1,19 @@
+# PortalJS data scaling — Git LFS wiring (epic po-g9y).
+#
+# Large dataset files are versioned with Git LFS; their bytes stream to
+# Cloudflare R2 through Giftless (see .lfsconfig) and only a small pointer stays
+# in git. This keeps data versioned-with-the-repo without git bloat, and lets the
+# browser fetch it over HTTP range requests straight from R2 (CORS + ranges are
+# configured on the bucket — see giftless/r2-cors.json).
+*.csv      filter=lfs diff=lfs merge=lfs -text
+*.tsv      filter=lfs diff=lfs merge=lfs -text
+*.parquet  filter=lfs diff=lfs merge=lfs -text
+*.xlsx     filter=lfs diff=lfs merge=lfs -text
+*.geojson  filter=lfs diff=lfs merge=lfs -text
+
+# Fenced exception (storage decision, po-g9y): the bundled SAMPLE data committed
+# under public/data/ (a few KB each) stays INLINE so `create-portaljs` and
+# `npm run dev` work offline with zero credentials. Keep these as plain text in
+# git; do NOT route them through LFS. This is also the OSS self-host path for
+# users running without R2.
+public/data/** -filter -diff -merge text

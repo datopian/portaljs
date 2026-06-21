@@ -19,8 +19,11 @@ packages everything as deployable artifacts.
 | `giftless.yaml` | Config: JWT auth (no anon), `basic` transfer → `R2Storage`, JWT-signed verify callbacks. |
 | `docker-compose.yml` | One-command run; reads R2 creds from `.env`, key from `./jwt_key`. |
 | `mint-token.py` | Mint a client JWT for a repo (HS256, stdlib only — no deps). |
+| `r2-cors.json` | CORS policy for the data bucket — browser range fetch (phase 3). |
 | `scripts/gen-key.sh` | Generate the HS256 signing key (`./jwt_key`). |
 | `scripts/smoke-test.sh` | Build → run → JWT-secured LFS round-trip to R2 → assert no-token is rejected. |
+| `scripts/set-r2-cors.sh` | Apply `r2-cors.json` to an R2 bucket (via wrangler). |
+| `scripts/verify-r2-cors.py` | Prove a browser CORS ranged GET works against R2. |
 
 `jwt_key` and `.env` are gitignored — **never commit them**.
 
@@ -117,7 +120,36 @@ Cloudflare Workers (unlike the Arc workers in `cloud/`). A live
 4. **DNS + TLS** — a hostname pointed at the container, HTTPS terminated (LB or the
    platform's edge). Giftless serves plain HTTP on `:5000` behind it.
 5. **R2 bucket CORS** — required for **browser** range fetches in the later
-   DuckDB-over-Parquet tier. Untested; tracked in phase 3 (po-g9y.2).
+   DuckDB-over-Parquet tier. **Verified** in phase 3 (po-g9y.2) — see below.
 
 Until a host is provisioned, the smoke test stands the server up locally against the
 real R2 bucket and proves the full JWT-secured round-trip.
+
+## R2 CORS for browser range fetch (phase 3, po-g9y.2)
+
+The query tier (DuckDB-Wasm over Parquet) has the browser issue cross-origin HTTP
+**range** requests straight at R2. That needs CORS on the bucket, exposing the
+range-response headers. The policy lives in [`r2-cors.json`](r2-cors.json):
+`GET`/`HEAD` from any origin, `range` allowed on the request, and
+`Content-Range` / `Accept-Ranges` / `Content-Length` / `ETag` / `Content-Type`
+exposed to the page.
+
+```bash
+./scripts/set-r2-cors.sh              # apply r2-cors.json to the bucket (uses wrangler)
+python3 scripts/verify-r2-cors.py     # prove a real ranged GET + preflight works
+```
+
+> **Why wrangler, not the R2 token?** Bucket-level CORS (`PutBucketCors`) is an
+> account operation; the object-scoped R2 token Giftless uses gets `AccessDenied`.
+> `set-r2-cors.sh` uses wrangler (account-authenticated). The verify script only
+> needs the object token — it presigns a GET (exactly what Giftless's `basic`
+> transfer hands the browser) and checks the CORS + range response.
+
+**Verified against `portaljs-giftless-staging` (2026-06-21):** OPTIONS preflight →
+`204` with `Access-Control-Allow-*`; ranged `GET` → `206 Partial Content`,
+`Content-Range: bytes 0-9/200`, `Accept-Ranges: bytes`, `Access-Control-Allow-Origin`
+and `Access-Control-Expose-Headers` present. The spike's open question — *does
+browser range fetch work against R2?* — is answered: **yes.**
+
+Apply this same policy to any data bucket a deployed portal serves from
+(`./scripts/set-r2-cors.sh <bucket>`).

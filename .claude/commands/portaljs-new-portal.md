@@ -192,12 +192,16 @@ NAME_ESC=$(esc "$PROJECT_NAME")
 SLUG_ESC=$(esc "$PROJECT_SLUG")
 DESC_ESC=$(esc "$DESCRIPTION")
 
-find "./$PROJECT_SLUG" -type f \( -name "*.tsx" -o -name "*.ts" -o -name "*.json" -o -name "*.js" -o -name "*.css" -o -name "*.md" \) \
+find "./$PROJECT_SLUG" -type f \( -name "*.tsx" -o -name "*.ts" -o -name "*.json" -o -name "*.js" -o -name "*.css" -o -name "*.md" -o -name ".lfsconfig" \) \
   | xargs perl -pi -e "
       s/__PROJECT_NAME__/$NAME_ESC/g;
       s/__PROJECT_SLUG__/$SLUG_ESC/g;
       s/__DESCRIPTION__/$DESC_ESC/g"
 ```
+
+`.lfsconfig` carries the `__PROJECT_SLUG__` token in its Git LFS endpoint URL (large data
+is served via Giftless → R2 — see the template README's "Large data" section), so it is
+included in the substitution above.
 
 Optionally tailor the `SUGGESTED_QUERIES` array near the top of `pages/index.tsx` to the
 portal's topics (from Round 1) — these are the suggested-search chips under the hero.
