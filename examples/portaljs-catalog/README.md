@@ -80,6 +80,26 @@ ships every byte. So the template wires large data through **Git LFS → Cloudfl
 remote URLs → recorded as-is (passthrough) by default, or adopted into R2 on request.
 Inline storage is a fenced exception for bundled sample data.
 
+## Query tier — query large data without downloading it
+
+Once data is on R2, the showcase can query it **in place** instead of downloading
+the whole file. Convert CSV/TSV to **Parquet** and the showcase reads it with
+DuckDB-Wasm over HTTP range requests — projection + predicate pushdown mean a
+browser fetches only the row groups and columns a query touches, so a phone can
+query a multi-GB file by pulling a few MB:
+
+```bash
+scripts/csv-to-parquet.sh public/data/orders.csv orders.parquet
+# version with Git LFS (→ R2), then point the resource at the R2 URL with format: "parquet"
+```
+
+A Parquet resource always renders the in-browser SQL explorer; CSV/TSV opt in via
+`DATA_QUERY = 'duckdb'` in `lib/datasets.ts`. The engine runs entirely client-side
+(no server, no catalog DB) and loads only when a query view mounts. For data too
+big for the browser, the same `DataQuery` seam can route to an edge Worker or
+MotherDuck — see [`lib/query/README.md`](lib/query/README.md) for the contract and
+device-tier / fallback guidance.
+
 ## Why dataset URLs start with `@`
 
 Dataset showcase URLs are namespaced under `@` (`/@<owner-or-theme>/<dataset>`) so they

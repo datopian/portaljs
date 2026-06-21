@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import LoadingSpinner from './ui/LoadingSpinner'
 import { DuckDbQuery } from '../lib/query/duckdb'
-import type { Resource } from '../lib/datasets'
+import { resourceUrl, type Resource } from '../lib/datasets'
 
 // A DuckDB-Wasm-backed data view for a single resource. Loads the file into an
 // in-browser DuckDB, previews it, and lets the visitor run SQL against the table
@@ -12,7 +12,10 @@ import type { Resource } from '../lib/datasets'
 const PREVIEW_LIMIT = 50
 
 export default function DataExplorer({ resource }: { resource: Resource }) {
-  const url = `/data/${resource.path}`
+  // resourceUrl() returns the bundled /data/<file> path for local files and the
+  // absolute URL untouched for remote ones (e.g. a Parquet file on R2) — the
+  // latter is what lets DuckDB range-query it in place.
+  const url = resourceUrl(resource)
   const defaultSql = `SELECT * FROM data LIMIT ${PREVIEW_LIMIT}`
 
   // One engine instance per source file.
@@ -22,6 +25,7 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
   const [columns, setColumns] = useState<string[]>([])
   const [rows, setRows] = useState<Record<string, unknown>[]>([])
   const [total, setTotal] = useState<number | null>(null)
+  const [ranged, setRanged] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -37,6 +41,7 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
         const res = await engine.query(defaultSql)
         if (cancelled) return
         setTotal(Number(count.rows[0]?.n ?? 0))
+        setRanged(engine.ranged)
         setColumns(res.columns)
         setRows(res.rows)
       } catch (e) {
@@ -76,6 +81,14 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
             {total.toLocaleString()} rows in <code className="bg-gray-100 px-1 rounded">data</code>
           </span>
         )}
+        {ranged && (
+          <span
+            title="Parquet queried in place over HTTP range requests — only the bytes a query touches are fetched, never the whole file."
+            className="rounded bg-emerald-50 px-1.5 py-0.5 text-xs font-medium text-emerald-700"
+          >
+            queried in place · range requests
+          </span>
+        )}
       </div>
 
       <div className="flex flex-col gap-2 sm:flex-row">
@@ -104,6 +117,9 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
       <p className="mt-1 text-xs text-gray-400">
         Query the dataset as the table <code className="bg-gray-100 px-1 rounded">data</code> — runs
         in your browser with DuckDB-Wasm. ⌘/Ctrl + Enter to run.
+        {ranged
+          ? ' This Parquet file is queried directly on object storage; add a WHERE / column list so only the rows and columns you need are fetched.'
+          : ' Keep a LIMIT on exploratory queries so large results don’t overwhelm the browser.'}
       </p>
 
       <div className="mt-4">

@@ -8,7 +8,10 @@
 
 import type { License, Source, TableSchema } from '../metadata/types'
 
-export type DataFormat = 'csv' | 'tsv' | 'json' | 'geojson'
+// 'parquet' is the columnar format for the query tier: the showcase reads it
+// through DuckDB-Wasm (not the flat papaparse Table), and on R2 it's queried in
+// place over HTTP range requests — see lib/query.
+export type DataFormat = 'csv' | 'tsv' | 'json' | 'geojson' | 'parquet'
 
 // A single file within a dataset (a Frictionless "resource"). A dataset can hold
 // several — data + a data dictionary + methodology, or quarterly files, etc.

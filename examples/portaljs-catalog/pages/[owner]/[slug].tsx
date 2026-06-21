@@ -210,6 +210,11 @@ function ResourceSection({
 }) {
   const url = resourceUrl(resource)
   const tabular = resource.format === 'csv' || resource.format === 'tsv'
+  // Parquet has no flat preview (papaparse can't read it) — it's read through
+  // DuckDB-Wasm, which also range-queries it in place when it lives on R2. So a
+  // Parquet resource always gets the query view, regardless of the DATA_QUERY
+  // flag; CSV/TSV get it only when the portal opts into the 'duckdb' engine.
+  const useQueryView = resource.format === 'parquet' || (tabular && DATA_QUERY === 'duckdb')
   return (
     <section className="mt-10 border-t border-gray-200 pt-6 first:mt-2 first:border-t-0 first:pt-0">
       {showHeading && (
@@ -226,7 +231,7 @@ function ResourceSection({
         <p className="mb-3 text-sm text-gray-500">{resource.description}</p>
       )}
 
-      {tabular && DATA_QUERY === 'duckdb' ? (
+      {useQueryView ? (
         <DataExplorer resource={resource} />
       ) : tabular ? (
         <Table url={url} fullWidth />

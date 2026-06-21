@@ -95,6 +95,7 @@ const MEDIA_TYPES: Record<string, string> = {
   tsv: 'text/tab-separated-values',
   json: 'application/json',
   geojson: 'application/geo+json',
+  parquet: 'application/vnd.apache.parquet',
 }
 
 const FORMAT_LABELS: Record<string, string> = {
@@ -102,6 +103,7 @@ const FORMAT_LABELS: Record<string, string> = {
   tsv: 'TSV',
   json: 'JSON',
   geojson: 'GeoJSON',
+  parquet: 'Parquet',
 }
 
 function mediaType(format?: string): string | undefined {
