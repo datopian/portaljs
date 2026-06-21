@@ -1,0 +1,43 @@
+# Giftless staging config — Git LFS server backed by Cloudflare R2.
+#
+# Differences from the spike (po-e24), which used anonymous auth:
+#   * AUTH_PROVIDERS now uses the bundled JWT provider (no anonymous access).
+#   * PRE_AUTHORIZED_ACTION_PROVIDER is the same JWT provider, so Giftless can
+#     self-sign the short-lived "verify" callback tokens the basic transfer issues.
+#
+# The signing/verification key is NOT baked into this file. It is read from a
+# mounted file (private_key_file) so the secret never lands in git. HS256 (the
+# default) uses one shared symmetric key for both verify and sign — fine for a
+# single-issuer staging deployment (we mint the client tokens too). See README.md
+# for the RS256 split-key hardening path for production.
+
+# Reject everything that does not carry a valid JWT. The JWT provider piggybacks
+# on HTTP Basic (user "_jwt", password = the token) and also accepts a raw
+# "Authorization: Bearer <jwt>" header.
+AUTH_PROVIDERS:
+  - factory: giftless.auth.jwt:factory
+    options:
+      algorithm: HS256
+      private_key_file: /etc/giftless/jwt_key
+      leeway: 60
+
+# Giftless mints its own pre-authorized token for the post-upload "verify" action.
+# Point it at the same JWT provider so it signs those with the same key.
+PRE_AUTHORIZED_ACTION_PROVIDER:
+  factory: giftless.auth.jwt:factory
+  options:
+    algorithm: HS256
+    private_key_file: /etc/giftless/jwt_key
+    default_lifetime: 900
+
+# basic transfer: Giftless hands the client presigned R2 URLs (direct-to-R2
+# upload/download). Sufficient for files < ~5 GB; multipart deferred (po-e24).
+TRANSFER_ADAPTERS:
+  basic:
+    factory: giftless.transfer.basic_external:factory
+    options:
+      storage_class: r2storage:R2Storage
+      storage_options:
+        bucket_name: portaljs-giftless-staging
+        path_prefix: lfs
+      action_lifetime: 900

@@ -1,0 +1,3 @@
+# Secrets — never commit these.
+jwt_key
+.env

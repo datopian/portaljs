@@ -1,0 +1,22 @@
+# Staging Giftless. Reads R2 creds + endpoint from a local .env (see .env.example),
+# and the JWT signing key from ./jwt_key (gitignored; generate with scripts/gen-key.sh).
+#
+#   cp .env.example .env        # fill in R2 creds (or: set -a; . ~/.config/portaljs/giftless-r2.env)
+#   ./scripts/gen-key.sh        # writes ./jwt_key
+#   docker compose up --build -d
+services:
+  giftless:
+    build: .
+    image: portaljs/giftless-r2:staging
+    ports:
+      - "8080:5000"
+    environment:
+      # R2 token creds are read by boto3 as standard AWS_* names.
+      AWS_ACCESS_KEY_ID: "${R2_ACCESS_KEY_ID:?set R2_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${R2_SECRET_ACCESS_KEY:?set R2_SECRET_ACCESS_KEY}"
+      R2_ENDPOINT: "${R2_ENDPOINT:?set R2_ENDPOINT}"
+      R2_REGION: "${R2_REGION:-auto}"
+    volumes:
+      # JWT signing/verification key, mounted read-only. Never baked into the image.
+      - ./jwt_key:/etc/giftless/jwt_key:ro
+    restart: unless-stopped
