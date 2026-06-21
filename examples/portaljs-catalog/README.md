@@ -63,8 +63,9 @@ Committing big files to `public/data/` doesn't scale — git bloats and the stat
 ships every byte. So the template wires large data through **Git LFS → Cloudflare R2**
 (epic po-g9y):
 
-- **`.gitattributes`** routes large data formats (`.csv`, `.tsv`, `.parquet`, `.xlsx`,
-  `.geojson`) through Git LFS. The bundled `public/data/` sample is a fenced exception —
+- **`.gitattributes`** routes added data through Git LFS **per file** — it ships minimal
+  and `/portaljs-add-dataset` appends a path-specific entry for each file it sends to R2
+  (format-agnostic, any binary). The bundled `public/data/` sample is a fenced exception —
   it stays inline so the portal runs offline with zero credentials.
 - **`.lfsconfig`** points LFS at the [Giftless](../../giftless) endpoint, which streams
   the bytes to R2 and leaves a tiny pointer in git. It carries **no credentials** — auth
@@ -75,7 +76,9 @@ ships every byte. So the template wires large data through **Git LFS → Cloudfl
   the repo or the static export. R2 CORS + range headers are configured and verified
   (`giftless/r2-cors.json`), which also unlocks the DuckDB-Wasm range-query tier.
 
-`/portaljs-add-dataset` automates the size-aware routing (small → inline, large → LFS/R2).
+`/portaljs-add-dataset` automates this routing: local files → R2 via LFS by default;
+remote URLs → recorded as-is (passthrough) by default, or adopted into R2 on request.
+Inline storage is a fenced exception for bundled sample data.
 
 ## Why dataset URLs start with `@`
 
