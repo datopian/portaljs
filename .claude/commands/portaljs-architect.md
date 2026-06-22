@@ -35,6 +35,28 @@ Opinionated default stack: `git + giftless/R2 + Parquet + DuckLake + DuckDB`, st
 Cloudflare Pages, Frictionless metadata. Storage stays **S3-compatible**, so R2 is the
 default but never a hard lock-in.
 
+### The two build-time knobs this skill sets
+
+Six slots describe the architecture, but two of them resolve to concrete values the build
+skills read directly. Name both explicitly in the brief — they are what gets *built*:
+
+- **Data tier** — where a dataset's *bytes* live: `inline | LFS | external`. This is the
+  Storage slot made concrete, and it is **per-dataset routing** `/portaljs-add-dataset`
+  applies (see its source-then-size matrix):
+  - **inline** — bytes committed to `public/data/`. A fenced exception only: the template's
+    bundled sample data, or an OSS self-host with no R2 creds. Get-started-fast, zero creds.
+  - **LFS** — bytes stream to Cloudflare R2 via Giftless (Git LFS); a ~134 B pointer stays
+    in git. **The default for any data the user adds**, regardless of size or format.
+  - **external** — bytes already live at a URL (R2 or 3rd-party); the manifest records the
+    absolute URL and copies nothing (passthrough). Parquet-on-R2 queried in place lives here.
+- **Query mode** — how the showcase *computes* over a dataset: the `DATA_QUERY` constant in
+  `lib/datasets.ts`, `flat | duckdb`. This is the Compute slot made concrete, and it is
+  **portal-wide**:
+  - **flat** — fetch + preview the file with papaparse. Lightest; the template default.
+  - **duckdb** — load the file into in-browser DuckDB-Wasm and expose a SQL query view
+    (filter/aggregate/join, no server). A Parquet resource always renders the query view
+    regardless; `duckdb` opts CSV/TSV in too.
+
 ## Steps
 
 ### 1. Interview the user (skip rounds already answered by `$ARGUMENTS`)
@@ -103,6 +125,23 @@ the default):
 | Analytics-grade — aggregate/join/filter, or many/large datasets | **Parquet on R2** | **DuckLake** | **DuckDB** (Wasm→server) |
 | Existing warehouse, or SQL-native team needing a datastore | CKAN datastore / warehouse | backend-native | warehouse engine |
 
+**Data tier (`inline | LFS | external`)** — the per-dataset byte routing the Storage slot
+resolves to (this parameterizes `/portaljs-add-dataset`; first match wins):
+| Situation | Data tier |
+|-----------|-----------|
+| Only the template's bundled sample data, or an OSS self-host with no R2 creds | inline |
+| Data the user adds and wants versioned with the repo (the common case) | **LFS** |
+| Data already at a URL, or multi-GB Parquet queried in place on R2 | external |
+
+A portal can mix tiers per dataset; name the **default** tier (almost always **LFS**) and
+flag any dataset that deviates (e.g. a remote URL recorded as-is = external passthrough).
+
+**Query mode (`DATA_QUERY = flat | duckdb`)** — portal-wide, derived from the purpose:
+- Publishing/discovery only ("show me the rows" + download) → **flat**.
+- Analytics/querying — filter, aggregate, join — or many/large datasets, or any Parquet
+  resource → **duckdb**. (A Parquet resource always renders the query view; `duckdb` extends
+  it to CSV/TSV too. DuckDB-Wasm only loads in the browser, only when a query view mounts.)
+
 **Access · Hosting:**
 - All public → **static**, hosted on **Cloudflare Pages**.
 - Any private / role-based → **runtime + backend RBAC** (CKAN or OpenMetadata owns
@@ -137,6 +176,8 @@ Architecture brief — say "go" to proceed, or correct anything:
     • Hosting:   <slot>      — <why>
     • Metadata:  <slot>      — <why>
     • Namespace: <theme|owner>
+    • Data tier: <inline|LFS|external>   — default for added data; <why>
+    • Query:     DATA_QUERY=<flat|duckdb> — <why>
 
   Deviations from the default: <list, or "none — this is the recommended default">
   Designed-in but built later: <e.g. Git-LFS via giftless, DCAT export, runtime/RBAC>
@@ -146,7 +187,8 @@ Architecture brief — say "go" to proceed, or correct anything:
 
 On confirmation, write the brief to `./ARCHITECTURE.md` in the working directory (create
 or overwrite) so it documents the decision and parameterizes the build skills. Keep it to
-the five slots + reasoning + the deferred items.
+the six slots + the two build-time knobs (data tier + `DATA_QUERY`) + reasoning + the
+deferred items.
 
 ### 5. Hand off to the build skills
 
@@ -154,18 +196,26 @@ Map the brief to concrete next commands and offer to run the first one:
 
 | Decision | Next skill |
 |----------|-----------|
-| Scaffold the portal (always) | `/portaljs-new-portal` — pass the name, description, and the chosen **namespace mode** |
-| Load the datasets | `/portaljs-add-dataset` (per dataset) |
+| Scaffold the portal (always) | `/portaljs-new-portal` — pass the name, description, the chosen **namespace mode**, and the **`DATA_QUERY` mode** |
+| Load the datasets | `/portaljs-add-dataset` (per dataset) — applies the chosen **data tier** (LFS default; external for remote URLs) |
 | Charts / maps on a showcase | `/portaljs-add-chart` · `/portaljs-add-map` |
 | Backend with RBAC / existing CKAN | `/portaljs-connect-ckan` |
 | OpenMetadata backend | `/connect-openmetadata` *(planned)* |
 | Custom / extended / DCAT metadata | `/portaljs-define-schema` — describe a dataset's fields + metadata (Frictionless; DCAT export built later) |
 | Ship it | `/portaljs-deploy` (Cloudflare Pages, or Workers for the runtime mode) |
 
+**Landing the `DATA_QUERY` choice.** The template ships `DATA_QUERY = 'flat'`. If the brief
+chose `duckdb`, set it in the scaffolded portal's `lib/datasets.ts` (the `/portaljs-new-portal`
+step, alongside `NAMESPACE_TYPE`):
+```bash
+perl -pi -e "s/export const DATA_QUERY: 'flat' \\| 'duckdb' = '[a-z]+'/export const DATA_QUERY: 'flat' | 'duckdb' = 'duckdb'/" "./$PROJECT_SLUG/lib/datasets.ts"
+```
+Leave it `flat` otherwise — a Parquet resource still renders the query view on its own.
+
 End by recommending the exact sequence, e.g.:
 ```
-Next: 1) /portaljs-new-portal "<name>" (namespace: <mode>)
-      2) /portaljs-add-dataset for each source
+Next: 1) /portaljs-new-portal "<name>" (namespace: <mode>, DATA_QUERY: <flat|duckdb>)
+      2) /portaljs-add-dataset for each source (tier: <LFS|external|inline>)
       3) /portaljs-deploy to Cloudflare Pages
 ```
 If the user says "go", proceed to run `/portaljs-new-portal` with the inferred name, description,
@@ -181,7 +231,9 @@ EU data portal.
 ```
 From this the skill infers: multi-publisher open-data portal, analytics-grade volume,
 publishing + harvesting. It recommends **Parquet on R2 + DuckLake + DuckDB**, static on
-**Cloudflare Pages**, **Frictionless + DCAT-AP** metadata, `owner` namespace — flags the
-DCAT export and Git-LFS ingest as designed-in/built-later — writes `ARCHITECTURE.md`, and
-hands off to `/portaljs-new-portal` (namespace `owner`) then `/portaljs-add-dataset`. With no arguments, it
-runs the four-round interview first.
+**Cloudflare Pages**, **Frictionless + DCAT-AP** metadata, `owner` namespace — data tier
+**external** (multi-GB Parquet queried in place on R2) with **LFS** for anything ingested,
+and **`DATA_QUERY = 'duckdb'`** because the brief needs querying, not just preview. It flags
+the DCAT export and Git-LFS ingest as designed-in/built-later, writes `ARCHITECTURE.md`, and
+hands off to `/portaljs-new-portal` (namespace `owner`, `DATA_QUERY = 'duckdb'`) then
+`/portaljs-add-dataset`. With no arguments, it runs the four-round interview first.

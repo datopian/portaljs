@@ -53,6 +53,20 @@ Each axis-set resolves into a stack across five slots:
 | **Hosting** | **Cloudflare Pages** (static) · Cloudflare Workers (runtime) · any static host |
 | **Metadata** | **Frictionless** profile · extended · custom · multi-profile + DCAT |
 
+### Two knobs the build skills read directly
+
+Two slots resolve to concrete values the build layer consumes — `/portaljs-architect` names
+both in the brief:
+
+- **Data tier** (`inline | LFS | external`) — the Storage slot as **per-dataset** byte
+  routing `/portaljs-add-dataset` applies. `inline` = committed to `public/data/` (fenced:
+  sample data / no-R2 self-host); `LFS` = streamed to R2 via Giftless, pointer in git (the
+  default for added data); `external` = recorded as an absolute URL, copied nowhere
+  (passthrough; includes Parquet-on-R2 queried in place).
+- **Query mode** (`DATA_QUERY = flat | duckdb`) — the Compute slot as a **portal-wide**
+  constant in `lib/datasets.ts`. `flat` = papaparse preview (default); `duckdb` = in-browser
+  DuckDB-Wasm SQL query view. A Parquet resource renders the query view regardless.
+
 ### Opinionated defaults
 
 When in doubt, PortalJS recommends the **open, cheap, composable** path:
