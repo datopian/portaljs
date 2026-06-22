@@ -65,12 +65,13 @@ with `@`.
 ## Notes
 
 - **TSV** works the same way — `papaparse` auto-detects the delimiter.
-- **Large files (>5MB)** load slowly in the browser; consider server-side pagination
-  for production.
+- **Large files (>5MB)** load slowly in the browser. Don't commit them inline —
+  route them through Git-LFS + R2 and query them in place. See
+  [Scaling data / large files](/docs/guides/scaling-data).
 
 ## Where to go next
 
 - **[Add a chart](/docs/guides/add-a-chart)** — visualize the data you just added.
 - **[Render a map](/docs/guides/render-a-map)** — for geographic data.
 
-<DocsPagination prev="/docs/guides" next="/docs/guides/add-a-chart" />
+<DocsPagination prev="/docs/guides" next="/docs/guides/scaling-data" />

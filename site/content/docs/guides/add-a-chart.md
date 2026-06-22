@@ -76,4 +76,4 @@ server code.
 - **[Render a map](/docs/guides/render-a-map)** — for geographic data.
 - **[Deploy](/docs/guides/deploy)** — publish once it looks right.
 
-<DocsPagination prev="/docs/guides/add-tabular-data" next="/docs/guides/render-a-map" />
+<DocsPagination prev="/docs/guides/scaling-data" next="/docs/guides/render-a-map" />

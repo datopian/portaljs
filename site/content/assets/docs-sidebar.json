@@ -94,6 +94,10 @@
         "href": "/docs/guides/add-tabular-data"
       },
       {
+        "title": "Scaling data / large files",
+        "href": "/docs/guides/scaling-data"
+      },
+      {
         "title": "Add a chart",
         "href": "/docs/guides/add-a-chart"
       },

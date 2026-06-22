@@ -19,6 +19,7 @@ scaffolded with [`/portaljs-new-portal`](/docs/skills/portaljs-new-portal).
 | Guide | What you'll do |
 | ----- | -------------- |
 | [Add tabular data](/docs/guides/add-tabular-data) | Add a CSV, TSV, or JSON dataset and render it as a sortable table. |
+| [Scaling data / large files](/docs/guides/scaling-data) | Move from inline files to Git-LFS + R2 and the in-browser DuckDB query tier. |
 | [Add a chart](/docs/guides/add-a-chart) | Add a line, bar, area, pie, or scatter chart to a dataset page. |
 | [Render a map](/docs/guides/render-a-map) | Put a GeoJSON dataset on an interactive map. |
 | [Connect a CKAN backend](/docs/guides/connect-a-ckan-backend) | Wire the portal to a live CKAN instance — the decoupled path. |
