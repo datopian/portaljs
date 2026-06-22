@@ -1,0 +1,65 @@
+{
+  // PortalJS — Giftless LFS host on Cloudflare Containers (staging).
+  // Deploy:  cd giftless/cloudflare && ./scripts/deploy.sh
+  // The container runs the giftless/ image (../Dockerfile.cloudflare); this Worker
+  // fronts it. See cloudflare/README.md for the full runbook + go-live handoff.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "giftless-staging",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-01-10",
+  "account_id": "83025b28472d6aa2bf5ae59f3724aa78",
+
+  // Staging is reachable at https://giftless-staging.<account>.workers.dev.
+  // Custom hostname (lfs.staging.portaljs.com) is a DNS/ACM handoff — see README
+  // "Go-live" — and mirrors cloud/INFRA.md (routes added once DNS + cert exist).
+  "workers_dev": true,
+
+  // Go-live: point a custom hostname at this Worker once DNS + an ACM cert exist
+  // (Universal SSL doesn't cover multi-label subdomains — see cloud/INFRA.md §2b).
+  // "routes": [
+  //   { "pattern": "lfs.staging.portaljs.com/*", "zone_name": "portaljs.com" }
+  // ],
+
+  // Non-secret config. R2 creds + the JWT key are SECRETS (wrangler secret put),
+  // never here. R2_ENDPOINT is the account's S3 endpoint (account id is public).
+  "vars": {
+    "R2_ENDPOINT": "https://83025b28472d6aa2bf5ae59f3724aa78.r2.cloudflarestorage.com",
+    "R2_REGION": "auto"
+  },
+
+  "containers": [
+    {
+      "class_name": "GiftlessContainer",
+      // Build the CF image from the giftless/ dir (one shared build context — the
+      // CF Dockerfile reuses r2storage.py + giftless.yaml, no duplication).
+      "image": "../Dockerfile.cloudflare",
+      "image_build_context": "..",
+      // basic = 1 GiB / (1/4) vCPU / 4 GB disk. uwsgi+python is comfortable here;
+      // lite (256 MiB) is too tight. Revisit if memory-pressured.
+      "instance_type": "basic",
+      // Singleton service (Giftless is stateless); a tiny headroom for rollouts.
+      "max_instances": 2
+    }
+  ],
+
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "GIFTLESS",
+        "class_name": "GiftlessContainer"
+      }
+    ]
+  },
+
+  "migrations": [
+    {
+      "tag": "v1",
+      // Container-backing DOs must be SQLite-backed.
+      "new_sqlite_classes": ["GiftlessContainer"]
+    }
+  ],
+
+  "observability": {
+    "enabled": true
+  }
+}

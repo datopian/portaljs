@@ -1,0 +1,19 @@
+{
+  "name": "giftless-cloudflare",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloudflare Containers deploy of the Giftless LFS-on-R2 host (staging)",
+  "scripts": {
+    "deploy": "./scripts/deploy.sh",
+    "smoke": "./scripts/smoke-remote.sh",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cloudflare/containers": "^0.3.7"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250101.0",
+    "typescript": "^5.5.0",
+    "wrangler": "^4.0.0"
+  }
+}

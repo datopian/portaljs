@@ -105,6 +105,14 @@ client tokens. Set `algorithm: RS256` and the `*_key_file` paths in `giftless.ya
 
 ## Deploying to a live staging host (infra handoff)
 
+> **Live (po-g9y.10):** this image now runs on **Cloudflare Containers** at
+> `https://giftless-staging.datopian.workers.dev`. The deploy (Worker + container
+> config, secret wiring, runbook) lives in [`cloudflare/`](cloudflare/) —
+> `cd cloudflare && ./scripts/deploy.sh`, verify with `./scripts/smoke-remote.sh`.
+> The remaining go-live items (custom hostname, RS256) are tracked in
+> [`cloudflare/README.md`](cloudflare/README.md#go-live-handoff-remaining-for-production).
+> The generic checklist below is retained for reference / alternative hosts.
+
 Giftless is a long-running Python/uwsgi container — it does **not** run on
 Cloudflare Workers (unlike the Arc workers in `cloud/`). A live
 `giftless.staging.portaljs.com` needs, mirroring `cloud/INFRA.md`:

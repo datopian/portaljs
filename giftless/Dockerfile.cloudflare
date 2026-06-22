@@ -1,0 +1,36 @@
+# Giftless + R2 backend, packaged for Cloudflare Containers.
+#
+# Same image as ./Dockerfile (the local/compose deploy), with ONE difference: the
+# JWT signing key. Compose mounts it as a file (`-v ./jwt_key:/etc/giftless/jwt_key`);
+# Cloudflare Containers have no secret-file mounts — secrets arrive as env vars. So
+# the entrypoint materializes /etc/giftless/jwt_key from $GIFTLESS_JWT_KEY at boot.
+# Everything else (giftless.yaml, r2storage.py, the uwsgi command) is identical.
+#
+# Build context is the giftless/ dir (set via image_build_context in
+# cloudflare/wrangler.jsonc) so we reuse r2storage.py + giftless.yaml unchanged —
+# no duplication, no drift.
+FROM datopian/giftless:latest
+
+# The base image drops to a non-root USER, so a `RUN chmod` is denied and the
+# runtime can't write /etc/giftless. Run as root: the entrypoint must mkdir
+# /etc/giftless and write the key there (the path giftless.yaml expects, shared
+# unchanged with the compose deploy), and uwsgi is happy as root in a container.
+USER root
+
+# R2Storage subclass + config baked onto the PYTHONPATH (same as ./Dockerfile).
+# --chmod sets the exec bit at COPY time (BuildKit) — no separate RUN needed.
+COPY r2storage.py /app/r2storage.py
+COPY giftless.yaml /app/giftless.yaml
+COPY --chmod=0755 cloudflare/container-entrypoint.sh /usr/local/bin/container-entrypoint.sh
+
+# Pre-create the key dir so the entrypoint's write is a no-surprise.
+RUN mkdir -p /etc/giftless
+
+ENV PYTHONPATH=/app \
+    GIFTLESS_CONFIG_FILE=/app/giftless.yaml
+
+EXPOSE 5000
+
+# tini reaps the uwsgi children; the entrypoint writes the JWT key then execs uwsgi
+# (plain HTTP on :5000 — the fronting Worker terminates TLS at the edge).
+ENTRYPOINT ["tini", "--", "/usr/local/bin/container-entrypoint.sh"]
