@@ -62,7 +62,7 @@ export default function CompareIndex() {
 
   const title = "Compare PortalJS | Open Source Data Portal Comparisons"
   const description = "Compare PortalJS with other data portals: OpenDataSoft, CKAN, Socrata and more. See the advantages of our open source approach.";
-  const canonical = "https://portaljs.com/compare";
+  const canonical = "https://www.portaljs.com/compare";
 
 
   return (
@@ -71,8 +71,8 @@ export default function CompareIndex() {
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           {/* SEO */}
           <OrganizationJsonLd
-            url="https://portaljs.com"
-            logo="https://portaljs.com/icon.png"
+            url="https://www.portaljs.com"
+            logo="https://www.portaljs.com/icon.png"
           />
           <Head>
             {generateNextSeo({
@@ -80,12 +80,12 @@ export default function CompareIndex() {
               description: description,
               canonical: canonical,
               openGraph: {
-              url: 'https://portaljs.com/compare',
+              url: 'https://www.portaljs.com/compare',
               title,
               description,
               images: [
                 {
-                  url: 'https://portaljs.com/static/img/seo.webp',
+                  url: 'https://www.portaljs.com/static/img/seo.webp',
                   width: 1200,
                   height: 630,
                   alt: 'PortalJS Comparisons',
@@ -104,7 +104,7 @@ export default function CompareIndex() {
               },
               {
                 name: 'Compare',
-                item: 'https://portaljs.com/compare',
+                item: 'https://www.portaljs.com/compare',
               }
             ]}
           />

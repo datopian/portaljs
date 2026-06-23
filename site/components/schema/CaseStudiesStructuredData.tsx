@@ -12,19 +12,19 @@ export function CaseStudiesStructuredData({ casestudies }) {
       />
       <Head>
         {generateNextSeo({
-          title: "Showcase of Case Studies",
-          description: "See our client stories.",
-          canonical: "https://www.portaljs.com/showcase",
+          title: "Case Studies | PortalJS — Real Open Data Portal Implementations",
+          description: "Discover how governments, research institutions, and enterprises worldwide build powerful open data portals with PortalJS. Real client stories and proven outcomes.",
+          canonical: "https://www.portaljs.com/case-studies",
           openGraph: {
-            url: 'https://www.portaljs.com/showcase',
-            title: 'Showcase of Case Studies',
-            description: 'See our client stories.',
+            url: 'https://www.portaljs.com/case-studies',
+            title: 'Case Studies | PortalJS — Real Open Data Portal Implementations',
+            description: 'Discover how governments, research institutions, and enterprises worldwide build powerful open data portals with PortalJS. Real client stories and proven outcomes.',
             site_name: 'PortalJS',
             type: 'website',
             images: [
               {
-                url: 'https://portaljs.com/static/img/seo.webp',
-                alt: 'PortalJS Cloud',
+                url: 'https://www.portaljs.com/static/img/seo.webp',
+                alt: 'PortalJS — Open Data Portal Case Studies',
                 width: 1280,
                 height: 720,
                 type: 'image/webp',
@@ -32,9 +32,9 @@ export function CaseStudiesStructuredData({ casestudies }) {
             ],
           },
           twitter: {
-          cardType: 'summary_large_image',
-          site: '@PortalJS_',
-        },
+            cardType: 'summary_large_image',
+            site: '@PortalJS_',
+          },
         })}
       </Head>
       <BreadcrumbJsonLd
@@ -44,8 +44,8 @@ export function CaseStudiesStructuredData({ casestudies }) {
             item: 'https://www.portaljs.com',
           },
           {
-            name: 'Showcase',
-            item: 'https://www.portaljs.com/showcase',
+            name: 'Case Studies',
+            item: 'https://www.portaljs.com/case-studies',
           },
         ]}
       />

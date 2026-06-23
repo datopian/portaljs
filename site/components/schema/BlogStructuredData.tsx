@@ -12,19 +12,19 @@ export function BlogStructuredData({ blogs }) {
       />
       <Head>
         {generateNextSeo({
-          title: "Blog",
-          description: "Discover insights, updates and stories about PortalJS Cloud. Stay informed about open data solutions and enhance your data portal skills.",
+          title: "Blog | PortalJS — Open Data Portal Insights & Updates",
+          description: "Discover insights, tutorials, and updates about PortalJS Cloud and open data portals. Stay informed about open data solutions, AI integration, and best practices.",
           canonical: "https://www.portaljs.com/blog",
           openGraph: {
           url: 'https://www.portaljs.com/blog',
-          title: 'Blog',
-          description: 'Discover insights, updates and stories about PortalJS Cloud. Stay informed about open data solutions and enhance your data portal skills.',
+          title: 'Blog | PortalJS — Open Data Portal Insights & Updates',
+          description: 'Discover insights, tutorials, and updates about PortalJS Cloud and open data portals. Stay informed about open data solutions, AI integration, and best practices.',
           site_name: 'PortalJS',
           type: 'website',
           images: [
             {
-              url: 'https://portaljs.com/static/img/seo.webp',
-              alt: 'PortalJS Cloud',
+              url: 'https://www.portaljs.com/static/img/seo.webp',
+              alt: 'PortalJS Blog — Open Data Insights',
               width: 1280,
               height: 720,
               type: 'image/webp',

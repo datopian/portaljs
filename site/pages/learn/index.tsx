@@ -62,9 +62,9 @@ const LearnPage = () => {
         {generateNextSeo({
           title: "Learn Data Management",
           description: "Master the fundamentals of data management through our comprehensive learning paths. Choose a topic below to explore in-depth guides and best practices.",
-          canonical: "https://portaljs.com/learn",
+          canonical: "https://www.portaljs.com/learn",
           openGraph: {
-          url: 'https://portaljs.com/learn',
+          url: 'https://www.portaljs.com/learn',
           title: 'Learn Data Management',
           description: 'Master the fundamentals of data management through our comprehensive learning paths. Choose a topic below to explore in-depth guides and best practices.',
           site_name: 'PortalJS',

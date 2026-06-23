@@ -39,17 +39,17 @@ export default function Purview() {
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           {/* 1. Your logo structured data */}
           <OrganizationJsonLd
-            url="https://portaljs.com"
-            logo="https://portaljs.com/icon.png"
+            url="https://www.portaljs.com"
+            logo="https://www.portaljs.com/icon.png"
           />
           {/* 2. Base SEO tags */}
           <Head>
             {generateNextSeo({
               title: "Turn Microsoft Purview into a Business-Friendly Data Catalog",
               description: "Transform Microsoft Purview's technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single Microsoft Purview instance.",
-              canonical: "https://portaljs.com/purview",
+              canonical: "https://www.portaljs.com/purview",
               openGraph: {
-              url: 'https://portaljs.com/purview',
+              url: 'https://www.portaljs.com/purview',
               title: 'Turn Microsoft Purview into a Business-Friendly Data Catalog',
               description: 'Transform Microsoft Purview\'s technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single Microsoft Purview instance.',
               site_name: 'PortalJS',
@@ -65,7 +65,7 @@ export default function Purview() {
               },
               {
                 name: 'Microsoft Purview',
-                item: 'https://portaljs.com/purview',
+                item: 'https://www.portaljs.com/purview',
               },
             ]}
           />

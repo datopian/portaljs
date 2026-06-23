@@ -2,8 +2,6 @@ import { Disclosure, Tab } from '@headlessui/react'
 import ReactMarkdown from 'react-markdown'
 import Layout from '@/components/Layout'
 import React from 'react'
-import { generateNextSeo } from 'next-seo/pages';
-import Head from 'next/head';
 import { FaqStructuredData } from '@/components/schema/FaqStructuredData'
 
 export const questions = [
@@ -238,12 +236,6 @@ See more details on our [pricing page](https://portaljs.com/pricing).`,
 export default function FAQ() {
   return (
     <Layout isHomePage={true}>
-      <Head>
-        {generateNextSeo({
-          title: "FAQ",
-          description: "Frequently Asked Questions about PortalJS Cloud.",
-        })}
-      </Head>
       <FaqStructuredData />
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12 w-full">

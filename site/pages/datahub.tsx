@@ -38,16 +38,16 @@ export default function DataHub() {
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           <OrganizationJsonLd
-            url="https://portaljs.com"
-            logo="https://portaljs.com/icon.png"
+            url="https://www.portaljs.com"
+            logo="https://www.portaljs.com/icon.png"
           />
           <Head>
             {generateNextSeo({
               title: "Turn DataHub into a Business-Friendly Data Catalog",
               description: "Transform DataHub's technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single DataHub instance.",
-              canonical: "https://portaljs.com/datahub",
+              canonical: "https://www.portaljs.com/datahub",
               openGraph: {
-              url: 'https://portaljs.com/datahub',
+              url: 'https://www.portaljs.com/datahub',
               title: 'Turn DataHub into a Business-Friendly Data Catalog',
               description: 'Transform DataHub\'s technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single DataHub instance.',
               site_name: 'PortalJS',
@@ -62,7 +62,7 @@ export default function DataHub() {
               },
               {
                 name: 'DataHub',
-                item: 'https://portaljs.com/datahub',
+                item: 'https://www.portaljs.com/datahub',
               },
             ]}
           />

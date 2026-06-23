@@ -192,21 +192,21 @@ export default function PortalJSvsDKAN() {
     <Layout isHomePage={true}>
       {/* SEO */}
       <OrganizationJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
       <Head>
         {generateNextSeo({
           title: "PortalJS vs DKAN | Modern React vs Drupal-based Data Portal",
           description: "Compare PortalJS with DKAN: See how our modern React frontend delivers better performance, easier maintenance, and lower costs than Drupal-based DKAN.",
-          canonical: "https://portaljs.com/compare/dkan",
+          canonical: "https://www.portaljs.com/compare/dkan",
           openGraph: {
-          url: 'https://portaljs.com/compare/dkan',
+          url: 'https://www.portaljs.com/compare/dkan',
           title: 'PortalJS vs DKAN | Modern React vs Drupal-based Data Portal',
           description: 'Compare PortalJS with DKAN: See how our modern React frontend delivers better performance, easier maintenance, and lower costs than Drupal-based DKAN.',
           images: [
             {
-              url: 'https://portaljs.com/static/img/seo.webp',
+              url: 'https://www.portaljs.com/static/img/seo.webp',
               width: 1200,
               height: 630,
               alt: 'PortalJS vs DKAN Comparison',
@@ -225,11 +225,11 @@ export default function PortalJSvsDKAN() {
           },
           {
             name: 'Compare',
-            item: 'https://portaljs.com/compare',
+            item: 'https://www.portaljs.com/compare',
           },
           {
             name: 'DKAN',
-            item: 'https://portaljs.com/compare/dkan',
+            item: 'https://www.portaljs.com/compare/dkan',
           }
         ]}
       />

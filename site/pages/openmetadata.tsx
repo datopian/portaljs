@@ -40,17 +40,17 @@ export default function OpenMetadata() {
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           {/* 1. Your logo structured data */}
           <OrganizationJsonLd
-            url="https://portaljs.com"
-            logo="https://portaljs.com/icon.png"
+            url="https://www.portaljs.com"
+            logo="https://www.portaljs.com/icon.png"
           />
           {/* 2. Base SEO tags */}
           <Head>
             {generateNextSeo({
               title: "Turn OpenMetadata into a Business-Friendly Data Catalog",
               description: "Transform OpenMetadata's technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single OpenMetadata instance.",
-              canonical: "https://portaljs.com/openmetadata",
+              canonical: "https://www.portaljs.com/openmetadata",
               openGraph: {
-              url: 'https://portaljs.com/openmetadata',
+              url: 'https://www.portaljs.com/openmetadata',
               title: 'Turn OpenMetadata into a Business-Friendly Data Catalog',
               description: 'Transform OpenMetadata\'s technical interface into intuitive data catalogs for business users. Create multiple user-specific portals from a single OpenMetadata instance.',
               site_name: 'PortalJS',
@@ -66,7 +66,7 @@ export default function OpenMetadata() {
               },
               {
                 name: 'OpenMetadata',
-                item: 'https://portaljs.com/openmetadata',
+                item: 'https://www.portaljs.com/openmetadata',
               },
             ]}
           />

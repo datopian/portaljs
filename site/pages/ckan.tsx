@@ -15,17 +15,17 @@ export default function CKAN() {
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12">
           {/* 1. Your logo structured data */}
           <OrganizationJsonLd
-            url="https://portaljs.com"
-            logo="https://portaljs.com/icon.png"
+            url="https://www.portaljs.com"
+            logo="https://www.portaljs.com/icon.png"
           />
           {/* 2. Base SEO tags */}
           <Head>
             {generateNextSeo({
               title: "CKAN Data Management System Integration | Decoupled Open Data Frontend",
               description: "Build a modern, headless UI for CKAN with PortalJS. Enjoy copy-&-paste components, server-side rendering for SEO, and full branding control.",
-              canonical: "https://portaljs.com/ckan",
+              canonical: "https://www.portaljs.com/ckan",
               openGraph: {
-              url: 'https://portaljs.com/ckan',
+              url: 'https://www.portaljs.com/ckan',
               title: 'CKAN Data Management System Integration | Decoupled Open Data Frontend',
               description: 'Build a modern, headless UI for CKAN with PortalJS. Enjoy copy-&-paste components, server-side rendering for SEO, and full branding control.',
               site_name: 'PortalJS',
@@ -41,7 +41,7 @@ export default function CKAN() {
               },
               {
                 name: 'CKAN',
-                item: 'https://portaljs.com/ckan',
+                item: 'https://www.portaljs.com/ckan',
               },
             ]}
           />

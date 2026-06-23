@@ -161,6 +161,7 @@ const config = {
   ],
   nextSeo: {
     openGraph: {
+      site_name: 'PortalJS',
       additionalLinkTags: [
         { rel: 'icon', href: '/favicon.ico' },
         { rel: 'apple-touch-icon', href: '/icon.png', sizes: '120x120' },
@@ -169,8 +170,8 @@ const config = {
       ],
       images: [
         {
-          url: 'https://portaljs.com/static/img/seo.webp',
-          alt: 'PortalJS Cloud',
+          url: 'https://www.portaljs.com/static/img/seo.webp',
+          alt: 'PortalJS — Modern Open Data Portals',
           width: 1280,
           height: 720,
           type: 'image/webp',
@@ -180,8 +181,8 @@ const config = {
         'PortalJS Cloud is the easiest way to get started with Open Data. Perfect for governments, non-profits, academics, and companies of all sizes.',
     },
     twitter: {
-      handle: '@datopian',
-      site: 'https://datopian.com/',
+      handle: '@PortalJS_',
+      site: '@PortalJS_',
       cardType: 'summary_large_image',
     },
   },

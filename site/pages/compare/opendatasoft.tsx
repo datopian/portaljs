@@ -167,21 +167,21 @@ export default function PortalJSvsOpenDataSoft() {
     <Layout isHomePage={true}>
       {/* SEO */}
       <OrganizationJsonLd
-        url="https://portaljs.com"
-        logo="https://portaljs.com/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
       <Head>
         {generateNextSeo({
           title: "PortalJS vs OpenDataSoft | Open Source Data Portal Comparison",
           description: "Compare PortalJS with OpenDataSoft: See how our open source data portal platform stacks up against proprietary solutions in features, flexibility, and cost.",
-          canonical: "https://portaljs.com/compare/opendatasoft",
+          canonical: "https://www.portaljs.com/compare/opendatasoft",
           openGraph: {
-          url: 'https://portaljs.com/compare/opendatasoft',
+          url: 'https://www.portaljs.com/compare/opendatasoft',
           title: 'PortalJS vs OpenDataSoft | Open Source Data Portal Comparison',
           description: 'Compare PortalJS with OpenDataSoft: See how our open source data portal platform stacks up against proprietary solutions in features, flexibility, and cost.',
           images: [
             {
-              url: 'https://portaljs.com/static/img/seo.webp',
+              url: 'https://www.portaljs.com/static/img/seo.webp',
               width: 1200,
               height: 630,
               alt: 'PortalJS vs OpenDataSoft Comparison',
@@ -200,11 +200,11 @@ export default function PortalJSvsOpenDataSoft() {
           },
           {
             name: 'Compare',
-            item: 'https://portaljs.com/compare',
+            item: 'https://www.portaljs.com/compare',
           },
           {
             name: 'OpenDataSoft',
-            item: 'https://portaljs.com/compare/opendatasoft',
+            item: 'https://www.portaljs.com/compare/opendatasoft',
           }
         ]}
       />

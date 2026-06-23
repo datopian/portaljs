@@ -14,19 +14,19 @@ export function DataPortalsStructuredData() {
       />
       <Head>
         {generateNextSeo({
-          title: "Showcase of Data Portals",
-          description: "Discover data portals powered by PortalJS.",
-          canonical: "https://www.portaljs.com/showcase",
+          title: "Data Portals Showcase | PortalJS — Live Open Data Implementations",
+          description: "Explore live open data portals built with PortalJS. Government, research, and enterprise implementations from organisations worldwide.",
+          canonical: "https://www.portaljs.com/data-portals",
           openGraph: {
-            url: 'https://www.portaljs.com/showcase',
-            title: 'Showcase of Data Portals',
-            description: 'Discover data portals powered by PortalJS.',
+            url: 'https://www.portaljs.com/data-portals',
+            title: 'Data Portals Showcase | PortalJS — Live Open Data Implementations',
+            description: 'Explore live open data portals built with PortalJS. Government, research, and enterprise implementations from organisations worldwide.',
             site_name: 'PortalJS',
             type: 'website',
             images: [
               {
-                url: 'https://portaljs.com/static/img/seo.webp',
-                alt: 'PortalJS Cloud',
+                url: 'https://www.portaljs.com/static/img/seo.webp',
+                alt: 'PortalJS — Live Data Portal Examples',
                 width: 1280,
                 height: 720,
                 type: 'image/webp',
@@ -34,9 +34,9 @@ export function DataPortalsStructuredData() {
             ],
           },
           twitter: {
-          cardType: 'summary_large_image',
-          site: '@PortalJS_',
-        },
+            cardType: 'summary_large_image',
+            site: '@PortalJS_',
+          },
         })}
       </Head>
       <BreadcrumbJsonLd
@@ -46,8 +46,8 @@ export function DataPortalsStructuredData() {
             item: 'https://www.portaljs.com',
           },
           {
-            name: 'Showcase',
-            item: 'https://www.portaljs.com/showcase',
+            name: 'Data Portals',
+            item: 'https://www.portaljs.com/data-portals',
           },
         ]}
       />

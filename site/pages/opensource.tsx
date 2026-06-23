@@ -12,13 +12,34 @@ export default function OSS() {
     <>
       <Head>
         {generateNextSeo({
-          title: "The JavaScript framework for data portals",
-          description: "Rapidly build rich data portals using a modern frontend framework. Native support for CKAN backend and more.",
+          title: "PortalJS Open Source | JavaScript Framework for Data Portals",
+          description: "Rapidly build rich open data portals using PortalJS — the modern, headless JavaScript framework. Native support for CKAN, OpenMetadata, and more.",
+          canonical: "https://www.portaljs.com/opensource",
+          openGraph: {
+            url: 'https://www.portaljs.com/opensource',
+            title: 'PortalJS Open Source | JavaScript Framework for Data Portals',
+            description: 'Rapidly build rich open data portals using PortalJS — the modern, headless JavaScript framework. Native support for CKAN, OpenMetadata, and more.',
+            site_name: 'PortalJS',
+            type: 'website',
+            images: [
+              {
+                url: 'https://www.portaljs.com/static/img/seo.webp',
+                alt: 'PortalJS Open Source',
+                width: 1280,
+                height: 720,
+                type: 'image/webp',
+              },
+            ],
+          },
+          twitter: {
+            cardType: 'summary_large_image',
+            site: '@PortalJS_',
+          },
         })}
       </Head>
       <OrganizationJsonLd
-        url="https://portaljs.org"
-        logo="https://portaljs.org/icon.png"
+        url="https://www.portaljs.com"
+        logo="https://www.portaljs.com/icon.png"
       />
       <Layout>
         <Hero />
