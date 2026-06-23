@@ -41,7 +41,7 @@ export default function CaseStudiesPage(casestudies) {
                       width={360}
                       height={360}
                       src={study.image}
-                      alt="Case Study"
+                      alt={study.title}
                       className="!aspect-[16/9] h-full rounded-lg object-cover w-full shadow-xl ease-in duration-500 group-hover:scale-105 transform bypass-filter "
                     />
                   </Link>
@@ -54,7 +54,7 @@ export default function CaseStudiesPage(casestudies) {
                         className="line-clamp-3 text-[#2A3342]  group-hover:text-[#60a5fa] dark:text-[#f3f4f6] dark:hover:text-[#60a5fa] text-2xl font-bold transition ease-in-out capitalize max-w-3xl"
                         href={study.urlPath}
                       >
-                        <h3>{study.title.replace('/', '-')}</h3>
+                        <h2 className="text-2xl font-bold">{study.title.replace('/', '-')}</h2>
                       </Link>
                     </div>
                     <div className="pt-2 text-justify opacity-75 font-regular prose dark:prose-invert max-w-4xl">

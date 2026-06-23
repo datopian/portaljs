@@ -51,7 +51,7 @@ export default function BlogCard({ blog, labels }: { blog: BlogPost; labels?: st
         {blog.image ? (
           <img
             src={blog.image}
-            alt=""
+            alt={blog.title}
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : (
