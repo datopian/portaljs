@@ -11,7 +11,7 @@ tags:
 keywords: civic data portal examples, open data portal examples, open data portal research, civic portal design, government data portal UX, researcher field guide, open data portal software, open data portal best practices, city government open data, civic tech portal, best open data portals 2026
 description: "Discover 12 real civic data portals — what they do well, how they're built, and what the best ones share. A practical guide for researchers and portal builders."
 authors: ['Yoana Popova']
-canonical: https://www.portaljs.com/blog/we-looked-at-civic-data-portals-so-you-dont-have-to
+canonical: https://www.portaljs.com/blog/civic-data-portal-examples
 image: /static/img/blog/2026-06-17-civic-data-portal-research/civic-data-portal-featured.png
 filetype: 'blog'
 ---
