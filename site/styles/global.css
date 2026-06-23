@@ -81,3 +81,46 @@ html {
     visibility: hidden;
   }
 }
+
+/* Callout design: white card with sky-to-blue gradient header strip */
+.callout {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  margin: 1.75rem 0;
+  overflow: hidden;
+  padding: 0 !important;
+}
+
+.callout-title {
+  background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 100%);
+  padding: 8px 16px;
+  gap: 8px;
+  border-bottom: none;
+}
+
+.callout-title > strong {
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.callout-title p {
+  margin: 0;
+  color: #ffffff;
+}
+
+.callout-content {
+  background: #f8fafc;
+  padding: 12px 16px;
+}
+
+.callout-content > p {
+  color: #334155;
+  line-height: 1.65;
+  margin: 0;
+}
