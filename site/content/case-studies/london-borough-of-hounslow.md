@@ -7,27 +7,19 @@ image: /images/case2.webp
 images: ['/images/casestudies/hounslow-screenshot.webp','/images/casestudies/hounslow-search.webp','/images/casestudies/hounslow-dataset.webp','/images/casestudies/hounslow-groups.webp',]
 authors: ['popovayoana', 'lucasbispo']
 keystats: ['50% reduction/n in cloud costs','Zero maintenance/n overhead','Enhanced UI/UX/n & accessibility']
-problem: '### The Challenge: Scaling Open Data Without Operational Overhead
-
-- **Infrastructure Complexity** – Managing a self-hosted CKAN platform on AWS required significant resources and expertise.
+problem: '- **Infrastructure Complexity** – Managing a self-hosted CKAN platform on AWS required significant resources and expertise.
 
 - **High Maintenance Overhead** – Security patches, updates, and server management were consuming valuable IT bandwidth.
 
 - **Escalating Cloud Costs** – AWS infrastructure expenses increased as data demands grew, making cost control a challenge.'
-solution: '### PortalJS Cloud: A Fully Managed, Cost-Effective Solution
-
-#### Key Features & Benefits:
-
-- **Zero Infrastructure Management**: Fully managed hosting and support.
+solution: '- **Zero Infrastructure Management**: Fully managed hosting and support.
 
 - **Cost Optimization**: Lower cloud & staffing costs with a pay-as-you-go model.
 
 - **Custom UI/UX Design**: Enhanced accessibility & branding.
 
 - **Scalability & Security**: Future-proof, automated updates & compliance.'
-results: '### Results:
-
-Migrating to PortalJS Cloud allowed the Borough to eliminate infrastructure maintenance, cut costs, and allocate resources more effectively. The open data portal remains accessible, reliable, and cost-efficient without requiring ongoing technical oversight.'
+results: 'Migrating to PortalJS Cloud allowed the Borough to eliminate infrastructure maintenance, cut costs, and allocate resources more effectively. The open data portal remains accessible, reliable, and cost-efficient without requiring ongoing technical oversight.'
 features: [
   {
     title: "No Infrastructure Maintenance",
