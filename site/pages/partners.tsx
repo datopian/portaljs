@@ -10,63 +10,58 @@ const Player = dynamic(
   { ssr: false }
 )
 
+const benefits = [
+  {
+    title: "Collaborative Growth",
+    description: "Work side-by-side with our experts to co-deliver projects, combining your local market knowledge with our open data platform.",
+    icon: 'connection',
+  },
+  {
+    title: "Flexible Engagement",
+    description: "Offer everything from frontend customizations to full enterprise deployments—scale up your services as clients' needs evolve.",
+    icon: 'puzzle',
+  },
+  {
+    title: "Dedicated Support",
+    description: "Gain access to technical resources, sales enablement materials, and priority support to ensure every partnership succeeds.",
+    icon: 'server',
+  },
+  {
+    title: "Marketing & Co-Branding",
+    description: "Amplify your reach through joint marketing campaigns, webinars, and events.",
+    icon: 'rocket',
+  },
+];
+
+const steps = [
+  {
+    number: "1",
+    title: "Connect",
+    description: "Book a meeting with our partnerships team to explore collaboration opportunities.",
+    icon: 'conference',
+  },
+  {
+    number: "2",
+    title: "Plan",
+    description: "Together, we'll design a joint engagement model tailored to your strengths and your clients' needs.",
+    icon: 'document',
+  },
+  {
+    number: "3",
+    title: "Deliver",
+    description: "Collaborate on implementation—from customizing our default PortalJS template to deploying enterprise-grade, self-hosted or cloud solutions.",
+    icon: 'presentation',
+  },
+  {
+    number: "4",
+    title: "Grow",
+    description: "Celebrate shared success, gather feedback, and expand into new markets.",
+    icon: 'line-chart',
+  },
+];
+
 export default function Partners() {
-  const { theme } = useTheme();
-
-  const benefits = [
-    {
-      title: "Collaborative Growth",
-      description: "Work side-by-side with our experts to co-deliver projects, combining your local market knowledge with our open data platform.",
-      icon: 'connection',
-      iconStyle: 'dark:-rotate-[4deg]',
-    },
-    {
-      title: "Flexible Engagement",
-      description: "Offer everything from frontend customizations to full enterprise deployments—scale up your services as clients' needs evolve.",
-      icon: 'puzzle',
-      iconStyle: 'dark:-rotate-[4deg]',
-    },
-    {
-      title: "Dedicated Support",
-      description: "Gain access to technical resources, sales enablement materials, and priority support to ensure every partnership succeeds.",
-      icon: 'server',
-      iconStyle: 'dark:-rotate-[4deg]',
-    },
-    {
-      title: "Marketing & Co-Branding",
-      description: "Amplify your reach through joint marketing campaigns, webinars, and events.",
-      icon: 'rocket',
-      iconStyle: 'dark:-rotate-[4deg]',
-    }
-  ];
-
-  const steps = [
-    {
-      number: "1",
-      title: "Connect",
-      description: "Book a meeting with our partnerships team to explore collaboration opportunities.",
-      icon: 'conference',
-    },
-    {
-      number: "2",
-      title: "Plan",
-      description: "Together, we'll design a joint engagement model tailored to your strengths and your clients' needs.",
-      icon: 'document',
-    },
-    {
-      number: "3",
-      title: "Deliver",
-      description: "Collaborate on implementation—from customizing our default PortalJS template to deploying enterprise-grade, self-hosted or cloud solutions.",
-      icon: 'presentation',
-    },
-    {
-      number: "4",
-      title: "Grow",
-      description: "Celebrate shared success, gather feedback, and expand into new markets.",
-      icon: 'line-chart',
-    }
-  ];
-
+  const { resolvedTheme } = useTheme();
   const calendarLink = "https://calendar.app.google/sn2PU7ZvzjCPo1ok6";
 
   return (
@@ -141,23 +136,24 @@ export default function Partners() {
           <p className="mx-auto mt-4 text-center text-[17px] text-slate-600 dark:text-slate-300 max-w-3xl">
             Leverage our platform and expertise to deliver exceptional data portal experiences for your clients
           </p>
-          <div className="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-12 lg:grid-cols-4 lg:gap-x-6">
+          <div className="mt-16 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {benefits.map((benefit) => (
               <div
                 key={benefit.title}
-                className="relative flex flex-col rounded-2xl bg-white dark:bg-slate-900 dark:hover:bg-slate-800 hover:bg-slate-50 transition-all duration-300 ring-1 ring-slate-200 dark:ring-slate-800 p-7 shadow-lg overflow-hidden"
+                className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:-translate-y-[3px] hover:border-slate-300 hover:shadow-[0_16px_36px_-20px_rgba(15,23,42,0.28)] dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700"
               >
-                <div className="shrink-0 w-full flex items-start -ml-2">
-                  <div className="w-14 h-14">
-                    <Player src={`/static/icons/${theme ?? 'light'}/${benefit.icon}.json`} autoplay loop className={`w-14 h-14 ${benefit.iconStyle}`} />
-                  </div>
+                <div className="mb-4 w-12 h-12">
+                  <Player
+                    src={`/static/icons/${resolvedTheme ?? 'light'}/${benefit.icon}.json`}
+                    autoplay
+                    loop
+                    className="w-12 h-12"
+                  />
                 </div>
-                <div className="pt-4">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{benefit.title}</h3>
-                  <p className="mt-4 text-base text-slate-600 dark:text-slate-300">
-                    {benefit.description}
-                  </p>
-                </div>
+                <h3 className="text-[17.5px] font-semibold text-slate-900 dark:text-white mb-2">{benefit.title}</h3>
+                <p className="text-[14.5px] text-slate-600 dark:text-slate-300">
+                  {benefit.description}
+                </p>
               </div>
             ))}
           </div>
@@ -165,7 +161,7 @@ export default function Partners() {
       </div>
 
       {/* How It Works */}
-      <div className="bg-white dark:bg-slate-800">
+      <div className="bg-slate-50 dark:bg-slate-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center mb-16">
             <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
@@ -175,25 +171,29 @@ export default function Partners() {
               Our streamlined partnership process is designed to help you start delivering value quickly
             </p>
           </div>
-          <div className="mt-12 max-w-6xl mx-auto px-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              {steps.map((step) => (
-                <div key={step.number} className="flex items-start">
-                  <div className="shrink-0 w-12 h-12 rounded-full flex items-center justify-center mr-4">
-                    <Player src={`/static/icons/${theme ?? 'light'}/${step.icon}.json`} autoplay loop className="w-14 h-14" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-6xl mx-auto">
+            {steps.map((step) => (
+              <div
+                key={step.number}
+                className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:-translate-y-[3px] hover:border-slate-300 hover:shadow-[0_16px_36px_-20px_rgba(15,23,42,0.28)] dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 shrink-0">
+                    <Player
+                      src={`/static/icons/${resolvedTheme ?? 'light'}/${step.icon}.json`}
+                      autoplay
+                      loop
+                      className="w-12 h-12"
+                    />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                      {step.title}
-                      <span className="inline-flex items-center justify-center px-3 py-0.5 text-[11px] font-semibold text-white bg-gradient-to-br from-sky-400 to-blue-600 rounded-full ml-2">
-                        Step {step.number}
-                      </span>
-                    </h3>
-                    <p className="text-slate-600 dark:text-slate-300">{step.description}</p>
-                  </div>
+                  <span className="inline-flex items-center justify-center px-3 py-0.5 text-[11px] font-semibold text-white bg-gradient-to-br from-sky-400 to-blue-600 rounded-full">
+                    Step {step.number}
+                  </span>
                 </div>
-              ))}
-            </div>
+                <h3 className="text-[17.5px] font-semibold text-slate-900 dark:text-white mb-2">{step.title}</h3>
+                <p className="text-[14.5px] text-slate-600 dark:text-slate-300">{step.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
