@@ -5,7 +5,6 @@ import Head from 'next/head';
 import Link from "next/link";
 import Layout from "@/components/Layout";
 import LearnPostCard from "@/components/LearnPostCard";
-import ButtonLink from "@/components/ButtonLink";
 
 const metadataPosts = [
   {
@@ -84,7 +83,7 @@ const MetadataLearnPage = () => {
             {metadataPosts.map((post, index) => (
               <div key={index} className="relative">
                 {/* Step number */}
-                <div className="absolute -left-4 top-6 w-8 h-8 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                <div className="absolute -left-4 top-6 w-8 h-8 bg-gradient-to-br from-sky-400 to-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-[0_4px_12px_-4px_rgba(37,99,235,0.5)]">
                   {index + 1}
                 </div>
                 <div className="ml-8">
@@ -101,21 +100,27 @@ const MetadataLearnPage = () => {
           </div>
         </div>
 
-        {/* Next Steps */}
-        <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-8 text-center">
-          <h3 className="text-xl font-semibold text-primary dark:text-primary-dark mb-4">
+        {/* What's Next */}
+        <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl p-8 text-center mb-16">
+          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
             What's Next?
           </h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-6">
+          <p className="text-slate-500 dark:text-slate-400 mb-6">
             Ready to expand your knowledge? Explore other data management topics or dive deeper into advanced metadata concepts.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <ButtonLink href="/learn" className="text-sm">
+          <div className="flex flex-col sm:flex-row gap-3.5 justify-center">
+            <Link
+              href="/learn"
+              className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
+            >
               Explore Other Topics
-            </ButtonLink>
-            <ButtonLink style="secondary" href="/blog" className="text-sm">
+            </Link>
+            <Link
+              href="/blog"
+              className="inline-flex items-center justify-center rounded-[10px] border border-slate-300 bg-white px-[18px] py-2.5 text-[14.5px] font-semibold text-slate-700 transition-all duration-150 hover:-translate-y-px hover:border-blue-400 hover:text-blue-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-400"
+            >
               Browse All Posts
-            </ButtonLink>
+            </Link>
           </div>
         </div>
       </div>
