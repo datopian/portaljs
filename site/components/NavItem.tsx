@@ -1,30 +1,30 @@
-import { Menu, Transition } from "@headlessui/react";
+import { Popover, Transition } from "@headlessui/react";
 import Link from "next/link";
 import { Fragment, useRef, useState } from "react";
 
 import { BaseLink } from "./BaseLink";
 
 export function NavItem({ item, target }) {
-  const dropdownRef = useRef(null);
-  const [showDropdown, setshowDropdown] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const timeoutDuration = 200;
-  let timeoutId;
+  let timeoutId: ReturnType<typeof setTimeout>;
 
   const openDropdown = () => {
     clearTimeout(timeoutId);
-    setshowDropdown(true);
+    setIsHovered(true);
   };
   const closeDropdown = () => {
-    timeoutId = setTimeout(() => setshowDropdown(false), timeoutDuration);
+    timeoutId = setTimeout(() => setIsHovered(false), timeoutDuration);
   };
 
   return (
-    <Menu as="div" className="relative">
-      <Menu.Button
-        onClick={() => setshowDropdown(!showDropdown)}
+    <Popover className="relative">
+      <Popover.Button
+        as="div"
         onMouseEnter={openDropdown}
         onMouseLeave={closeDropdown}
+        className="outline-none"
       >
         {Object.prototype.hasOwnProperty.call(item, "href") ? (
           <Link
@@ -35,7 +35,7 @@ export function NavItem({ item, target }) {
             {item.name}
           </Link>
         ) : (
-          <div className="text-slate-600 dark:text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-blue-500 dark:hover:text-blue-400 transition duration-300">
+          <div className="text-slate-600 dark:text-slate-400 inline-flex items-center mr-2 px-1 pt-1 text-sm font-medium hover:text-blue-500 dark:hover:text-blue-400 transition duration-300 cursor-default">
             {item.name}
             {Object.prototype.hasOwnProperty.call(item, "subItems") && (
               <svg
@@ -50,49 +50,48 @@ export function NavItem({ item, target }) {
             )}
           </div>
         )}
-      </Menu.Button>
+      </Popover.Button>
 
       {Object.prototype.hasOwnProperty.call(item, "subItems") && (
         <Transition
           as={Fragment}
-          show={showDropdown}
+          show={isHovered}
           enter="transition ease-out duration-200"
-          enterFrom="transform opacity-0 scale-5"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-5"
+          enterFrom="opacity-0 translate-y-1"
+          enterTo="opacity-100 translate-y-0"
+          leave="transition ease-in duration-150"
+          leaveFrom="opacity-100 translate-y-0"
+          leaveTo="opacity-0 translate-y-1"
         >
-          <Menu.Items
-            className="absolute top-5 flex flex-col bg-white dark:bg-slate-900/95 backdrop-blur shadow-lg rounded-md py-2 px-3"
-            ref={dropdownRef}
+          <Popover.Panel
+            static
+            className="absolute top-7 z-10 flex flex-col min-w-max bg-white dark:bg-slate-900/95 backdrop-blur shadow-lg rounded-md py-2 px-3"
             onMouseEnter={openDropdown}
             onMouseLeave={closeDropdown}
           >
-            {item.subItems.map((subItem) => (
-              <Menu.Item
-                key={subItem.name}
-                //  @ts-ignore
-                onClick={() => setshowDropdown(false)}
-              >
-                {subItem.disabled ? (
-                  <span className={`text-slate-400 cursor-not-allowed inline-flex items-center py-2 px-1 text-sm font-medium ${subItem.style || ''}`}>
-                    {subItem.name}
-                  </span>
-                ) : (
-                  <BaseLink
-                    href={subItem.href}
-                    title={subItem.name}
-                    className="text-slate-700 dark:text-slate-300 inline-flex items-center py-2 px-1 text-sm font-medium hover:text-blue-500 dark:hover:text-blue-400"
-                  >
-                    {subItem.name}
-                  </BaseLink>
-                )}
-              </Menu.Item>
-            ))}
-          </Menu.Items>
+            {item.subItems.map((subItem) =>
+              subItem.disabled ? (
+                <span
+                  key={subItem.name}
+                  className={`text-slate-400 cursor-not-allowed py-1.5 px-1 text-sm font-medium whitespace-nowrap ${subItem.style || ''}`}
+                >
+                  {subItem.name}
+                </span>
+              ) : (
+                <BaseLink
+                  key={subItem.name}
+                  href={subItem.href}
+                  title={subItem.name}
+                  onClick={() => setIsHovered(false)}
+                  className="text-slate-700 dark:text-slate-300 py-1.5 px-1 text-sm font-medium whitespace-nowrap hover:text-blue-500 dark:hover:text-blue-400"
+                >
+                  {subItem.name}
+                </BaseLink>
+              )
+            )}
+          </Popover.Panel>
         </Transition>
       )}
-    </Menu>
+    </Popover>
   );
 }
