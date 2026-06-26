@@ -102,16 +102,7 @@ export default function LearnPage() {
       <div className="flex justify-center">
         <div className="max-w-8xl px-4 sm:px-8 xl:px-12 pt-8 pb-8">
           <div className="mx-auto max-w-2xl lg:max-w-none">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-slate-900 dark:text-white">
-                Learning Topics
-              </h2>
-              <p className="mt-4 text-lg text-slate-500 dark:text-slate-400">
-                In-depth guides on the foundations of modern data management.
-              </p>
-            </div>
-
-            <div className="mt-16 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {learningTopics.map((topic) =>
                 topic.status === 'published' ? (
                   <Link
