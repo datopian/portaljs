@@ -14,15 +14,13 @@
   // custom hostname resolves) AND at the production custom hostname below.
   "workers_dev": true,
 
-  // Production custom hostname (po-g9y.11). BLOCKED on bead prereq #2: needs a
-  // PROXIED DNS record for lfs.portaljs.com in the portaljs.com zone + an ACM cert
-  // covering it (Universal SSL does NOT cover multi-label subdomains — see
-  // cloud/INFRA.md §2b). `wrangler deploy` FAILS to attach a route whose hostname
-  // does not resolve, so this stays COMMENTED until Anu confirms DNS + cert. The
-  // go-live flip is exactly this one uncomment + re-deploy:
-  // "routes": [
-  //   { "pattern": "lfs.portaljs.com/*", "zone_name": "portaljs.com" }
-  // ],
+  // Production custom hostname (po-g9y.11, LIVE 2026-06-27). custom_domain:true
+  // auto-provisions the PROXIED DNS record in the portaljs.com zone AND the edge
+  // cert — no manual DNS/ACM step (Universal SSL covers the single-label host
+  // lfs.portaljs.com; verified valid Let's Encrypt cert + 200 round-trip in prod).
+  "routes": [
+    { "pattern": "lfs.portaljs.com", "custom_domain": true }
+  ],
 
   // Non-secret config. R2 creds + the JWT key are SECRETS (wrangler secret put),
   // never here. R2_ENDPOINT is the account's S3 endpoint (account id is public).

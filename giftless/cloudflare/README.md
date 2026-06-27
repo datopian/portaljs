@@ -6,13 +6,13 @@ po-g9y.10 (HS256, `portaljs-giftless-staging`, `workers.dev`); this is the
 **production cutover** (po-g9y.11): RS256 auth, the `portaljs-giftless` bucket, and
 the `lfs.portaljs.com` custom hostname.
 
-**Prod endpoint (once deployed):** `https://lfs.portaljs.com`
-(pre-DNS, validate at `https://giftless.<account>.workers.dev`)
+**Prod endpoint:** `https://lfs.portaljs.com`
+(also reachable at `https://giftless.<account>.workers.dev`)
 
-> **⚠ Cutover status (2026-06-27): config PREPARED, NOT yet deployed.** Blocked on
-> two human prerequisites — see [Go-live status](#go-live-status-po-g9y11) below.
-> The old staging worker (`giftless-staging`) is still live and unaffected until
-> someone deploys this prod config (worker renamed to `giftless`).
+> **✅ LIVE (2026-06-27).** Prod Git LFS is deployed and verified end-to-end on
+> `lfs.portaljs.com` (worker `giftless`, RS256, `portaljs-giftless` R2 bucket).
+> See [Go-live status](#go-live-status-po-g9y11) below. The old `giftless-staging`
+> worker is superseded and pending deletion.
 
 ```
 git-lfs client ──JWT──> Worker (edge TLS) ──> GiftlessContainer (:5000) ──presigned──> R2
@@ -87,34 +87,34 @@ prod the cost/latency trade was **decided: accept the cold start, no keep-warm**
 prereq #4). So `sleepAfter` stays at 10 m and no minimum-instance / ping is added. To
 revisit, raise `sleepAfter` or add a keep-warm ping (more $).
 
-## Go-live status (po-g9y.11)
+## Go-live status (po-g9y.11) — ✅ LIVE (2026-06-27)
 
-The prod config is **prepared in this repo** but **not deployed** — two human
-prerequisites are missing:
+Production Git LFS is **live at `https://lfs.portaljs.com`**, backed by the
+`portaljs-giftless` R2 bucket. Both prereqs landed and the deploy is done +
+verified end-to-end (RS256 client token → presigned R2 URL → verify callback,
+HTTP 200 over the custom hostname; cold start ~1.7s; valid Let's Encrypt cert).
 
-| # | Prerequisite | Status | Blocks |
-|---|--------------|--------|--------|
-| 1 | **Prod R2 token** at `~/.config/portaljs/giftless-r2-prod.env` (Object R&W, scoped to `portaljs-giftless`) | ❌ MISSING | `deploy.sh` secrets, deploy, smoke test |
-| 2 | **DNS + ACM** — proxied record for `lfs.portaljs.com` in the `portaljs.com` zone + ACM cert covering it | ❌ MISSING (NXDOMAIN) | the custom-hostname route in `wrangler.jsonc` |
+| # | Prerequisite | Status |
+|---|--------------|--------|
+| 1 | **Prod R2 token** at `~/.config/portaljs/giftless-r2-prod.env` (Object R&W, scoped to `portaljs-giftless`) | ✅ in place |
+| 2 | **DNS + cert** for `lfs.portaljs.com` | ✅ auto via `custom_domain: true` (no manual DNS/ACM) |
 
-Done by mayor: prod bucket `portaljs-giftless` created (empty, EEUR); account is
-Workers Paid. Done in this bead (config, untested): RS256 keypair tooling,
-`giftless.yaml` → RS256 + prod bucket, entrypoint/Worker key wiring, `deploy.sh` →
-prod token + RS256 secrets, `mint-token.py`/smoke RS256, `.lfsconfig` → `lfs.portaljs.com`.
+The RS256 keypair is persisted at `~/.config/portaljs/giftless-rs256-{private,public}.pem`
+— the **private** key is the signer the token issuer (Arc/CI) uses to mint client
+tokens, and is also the `GIFTLESS_JWT_PRIVATE_KEY` Worker secret. Rotate by
+re-running `gen-rs256-keys.sh` (delete old keys first) + re-pushing secrets.
 
-**To finish the go-live once prereqs land:**
+**To redeploy / rotate** (the repo now reflects prod — no flips needed):
 
-1. `cd giftless && ./scripts/gen-rs256-keys.sh` — generate the prod keypair. Give the
-   **private** key to the token issuer (Arc/CI) and keep it for the deploy; rotation =
-   re-run + re-push.
-2. `cd cloudflare && npm install && ./scripts/deploy.sh` — pushes the 4 secrets +
-   deploys the `giftless` worker. Validate on `https://giftless.<account>.workers.dev`
-   with `./scripts/smoke-remote.sh`.
-3. `cd giftless && ./scripts/set-r2-cors.sh` — apply CORS to `portaljs-giftless`
-   (account-authenticated wrangler; the object-scoped R2 token gets `AccessDenied`).
-4. Uncomment the `lfs.portaljs.com` route in `cloudflare/wrangler.jsonc`, re-run
-   `deploy.sh`, then `GIFTLESS_URL=https://lfs.portaljs.com ./scripts/smoke-remote.sh`.
-5. Delete the old `giftless-staging` worker once prod is verified.
+1. `cd giftless/cloudflare && npm install && ./scripts/deploy.sh` — pushes the 4
+   secrets + deploys the `giftless` worker (reads prod R2 creds from
+   `~/.config/portaljs/giftless-r2-prod.env` and the RS256 keypair from `../jwt_*`).
+2. Verify: `GIFTLESS_URL=https://lfs.portaljs.com ./scripts/smoke-remote.sh`
+   (and/or `https://giftless.<account>.workers.dev`).
+3. CORS is already applied to `portaljs-giftless`; re-run `./scripts/set-r2-cors.sh`
+   only if the policy changes.
+
+**Remaining cleanup:** delete the old `giftless-staging` worker (superseded by prod).
 
 ### Why ONE RS256 keypair (not the "separate verify keypair")
 
