@@ -87,7 +87,9 @@ prod the cost/latency trade was **decided: accept the cold start, no keep-warm**
 prereq #4). So `sleepAfter` stays at 10 m and no minimum-instance / ping is added. To
 revisit, raise `sleepAfter` or add a keep-warm ping (more $).
 
-## Go-live status (po-g9y.11) — ✅ LIVE (2026-06-27)
+## Go-live status (po-g9y.11)
+
+**✅ LIVE (2026-06-27).**
 
 Production Git LFS is **live at `https://lfs.portaljs.com`**, backed by the
 `portaljs-giftless` R2 bucket. Both prereqs landed and the deploy is done +
