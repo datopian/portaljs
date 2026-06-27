@@ -1,19 +1,24 @@
 #!/bin/sh
-# Cloudflare Containers entrypoint for Giftless.
+# Cloudflare Containers entrypoint for Giftless (PRODUCTION, RS256 — po-g9y.11).
 #
 # CF Containers pass secrets as env vars, not mounted files — but Giftless's JWT
-# provider wants a key *file* (private_key_file: /etc/giftless/jwt_key in
-# giftless.yaml). So materialize that file from $GIFTLESS_JWT_KEY, then hand off to
-# uwsgi. The key is a single-line base64 string (scripts/gen-key.sh), safe to round
-# trip through an env var — `printf %s` writes it with no trailing newline, exactly
-# as the file-based deploy expects.
+# provider wants key *files* (public_key_file / private_key_file in giftless.yaml).
+# So materialize both PEM files from their secrets, then hand off to uwsgi.
+#
+#   GIFTLESS_JWT_PUBLIC_KEY  -> /etc/giftless/jwt_public_key   (verify all tokens)
+#   GIFTLESS_JWT_PRIVATE_KEY -> /etc/giftless/jwt_private_key  (sign verify callbacks)
+#
+# These are multi-line PEM blocks (scripts/gen-rs256-keys.sh). An env var preserves
+# the newlines and `printf %s` writes them verbatim — no trailing newline added.
 set -eu
 
-: "${GIFTLESS_JWT_KEY:?GIFTLESS_JWT_KEY not set — wire it with: wrangler secret put GIFTLESS_JWT_KEY}"
+: "${GIFTLESS_JWT_PUBLIC_KEY:?GIFTLESS_JWT_PUBLIC_KEY not set — wire it with: wrangler secret put GIFTLESS_JWT_PUBLIC_KEY}"
+: "${GIFTLESS_JWT_PRIVATE_KEY:?GIFTLESS_JWT_PRIVATE_KEY not set — wire it with: wrangler secret put GIFTLESS_JWT_PRIVATE_KEY}"
 
 mkdir -p /etc/giftless
-printf '%s' "$GIFTLESS_JWT_KEY" > /etc/giftless/jwt_key
-chmod 600 /etc/giftless/jwt_key
+printf '%s' "$GIFTLESS_JWT_PUBLIC_KEY"  > /etc/giftless/jwt_public_key
+printf '%s' "$GIFTLESS_JWT_PRIVATE_KEY" > /etc/giftless/jwt_private_key
+chmod 600 /etc/giftless/jwt_public_key /etc/giftless/jwt_private_key
 
 # Same uwsgi invocation as ./Dockerfile's CMD: plain HTTP on :5000 behind the edge.
 exec uwsgi --http 0.0.0.0:5000 --pythonpath /app \

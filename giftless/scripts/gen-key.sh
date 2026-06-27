@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# DEPRECATED (po-g9y.11): the deployment cut over to RS256. giftless.yaml,
+# docker-compose.yml, and the smoke tests now use the RS256 keypair from
+# scripts/gen-rs256-keys.sh (jwt_private_key + jwt_public_key), NOT this single
+# HS256 jwt_key. Kept only for reference / a pure-HS256 local experiment.
+#
 # Generate the HS256 signing key Giftless uses to verify (and self-sign verify)
 # tokens. Writes ./jwt_key next to docker-compose.yml. Idempotent: refuses to
 # clobber an existing key so you don't invalidate live tokens by accident.

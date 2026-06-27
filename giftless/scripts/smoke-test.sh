@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-# End-to-end check of the JWT-secured Giftless staging deployment against R2:
+# End-to-end check of the JWT-secured Giftless deployment against R2 (RS256, the
+# same config as prod — giftless.yaml points at the portaljs-giftless bucket):
 #   1. build + start the container
-#   2. mint a client JWT and run a full Git LFS round-trip (push -> R2 -> pull)
+#   2. mint a client JWT (RS256) and run a full Git LFS round-trip (push -> R2 -> pull)
 #   3. assert an UNAUTHENTICATED batch request is rejected (401/403)
 #
-# Prereqs: docker, git, git-lfs, and R2 creds. Reads creds from
-# ~/.config/portaljs/giftless-r2.env unless R2_ACCESS_KEY_ID is already set.
+# Prereqs: docker, git, git-lfs, python3 + 'cryptography', and R2 creds for the
+# prod bucket. Reads creds from ~/.config/portaljs/giftless-r2-prod.env unless
+# R2_ACCESS_KEY_ID is already set.
 #
 #   ./scripts/smoke-test.sh            # builds, tests, tears down
 #   KEEP_UP=1 ./scripts/smoke-test.sh  # leave the container running afterward
@@ -19,8 +21,8 @@ PASS() { printf '  \033[32mPASS\033[0m %s\n' "$1"; }
 FAIL() { printf '  \033[31mFAIL\033[0m %s\n' "$1"; exit 1; }
 
 # --- creds ---------------------------------------------------------------
-if [[ -z "${R2_ACCESS_KEY_ID:-}" && -f "$HOME/.config/portaljs/giftless-r2.env" ]]; then
-  set -a; . "$HOME/.config/portaljs/giftless-r2.env"; set +a
+if [[ -z "${R2_ACCESS_KEY_ID:-}" && -f "$HOME/.config/portaljs/giftless-r2-prod.env" ]]; then
+  set -a; . "$HOME/.config/portaljs/giftless-r2-prod.env"; set +a
 fi
 : "${R2_ACCESS_KEY_ID:?need R2 creds (R2_ACCESS_KEY_ID)}"
 export R2_ACCESS_KEY_ID R2_SECRET_ACCESS_KEY R2_ENDPOINT "${R2_REGION:=auto}"
@@ -28,9 +30,9 @@ export R2_ACCESS_KEY_ID R2_SECRET_ACCESS_KEY R2_ENDPOINT "${R2_REGION:=auto}"
 # --- key + container -----------------------------------------------------
 # Uses raw docker build/run (no compose plugin required); docker-compose.yml is
 # the equivalent deploy path for humans.
-IMAGE="portaljs/giftless-r2:staging"
+IMAGE="portaljs/giftless-r2:latest"
 NAME="giftless-smoke"
-[[ -f jwt_key ]] || ./scripts/gen-key.sh
+[[ -f jwt_private_key && -f jwt_public_key ]] || ./scripts/gen-rs256-keys.sh
 echo "==> building image"
 docker build -q -t "$IMAGE" . >/dev/null
 echo "==> starting giftless"
@@ -39,7 +41,8 @@ docker run -d --name "$NAME" -p 8080:5000 \
   -e AWS_ACCESS_KEY_ID="$R2_ACCESS_KEY_ID" \
   -e AWS_SECRET_ACCESS_KEY="$R2_SECRET_ACCESS_KEY" \
   -e R2_ENDPOINT="$R2_ENDPOINT" -e R2_REGION="$R2_REGION" \
-  -v "$ROOT/jwt_key:/etc/giftless/jwt_key:ro" \
+  -v "$ROOT/jwt_public_key:/etc/giftless/jwt_public_key:ro" \
+  -v "$ROOT/jwt_private_key:/etc/giftless/jwt_private_key:ro" \
   "$IMAGE" >/dev/null
 
 TMP="$(mktemp -d)"
@@ -75,7 +78,8 @@ NOAUTH="$(curl -s -o /dev/null -w '%{http_code}' -X POST \
 # never clobbers the verify-action token. The committed .lfsconfig stays clean (no
 # secret); creds live only in local .git/config.
 echo "==> minting token + LFS round-trip"
-TOKEN="$(python3 mint-token.py --org "$ORG" --repo "$REPO" --ttl 1800)"
+TOKEN="$(python3 mint-token.py --org "$ORG" --repo "$REPO" --ttl 1800 \
+  --algorithm RS256 --key-file jwt_private_key)"
 CLEAN_URL="$HOST/$ORG/$REPO"
 CRED_URL="http://_jwt:$TOKEN@localhost:8080/$ORG/$REPO"
 

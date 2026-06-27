@@ -19,7 +19,10 @@ export interface Env {
   // Secrets (wrangler secret put ...) — never committed. See cloudflare/README.md.
   R2_ACCESS_KEY_ID: string;
   R2_SECRET_ACCESS_KEY: string;
-  GIFTLESS_JWT_KEY: string;
+  // RS256 prod keypair (po-g9y.11): public verifies all tokens, private signs
+  // Giftless's own verify callbacks. See giftless.yaml + cloudflare/README.
+  GIFTLESS_JWT_PUBLIC_KEY: string;
+  GIFTLESS_JWT_PRIVATE_KEY: string;
   // Plain vars (wrangler.jsonc [vars]).
   R2_ENDPOINT: string;
   R2_REGION: string;
@@ -40,15 +43,17 @@ export class GiftlessContainer extends Container<Env> {
 
   constructor(ctx: DurableObjectState<{}>, env: Env) {
     super(ctx, env);
-    // Inject R2 creds + the JWT key into the container process. boto3 reads the
-    // R2 token as the standard AWS_* names; the entrypoint writes GIFTLESS_JWT_KEY
-    // to /etc/giftless/jwt_key. Sourced from Worker secrets/vars, never baked in.
+    // Inject R2 creds + the JWT keypair into the container process. boto3 reads
+    // the R2 token as the standard AWS_* names; the entrypoint writes the two
+    // GIFTLESS_JWT_*_KEY PEMs to /etc/giftless/. Sourced from Worker secrets/vars,
+    // never baked in.
     this.envVars = {
       AWS_ACCESS_KEY_ID: env.R2_ACCESS_KEY_ID,
       AWS_SECRET_ACCESS_KEY: env.R2_SECRET_ACCESS_KEY,
       R2_ENDPOINT: env.R2_ENDPOINT,
       R2_REGION: env.R2_REGION || "auto",
-      GIFTLESS_JWT_KEY: env.GIFTLESS_JWT_KEY,
+      GIFTLESS_JWT_PUBLIC_KEY: env.GIFTLESS_JWT_PUBLIC_KEY,
+      GIFTLESS_JWT_PRIVATE_KEY: env.GIFTLESS_JWT_PRIVATE_KEY,
     };
   }
 }

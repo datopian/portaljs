@@ -1,3 +1,9 @@
 # Secrets — never commit these.
 jwt_key
+# RS256 prod keypair (po-g9y.11). The PRIVATE key is the signer — leaking it lets
+# anyone mint client tokens. The PUBLIC key is safe to share but kept out for
+# uniformity (it ships as a Worker secret, not from git).
+jwt_private_key
+jwt_public_key
+*.pem
 .env

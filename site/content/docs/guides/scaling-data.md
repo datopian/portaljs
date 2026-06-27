@@ -101,8 +101,10 @@ endpoint, but carries **no credentials**. Each client mints a repo-scoped JWT an
 credentialed `lfs.url` in *local* git config (never committed):
 
 ```bash
-TOKEN=$(python3 giftless/mint-token.py --org datopian --repo <project-slug> --ttl 3600)
-git config lfs.url "https://_jwt:$TOKEN@giftless.staging.portaljs.com/datopian/<project-slug>"
+# Prod signs tokens with RS256 — needs the issuer's private key (jwt_private_key).
+TOKEN=$(python3 giftless/mint-token.py --org datopian --repo <project-slug> \
+  --ttl 3600 --algorithm RS256 --key-file giftless/jwt_private_key)
+git config lfs.url "https://_jwt:$TOKEN@lfs.portaljs.com/datopian/<project-slug>"
 ```
 
 The `_jwt:` HTTP-Basic piggyback authenticates the LFS API call without clobbering the

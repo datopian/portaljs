@@ -8,9 +8,9 @@
 # and point lfs.url at it locally:
 #
 #   TOKEN=$(python3 giftless/mint-token.py --org datopian --repo __PROJECT_SLUG__ --ttl 3600)
-#   git config lfs.url "https://_jwt:$TOKEN@giftless.staging.portaljs.com/datopian/__PROJECT_SLUG__"
+#   git config lfs.url "https://_jwt:$TOKEN@lfs.portaljs.com/datopian/__PROJECT_SLUG__"
 #
 # See giftless/README.md → "Authenticating a Git LFS client" for the why
 # (the _jwt Basic piggyback avoids clobbering the presigned-R2 / verify auth).
 [lfs]
-	url = https://giftless.staging.portaljs.com/datopian/__PROJECT_SLUG__
+	url = https://lfs.portaljs.com/datopian/__PROJECT_SLUG__

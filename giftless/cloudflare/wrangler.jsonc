@@ -1,23 +1,27 @@
 {
-  // PortalJS — Giftless LFS host on Cloudflare Containers (staging).
+  // PortalJS — Giftless LFS host on Cloudflare Containers (PRODUCTION, po-g9y.11).
   // Deploy:  cd giftless/cloudflare && ./scripts/deploy.sh
   // The container runs the giftless/ image (../Dockerfile.cloudflare); this Worker
   // fronts it. See cloudflare/README.md for the full runbook + go-live handoff.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "giftless-staging",
+  "name": "giftless",
   "main": "src/index.ts",
   "compatibility_date": "2026-01-10",
   "account_id": "83025b28472d6aa2bf5ae59f3724aa78",
 
-  // Staging is reachable at https://giftless-staging.<account>.workers.dev.
-  // Custom hostname (lfs.staging.portaljs.com) is a DNS/ACM handoff — see README
-  // "Go-live" — and mirrors cloud/INFRA.md (routes added once DNS + cert exist).
+  // Reachable at https://giftless.<account>.workers.dev (kept on for pre-DNS
+  // validation: deploy + smoke-test the RS256/prod-R2 config here BEFORE the
+  // custom hostname resolves) AND at the production custom hostname below.
   "workers_dev": true,
 
-  // Go-live: point a custom hostname at this Worker once DNS + an ACM cert exist
-  // (Universal SSL doesn't cover multi-label subdomains — see cloud/INFRA.md §2b).
+  // Production custom hostname (po-g9y.11). BLOCKED on bead prereq #2: needs a
+  // PROXIED DNS record for lfs.portaljs.com in the portaljs.com zone + an ACM cert
+  // covering it (Universal SSL does NOT cover multi-label subdomains — see
+  // cloud/INFRA.md §2b). `wrangler deploy` FAILS to attach a route whose hostname
+  // does not resolve, so this stays COMMENTED until Anu confirms DNS + cert. The
+  // go-live flip is exactly this one uncomment + re-deploy:
   // "routes": [
-  //   { "pattern": "lfs.staging.portaljs.com/*", "zone_name": "portaljs.com" }
+  //   { "pattern": "lfs.portaljs.com/*", "zone_name": "portaljs.com" }
   // ],
 
   // Non-secret config. R2 creds + the JWT key are SECRETS (wrangler secret put),

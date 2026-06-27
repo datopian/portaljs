@@ -17,15 +17,17 @@ packages everything as deployable artifacts.
 | `Dockerfile` | Extends `datopian/giftless:latest`, bakes in the R2 backend + config. |
 | `r2storage.py` | 3-line `AmazonS3Storage` subclass that points boto3 at the R2 endpoint (the stock 0.5.0 adapter can't take a custom endpoint — see po-e24). |
 | `giftless.yaml` | Config: JWT auth (no anon), `basic` transfer → `R2Storage`, JWT-signed verify callbacks. |
-| `docker-compose.yml` | One-command run; reads R2 creds from `.env`, key from `./jwt_key`. |
-| `mint-token.py` | Mint a client JWT for a repo (HS256, stdlib only — no deps). |
+| `docker-compose.yml` | One-command run; reads R2 creds from `.env`, RS256 keypair from `./jwt_private_key` + `./jwt_public_key`. |
+| `mint-token.py` | Mint a client JWT for a repo. HS256 (stdlib) or RS256 (`--algorithm RS256`, needs `cryptography`). |
 | `r2-cors.json` | CORS policy for the data bucket — browser range fetch (phase 3). |
-| `scripts/gen-key.sh` | Generate the HS256 signing key (`./jwt_key`). |
+| `scripts/gen-rs256-keys.sh` | Generate the prod RS256 keypair (`./jwt_private_key` + `./jwt_public_key`). |
+| `scripts/gen-key.sh` | DEPRECATED — the legacy HS256 key (`./jwt_key`); superseded by the RS256 keypair. |
 | `scripts/smoke-test.sh` | Build → run → JWT-secured LFS round-trip to R2 → assert no-token is rejected. |
 | `scripts/set-r2-cors.sh` | Apply `r2-cors.json` to an R2 bucket (via wrangler). |
 | `scripts/verify-r2-cors.py` | Prove a browser CORS ranged GET works against R2. |
 
-`jwt_key` and `.env` are gitignored — **never commit them**.
+`jwt_key`, `jwt_private_key`, `jwt_public_key`, and `.env` are gitignored —
+**never commit them**.
 
 ## Why these choices (from po-e24)
 
@@ -38,13 +40,13 @@ packages everything as deployable artifacts.
   (R2 single-PUT limit). `multipart-basic` deferred until individual files exceed that.
 - **`--http`, not the image's default uwsgi socket** — so a reverse proxy / LB fronts it.
 
-## Run it locally (against the real R2 staging bucket)
+## Run it locally (against the real R2 prod bucket)
 
 ```bash
 cd giftless
 cp .env.example .env            # fill in R2 creds, or:
-                                # set -a && . ~/.config/portaljs/giftless-r2.env && set +a
-./scripts/gen-key.sh            # writes ./jwt_key (the JWT signing secret)
+                                # set -a && . ~/.config/portaljs/giftless-r2-prod.env && set +a
+./scripts/gen-rs256-keys.sh     # writes ./jwt_private_key + ./jwt_public_key
 docker compose up --build -d    # serves on http://localhost:8080
 ```
 
@@ -60,7 +62,9 @@ Giftless authorizes each request from the `scopes` claim in the JWT. Mint a toke
 scoped to one repo, then point Git LFS at the server.
 
 ```bash
-TOKEN=$(python3 mint-token.py --org datopian --repo my-catalog --ttl 3600)
+# Prod (RS256): sign with the issuer's private key. (HS256 legacy: drop the flags.)
+TOKEN=$(python3 mint-token.py --org datopian --repo my-catalog --ttl 3600 \
+  --algorithm RS256 --key-file jwt_private_key)
 ```
 
 The JWT provider accepts the token two ways:
@@ -90,27 +94,38 @@ obj:{org}/{repo}/{oid}:{actions}      # actions: read,write,verify  (or *)
 `mint-token.py` grants `obj:<org>/<repo>/*:read,write,verify` (all objects in one
 repo). Use `--actions read` for a read-only (pull) token.
 
-## JWT model: staging vs production
+## JWT model: production (RS256, single keypair)
 
-**Staging (this config): HS256, one shared secret** in `jwt_key`. Giftless uses it
-to both verify client tokens and sign its own short-lived "verify" callbacks
-(`PRE_AUTHORIZED_ACTION_PROVIDER`). Fine while we are the only token issuer.
+**Production (this config): RS256, ONE keypair.** Giftless holds the **public** key
+(`public_key_file`) to verify every incoming token — both client tokens and its own
+short-lived "verify" callbacks — and the **private** key (`private_key_file`) to sign
+those callbacks (`PRE_AUTHORIZED_ACTION_PROVIDER`). The token issuer (the Arc API /
+CI) holds the same private key to mint client tokens. Generate it with
+`scripts/gen-rs256-keys.sh`; both halves ship as Worker secrets (the container
+materializes them — see `cloudflare/container-entrypoint.sh`).
 
-**Production hardening: RS256, split keys.** Give Giftless only the **public** key
-to verify client tokens (`public_key_file`), and hold the **private** signing key
-in the token issuer (the Arc API / CI). Giftless still needs a private key to sign
-its own verify callbacks — use a separate dedicated keypair for
-`PRE_AUTHORIZED_ACTION_PROVIDER`. This way a Giftless host compromise can't mint
-client tokens. Set `algorithm: RS256` and the `*_key_file` paths in `giftless.yaml`.
+> **Why one keypair, not two.** The bead originally called for a *separate* keypair
+> for the verify callbacks. That does not work with stock giftless: its auth chain
+> **aborts on the first provider that rejects a token's signature** (it catches
+> `Unauthorized` and stops — `giftless/auth/__init__.py`), so two keypairs on one
+> auth path can't coexist. A single keypair, whose public key verifies everything,
+> is the only config that authenticates both client tokens and verify callbacks.
+> **Trade-off:** because the private signer is injected into the container (a Worker
+> secret), a Giftless host compromise leaks it — accepted for prod (po-g9y.11).
 
-## Deploying to a live staging host (infra handoff)
+**Staging legacy (po-g9y.10): HS256, one shared secret** in `jwt_key` — Giftless
+used the single symmetric key to both verify and sign. Superseded by the RS256
+cutover above; `scripts/gen-key.sh` is kept only for reference.
 
-> **Live (po-g9y.10):** this image now runs on **Cloudflare Containers** at
-> `https://giftless-staging.datopian.workers.dev`. The deploy (Worker + container
-> config, secret wiring, runbook) lives in [`cloudflare/`](cloudflare/) —
-> `cd cloudflare && ./scripts/deploy.sh`, verify with `./scripts/smoke-remote.sh`.
-> The remaining go-live items (custom hostname, RS256) are tracked in
-> [`cloudflare/README.md`](cloudflare/README.md#go-live-handoff-remaining-for-production).
+## Deploying to a live host (infra handoff)
+
+> **Live (po-g9y.10):** this image runs on **Cloudflare Containers**; staging is
+> `https://giftless-staging.datopian.workers.dev`. The **production cutover**
+> (po-g9y.11 — RS256, `portaljs-giftless` bucket, `lfs.portaljs.com`) is prepared in
+> [`cloudflare/`](cloudflare/) but **not yet deployed** (blocked on a prod R2 token +
+> DNS). Deploy: `cd cloudflare && ./scripts/deploy.sh`, verify with
+> `./scripts/smoke-remote.sh`. Full status + finish-up steps:
+> [`cloudflare/README.md`](cloudflare/README.md#go-live-status-po-g9y11).
 > The generic checklist below is retained for reference / alternative hosts.
 
 Giftless is a long-running Python/uwsgi container — it does **not** run on
@@ -119,12 +134,12 @@ Cloudflare Workers (unlike the Arc workers in `cloud/`). A live
 
 1. **A container host** — Cloudflare Containers, Fly.io, Render, or a small VM.
    Run the image from this `Dockerfile`.
-2. **R2** — bucket `portaljs-giftless-staging` already exists (account
+2. **R2** — prod bucket `portaljs-giftless` (account
    `83025b28472d6aa2bf5ae59f3724aa78`); scoped token creds at
-   `~/.config/portaljs/giftless-r2.env`.
+   `~/.config/portaljs/giftless-r2-prod.env`.
 3. **Secrets on the host** — R2 creds as `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`
-   + `R2_ENDPOINT`; the JWT key mounted at `/etc/giftless/jwt_key` (a platform secret,
-   not the repo).
+   + `R2_ENDPOINT`; the RS256 keypair mounted at `/etc/giftless/jwt_public_key` +
+   `/etc/giftless/jwt_private_key` (platform secrets, not the repo).
 4. **DNS + TLS** — a hostname pointed at the container, HTTPS terminated (LB or the
    platform's edge). Giftless serves plain HTTP on `:5000` behind it.
 5. **R2 bucket CORS** — required for **browser** range fetches in the later

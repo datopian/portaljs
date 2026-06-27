@@ -5,10 +5,11 @@
 # open CAVEAT: how slow is the first request after the container scales to zero?).
 #
 #   ./scripts/smoke-remote.sh                       # uses the workers.dev URL
-#   GIFTLESS_URL=https://lfs.staging.portaljs.com ./scripts/smoke-remote.sh
+#   GIFTLESS_URL=https://lfs.portaljs.com ./scripts/smoke-remote.sh
 #
-# Needs: git, git-lfs, python3, and the JWT key (../jwt_key or $GIFTLESS_JWT_KEY)
-# to mint client tokens. The key must match the one deployed as the secret.
+# Needs: git, git-lfs, python3, the 'cryptography' package, and the RS256 PRIVATE
+# key (../jwt_private_key or $GIFTLESS_JWT_PRIVATE_KEY) to mint client tokens. The
+# key must be the signer whose PUBLIC half is deployed as GIFTLESS_JWT_PUBLIC_KEY.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
@@ -17,7 +18,7 @@ URL="${GIFTLESS_URL:-${1:-}}"
 if [[ -z "$URL" ]]; then
   # Derive the default workers.dev URL from `wrangler whoami`'s account subdomain
   # if discoverable; otherwise require it explicitly.
-  echo "set GIFTLESS_URL (e.g. https://giftless-staging.<account>.workers.dev)" >&2
+  echo "set GIFTLESS_URL (e.g. https://giftless.<account>.workers.dev or https://lfs.portaljs.com)" >&2
   exit 1
 fi
 URL="${URL%/}"
@@ -25,15 +26,17 @@ ORG="datopian"; REPO="giftless-smoke-remote"
 PASS() { printf '  \033[32mPASS\033[0m %s\n' "$1"; }
 FAIL() { printf '  \033[31mFAIL\033[0m %s\n' "$1"; exit 1; }
 
-# JWT key (to mint client tokens). Must equal the deployed GIFTLESS_JWT_KEY secret.
-KEY_ARG=()
-if [[ -n "${GIFTLESS_JWT_KEY:-}" ]]; then
-  printf '%s' "$GIFTLESS_JWT_KEY" > "$ROOT/.jwt_key.tmp"; KEY_ARG=(--key-file "$ROOT/.jwt_key.tmp")
+# RS256 private key (to mint client tokens). Its public half must equal the
+# deployed GIFTLESS_JWT_PUBLIC_KEY secret. mint-token signs with --algorithm RS256.
+MINT_ARGS=(--algorithm RS256)
+if [[ -n "${GIFTLESS_JWT_PRIVATE_KEY:-}" ]]; then
+  printf '%s' "$GIFTLESS_JWT_PRIVATE_KEY" > "$ROOT/.jwt_key.tmp"
+  MINT_ARGS+=(--key-file "$ROOT/.jwt_key.tmp")
   trap 'rm -f "$ROOT/.jwt_key.tmp"' EXIT
-elif [[ -f ../jwt_key ]]; then
-  KEY_ARG=(--key-file ../jwt_key)
+elif [[ -f ../jwt_private_key ]]; then
+  MINT_ARGS+=(--key-file ../jwt_private_key)
 else
-  FAIL "no JWT key: set GIFTLESS_JWT_KEY or provide ../jwt_key"
+  FAIL "no RS256 private key: set GIFTLESS_JWT_PRIVATE_KEY or provide ../jwt_private_key"
 fi
 
 # --- cold-start measurement ---------------------------------------------
@@ -41,7 +44,7 @@ fi
 # time an authenticated batch call (cheap — no bytes move) and report it. A second
 # (warm) call gives the steady-state baseline for contrast.
 echo "==> cold-start probe (authenticated batch)"
-TOKEN="$(python3 ../mint-token.py --org "$ORG" --repo "$REPO" --ttl 1800 "${KEY_ARG[@]}")"
+TOKEN="$(python3 ../mint-token.py --org "$ORG" --repo "$REPO" --ttl 1800 "${MINT_ARGS[@]}")"
 batch() {
   curl -s -o /dev/null -w '%{http_code} %{time_total}s' -X POST \
     "$URL/$ORG/$REPO/objects/batch" \

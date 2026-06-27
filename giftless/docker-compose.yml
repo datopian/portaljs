@@ -1,13 +1,15 @@
-# Staging Giftless. Reads R2 creds + endpoint from a local .env (see .env.example),
-# and the JWT signing key from ./jwt_key (gitignored; generate with scripts/gen-key.sh).
+# Local Giftless (RS256, matches the prod config in giftless.yaml — po-g9y.11).
+# Reads R2 creds + endpoint from a local .env (see .env.example), and the RS256
+# keypair from ./jwt_private_key + ./jwt_public_key (gitignored; generate with
+# scripts/gen-rs256-keys.sh).
 #
 #   cp .env.example .env        # fill in R2 creds (or: set -a; . ~/.config/portaljs/giftless-r2.env)
-#   ./scripts/gen-key.sh        # writes ./jwt_key
+#   ./scripts/gen-rs256-keys.sh # writes ./jwt_private_key + ./jwt_public_key
 #   docker compose up --build -d
 services:
   giftless:
     build: .
-    image: portaljs/giftless-r2:staging
+    image: portaljs/giftless-r2:latest
     ports:
       - "8080:5000"
     environment:
@@ -17,6 +19,8 @@ services:
       R2_ENDPOINT: "${R2_ENDPOINT:?set R2_ENDPOINT}"
       R2_REGION: "${R2_REGION:-auto}"
     volumes:
-      # JWT signing/verification key, mounted read-only. Never baked into the image.
-      - ./jwt_key:/etc/giftless/jwt_key:ro
+      # RS256 keypair, mounted read-only. Never baked into the image. The public
+      # key verifies all tokens; the private key signs Giftless's verify callbacks.
+      - ./jwt_public_key:/etc/giftless/jwt_public_key:ro
+      - ./jwt_private_key:/etc/giftless/jwt_private_key:ro
     restart: unless-stopped

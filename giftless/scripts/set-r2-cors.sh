@@ -8,11 +8,11 @@
 # (account-authenticated). Run `wrangler login` first if needed.
 #
 # Usage: ./scripts/set-r2-cors.sh [bucket-name]
-#   bucket-name defaults to $R2_BUCKET, then portaljs-giftless-staging.
+#   bucket-name defaults to $R2_BUCKET, then portaljs-giftless (prod, po-g9y.11).
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-BUCKET="${1:-${R2_BUCKET:-portaljs-giftless-staging}}"
+BUCKET="${1:-${R2_BUCKET:-portaljs-giftless}}"
 
 echo "Setting CORS on R2 bucket: $BUCKET (from r2-cors.json)"
 wrangler r2 bucket cors set "$BUCKET" --file r2-cors.json --force
