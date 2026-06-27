@@ -151,8 +151,10 @@ Giftless URL but **no credentials**. Mint a repo-scoped JWT and set the credenti
 set a broad `http.extraHeader`, which git-lfs would replay onto the presigned R2 PUT (R2 →
 `400`) and the verify callback:
 ```bash
-TOKEN=$(python3 ../../giftless/mint-token.py --org datopian --repo <project-slug> --ttl 3600)
-git config lfs.url "https://_jwt:$TOKEN@giftless.staging.portaljs.com/datopian/<project-slug>"
+# Prod signs tokens with RS256 — needs the issuer's private key (jwt_private_key).
+TOKEN=$(python3 ../../giftless/mint-token.py --org datopian --repo <project-slug> \
+  --ttl 3600 --algorithm RS256 --key-file ../../giftless/jwt_private_key)
+git config lfs.url "https://_jwt:$TOKEN@lfs.portaljs.com/datopian/<project-slug>"
 ```
 (See `giftless/README.md` → "Authenticating a Git LFS client".)
 
