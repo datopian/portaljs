@@ -7,7 +7,8 @@
 // Served at api.arc.portaljs.com (api.staging.arc.portaljs.com on staging).
 
 import { untar } from './untar'
-import { userForToken, loginForToken, ensureProject, recordDeployment, getDeployment } from './db'
+import { userForToken, loginForToken, userRowForToken, ensureProject, recordDeployment, getDeployment } from './db'
+import { mintLfsToken, normalizeActions, normalizeTtl, LFS_ORG } from './lfs'
 
 export interface Env {
   ASSETS: R2Bucket
@@ -15,6 +16,12 @@ export interface Env {
   ARC_HOST: string // e.g. "staging.arc.portaljs.com"
   MAX_FILES?: string
   MAX_BYTES?: string
+  // RS256 PKCS#8 PEM that signs Giftless LFS client tokens. Provisioned as a Worker
+  // secret (NOT a [vars] entry) — see wrangler.toml. Absent ⇒ /v1/repos/:slug/lfs-token
+  // returns 503. The matching public key is deployed on Giftless (GIFTLESS_JWT_PUBLIC_KEY).
+  GIFTLESS_JWT_PRIVATE_KEY?: string
+  // Giftless host the minted token targets (default lfs.portaljs.com).
+  LFS_HOST?: string
 }
 
 const RESERVED = new Set(['www', 'api', 'admin', 'staging', 'arc'])
@@ -113,6 +120,58 @@ export async function handleDeploy(request: Request, env: Env): Promise<Response
   })
 }
 
+// POST /v1/repos/:slug/lfs-token — mint a scoped RS256 Giftless LFS token for the
+// authenticated Arc user. Guarded by the Arc API bearer token (device-flow
+// PORTALJS_TOKEN); 401 otherwise. The slug must be owned by the caller (or unclaimed,
+// in which case it's claimed) — so user A can't mint a write token for user B's repo.
+//   ?actions=read   → read-only (pull) token; default read,write,verify
+//   ?ttl=<seconds>  → lifetime, capped at 24h; default 3600
+export async function handleLfsToken(request: Request, env: Env, slug: string): Promise<Response> {
+  const auth = request.headers.get('authorization') ?? ''
+  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : ''
+  if (!token) return json({ error: 'missing bearer token' }, 401)
+  const user = await userRowForToken(env.DB, token)
+  if (!user) return json({ error: 'invalid token' }, 401)
+
+  if (!validSlug(slug)) return json({ error: `invalid slug "${slug}"` }, 400)
+
+  // The signer lives only as a Worker secret; fail loudly if it's not provisioned
+  // (e.g. `wrangler secret put GIFTLESS_JWT_PRIVATE_KEY` not yet run) rather than 500.
+  if (!env.GIFTLESS_JWT_PRIVATE_KEY) {
+    return json({ error: 'LFS token issuer not configured (GIFTLESS_JWT_PRIVATE_KEY unset)' }, 503)
+  }
+
+  const url = new URL(request.url)
+  const actions = normalizeActions(url.searchParams.get('actions'))
+  if (actions === null) return json({ error: 'invalid actions (use read,write,verify or *)' }, 400)
+  const ttl = normalizeTtl(Number(url.searchParams.get('ttl')) || undefined)
+
+  // Ownership: claim the slug for this user (or confirm they already own it).
+  const project = await ensureProject(env.DB, user.id, slug)
+  if (!project.ok) return json({ error: `slug "${slug}" is taken by another account` }, 409)
+
+  let minted
+  try {
+    minted = await mintLfsToken(env.GIFTLESS_JWT_PRIVATE_KEY, {
+      slug,
+      actions,
+      ttl,
+      sub: `arc:${user.login}`,
+    })
+  } catch (e) {
+    return json({ error: `could not mint token: ${(e as Error).message}` }, 500)
+  }
+
+  const host = env.LFS_HOST || 'lfs.portaljs.com'
+  return json({
+    token: minted.token,
+    scope: minted.scope,
+    expires_in: minted.expiresIn,
+    // Credentialed LFS URL the client sets as `git config lfs.url` (local only).
+    lfs_url: `https://_jwt:${minted.token}@${host}/${LFS_ORG}/${slug}`,
+  })
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
@@ -135,6 +194,8 @@ export default {
       return login ? json({ login }) : json({ error: 'invalid token' }, 401)
     }
     if (url.pathname === '/v1/deploy' && request.method === 'POST') return handleDeploy(request, env)
+    const lfsM = url.pathname.match(/^\/v1\/repos\/([a-z0-9-]+)\/lfs-token$/)
+    if (lfsM && request.method === 'POST') return handleLfsToken(request, env, lfsM[1])
     const m = url.pathname.match(/^\/v1\/deploy\/([\w-]+)$/)
     if (m && request.method === 'GET') {
       const row = await getDeployment(env.DB, m[1])

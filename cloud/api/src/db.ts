@@ -28,6 +28,23 @@ export async function loginForToken(db: D1Database, token: string): Promise<stri
   return row?.login ?? null
 }
 
+// Resolve a bearer token to the owner's user id AND GitHub login in one round-trip.
+// The id feeds project-ownership checks; the login is folded into the minted LFS
+// token's `sub` claim for auditability. null if the token is unknown/revoked.
+export async function userRowForToken(
+  db: D1Database,
+  token: string
+): Promise<{ id: string; login: string } | null> {
+  const hash = await sha256Hex(token)
+  const row = await db
+    .prepare(
+      'SELECT u.id AS id, u.login AS login FROM tokens t JOIN users u ON u.id = t.user_id WHERE t.hash = ? AND t.revoked_at IS NULL'
+    )
+    .bind(hash)
+    .first<{ id: string; login: string }>()
+  return row ?? null
+}
+
 export type ProjectResult =
   | { ok: true; projectId: string }
   | { ok: false; reason: 'conflict' }

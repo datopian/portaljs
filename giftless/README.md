@@ -61,6 +61,27 @@ Verify end-to-end (build, round-trip, teardown):
 Giftless authorizes each request from the `scopes` claim in the JWT. Mint a token
 scoped to one repo, then point Git LFS at the server.
 
+**Default issuer — the Arc API (po-g9y.13).** Hosted portals mint tokens from
+**arc-api**, which holds the RS256 signer as a Worker secret so the private key never
+leaves the server. Any authenticated Arc user (the device-flow `PORTALJS_TOKEN`) can
+mint a scoped, short-TTL token; this is what `/portaljs-add-dataset` and
+`/portaljs-deploy` use. The endpoint returns a ready-to-use credentialed `lfs_url`:
+
+```bash
+# ?actions=read → pull-only; ?ttl=<secs> → tune lifetime (default read,write,verify / 3600s).
+curl -fsS -X POST https://api.arc.portaljs.com/v1/repos/my-catalog/lfs-token \
+  -H "Authorization: Bearer $PORTALJS_TOKEN"
+# → { "token": "...", "scope": "obj:datopian/my-catalog/*:read,write,verify",
+#     "expires_in": 3600, "lfs_url": "https://_jwt:<token>@lfs.portaljs.com/datopian/my-catalog" }
+```
+
+Unauthenticated callers get `401`; a slug owned by another account gets `409`. The
+issuer code is `cloud/api/src/lfs.ts` (route `POST /v1/repos/:slug/lfs-token`); it
+mirrors `mint-token.py`'s RS256 claim shape exactly.
+
+**Local/OSS fallback — `mint-token.py`.** Without an Arc account (self-host, CI with
+the key on hand), sign the token directly with the issuer's private key:
+
 ```bash
 # Prod (RS256): sign with the issuer's private key. (HS256 legacy: drop the flags.)
 TOKEN=$(python3 mint-token.py --org datopian --repo my-catalog --ttl 3600 \
