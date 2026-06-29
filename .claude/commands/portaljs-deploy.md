@@ -185,6 +185,12 @@ would inline them into the static export (bloat); leaving them as pointers would
 `/portaljs-add-dataset` (which writes the absolute R2 URL) or, for an OSS self-host without
 R2, keep it genuinely inline (small).
 
+> **Pushing new LFS data needs an LFS token, not the deploy token directly.** Deploy only
+> reads pointers, so it never needs LFS credentials. When you *add* data (`/portaljs-add-dataset`),
+> the same Arc token resolved in step 2 mints a scoped Git LFS token from
+> `POST $PORTALJS_ARC_API/v1/repos/<slug>/lfs-token` (the arc-api issuer, po-g9y.13) — the RS256
+> signer stays server-side as a Worker secret. See `/portaljs-add-dataset` → "Authenticate git-lfs".
+
 ### 4. Verify the export serves data from R2 (no bloat)
 
 A deployed portal must carry **zero dataset bytes** — large data is served from R2, not the

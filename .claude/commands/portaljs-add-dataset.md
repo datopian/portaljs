@@ -149,13 +149,32 @@ git commit -m "data: add $DATASET_SLUG via LFS"
 Giftless URL but **no credentials**. Mint a repo-scoped JWT and set the credentialed URL in
 **local** git config only (never commit it). Use the `_jwt` HTTP Basic piggyback — do *not*
 set a broad `http.extraHeader`, which git-lfs would replay onto the presigned R2 PUT (R2 →
-`400`) and the verify callback:
+`400`) and the verify callback.
+
+**Mint the token from the Arc API (default — no private key on your machine).** The Arc API
+is the token issuer (po-g9y.13): it holds the RS256 signer as a Worker secret and mints a
+scoped, short-TTL LFS token for any authenticated Arc user. Reuse the same Arc token
+`/portaljs-deploy` resolves (`PORTALJS_TOKEN`, else `~/.portaljs/credentials`); if you have
+neither, run `/portaljs-deploy`'s sign-in step once. The endpoint returns a ready-to-use
+credentialed `lfs_url`:
 ```bash
-# Prod signs tokens with RS256 — needs the issuer's private key (jwt_private_key).
-TOKEN=$(python3 ../../giftless/mint-token.py --org datopian --repo <project-slug> \
-  --ttl 3600 --algorithm RS256 --key-file ../../giftless/jwt_private_key)
-git config lfs.url "https://_jwt:$TOKEN@lfs.portaljs.com/datopian/<project-slug>"
+API="${PORTALJS_ARC_API:-https://api.arc.portaljs.com}"
+ARC_TOKEN="${PORTALJS_TOKEN:-$(node -e "try{process.stdout.write(JSON.parse(require('fs').readFileSync(process.env.HOME+'/.portaljs/credentials','utf8')).token||'')}catch{}")}"
+# read,write,verify by default; add ?actions=read for a pull-only token, ?ttl=<secs> to tune.
+LFS_URL=$(curl -fsS -X POST "$API/v1/repos/<project-slug>/lfs-token" \
+  -H "Authorization: Bearer $ARC_TOKEN" \
+  | node -e "process.stdin.on('data',d=>process.stdout.write(JSON.parse(d).lfs_url))")
+git config lfs.url "$LFS_URL"     # local only — carries the token, never committed
 ```
+
+> **OSS self-host fallback.** Running your own Giftless without an Arc account? Sign the token
+> locally with the issuer's private key instead:
+> ```bash
+> TOKEN=$(python3 ../../giftless/mint-token.py --org datopian --repo <project-slug> \
+>   --ttl 3600 --algorithm RS256 --key-file ../../giftless/jwt_private_key)
+> git config lfs.url "https://_jwt:$TOKEN@lfs.portaljs.com/datopian/<project-slug>"
+> ```
+
 (See `giftless/README.md` → "Authenticating a Git LFS client".)
 
 **Push the bytes to R2, then reclaim local disk:**
