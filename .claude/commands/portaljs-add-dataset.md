@@ -160,9 +160,13 @@ credentialed `lfs_url`:
 ```bash
 API="${PORTALJS_ARC_API:-https://api.arc.portaljs.com}"
 ARC_TOKEN="${PORTALJS_TOKEN:-$(node -e "try{process.stdout.write(JSON.parse(require('fs').readFileSync(process.env.HOME+'/.portaljs/credentials','utf8')).token||'')}catch{}")}"
+# Claim the slug under your Arc account (idempotent; safe to re-run). Minting never
+# creates a slug (po-g9y.13), so claim once before the FIRST push on a portal that
+# hasn't been deployed yet — this is what makes create → add-data → deploy seamless.
+# 403 = the slug belongs to another account.
+curl -fsS -X POST "$API/v1/repos/<project-slug>/claim" -H "Authorization: Bearer $ARC_TOKEN" >/dev/null
 # Pushing data needs write: request ?actions=read,write,verify (default is read-only,
-# pull). ?ttl=<secs> to tune. The slug must already exist (deploy it first); the
-# endpoint will NOT create it. 404 = deploy first; 403 = owned by another account.
+# pull). ?ttl=<secs> to tune.
 LFS_URL=$(curl -fsS -X POST "$API/v1/repos/<project-slug>/lfs-token?actions=read,write,verify" \
   -H "Authorization: Bearer $ARC_TOKEN" \
   | node -e "process.stdin.on('data',d=>process.stdout.write(JSON.parse(d).lfs_url))")
