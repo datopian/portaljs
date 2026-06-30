@@ -160,8 +160,10 @@ credentialed `lfs_url`:
 ```bash
 API="${PORTALJS_ARC_API:-https://api.arc.portaljs.com}"
 ARC_TOKEN="${PORTALJS_TOKEN:-$(node -e "try{process.stdout.write(JSON.parse(require('fs').readFileSync(process.env.HOME+'/.portaljs/credentials','utf8')).token||'')}catch{}")}"
-# read,write,verify by default; add ?actions=read for a pull-only token, ?ttl=<secs> to tune.
-LFS_URL=$(curl -fsS -X POST "$API/v1/repos/<project-slug>/lfs-token" \
+# Pushing data needs write: request ?actions=read,write,verify (default is read-only,
+# pull). ?ttl=<secs> to tune. The slug must already exist (deploy it first); the
+# endpoint will NOT create it. 404 = deploy first; 403 = owned by another account.
+LFS_URL=$(curl -fsS -X POST "$API/v1/repos/<project-slug>/lfs-token?actions=read,write,verify" \
   -H "Authorization: Bearer $ARC_TOKEN" \
   | node -e "process.stdin.on('data',d=>process.stdout.write(JSON.parse(d).lfs_url))")
 git config lfs.url "$LFS_URL"     # local only — carries the token, never committed

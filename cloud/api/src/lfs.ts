@@ -5,8 +5,8 @@
 // raw RS256 private key.
 //
 // Mirrors giftless/mint-token.py's RS256 path EXACTLY in claim shape:
-//   header  {"alg":"RS256","typ":"JWT"}
-//   payload {sub, iat, nbf, exp, scopes:["obj:datopian/<slug>/*:<actions>"]}
+//   header  {"alg":"RS256","typ":"JWT","kid":"<key id>"}
+//   payload {sub, iss, iat, nbf, exp, scopes:["obj:datopian/<slug>/*:<actions>"]}
 // signed with RSASSA-PKCS1-v1_5 over SHA-256 (== Python's PKCS1v15 + SHA256).
 //
 // Signs with the GIFTLESS_JWT_PRIVATE_KEY Worker secret (a PKCS#8 PEM, the format
@@ -18,13 +18,26 @@
 // the Giftless object key is lfs/datopian/<slug>/<oid>.
 export const LFS_ORG = 'datopian'
 
-// git-lfs scope actions Giftless understands. The minted scope is a subset of these
-// (or the literal "*"); anything else is rejected so a caller can't inject arbitrary
-// text into the scope claim.
+// git-lfs scope actions Giftless understands. A minted scope is a subset of these.
+// The "*" wildcard is NOT accepted — a caller must name the actions it needs — and
+// anything outside the set is rejected, so a caller can't inject arbitrary scope text.
 const VALID_ACTIONS = new Set(['read', 'write', 'verify'])
-const DEFAULT_ACTIONS = 'read,write,verify'
+// Least privilege (po-g9y.13): default to read-only (pull). Write/verify must be
+// requested explicitly (e.g. the push side of /portaljs-add-dataset).
+const DEFAULT_ACTIONS = 'read'
 const DEFAULT_TTL = 3600
 const MAX_TTL = 86400 // cap so a mis-set ttl can't mint a long-lived token
+
+// JWT key id (header `kid`) + issuer (`iss`). Giftless enforces `kid` when its
+// key_id is configured (giftless.yaml) — that is what lets us rotate the signing
+// key (mint under a new kid, trust both during the overlap).
+// NOTE: `aud` is intentionally NOT set. giftless 1.7.1's verifier calls
+// jwt.decode() WITHOUT audience=, and PyJWT 1.7.1 raises InvalidAudienceError on
+// ANY token carrying an aud claim (including giftless's own verify callbacks), so
+// an aud claim would break auth. Adding it needs a giftless patch (pass audience=
+// to decode) or a PyJWT upgrade — tracked as a follow-up.
+const KEY_ID = 'giftless-rs256-1'
+const ISSUER = 'arc.portaljs.com'
 
 const enc = new TextEncoder()
 
@@ -66,7 +79,7 @@ async function importPrivateKey(pem: string): Promise<CryptoKey> {
 export function normalizeActions(raw: string | null | undefined): string | null {
   const v = (raw ?? '').trim()
   if (!v) return DEFAULT_ACTIONS
-  if (v === '*') return '*'
+  // No "*" wildcard: a caller must name the exact actions it needs (least privilege).
   const parts = v.split(',').map((p) => p.trim()).filter(Boolean)
   if (parts.length === 0 || !parts.every((p) => VALID_ACTIONS.has(p))) return null
   return parts.join(',')
@@ -100,9 +113,10 @@ export async function mintLfsToken(privateKeyPem: string, opts: MintOptions): Pr
   if (actions === null) throw new Error('invalid actions')
   const scope = `obj:${LFS_ORG}/${opts.slug}/*:${actions}`
 
-  const header = { alg: 'RS256', typ: 'JWT' }
+  const header = { alg: 'RS256', typ: 'JWT', kid: KEY_ID }
   const payload = {
     sub: opts.sub || 'lfs-client',
+    iss: ISSUER,
     iat: now,
     nbf: now,
     exp: now + ttl,
