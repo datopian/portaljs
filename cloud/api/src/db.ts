@@ -80,6 +80,29 @@ export async function ensureProject(
   return { ok: true, projectId: row.id }
 }
 
+export type OwnedProjectResult =
+  | { ok: true; projectId: string }
+  | { ok: false; reason: 'not_found' | 'conflict' }
+
+// Look up an EXISTING project owned by userId. Unlike ensureProject, this NEVER
+// creates a row — minting an LFS token must not allocate ownership (po-g9y.13
+// security fix: prevents an authenticated caller squatting an unclaimed slug, esp.
+// one that already has objects in R2). 'not_found' = no project with that slug;
+// 'conflict' = it exists but belongs to another account.
+export async function getOwnedProject(
+  db: D1Database,
+  userId: string,
+  slug: string
+): Promise<OwnedProjectResult> {
+  const row = await db
+    .prepare('SELECT id, user_id FROM projects WHERE slug = ?')
+    .bind(slug)
+    .first<{ id: string; user_id: string }>()
+  if (!row) return { ok: false, reason: 'not_found' }
+  if (row.user_id !== userId) return { ok: false, reason: 'conflict' }
+  return { ok: true, projectId: row.id }
+}
+
 export async function recordDeployment(
   db: D1Database,
   projectId: string,

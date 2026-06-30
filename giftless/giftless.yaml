@@ -26,6 +26,14 @@ AUTH_PROVIDERS:
       # client tokens (issuer-signed) and Giftless's own verify callbacks.
       public_key_file: /etc/giftless/jwt_public_key
       leeway: 60
+      # Enforce the signing key id (po-g9y.13). A token's `kid` header must equal
+      # this; lets us rotate keys (mint under a new kid, trust both during overlap)
+      # and rejects tokens minted for a different key id. Giftless stamps the same
+      # kid on its own verify callbacks (PRE_AUTHORIZED_ACTION_PROVIDER below), so
+      # the check passes for them too. NB: aud/iss are NOT enforced — giftless
+      # 1.7.1's verifier doesn't pass audience= to jwt.decode (PyJWT then rejects
+      # ANY aud claim, including the callbacks), so we bind on kid only.
+      key_id: giftless-rs256-1
 
 # Giftless mints its own pre-authorized token for the post-upload "verify" action.
 # Same keypair — sign with the PRIVATE key; AUTH_PROVIDERS above verifies the
@@ -37,6 +45,9 @@ PRE_AUTHORIZED_ACTION_PROVIDER:
     private_key_file: /etc/giftless/jwt_private_key
     public_key_file: /etc/giftless/jwt_public_key
     default_lifetime: 900
+    # Stamp the same kid on the verify callbacks so the AUTH_PROVIDER above
+    # accepts them under key_id enforcement (po-g9y.13).
+    key_id: giftless-rs256-1
 
 # basic transfer: Giftless hands the client presigned R2 URLs (direct-to-R2
 # upload/download). Sufficient for files < ~5 GB; multipart deferred (po-e24).

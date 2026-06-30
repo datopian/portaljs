@@ -33,6 +33,12 @@ import json
 import os
 import time
 
+# Must match giftless.yaml `key_id` and the Arc issuer (cloud/api/src/lfs.ts), so
+# tokens minted here pass Giftless's kid enforcement (po-g9y.13). `aud` is NOT set:
+# giftless 1.7.1's verifier rejects any aud claim (see lfs.ts note).
+KEY_ID = "giftless-rs256-1"
+ISSUER = "arc.portaljs.com"
+
 
 def _b64url(raw: bytes) -> str:
     return base64.urlsafe_b64encode(raw).rstrip(b"=").decode("ascii")
@@ -59,13 +65,14 @@ def mint(
     key: str, org: str, repo: str, actions: str, ttl: int, sub: str, algorithm: str
 ) -> str:
     now = int(time.time())
-    header = {"alg": algorithm, "typ": "JWT"}
+    header = {"alg": algorithm, "typ": "JWT", "kid": KEY_ID}
     payload = {
         "sub": sub,
+        "iss": ISSUER,
         "iat": now,
         "nbf": now,
         "exp": now + ttl,
-        # Full access to every object (oid wildcard) in this one repo.
+        # Access to every object (oid wildcard) in this one repo.
         "scopes": [f"obj:{org}/{repo}/*:{actions}"],
     }
     signing_input = (

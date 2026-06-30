@@ -42,9 +42,9 @@ beforeAll(async () => {
 })
 
 describe('normalizeActions', () => {
-  it('defaults to full access', () => expect(normalizeActions(null)).toBe('read,write,verify'))
-  it('passes the wildcard', () => expect(normalizeActions('*')).toBe('*'))
-  it('accepts a valid subset', () => expect(normalizeActions('read')).toBe('read'))
+  it('defaults to read-only (least privilege)', () => expect(normalizeActions(null)).toBe('read'))
+  it('rejects the wildcard', () => expect(normalizeActions('*')).toBeNull())
+  it('accepts a valid subset', () => expect(normalizeActions('read,write,verify')).toBe('read,write,verify'))
   it('trims and rejoins', () => expect(normalizeActions(' read , write ')).toBe('read,write'))
   it('rejects unknown actions', () => expect(normalizeActions('read,delete')).toBeNull())
 })
@@ -58,12 +58,17 @@ describe('normalizeTtl', () => {
 
 describe('mintLfsToken', () => {
   it('mints a verifiable RS256 JWT with the mint-token.py claim shape', async () => {
-    const { token, scope, expiresIn } = await mintLfsToken(privatePem, { slug: 'my-catalog', now: 1000 })
+    const { token, scope, expiresIn } = await mintLfsToken(privatePem, {
+      slug: 'my-catalog',
+      actions: 'read,write,verify',
+      now: 1000,
+    })
     const { header, payload, signingInput, sig } = decodeJwt(token)
 
-    expect(header).toEqual({ alg: 'RS256', typ: 'JWT' })
+    expect(header).toEqual({ alg: 'RS256', typ: 'JWT', kid: 'giftless-rs256-1' })
     expect(payload.scopes).toEqual([`obj:${LFS_ORG}/my-catalog/*:read,write,verify`])
     expect(scope).toBe(`obj:${LFS_ORG}/my-catalog/*:read,write,verify`)
+    expect(payload.iss).toBe('arc.portaljs.com')
     expect(payload.iat).toBe(1000)
     expect(payload.nbf).toBe(1000)
     expect(payload.exp).toBe(1000 + 3600)
@@ -181,22 +186,39 @@ describe('handleLfsToken', () => {
     expect(res.status).toBe(400)
   })
 
-  it('mints a token for an authenticated owner', async () => {
+  it('404 when the repo does not exist (minting never claims a slug)', async () => {
+    const env = await seededEnv() // no project seeded
+    const res = await handleLfsToken(req('arc_good'), env, 'my-catalog')
+    expect(res.status).toBe(404)
+    // Crucially: the call did NOT create/claim the slug.
+    expect(env.DB.projects.some((p: any) => p.slug === 'my-catalog')).toBe(false)
+  })
+
+  it('mints a read-only token by default for an existing owner', async () => {
     const env = await seededEnv()
+    env.DB.projects.push({ id: 'p1', user_id: 'u1', slug: 'my-catalog' })
     const res = await handleLfsToken(req('arc_good'), env, 'my-catalog')
     expect(res.status).toBe(200)
     const body = (await res.json()) as any
-    expect(body.scope).toBe(`obj:${LFS_ORG}/my-catalog/*:read,write,verify`)
+    // Least privilege: no ?actions ⇒ read-only.
+    expect(body.scope).toBe(`obj:${LFS_ORG}/my-catalog/*:read`)
     expect(body.expires_in).toBe(3600)
     expect(body.lfs_url).toBe(`https://_jwt:${body.token}@lfs.portaljs.com/${LFS_ORG}/my-catalog`)
-    // Claims the slug for the user.
-    expect(env.DB.projects.some((p: any) => p.slug === 'my-catalog' && p.user_id === 'u1')).toBe(true)
   })
 
-  it('409 when the slug is owned by another account', async () => {
+  it('honors explicit write actions for an existing owner', async () => {
+    const env = await seededEnv()
+    env.DB.projects.push({ id: 'p1', user_id: 'u1', slug: 'my-catalog' })
+    const res = await handleLfsToken(req('arc_good', '?actions=read,write,verify'), env, 'my-catalog')
+    expect(res.status).toBe(200)
+    const body = (await res.json()) as any
+    expect(body.scope).toBe(`obj:${LFS_ORG}/my-catalog/*:read,write,verify`)
+  })
+
+  it('403 when the slug is owned by another account', async () => {
     const env = await seededEnv()
     env.DB.projects.push({ id: 'p9', user_id: 'someone-else', slug: 'my-catalog' })
     const res = await handleLfsToken(req('arc_good'), env, 'my-catalog')
-    expect(res.status).toBe(409)
+    expect(res.status).toBe(403)
   })
 })

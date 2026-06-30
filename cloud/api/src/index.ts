@@ -7,7 +7,7 @@
 // Served at api.arc.portaljs.com (api.staging.arc.portaljs.com on staging).
 
 import { untar } from './untar'
-import { userForToken, loginForToken, userRowForToken, ensureProject, recordDeployment, getDeployment } from './db'
+import { userForToken, loginForToken, userRowForToken, ensureProject, getOwnedProject, recordDeployment, getDeployment } from './db'
 import { mintLfsToken, normalizeActions, normalizeTtl, LFS_ORG } from './lfs'
 
 export interface Env {
@@ -122,10 +122,11 @@ export async function handleDeploy(request: Request, env: Env): Promise<Response
 
 // POST /v1/repos/:slug/lfs-token — mint a scoped RS256 Giftless LFS token for the
 // authenticated Arc user. Guarded by the Arc API bearer token (device-flow
-// PORTALJS_TOKEN); 401 otherwise. The slug must be owned by the caller (or unclaimed,
-// in which case it's claimed) — so user A can't mint a write token for user B's repo.
-//   ?actions=read   → read-only (pull) token; default read,write,verify
-//   ?ttl=<seconds>  → lifetime, capped at 24h; default 3600
+// PORTALJS_TOKEN); 401 otherwise. The slug must ALREADY exist and be owned by the
+// caller (404 if it doesn't exist, 403 if another account owns it) — minting never
+// claims a slug, so user A can't mint for user B's repo or squat an unclaimed one.
+//   ?actions=write,verify → push token; DEFAULT is read-only (pull), least privilege
+//   ?ttl=<seconds>        → lifetime, capped at 24h; default 3600
 export async function handleLfsToken(request: Request, env: Env, slug: string): Promise<Response> {
   const auth = request.headers.get('authorization') ?? ''
   const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : ''
@@ -143,12 +144,18 @@ export async function handleLfsToken(request: Request, env: Env, slug: string): 
 
   const url = new URL(request.url)
   const actions = normalizeActions(url.searchParams.get('actions'))
-  if (actions === null) return json({ error: 'invalid actions (use read,write,verify or *)' }, 400)
+  if (actions === null) return json({ error: 'invalid actions (use a subset of read,write,verify)' }, 400)
   const ttl = normalizeTtl(Number(url.searchParams.get('ttl')) || undefined)
 
-  // Ownership: claim the slug for this user (or confirm they already own it).
-  const project = await ensureProject(env.DB, user.id, slug)
-  if (!project.ok) return json({ error: `slug "${slug}" is taken by another account` }, 409)
+  // Ownership: the project must ALREADY exist and belong to the caller. Minting a
+  // token must never create/claim a slug (po-g9y.13 security fix) — deploy the
+  // portal first (/portaljs-deploy), the only path that allocates a slug.
+  const project = await getOwnedProject(env.DB, user.id, slug)
+  if (!project.ok) {
+    return project.reason === 'not_found'
+      ? json({ error: `repo "${slug}" not found — deploy it first to claim the slug` }, 404)
+      : json({ error: `repo "${slug}" belongs to another account` }, 403)
+  }
 
   let minted
   try {
