@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import { mintLfsToken, normalizeActions, normalizeTtl, LFS_ORG } from '../src/lfs'
-import { handleLfsToken, handleClaim } from '../src/index'
+import worker, { handleLfsToken, handleClaim } from '../src/index'
 import { sha256Hex } from '../src/db'
 
 // Generate a throwaway RS256 keypair and export the private half as a PKCS#8 PEM —
@@ -252,5 +252,25 @@ describe('handleClaim', () => {
     const env = await seededEnv()
     env.DB.projects.push({ id: 'p9', user_id: 'someone-else', slug: 'my-catalog' })
     expect((await handleClaim(req('arc_good'), env, 'my-catalog')).status).toBe(403)
+  })
+})
+
+describe('router slug validation', () => {
+  // The route regex matches any non-empty segment so a malformed slug reaches the
+  // handler and gets a clean 400 (not a fall-through 404). coderabbit on #1623.
+  it('a malformed slug → 400 (claim)', async () => {
+    const r = new Request('https://api.arc.portaljs.com/v1/repos/Bad_Slug/claim', {
+      method: 'POST',
+      headers: { authorization: 'Bearer arc_good' },
+    })
+    expect((await worker.fetch(r, await seededEnv())).status).toBe(400)
+  })
+
+  it('a malformed slug → 400 (lfs-token)', async () => {
+    const r = new Request('https://api.arc.portaljs.com/v1/repos/Bad_Slug/lfs-token', {
+      method: 'POST',
+      headers: { authorization: 'Bearer arc_good' },
+    })
+    expect((await worker.fetch(r, await seededEnv())).status).toBe(400)
   })
 })
