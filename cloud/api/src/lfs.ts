@@ -93,7 +93,7 @@ export function normalizeTtl(raw: number | undefined): number {
 
 export interface MintOptions {
   slug: string
-  actions?: string // comma-separated subset of read,write,verify — or "*"
+  actions?: string // comma-separated subset of read,write,verify; defaults to read (no "*")
   ttl?: number // seconds; clamped to MAX_TTL (default 3600)
   sub?: string // subject claim, for audit (default "lfs-client")
   now?: number // unix seconds — injectable for deterministic tests
