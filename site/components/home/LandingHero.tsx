@@ -45,7 +45,7 @@ const GUI_SEQ: Seq[] = [
 ]
 
 export default function LandingHero() {
-  const [mode, setMode] = useState<'terminal' | 'gui'>('terminal')
+  const [mode, setMode] = useState<'terminal' | 'gui'>('gui')
   const [revealed, setRevealed] = useState(0)
   const [typed, setTyped] = useState(0)
   const [copied, setCopied] = useState(false)
@@ -138,7 +138,9 @@ export default function LandingHero() {
   const gUser = GUI_SEQ[0]
   const guiUserText = revealed === 0 ? (gUser.text || '').slice(0, typed) : gUser.text || ''
   const guiUserShow = revealed > 0 || typed > 0
-  const guiUserTyping = revealed === 0
+  // While the prompt is still being typed the composer sits in the middle of the
+  // window (Claude-style); once it "submits" (revealed >= 1) the chat takes over.
+  const guiComposing = revealed === 0
   const guiAssistantShow = revealed >= 1
   const assistant = seq.slice(1, revealed)
   const guiSteps = assistant.filter((i) => i.role === 'step').map((i) => i.text || '')
@@ -224,7 +226,32 @@ export default function LandingHero() {
           </p>
 
           <div className="mt-8 grid grid-cols-1 gap-3">
-            {/* Terminal card — only the "Read the docs" link navigates */}
+            {/* Visual builder card (primary) — only the "Open the builder" link navigates */}
+            <div onMouseEnter={() => select('gui')} style={card}>
+              {!isTerminal && <div style={cardRing} />}
+              <div className="flex items-center justify-between">
+                <span style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a' }}>Visual builder</span>
+                <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,0.09)', padding: '3px 7px', borderRadius: 5 }}>
+                  GUI · no setup
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: 0, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 9, padding: '10px 12px', fontSize: 12.5, color: '#94a3b8' }}>
+                <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Describe your portal…</span>
+                <span style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6 }}>
+                  Build <span style={{ fontSize: 13, lineHeight: 1 }}>→</span>
+                </span>
+              </div>
+              <a
+                href={BUILDER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ marginTop: 'auto', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: '#2563eb', textDecoration: 'none' }}
+              >
+                Open the builder <span style={{ fontSize: 15 }}>→</span>
+              </a>
+            </div>
+
+            {/* Terminal card (secondary) — only the "Read the docs" link navigates */}
             <div onMouseEnter={() => select('terminal')} style={card}>
               {isTerminal && <div style={cardRing} />}
               <div className="flex items-center justify-between">
@@ -254,31 +281,6 @@ export default function LandingHero() {
                 Read the docs <span style={{ fontSize: 15 }}>→</span>
               </a>
             </div>
-
-            {/* Visual builder card — only the "Open the builder" link navigates */}
-            <div onMouseEnter={() => select('gui')} style={card}>
-              {!isTerminal && <div style={cardRing} />}
-              <div className="flex items-center justify-between">
-                <span style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a' }}>Visual builder</span>
-                <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,0.09)', padding: '3px 7px', borderRadius: 5 }}>
-                  GUI · no setup
-                </span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: 0, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 9, padding: '10px 12px', fontSize: 12.5, color: '#94a3b8' }}>
-                <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Describe your portal…</span>
-                <span style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6 }}>
-                  Build <span style={{ fontSize: 13, lineHeight: 1 }}>→</span>
-                </span>
-              </div>
-              <a
-                href={BUILDER_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ marginTop: 'auto', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: '#2563eb', textDecoration: 'none' }}
-              >
-                Open the builder <span style={{ fontSize: 15 }}>→</span>
-              </a>
-            </div>
           </div>
 
           <p className="mt-4 text-[13px] text-slate-400">
@@ -290,14 +292,14 @@ export default function LandingHero() {
         {/* RIGHT: animated showcase */}
         <div className="relative flex flex-col">
           <div className="mb-3.5 inline-flex items-center gap-0.5 self-start rounded-[10px] border border-slate-200 p-[3px]" style={{ background: '#eef2f7' }}>
-            <span onClick={() => select('terminal')} style={tab(isTerminal)}>
-              <span style={{ fontFamily: 'ui-monospace, monospace', opacity: 0.7 }}>&gt;_</span> Terminal
-            </span>
             <span onClick={() => select('gui')} style={tab(!isTerminal)}>
               <span style={{ width: 12, height: 11, border: '1.6px solid currentColor', borderRadius: 3, display: 'inline-block', position: 'relative' }}>
                 <span style={{ position: 'absolute', top: 2, left: 0, right: 0, height: 1.4, background: 'currentColor' }} />
               </span>{' '}
               Visual
+            </span>
+            <span onClick={() => select('terminal')} style={tab(isTerminal)}>
+              <span style={{ fontFamily: 'ui-monospace, monospace', opacity: 0.7 }}>&gt;_</span> Terminal
             </span>
           </div>
 
@@ -335,11 +337,32 @@ export default function LandingHero() {
                 <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,0.09)', padding: '3px 8px', borderRadius: 6 }}>AI builder</span>
               </div>
               <div style={{ padding: 18, minHeight: 380, display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {guiComposing ? (
+                  /* Composer centered in the window — the prompt types itself in, then submits. */
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 22, textAlign: 'center', padding: '8px 6px' }}>
+                    <div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: '#0f172a' }}>What do you want to build?</div>
+                      <div style={{ marginTop: 7, fontSize: 13, color: '#94a3b8', maxWidth: 320 }}>
+                        Describe your portal in plain language — PortalJS builds it for you.
+                      </div>
+                    </div>
+                    <div style={{ width: '100%', maxWidth: 430, background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16, boxShadow: '0 10px 30px -14px rgba(15,23,42,0.20)', padding: '14px 15px 12px', display: 'flex', flexDirection: 'column', gap: 12, textAlign: 'left' }}>
+                      <div style={{ minHeight: 42, fontSize: 13.5, lineHeight: 1.55, color: guiUserText ? '#0f172a' : '#94a3b8' }}>
+                        {guiUserText || 'Describe your portal…'}
+                        <span style={{ display: 'inline-block', width: 7, height: 15, background: '#2563eb', marginLeft: 1, verticalAlign: -2, animation: 'hero-blink 1s infinite' }} />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: 11, fontWeight: 600, color: '#cbd5e1' }}>PortalJS Studio</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: 9, background: '#2563eb', color: '#fff', fontSize: 15, lineHeight: 1 }}>↑</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                <>
                 {guiUserShow && (
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <div style={{ maxWidth: '82%', background: '#2563eb', color: '#fff', padding: '10px 14px', borderRadius: '15px 15px 5px 15px', fontSize: 13.5, lineHeight: 1.5 }}>
                       {guiUserText}
-                      {guiUserTyping && <span style={{ display: 'inline-block', width: 7, height: 14, background: 'rgba(255,255,255,0.85)', marginLeft: 1, verticalAlign: -2, animation: 'hero-blink 1s infinite' }} />}
                     </div>
                   </div>
                 )}
@@ -367,6 +390,8 @@ export default function LandingHero() {
                       )}
                     </div>
                   </div>
+                )}
+                </>
                 )}
               </div>
             </div>
