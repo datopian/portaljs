@@ -1,5 +1,5 @@
 ---
-description: Migrate (harvest) datasets between open-data platforms. Reads CKAN, a DCAT-US /data.json catalog (DKAN, ArcGIS Hub, data.gov), Socrata, OpenDataSoft, or an ArcGIS FeatureServer, and writes them to a static PortalJS catalog (datasets.json, link-by-URL or download) or pushes them into a CKAN instance over its API.
+description: Migrate (harvest) datasets between open-data platforms. Reads CKAN, a DCAT-US /data.json catalog (DKAN, ArcGIS Hub, data.gov), Socrata, OpenDataSoft, or an ArcGIS FeatureServer, and writes them to a static PortalJS catalog (datasets.json, link-by-URL or download data files into Cloudflare R2 via Git LFS / Giftless) or pushes them into a CKAN instance over its API.
 allowed-tools: Read, Write, Edit, Bash, WebFetch
 ---
 
@@ -41,7 +41,7 @@ target. v1 ships two readers and one writer.
 
 | Target | `--target` | Writes |
 | ------ | ---------- | ------ |
-| **Static PortalJS catalog** (default) | `static` | `datasets.json` (+ optional files in `/public/data/`) in a `portaljs-catalog` portal |
+| **Static PortalJS catalog** (default) | `static` | `datasets.json` in a `portaljs-catalog` portal (+ in `download` mode, data files pushed to Cloudflare R2 via Git LFS / Giftless) |
 | **CKAN instance** | `ckan` | datasets/resources into a CKAN backend via `package_create` / `resource_create` (needs a write API key) |
 
 The CKAN target enables platform-to-platform moves — **CKAN→CKAN** and **DKAN→CKAN** —
@@ -251,16 +251,59 @@ Ensure `slug` is unique within its `namespace` (suffix `-2`, `-3`, … on collis
   template's `resourceUrl()` returns absolute paths unchanged, so no files are copied —
   fast, light, and the catalog stays in sync with the source's hosting. Trade-off: previews
   and downloads depend on the source staying up and allowing cross-origin reads.
-- **`download`:** for each resource, download the file into
-  `PORTAL_DIR/public/data/<namespace>/<slug>/<NN>-<safe-filename>` and set `path` to the
-  matching **relative** `"<namespace>/<slug>/<NN>-<safe-filename>"`. `<NN>` is the resource's
-  zero-padded index within the dataset and `<safe-filename>` is the URL basename sanitized to
-  `[a-zA-Z0-9._-]` (default `data.<format>` when the URL has no usable basename). The index
-  prefix is **required** — harvested datasets routinely expose several distributions sharing a
-  basename (e.g. two `download.csv`s), and a bare `<filename>` would let later files overwrite
-  earlier ones. Self-contained portal, no runtime dependency on the source — but a large
-  catalog balloons the repo. Skip (with a logged warning) any file that fails to download
-  rather than aborting the whole run.
+- **`download` (all files → Cloudflare R2 via Giftless):** copy every resource into the repo
+  under **Git LFS**, so the portal is self-contained and the bytes live in R2 — not in git,
+  not on the source. This is the same path `/portaljs-add-dataset` uses (see its **"Local
+  file — R2 via Git LFS"** section for the full rationale + the OSS self-host fallback),
+  applied in **bulk** to the whole harvest. Unlike a single add, migrate routes **every**
+  file through LFS — no size threshold, no `public/data` inline split — for consistency
+  across the catalog.
+
+  1. **Download** each resource to `PORTAL_DIR/data/<namespace>/<slug>/<NN>-<safe-filename>`
+     (note `data/`, the LFS-tracked path — **not** `public/data/`, which is the inline fence).
+     `<NN>` is the resource's zero-padded index within the dataset; `<safe-filename>` is the
+     URL basename sanitized to `[a-zA-Z0-9._-]` (default `data.<format>` when the URL has no
+     usable basename). The index prefix is **required** — harvested datasets routinely expose
+     several distributions sharing a basename (e.g. two `download.csv`s), and a bare filename
+     would let later files overwrite earlier ones. Skip (with a logged warning) any file that
+     fails to download rather than aborting the whole run.
+  2. **Track + stage under LFS** — one glob for the whole harvest (not per-file, since every
+     data file goes to R2):
+     ```bash
+     cd PORTAL_DIR
+     git lfs track "data/**"          # appends `data/**` to .gitattributes
+     git add .gitattributes data/
+     ```
+     Staging writes the ~130-byte LFS pointers; each pointer carries the file's `oid sha256`.
+  3. **Authenticate + push once** (mirror `/portaljs-add-dataset` → "Authenticate git-lfs"):
+     claim the portal slug, mint a scoped write token, set `git config lfs.url`, then commit +
+     push — a single push uploads every object to R2 through Giftless.
+     ```bash
+     SLUG=<portal-slug>   # the portal's deploy slug (same one /portaljs-deploy uses)
+     API="${PORTALJS_ARC_API:-https://api.arc.portaljs.com}"
+     ARC_TOKEN="${PORTALJS_TOKEN:-$(node -e "try{process.stdout.write(JSON.parse(require('fs').readFileSync(process.env.HOME+'/.portaljs/credentials','utf8')).token||'')}catch{}")}"
+     curl -fsS -X POST "$API/v1/repos/$SLUG/claim" -H "Authorization: Bearer $ARC_TOKEN" >/dev/null
+     LFS_URL=$(curl -fsS -X POST "$API/v1/repos/$SLUG/lfs-token?actions=read,write,verify" \
+       -H "Authorization: Bearer $ARC_TOKEN" \
+       | node -e "process.stdin.on('data',d=>process.stdout.write(JSON.parse(d).lfs_url))")
+     git config lfs.url "$LFS_URL"    # local only — never commit the token
+     git commit -m "data: migrate <N> datasets from <source> via Giftless"
+     git push && git lfs prune        # prune reclaims the local .git/lfs cache
+     ```
+     (OSS self-host without an Arc account: mint locally with `giftless/mint-token.py` — see
+     the fallback in `/portaljs-add-dataset`.)
+  4. **Set each `resources[].path` to the absolute R2 URL** so the browser fetches R2 directly
+     (`resourceUrl()` passes absolute URLs through unchanged). The Giftless object key is
+     `lfs/datopian/<portal-slug>/<oid>`:
+     ```bash
+     OID=$(git cat-file -p ":data/<namespace>/<slug>/<NN>-<file>" | sed -n 's/^oid sha256://p')
+     # path = <R2_PUBLIC_BASE>/lfs/datopian/<portal-slug>/<OID>
+     ```
+     `R2_PUBLIC_BASE` is the bucket's public base URL (custom domain or `r2.dev`) — **ask the
+     user if unknown**, don't guess.
+
+  Self-contained portal, no runtime dependency on the source, and the repo stays tiny (only
+  pointers) no matter how large the catalog — the bytes are in R2.
 
 ### 6. Dry-run preview
 
@@ -283,7 +326,8 @@ Read the existing `PORTAL_DIR/datasets.json` (a JSON array). Then:
   the rest. This keeps the sample datasets and makes re-runs idempotent.
 
 Write the merged array back as formatted JSON (2-space indent). For `download` mode, the
-files are already in `/public/data/` from step 5.
+files are already tracked under `data/` and pushed to R2 via Giftless in step 5, and each
+`resources[].path` is the absolute R2 URL.
 
 ### 7b. (CKAN target) Push to CKAN
 
@@ -337,7 +381,7 @@ Static target:
 ```text
 ✓ Migrated <N> datasets from <type>: <url>
   - Target:   PORTAL_DIR/datasets.json  (<total> entries now, <N> new/updated)
-  - Mode:     link  (resources reference source URLs)   | download (files in /public/data)
+  - Mode:     link  (resources reference source URLs)   | download (files in R2 via Giftless)
   - Namespaces: @ns-a (12), @ns-b (3), …
   - Build:    <pages> static pages generated
 

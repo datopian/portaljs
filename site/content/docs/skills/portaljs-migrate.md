@@ -1,6 +1,6 @@
 ---
 metatitle: /portaljs-migrate – Harvest Datasets from CKAN or DCAT into a PortalJS Catalog
-metadescription: The /portaljs-migrate skill harvests datasets from a CKAN instance or a DCAT-US /data.json catalog (DKAN, ArcGIS Hub, data.gov) into a static PortalJS catalog — link by URL or download the files, as plain editable datasets.json entries.
+metadescription: The /portaljs-migrate skill harvests datasets from a CKAN instance or a DCAT-US /data.json catalog (DKAN, ArcGIS Hub, data.gov) into a static PortalJS catalog — link by URL or download the data into Cloudflare R2 via Git LFS, as plain editable datasets.json entries.
 title: /portaljs-migrate
 description: Harvest datasets from a CKAN instance or a DCAT /data.json catalog into the static PortalJS catalog — the copy-into-the-portal path.
 ---
@@ -38,7 +38,7 @@ added once and works with every target.
 
 | Target | `--target` | Writes |
 | ------ | ---------- | ------ |
-| **Static PortalJS catalog** (default) | `static` | `datasets.json` (+ optional files in `/public/data/`) |
+| **Static PortalJS catalog** (default) | `static` | `datasets.json` (+ in `download` mode, data files pushed to Cloudflare R2 via Git LFS / Giftless) |
 | **CKAN instance** | `ckan` | datasets/resources into a CKAN backend via its action API |
 
 The CKAN target enables platform-to-platform moves — **CKAN→CKAN** and **DKAN→CKAN** — since
@@ -102,18 +102,22 @@ export CKAN_API_KEY=…           # write key for the destination
 - **`link` (default)** — each resource's `path` is set to the **source file URL**. No files
   are copied; the catalog references the source's hosting. Fast and light, but previews and
   downloads depend on the source staying up and allowing cross-origin reads.
-- **`download`** — files are pulled into `/public/data/<namespace>/<slug>/` and `path` is set
-  to the local relative path. The portal is fully self-contained, at the cost of repo size.
+- **`download`** — every resource is pulled into the repo under **Git LFS** and pushed to
+  **Cloudflare R2 via Giftless** (the same path [`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset)
+  uses), and `path` is set to the absolute R2 URL. All files go through LFS — no size
+  threshold — so the portal is fully self-contained and the repo stays tiny (only ~130-byte
+  pointers) no matter how large the catalog. The bytes live in R2, not in git or on the source.
 
 Both produce the same `datasets.json`; only `resources[].path` differs. The template's
-`resourceUrl()` returns absolute paths unchanged, which is what makes link mode work.
+`resourceUrl()` returns absolute paths unchanged, which is what makes both modes work.
 
 ## What it produces
 
 - **`datasets.json`** — the harvested datasets, upserted by `(namespace, slug)` (re-running
   refreshes changed datasets without duplicating them). Existing entries — including the
   template's samples — are kept unless you pass `--replace`.
-- **`/public/data/…`** (download mode only) — the copied resource files.
+- **data files in Cloudflare R2** (download mode only) — pushed via Git LFS / Giftless; the
+  repo holds only the LFS pointers under `data/`, and `resources[].path` points at R2.
 
 It runs a full `npm run build` and reports how many datasets were imported and pages
 generated before declaring success.
