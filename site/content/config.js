@@ -139,8 +139,7 @@ const config = {
     },
     {
       name: 'Open source 🌐',
-      href: '/opensource',
-      target: '_blank',
+      href: '/docs',
       style: 'text-blue-400 ',
     },
   ],
