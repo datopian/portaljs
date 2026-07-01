@@ -14,8 +14,10 @@
     <a href="https://github.com/datopian/portaljs/issues/new">Report a bug</a>
     <br />
     <br />
-    <a href="https://discord.gg/krmj5HM6He"><img src="https://dcbadge.limes.pink/api/server/krmj5HM6He" alt="Join our Discord server"/></a>
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/>
+    <a href="https://www.npmjs.com/package/create-portaljs"><img src="https://img.shields.io/npm/v/create-portaljs?logo=npm&logoColor=white&label=create-portaljs&color=cb3837" alt="npm version" /></a>
+    <a href="https://github.com/datopian/portaljs/stargazers"><img src="https://img.shields.io/github/stars/datopian/portaljs?logo=github&logoColor=white&label=Stars&color=333333" alt="GitHub stars" /></a>
+    <a href="https://discord.gg/krmj5HM6He"><img src="https://img.shields.io/discord/1094966648072573119?logo=discord&logoColor=white&label=Discord&color=5865F2" alt="Join our Discord" /></a>
+    <a href="license"><img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT License" /></a>
   </p>
 </p>
 
@@ -81,9 +83,10 @@ only a frontend. The skills do two jobs:
 - **Build** — they scaffold that stack as plain, editable Next.js code with no lock-in.
 
 It is **opinionated but open**: the recommended modern path is git + object storage
-(Cloudflare R2) + Parquet + [DuckLake](https://ducklake.select/) + DuckDB — an open
-lakehouse instead of a classic warehouse — but a traditional datastore (CKAN, a
-warehouse) stays a first-class option when you need it. You always own plain code.
+(Cloudflare R2) + Parquet, queried with [DuckDB](https://duckdb.org/) — an open lakehouse
+instead of a classic warehouse. For living, incremental tables you can layer on
+[DuckLake](https://ducklake.select/), and a traditional datastore (CKAN, a warehouse)
+stays a first-class option when you need it. You always own plain code.
 
 Built and maintained in the open by [Datopian](https://www.datopian.com/) and the
 PortalJS community.
@@ -111,8 +114,9 @@ PortalJS community.
         ▼
 📦  STORAGE + COMPUTE  —  choose your point on the spectrum:
 
-      flat files  ─▶  Git-LFS + R2  ─▶  Parquet + DuckLake + 🦆 DuckDB  ─▶  warehouse / CKAN
-      simplest                          ⭐ open lakehouse (default)            heaviest
+      flat files  ─▶  Git-LFS + R2  ─▶  Parquet on R2 + 🦆 DuckDB  ─▶  warehouse / CKAN
+      simplest                       ⭐ open lakehouse (default)        heaviest
+                                     (+ DuckLake for living tables)
 
 ☁️  Substrate  —  Cloudflare R2 (storage) · Workers (runtime) · D1 (catalog) · Pages (static)
      object storage stays S3-compatible — R2 is the default, never a lock-in
@@ -212,7 +216,7 @@ the three surfaces and the `DataProvider` seam live — read it before building.
 
 - 🌱 **Open source, MIT, no lock-in** — every skill emits plain Next.js you can fork and own.
 - 🧭 **Advisory, not just generative** — `/portaljs-architect` helps you _decide_ the infrastructure, not only scaffold a UI.
-- 🦆 **Open lakehouse by default** — git + R2 + Parquet + DuckLake + DuckDB over a heavy warehouse, with DuckDB as the query engine. A datastore/warehouse stays a supported choice.
+- 🦆 **Open lakehouse by default** — git + R2 + Parquet queried with DuckDB, over a heavy warehouse; add DuckLake for living/incremental tables. A datastore/warehouse stays a supported choice.
 - ☁️ **Cloudflare-first, portable** — R2 / Workers / D1 / Pages as the default substrate, but object storage stays S3-compatible.
 - 🧩 **Decoupled, any backend** — one `DataProvider` contract in front of [CKAN](https://ckan.org/), [DKAN](https://getdkan.org/), [OpenMetadata](https://open-metadata.org/), [DataHub](https://datahubproject.io/), GitHub, [Frictionless](https://frictionlessdata.io/), plain files — or your own.
 - 🎨 **Bring your own stack** — adopt the template or lift the skills and the three-surface model into an app you already have.
