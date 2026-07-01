@@ -7,7 +7,10 @@ description: 'Getting started guide and tutorial about data portal-building with
 
 Welcome to the PortalJS documentation!
 
-If you have questions about anything related to PortalJS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/datahub/discussions) or on [our chat channel on Discord](https://discord.gg/krmj5HM6He).
+If you have questions about anything related to PortalJS, you're always welcome to ask our community on [GitHub Discussions](https://github.com/datopian/portaljs/discussions) or on [our chat channel on Discord](https://discord.gg/krmj5HM6He).
+
+> [!tip] Prefer the AI-native path?
+> The fastest way to build a PortalJS portal is to describe it to your AI assistant and let the [agentic skills](/docs/skills) do the assembly — see the [Quickstart](/docs/quickstart). The manual guide below still works and is a good reference for how everything fits together.
 
 ## Setup
 
@@ -18,14 +21,16 @@ If you have questions about anything related to PortalJS, you're always welcome 
 
 ## Create a PortalJS app
 
-To create a PortalJS app, open your terminal, cd into the directory you’d like to create the app in, and run the following command:
+To create a PortalJS app, open your terminal, cd into the directory you’d like to create the app in, and run:
 
 ```bash
-npx create-next-app my-data-portal --example https://github.com/datopian/datahub/tree/main/examples/learn
+npm create portaljs@latest my-data-portal
 ```
 
+This scaffolds a portal from the official template. (Or grab the bare template with no prompts: `npx tiged datopian/portaljs/examples/portaljs-catalog my-data-portal`.)
+
 > [!tip]
-> You may have noticed we used the command create-next-app. That’s because PortalJS is built on the awesome NextJS react javascript framework. This means you can do everything you do with NextJS with PortalJS. Check out their docs to learn more.
+> PortalJS is built on Next.js + React + Tailwind, so everything the scaffolder writes is plain, editable code — anything you can do with Next.js, you can do with PortalJS.
 
 ## Run the development server
 
