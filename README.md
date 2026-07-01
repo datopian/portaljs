@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/portaljs-logo.svg" alt="PortalJS" width="96" height="96" />
+  <img src="assets/portaljs-logo-spin.svg" alt="PortalJS" width="96" height="96" />
   <h1 align="center">PortalJS</h1>
   <p align="center">
     <b>The AI-native framework for building data portals.</b>
@@ -15,8 +15,8 @@
     <br />
     <br />
     <a href="https://www.npmjs.com/package/create-portaljs"><img src="https://img.shields.io/npm/v/create-portaljs?logo=npm&logoColor=white&label=create-portaljs&color=cb3837" alt="npm version" /></a>
-    <a href="https://github.com/datopian/portaljs/stargazers"><img src="https://img.shields.io/github/stars/datopian/portaljs?logo=github&logoColor=white&label=Stars&color=333333" alt="GitHub stars" /></a>
-    <a href="https://discord.gg/krmj5HM6He"><img src="https://img.shields.io/discord/1094966648072573119?logo=discord&logoColor=white&label=Discord&color=5865F2" alt="Join our Discord" /></a>
+    <a href="https://github.com/datopian/portaljs/stargazers"><img src="https://img.shields.io/github/stars/datopian/portaljs?logo=github&logoColor=white&label=Stars&color=blue" alt="GitHub stars" /></a>
+    <a href="https://discord.gg/krmj5HM6He"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Join our Discord" /></a>
     <a href="license"><img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT License" /></a>
   </p>
 </p>
