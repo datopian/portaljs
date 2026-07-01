@@ -7,7 +7,9 @@
   "license": "MIT",
   "scripts": {
     "changeset": "changeset",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "gen:skills": "node scripts/gen-skills-docs.mjs",
+    "gen:skills:check": "node scripts/gen-skills-docs.mjs --check"
   },
   "private": true,
   "devDependencies": {
