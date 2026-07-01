@@ -47,6 +47,10 @@ Here's the part that matters for everyday use: **if you don't know what Git LFS 
 
 In PortalJS, you work with an AI agent. When you run `/portaljs-add-dataset` and point it at a local file, the skill decides where the bytes belong (big local files → R2 via LFS, bundled samples → inline, remote URLs → passthrough) and does the whole dance for you — tracking the file, getting a scoped upload token, pushing the bytes to R2, and registering the dataset in your catalog. No `git lfs track`, no credentials to copy, no manual config.
 
+<video autoPlay loop muted playsInline controls width="100%" style={{ borderRadius: '8px', margin: '1.5rem 0' }} src="https://pub-e2e69b5e239d44368bb32b91a4533c7f.r2.dev/blog/scaling-portaljs-data-with-giftless-and-r2/add-dataset.mp4"></video>
+
+*(This clip streams from a Cloudflare R2 bucket — the same object storage the datasets themselves live in.)*
+
 Then your deployed portal serves that data **straight from R2**. Pair it with DuckDB-Wasm over Parquet and you can query a large dataset right in the browser — no download, no server, range-requesting only the bytes a query needs.
 
 ## Auth: the signing key never leaves the server
