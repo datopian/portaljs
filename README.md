@@ -177,6 +177,7 @@ npm create portaljs@latest my-portal
 ### Available skills
 
 <!-- BEGIN:skills-table -->
+
 | Skill | What it does |
 | ----- | ------------ |
 | [`/portaljs-architect`](.claude/commands/portaljs-architect.md) | Advisory — turns your needs (data, scale, governance) into a recommended architecture before you build. Start here if you're unsure of the stack. |
@@ -190,6 +191,7 @@ npm create portaljs@latest my-portal
 | [`/portaljs-check-data-quality`](.claude/commands/portaljs-check-data-quality.md) | Validate a dataset against its schema and flag quality issues (type mismatches, missing values, constraint violations). |
 | [`/portaljs-migrate`](.claude/commands/portaljs-migrate.md) | Harvest or migrate a whole catalog into the portal from CKAN, Socrata, OpenDataSoft, ArcGIS, or DCAT-US, over a canonical Frictionless/DCAT model. |
 | [`/portaljs-deploy`](.claude/commands/portaljs-deploy.md) | Build a static export and publish it to PortalJS Arc — Datopian-managed hosting on Cloudflare — with a live `<slug>.arc.portaljs.com` URL. |
+
 <!-- END:skills-table -->
 <!-- Generated from scripts/skills-manifest.mjs — edit there and run `npm run gen:skills`. -->
 

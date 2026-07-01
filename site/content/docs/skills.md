@@ -33,6 +33,7 @@ portal. You describe intent; the skill writes the code.
 {/* Generated from scripts/skills-manifest.mjs — edit there and run `npm run gen:skills`. */}
 
 {/* BEGIN:skills-table */}
+
 | Skill | What it does |
 | ----- | ------------ |
 | [`/portaljs-architect`](/docs/skills/portaljs-architect) | Advisory — turns your needs (data, scale, governance) into a recommended architecture before you build. Start here if you're unsure of the stack. |
@@ -46,6 +47,7 @@ portal. You describe intent; the skill writes the code.
 | [`/portaljs-check-data-quality`](/docs/skills/portaljs-check-data-quality) | Validate a dataset against its schema and flag quality issues (type mismatches, missing values, constraint violations). |
 | [`/portaljs-migrate`](/docs/skills/portaljs-migrate) | Harvest or migrate a whole catalog into the portal from CKAN, Socrata, OpenDataSoft, ArcGIS, or DCAT-US, over a canonical Frictionless/DCAT model. |
 | [`/portaljs-deploy`](/docs/skills/portaljs-deploy) | Build a static export and publish it to PortalJS Arc — Datopian-managed hosting on Cloudflare — with a live `<slug>.arc.portaljs.com` URL. |
+
 {/* END:skills-table */}
 
 ## Author your own

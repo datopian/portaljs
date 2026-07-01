@@ -43,7 +43,9 @@ function mdTable(hrefFor) {
 function replaceBlock(content, block, marker) {
   const re = new RegExp(`${escapeRe(marker.begin)}[\\s\\S]*?${escapeRe(marker.end)}`)
   if (!re.test(content)) throw new Error(`missing ${marker.begin} / ${marker.end} markers`)
-  return content.replace(re, `${marker.begin}\n${block}\n${marker.end}`)
+  // Blank lines around the block so the table parses in both GFM and MDX (an MDX
+  // table immediately adjacent to a {/* */} comment can fail to render).
+  return content.replace(re, `${marker.begin}\n\n${block}\n\n${marker.end}`)
 }
 
 // Build every target's desired content from the manifest.
