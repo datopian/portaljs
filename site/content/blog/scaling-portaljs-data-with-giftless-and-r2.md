@@ -1,7 +1,7 @@
 ---
 title: "Big data, small repo: scaling PortalJS data with Giftless and Cloudflare R2"
 description: "Real datasets outgrow git. Here's how PortalJS keeps authoring git-native while the bytes live in object storage — using Giftless (an open-source Git LFS server) backed by Cloudflare R2, wired so your agent handles it for you."
-created: 2026-06-30
+created: 2026-07-01
 authors: ['anuveyatsu']
 tags:
   - PortalJS
