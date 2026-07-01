@@ -150,7 +150,7 @@ export default function LandingHero() {
 
   const card: CSSProperties = {
     position: 'relative',
-    cursor: 'pointer',
+    cursor: 'default',
     display: 'flex',
     flexDirection: 'column',
     gap: 11,
@@ -197,7 +197,7 @@ export default function LandingHero() {
         }}
       />
 
-      <div className="grid items-center gap-12 py-14 sm:py-16 lg:grid-cols-[1.02fr_1.12fr] lg:gap-14">
+      <div className="grid items-center gap-12 pt-4 pb-14 sm:pt-6 sm:pb-16 lg:grid-cols-[1.02fr_1.12fr] lg:gap-14">
         {/* LEFT: message + two ways to build */}
         <div>
           <div
@@ -224,8 +224,8 @@ export default function LandingHero() {
           </p>
 
           <div className="mt-8 grid grid-cols-1 gap-3">
-            {/* Terminal card → docs */}
-            <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" onMouseEnter={() => select('terminal')} style={card}>
+            {/* Terminal card — only the "Read the docs" link navigates */}
+            <div onMouseEnter={() => select('terminal')} style={card}>
               {isTerminal && <div style={cardRing} />}
               <div className="flex items-center justify-between">
                 <span style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a' }}>Terminal</span>
@@ -245,13 +245,18 @@ export default function LandingHero() {
                   {copied ? 'Copied ✓' : 'Copy'}
                 </span>
               </div>
-              <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: '#2563eb' }}>
+              <a
+                href={DOCS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ marginTop: 'auto', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: '#2563eb', textDecoration: 'none' }}
+              >
                 Read the docs <span style={{ fontSize: 15 }}>→</span>
-              </div>
-            </a>
+              </a>
+            </div>
 
-            {/* Visual builder card → cloud */}
-            <a href={BUILDER_URL} target="_blank" rel="noopener noreferrer" onMouseEnter={() => select('gui')} style={card}>
+            {/* Visual builder card — only the "Open the builder" link navigates */}
+            <div onMouseEnter={() => select('gui')} style={card}>
               {!isTerminal && <div style={cardRing} />}
               <div className="flex items-center justify-between">
                 <span style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a' }}>Visual builder</span>
@@ -265,10 +270,15 @@ export default function LandingHero() {
                   Build <span style={{ fontSize: 13, lineHeight: 1 }}>→</span>
                 </span>
               </div>
-              <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: '#2563eb' }}>
+              <a
+                href={BUILDER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ marginTop: 'auto', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: '#2563eb', textDecoration: 'none' }}
+              >
                 Open the builder <span style={{ fontSize: 15 }}>→</span>
-              </div>
-            </a>
+              </a>
+            </div>
           </div>
 
           <p className="mt-4 text-[13px] text-slate-400">
