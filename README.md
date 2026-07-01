@@ -7,7 +7,7 @@
     Describe the portal you want — your agent helps you choose an architecture, scaffolds it, and loads your data.
     <br />
     <br />
-    <a href="https://www.portaljs.com/opensource">Docs</a>
+    <a href="https://www.portaljs.com/docs">Docs</a>
     ·
     <a href="https://github.com/datopian/portaljs/discussions">Discussions</a>
     ·
@@ -180,16 +180,17 @@ npm create portaljs@latest my-portal
 |-------|--------------|
 | [`/portaljs-architect`](.claude/commands/portaljs-architect.md) | Recommend an architecture (storage/compute/catalog/access/hosting/metadata) from your needs, then hand off — the advisory entry point |
 | [`/portaljs-new-portal`](.claude/commands/portaljs-new-portal.md) | Scaffold a new portal (Home + Catalog + Showcase) from a brief |
-| [`/portaljs-add-dataset`](.claude/commands/portaljs-add-dataset.md) | Add a CSV, TSV, JSON, or GeoJSON dataset — appends to the manifest; its showcase renders automatically |
+| [`/portaljs-add-dataset`](.claude/commands/portaljs-add-dataset.md) | Add a CSV, TSV, JSON, or GeoJSON dataset — appends to the manifest and renders its showcase automatically; large local files are pushed to Cloudflare R2 via Git LFS for you |
 | [`/portaljs-add-chart`](.claude/commands/portaljs-add-chart.md) | Add a chart to a dataset's showcase Views section |
 | [`/portaljs-add-map`](.claude/commands/portaljs-add-map.md) | Render GeoJSON on an interactive map in the showcase |
 | [`/portaljs-connect-ckan`](.claude/commands/portaljs-connect-ckan.md) | Feed the catalog and showcases from a CKAN backend |
-| [`/portaljs-deploy`](.claude/commands/portaljs-deploy.md) | Deploy to Cloudflare Pages, Vercel, or static hosting |
+| [`/portaljs-deploy`](.claude/commands/portaljs-deploy.md) | Deploy to PortalJS Arc — Datopian's managed hosting on Cloudflare — and get a live `<slug>.arc.portaljs.com` URL |
 | [`/portaljs-check-data-quality`](.claude/commands/portaljs-check-data-quality.md) | Audit a dataset for quality issues (schema, nulls, types) |
 
-More skill families — metadata schemas (Frictionless/DCAT), more backends (OpenMetadata,
-git-LFS+R2), a DuckDB data layer, and access control — are on the [roadmap](ROADMAP.md).
-Write your own — see [`.claude/AUTHORING.md`](.claude/AUTHORING.md).
+Large-data scaling — big files pushed to Cloudflare R2 via Git LFS — already ships in
+`/portaljs-add-dataset`. More skill families — metadata schemas (Frictionless/DCAT), more
+backends (OpenMetadata), a browser DuckDB query layer, and access control — are on the
+[roadmap](ROADMAP.md). Write your own — see [`.claude/AUTHORING.md`](.claude/AUTHORING.md).
 
 ## What's in this repo
 
@@ -234,7 +235,7 @@ Reference implementations live in [`examples/`](examples/):
 - 💬 **Discord** — live chat and help: [join the server](https://discord.gg/krmj5HM6He)
 - 🗣️ **Discussions** — questions, ideas, show-and-tell: [github.com/datopian/portaljs/discussions](https://github.com/datopian/portaljs/discussions)
 - 🐛 **Issues** — bugs and feature requests: [open an issue](https://github.com/datopian/portaljs/issues/new)
-- 📖 **Docs** — [portaljs.com/opensource](https://www.portaljs.com/opensource)
+- 📖 **Docs** — [portaljs.com/docs](https://www.portaljs.com/docs)
 
 ## Contributing
 
