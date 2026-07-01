@@ -297,10 +297,11 @@ Ensure `slug` is unique within its `namespace` (suffix `-2`, `-3`, … on collis
      `lfs/datopian/<portal-slug>/<oid>`:
      ```bash
      OID=$(git cat-file -p ":data/<namespace>/<slug>/<NN>-<file>" | sed -n 's/^oid sha256://p')
-     # path = <R2_PUBLIC_BASE>/lfs/datopian/<portal-slug>/<OID>
+     # path = $R2_PUBLIC_BASE/lfs/datopian/<portal-slug>/<OID>
      ```
-     `R2_PUBLIC_BASE` is the bucket's public base URL (custom domain or `r2.dev`) — **ask the
-     user if unknown**, don't guess.
+     `R2_PUBLIC_BASE` defaults to **`https://data.portaljs.com`** — the public read domain on
+     the `portaljs-giftless` R2 bucket (GET/HEAD + range + CORS, edge-cached), so the browser
+     fetches the data directly. Override only for an OSS self-host with its own bucket/domain.
 
   Self-contained portal, no runtime dependency on the source, and the repo stays tiny (only
   pointers) no matter how large the catalog — the bytes are in R2.

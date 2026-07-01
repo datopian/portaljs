@@ -195,11 +195,12 @@ The Giftless object key is `lfs/datopian/<project-slug>/<oid>`, where `<oid>` is
 in the committed LFS pointer:
 ```bash
 OID=$(git cat-file -p :data/$DATASET_SLUG.$EXT | sed -n 's/^oid sha256://p')
-# MANIFEST_PATH = <R2_PUBLIC_BASE>/lfs/datopian/<project-slug>/$OID
+# MANIFEST_PATH = $R2_PUBLIC_BASE/lfs/datopian/<project-slug>/$OID
 ```
-`R2_PUBLIC_BASE` is the bucket's public base URL (custom domain or `r2.dev`). **If you don't
-know it, ask the user** — don't guess. (The staging public base is provisioned per
-deployment; see `giftless/README.md`.)
+`R2_PUBLIC_BASE` defaults to **`https://data.portaljs.com`** — the public read domain on the
+`portaljs-giftless` R2 bucket (GET/HEAD + range + CORS, edge-cached). So the browser fetches
+`https://data.portaljs.com/lfs/datopian/<project-slug>/<oid>` directly. Override it only for
+an OSS self-host with its own bucket/domain (`export R2_PUBLIC_BASE=…`).
 
 #### 4d. Local file — inline (FENCED exception only)
 
