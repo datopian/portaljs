@@ -176,16 +176,22 @@ npm create portaljs@latest my-portal
 
 ### Available skills
 
+<!-- BEGIN:skills-table -->
 | Skill | What it does |
-|-------|--------------|
-| [`/portaljs-architect`](.claude/commands/portaljs-architect.md) | Recommend an architecture (storage/compute/catalog/access/hosting/metadata) from your needs, then hand off — the advisory entry point |
-| [`/portaljs-new-portal`](.claude/commands/portaljs-new-portal.md) | Scaffold a new portal (Home + Catalog + Showcase) from a brief |
-| [`/portaljs-add-dataset`](.claude/commands/portaljs-add-dataset.md) | Add a CSV, TSV, JSON, or GeoJSON dataset — appends to the manifest and renders its showcase automatically; large local files are pushed to Cloudflare R2 via Git LFS for you |
-| [`/portaljs-add-chart`](.claude/commands/portaljs-add-chart.md) | Add a chart to a dataset's showcase Views section |
-| [`/portaljs-add-map`](.claude/commands/portaljs-add-map.md) | Render GeoJSON on an interactive map in the showcase |
-| [`/portaljs-connect-ckan`](.claude/commands/portaljs-connect-ckan.md) | Feed the catalog and showcases from a CKAN backend |
-| [`/portaljs-deploy`](.claude/commands/portaljs-deploy.md) | Deploy to PortalJS Arc — Datopian's managed hosting on Cloudflare — and get a live `<slug>.arc.portaljs.com` URL |
-| [`/portaljs-check-data-quality`](.claude/commands/portaljs-check-data-quality.md) | Audit a dataset for quality issues (schema, nulls, types) |
+| ----- | ------------ |
+| [`/portaljs-architect`](.claude/commands/portaljs-architect.md) | Advisory — turns your needs (data, scale, governance) into a recommended architecture before you build. Start here if you're unsure of the stack. |
+| [`/portaljs-new-portal`](.claude/commands/portaljs-new-portal.md) | Scaffold a new portal (Home + Catalog + Showcase) from a brief — copies the template, substitutes your project name and description, installs deps, verifies the build. |
+| [`/portaljs-add-dataset`](.claude/commands/portaljs-add-dataset.md) | Add a CSV, TSV, JSON, or GeoJSON dataset — registers it in the catalog and renders its showcase automatically; large local files are pushed to Cloudflare R2 via Git LFS for you. |
+| [`/portaljs-add-resource`](.claude/commands/portaljs-add-resource.md) | Attach another file (data dictionary, methodology, extra data) to an existing dataset — it becomes multi-resource and the showcase renders a section per file. |
+| [`/portaljs-add-chart`](.claude/commands/portaljs-add-chart.md) | Add a line, bar, area, pie, or scatter chart to a dataset's showcase. |
+| [`/portaljs-add-map`](.claude/commands/portaljs-add-map.md) | Render a GeoJSON dataset on an interactive map and register it on the home page. |
+| [`/portaljs-define-schema`](.claude/commands/portaljs-define-schema.md) | Infer a Frictionless Table Schema from a dataset's data, add license/source/keyword metadata, and surface a typed field table on its showcase. |
+| [`/portaljs-connect-ckan`](.claude/commands/portaljs-connect-ckan.md) | Wire the portal to a CKAN backend over its API instead of static files. |
+| [`/portaljs-check-data-quality`](.claude/commands/portaljs-check-data-quality.md) | Validate a dataset against its schema and flag quality issues (type mismatches, missing values, constraint violations). |
+| [`/portaljs-migrate`](.claude/commands/portaljs-migrate.md) | Harvest or migrate a whole catalog into the portal from CKAN, Socrata, OpenDataSoft, ArcGIS, or DCAT-US, over a canonical Frictionless/DCAT model. |
+| [`/portaljs-deploy`](.claude/commands/portaljs-deploy.md) | Build a static export and publish it to PortalJS Arc — Datopian-managed hosting on Cloudflare — with a live `<slug>.arc.portaljs.com` URL. |
+<!-- END:skills-table -->
+<!-- Generated from scripts/skills-manifest.mjs — edit there and run `npm run gen:skills`. -->
 
 Large-data scaling — big files pushed to Cloudflare R2 via Git LFS — already ships in
 `/portaljs-add-dataset`. More skill families — metadata schemas (Frictionless/DCAT), more

@@ -61,20 +61,20 @@
         "href": "/docs/skills/portaljs-add-map"
       },
       {
-        "title": "/portaljs-connect-ckan",
-        "href": "/docs/skills/portaljs-connect-ckan"
-      },
-      {
-        "title": "/portaljs-migrate",
-        "href": "/docs/skills/portaljs-migrate"
-      },
-      {
         "title": "/portaljs-define-schema",
         "href": "/docs/skills/portaljs-define-schema"
       },
       {
+        "title": "/portaljs-connect-ckan",
+        "href": "/docs/skills/portaljs-connect-ckan"
+      },
+      {
         "title": "/portaljs-check-data-quality",
         "href": "/docs/skills/portaljs-check-data-quality"
+      },
+      {
+        "title": "/portaljs-migrate",
+        "href": "/docs/skills/portaljs-migrate"
       },
       {
         "title": "/portaljs-deploy",

@@ -1,0 +1,23 @@
+name: Skills docs in sync
+
+# The README skills table, the /docs/skills table, and the docs sidebar are all
+# generated from scripts/skills-manifest.mjs. This fails the PR if someone edited a
+# generated block by hand (or the manifest) without running `npm run gen:skills`.
+on:
+  pull_request:
+    paths:
+      - scripts/skills-manifest.mjs
+      - scripts/gen-skills-docs.mjs
+      - README.md
+      - site/content/docs/skills.md
+      - site/content/assets/docs-sidebar.json
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/gen-skills-docs.mjs --check
