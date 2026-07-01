@@ -179,6 +179,25 @@ export async function handleLfsToken(request: Request, env: Env, slug: string): 
   })
 }
 
+// POST /v1/repos/:slug/claim — allocate the slug to the authenticated Arc user (or
+// confirm they already own it). Idempotent; 403 if another account owns it. This is
+// the EXPLICIT counterpart to the claim-on-mint side effect removed in po-g9y.13:
+// /portaljs-add-dataset calls this once before its first LFS push so a brand-new
+// (not-yet-deployed) portal can push data without hitting a 404 from /lfs-token.
+// Minting still NEVER claims. Same allocate-or-confirm semantics as /v1/deploy.
+export async function handleClaim(request: Request, env: Env, slug: string): Promise<Response> {
+  const auth = request.headers.get('authorization') ?? ''
+  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : ''
+  if (!token) return json({ error: 'missing bearer token' }, 401)
+  const user = await userRowForToken(env.DB, token)
+  if (!user) return json({ error: 'invalid token' }, 401)
+  if (!validSlug(slug)) return json({ error: `invalid slug "${slug}"` }, 400)
+
+  const project = await ensureProject(env.DB, user.id, slug)
+  if (!project.ok) return json({ error: `repo "${slug}" belongs to another account` }, 403)
+  return json({ ok: true, slug, owner: user.login })
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
@@ -201,7 +220,11 @@ export default {
       return login ? json({ login }) : json({ error: 'invalid token' }, 401)
     }
     if (url.pathname === '/v1/deploy' && request.method === 'POST') return handleDeploy(request, env)
-    const lfsM = url.pathname.match(/^\/v1\/repos\/([a-z0-9-]+)\/lfs-token$/)
+    // Match any non-empty segment and let the handler's validSlug() return a clean
+    // 400 for a malformed slug (e.g. "Bad_Slug") instead of falling through to 404.
+    const claimM = url.pathname.match(/^\/v1\/repos\/([^/]+)\/claim$/)
+    if (claimM && request.method === 'POST') return handleClaim(request, env, claimM[1])
+    const lfsM = url.pathname.match(/^\/v1\/repos\/([^/]+)\/lfs-token$/)
     if (lfsM && request.method === 'POST') return handleLfsToken(request, env, lfsM[1])
     const m = url.pathname.match(/^\/v1\/deploy\/([\w-]+)$/)
     if (m && request.method === 'GET') {

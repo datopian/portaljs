@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import { mintLfsToken, normalizeActions, normalizeTtl, LFS_ORG } from '../src/lfs'
-import { handleLfsToken } from '../src/index'
+import worker, { handleLfsToken, handleClaim } from '../src/index'
 import { sha256Hex } from '../src/db'
 
 // Generate a throwaway RS256 keypair and export the private half as a PKCS#8 PEM —
@@ -220,5 +220,57 @@ describe('handleLfsToken', () => {
     env.DB.projects.push({ id: 'p9', user_id: 'someone-else', slug: 'my-catalog' })
     const res = await handleLfsToken(req('arc_good'), env, 'my-catalog')
     expect(res.status).toBe(403)
+  })
+})
+
+describe('handleClaim', () => {
+  it('401 without a token', async () => {
+    expect((await handleClaim(req(), await seededEnv(), 'my-catalog')).status).toBe(401)
+  })
+
+  it('400 on a bad slug', async () => {
+    expect((await handleClaim(req('arc_good'), await seededEnv(), 'Bad_Slug')).status).toBe(400)
+  })
+
+  it('claims an unclaimed slug for the caller', async () => {
+    const env = await seededEnv()
+    const res = await handleClaim(req('arc_good'), env, 'my-catalog')
+    expect(res.status).toBe(200)
+    expect(env.DB.projects.some((p: any) => p.slug === 'my-catalog' && p.user_id === 'u1')).toBe(true)
+  })
+
+  it('is idempotent — re-claiming your own slug succeeds', async () => {
+    const env = await seededEnv()
+    env.DB.projects.push({ id: 'p1', user_id: 'u1', slug: 'my-catalog' })
+    const res = await handleClaim(req('arc_good'), env, 'my-catalog')
+    expect(res.status).toBe(200)
+    // No duplicate row created.
+    expect(env.DB.projects.filter((p: any) => p.slug === 'my-catalog').length).toBe(1)
+  })
+
+  it('403 when the slug is owned by another account', async () => {
+    const env = await seededEnv()
+    env.DB.projects.push({ id: 'p9', user_id: 'someone-else', slug: 'my-catalog' })
+    expect((await handleClaim(req('arc_good'), env, 'my-catalog')).status).toBe(403)
+  })
+})
+
+describe('router slug validation', () => {
+  // The route regex matches any non-empty segment so a malformed slug reaches the
+  // handler and gets a clean 400 (not a fall-through 404). coderabbit on #1623.
+  it('a malformed slug → 400 (claim)', async () => {
+    const r = new Request('https://api.arc.portaljs.com/v1/repos/Bad_Slug/claim', {
+      method: 'POST',
+      headers: { authorization: 'Bearer arc_good' },
+    })
+    expect((await worker.fetch(r, await seededEnv())).status).toBe(400)
+  })
+
+  it('a malformed slug → 400 (lfs-token)', async () => {
+    const r = new Request('https://api.arc.portaljs.com/v1/repos/Bad_Slug/lfs-token', {
+      method: 'POST',
+      headers: { authorization: 'Bearer arc_good' },
+    })
+    expect((await worker.fetch(r, await seededEnv())).status).toBe(400)
   })
 })
