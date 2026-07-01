@@ -87,9 +87,16 @@ export default function LandingHero() {
       const cur = active[a.revealed]
       const curText = (cur.text != null ? cur.text : cur.t) || ''
       if (cur.typeChar) {
+        // The GUI composer prompt types one char at a time and holds when done,
+        // so the reader can actually read it before it "submits".
+        const guiComposerLine = mode === 'gui' && a.revealed === 0
+        const step = guiComposerLine ? 1 : 2
+        const postTypeHold = guiComposerLine ? 32 : 0
         if (a.typed < curText.length) {
-          a.typed = Math.min(curText.length, a.typed + 2)
+          a.typed = Math.min(curText.length, a.typed + step)
           setTyped(a.typed)
+        } else if (a.wait < postTypeHold) {
+          a.wait++
         } else {
           a.revealed++
           a.typed = 0
