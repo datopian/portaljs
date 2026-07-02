@@ -233,13 +233,13 @@ export default function LandingHero() {
           </p>
 
           <div className="mt-8 grid grid-cols-1 gap-3">
-            {/* Visual builder card (primary) — only the "Open the builder" link navigates */}
+            {/* Chat card (primary) — only the "Open the chat" link navigates */}
             <div onMouseEnter={() => select('gui')} style={card}>
               {!isTerminal && <div style={cardRing} />}
               <div className="flex items-center justify-between">
-                <span style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a' }}>Visual builder</span>
+                <span style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a' }}>Chat</span>
                 <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,0.09)', padding: '3px 7px', borderRadius: 5 }}>
-                  GUI · no setup
+                  Chat · no setup
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: 0, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 9, padding: '10px 12px', fontSize: 12.5, color: '#94a3b8' }}>
@@ -254,7 +254,7 @@ export default function LandingHero() {
                 rel="noopener noreferrer"
                 style={{ marginTop: 'auto', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: '#2563eb', textDecoration: 'none' }}
               >
-                Open the builder <span style={{ fontSize: 15 }}>→</span>
+                Open the chat <span style={{ fontSize: 15 }}>→</span>
               </a>
             </div>
 
@@ -292,7 +292,7 @@ export default function LandingHero() {
 
           <p className="mt-4 text-[13px] text-slate-400">
             One framework, two ways to drive it.{' '}
-            <span className="text-slate-500">Same AI skills, same plain editable code — from your terminal, or the visual builder.</span>
+            <span className="text-slate-500">Same AI skills, same plain editable code — from your terminal, or in chat.</span>
           </p>
         </div>
 
@@ -303,7 +303,7 @@ export default function LandingHero() {
               <span style={{ width: 12, height: 11, border: '1.6px solid currentColor', borderRadius: 3, display: 'inline-block', position: 'relative' }}>
                 <span style={{ position: 'absolute', top: 2, left: 0, right: 0, height: 1.4, background: 'currentColor' }} />
               </span>{' '}
-              Visual
+              Chat
             </span>
             <span onClick={() => select('terminal')} style={tab(isTerminal)}>
               <span style={{ fontFamily: 'ui-monospace, monospace', opacity: 0.7 }}>&gt;_</span> Terminal
