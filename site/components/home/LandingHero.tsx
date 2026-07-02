@@ -1,4 +1,16 @@
 import { CSSProperties, useEffect, useRef, useState } from 'react'
+import posthog from 'posthog-js'
+
+// Named landing/hero analytics events. Prefer these over DOM autocapture: they
+// survive redesigns and give clean funnel/trend building blocks in PostHog.
+// See bead po-607 for the event contract + the "portaljs.com landing" dashboard.
+function track(event: string, props?: Record<string, unknown>) {
+  try {
+    posthog.capture(event, props)
+  } catch (_) {
+    // never let analytics break the hero
+  }
+}
 
 // Dual-interface hero (imported from the Claude Design "PortalJS Hero" project).
 // The site's <Nav> renders above this, so the design's own navbar is intentionally
@@ -153,15 +165,32 @@ export default function LandingHero() {
     return () => clearInterval(id)
   }, [])
 
-  function select(next: 'terminal' | 'gui') {
-    if (next !== mode) setMode(next)
+  function select(next: 'terminal' | 'gui', source: 'card_hover' | 'tab_click') {
+    if (next !== mode) {
+      setMode(next)
+      // Report the public-facing name: the "gui" mode is labelled "Chat" in the UI.
+      track('hero_mode_switched', { mode: next === 'gui' ? 'chat' : 'terminal', source })
+    }
   }
 
   // Primary CTA: /build isn't live yet, so instead of navigating (404) we show a
   // transient "coming soon" hint. The typed prompt is intentionally not consumed
   // yet — it will seed /build?prompt= once that page ships (see BUILDER_ROUTE note).
-  function build() {
+  function build(method: 'click' | 'enter') {
+    // When the field is empty the visible rotating example is used as the prompt,
+    // so a "suggestion" was effectively submitted.
+    const usedSuggestion = prompt.trim() === ''
+    const effectiveLength = usedSuggestion ? BUILD_EXAMPLES[exampleIdx].length : prompt.trim().length
+    track('hero_build_clicked', {
+      method,
+      used_suggestion: usedSuggestion,
+      suggestion_index: usedSuggestion ? exampleIdx : null,
+      prompt_length: effectiveLength,
+    })
     setComingSoon(true)
+    // /build isn't live — the CTA resolves to a "coming soon" state; track it as a
+    // proxy for build intent until the page ships (po-76p).
+    track('hero_coming_soon_shown')
     if (soonT.current) clearTimeout(soonT.current)
     soonT.current = setTimeout(() => setComingSoon(false), 3200)
   }
@@ -172,6 +201,7 @@ export default function LandingHero() {
     try {
       if (navigator.clipboard) navigator.clipboard.writeText(CMD)
     } catch (_) {}
+    track('hero_cli_copied')
     setCopied(true)
     if (copyT.current) clearTimeout(copyT.current)
     copyT.current = setTimeout(() => setCopied(false), 1600)
@@ -277,7 +307,7 @@ export default function LandingHero() {
           <div className="mt-8 grid grid-cols-1 gap-3">
             {/* Chat card (primary) — the input + Build submit to the builder
                 entry route; the "Open the chat" link is secondary. */}
-            <div onMouseEnter={() => select('gui')} style={card}>
+            <div onMouseEnter={() => select('gui', 'card_hover')} style={card}>
               {!isTerminal && <div style={cardRing} />}
               <div className="flex items-center justify-between">
                 <span style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a' }}>Chat</span>
@@ -293,7 +323,7 @@ export default function LandingHero() {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault()
-                      build()
+                      build('enter')
                     }
                   }}
                   placeholder={BUILD_EXAMPLES[exampleIdx]}
@@ -302,7 +332,7 @@ export default function LandingHero() {
                 />
                 <button
                   type="button"
-                  onClick={build}
+                  onClick={() => build('click')}
                   aria-label="Build your portal"
                   style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: comingSoon ? '#7c3aed' : '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6, border: 'none', cursor: 'pointer', transition: 'background 0.15s' }}
                 >
@@ -312,13 +342,14 @@ export default function LandingHero() {
               {comingSoon && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#7c3aed' }}>
                   <span>✨</span>
-                  <span>The chat builder is coming soon. Meanwhile, <a href={BUILDER_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>open the chat</a> or <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>read the docs</a>.</span>
+                  <span>The chat builder is coming soon. Meanwhile, <a href={BUILDER_URL} target="_blank" rel="noopener noreferrer" onClick={() => track('hero_cta_link_clicked', { target: 'cloud.portaljs.com' })} style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>open the chat</a> or <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" onClick={() => track('hero_cta_link_clicked', { target: 'docs' })} style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>read the docs</a>.</span>
                 </div>
               )}
               <a
                 href={BUILDER_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track('hero_cta_link_clicked', { target: 'open_the_chat' })}
                 style={{ marginTop: 'auto', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: '#2563eb', textDecoration: 'none' }}
               >
                 Open the chat <span style={{ fontSize: 15 }}>→</span>
@@ -326,7 +357,7 @@ export default function LandingHero() {
             </div>
 
             {/* Terminal card (secondary) — only the "Read the docs" link navigates */}
-            <div onMouseEnter={() => select('terminal')} style={card}>
+            <div onMouseEnter={() => select('terminal', 'card_hover')} style={card}>
               {isTerminal && <div style={cardRing} />}
               <div className="flex items-center justify-between">
                 <span style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a' }}>Terminal</span>
@@ -350,6 +381,7 @@ export default function LandingHero() {
                 href={DOCS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track('hero_cta_link_clicked', { target: 'read_the_docs' })}
                 style={{ marginTop: 'auto', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: '#2563eb', textDecoration: 'none' }}
               >
                 Read the docs <span style={{ fontSize: 15 }}>→</span>
@@ -366,13 +398,13 @@ export default function LandingHero() {
         {/* RIGHT: animated showcase */}
         <div className="relative flex flex-col">
           <div className="mb-3.5 inline-flex items-center gap-0.5 self-start rounded-[10px] border border-slate-200 p-[3px]" style={{ background: '#eef2f7' }}>
-            <span onClick={() => select('gui')} style={tab(!isTerminal)}>
+            <span onClick={() => select('gui', 'tab_click')} style={tab(!isTerminal)}>
               <span style={{ width: 12, height: 11, border: '1.6px solid currentColor', borderRadius: 3, display: 'inline-block', position: 'relative' }}>
                 <span style={{ position: 'absolute', top: 2, left: 0, right: 0, height: 1.4, background: 'currentColor' }} />
               </span>{' '}
               Chat
             </span>
-            <span onClick={() => select('terminal')} style={tab(isTerminal)}>
+            <span onClick={() => select('terminal', 'tab_click')} style={tab(isTerminal)}>
               <span style={{ fontFamily: 'ui-monospace, monospace', opacity: 0.7 }}>&gt;_</span> Terminal
             </span>
           </div>
