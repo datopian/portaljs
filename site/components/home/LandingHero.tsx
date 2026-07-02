@@ -1,5 +1,4 @@
 import { CSSProperties, useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/router'
 
 // Dual-interface hero (imported from the Claude Design "PortalJS Hero" project).
 // The site's <Nav> renders above this, so the design's own navbar is intentionally
@@ -21,10 +20,11 @@ const DOCS_URL = 'https://portaljs.com/docs'
 const BUILDER_URL = 'https://cloud.portaljs.com'
 const CMD = 'npm create portaljs@latest'
 
-// Primary CTA destination — the builder entry page reads ?prompt= on load.
-// The /build page itself is implemented separately (owned downstream); this
-// hero only wires the link and carries the typed prompt.
-const BUILDER_ROUTE = '/build'
+// Primary CTA destination — the builder entry page at /build will read ?prompt=
+// on load. NOTE: /build isn't live yet, so the CTA shows a "coming soon" hint
+// instead of navigating (would 404). To re-enable when the page ships: add back
+// `import { useRouter }`, `const router = useRouter()`, and in build() call
+// `router.push('/build?prompt=' + encodeURIComponent(seed))`.
 
 // Rotating placeholder examples that seed intent in the "Describe your portal"
 // input (AU/NZ municipalities). If the user hasn't typed anything, the visible
@@ -61,7 +61,6 @@ const GUI_SEQ: Seq[] = [
 ]
 
 export default function LandingHero() {
-  const router = useRouter()
   const [mode, setMode] = useState<'terminal' | 'gui'>('gui')
   const [revealed, setRevealed] = useState(0)
   const [typed, setTyped] = useState(0)
@@ -70,7 +69,10 @@ export default function LandingHero() {
   // The "Describe your portal" CTA input + its rotating example placeholder.
   const [prompt, setPrompt] = useState('')
   const [exampleIdx, setExampleIdx] = useState(0)
+  // /build isn't live yet — Build shows a transient "coming soon" hint instead.
+  const [comingSoon, setComingSoon] = useState(false)
   const copyT = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const soonT = useRef<ReturnType<typeof setTimeout> | null>(null)
   // mutable animation cursor kept in a ref so the interval reads fresh values
   const anim = useRef({ revealed: 0, typed: 0, wait: 0, hold: 0, showPreview: false })
 
@@ -155,11 +157,13 @@ export default function LandingHero() {
     if (next !== mode) setMode(next)
   }
 
-  // Primary CTA: carry the typed prompt (or, if empty, the visible example) to
-  // the builder entry page as a url-encoded ?prompt= query param.
+  // Primary CTA: /build isn't live yet, so instead of navigating (404) we show a
+  // transient "coming soon" hint. The typed prompt is intentionally not consumed
+  // yet — it will seed /build?prompt= once that page ships (see BUILDER_ROUTE note).
   function build() {
-    const seed = (prompt.trim() || BUILD_EXAMPLES[exampleIdx]).trim()
-    router.push(`${BUILDER_ROUTE}?prompt=${encodeURIComponent(seed)}`)
+    setComingSoon(true)
+    if (soonT.current) clearTimeout(soonT.current)
+    soonT.current = setTimeout(() => setComingSoon(false), 3200)
   }
 
   function copy(e: React.MouseEvent) {
@@ -300,11 +304,17 @@ export default function LandingHero() {
                   type="button"
                   onClick={build}
                   aria-label="Build your portal"
-                  style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6, border: 'none', cursor: 'pointer' }}
+                  style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: comingSoon ? '#7c3aed' : '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6, border: 'none', cursor: 'pointer', transition: 'background 0.15s' }}
                 >
-                  Build <span style={{ fontSize: 13, lineHeight: 1 }}>→</span>
+                  {comingSoon ? 'Coming soon' : (<>Build <span style={{ fontSize: 13, lineHeight: 1 }}>→</span></>)}
                 </button>
               </div>
+              {comingSoon && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#7c3aed' }}>
+                  <span>✨</span>
+                  <span>The chat builder is coming soon. Meanwhile, <a href={BUILDER_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>open the chat</a> or <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>read the docs</a>.</span>
+                </div>
+              )}
               <a
                 href={BUILDER_URL}
                 target="_blank"
