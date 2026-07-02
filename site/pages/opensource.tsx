@@ -42,6 +42,21 @@ export default function OSS() {
         logo="https://www.portaljs.com/icon.png"
       />
       <Layout>
+        <Container>
+          <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 px-5 py-4 text-sm text-slate-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-slate-200">
+            <span className="font-semibold text-blue-700 dark:text-blue-300">
+              There&apos;s now an AI-native way to build a PortalJS portal.
+            </span>{' '}
+            Describe what you want and let your AI assistant scaffold it —{' '}
+            <a
+              href="/docs"
+              className="font-semibold text-blue-600 underline underline-offset-2 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              read the new docs →
+            </a>{' '}
+            The classic framework docs below are not going away.
+          </div>
+        </Container>
         <Hero />
         <Container>
           <Community homePage={false} />

@@ -3,6 +3,7 @@ import LandingHero from '@/components/home/LandingHero'
 import AgentWorkflow from '@/components/home/AgentWorkflow'
 import ValueProps from '@/components/home/ValueProps'
 import Backends from '@/components/home/Backends'
+import DataScale from '@/components/home/DataScale'
 import Showcase from '@/components/home/Showcase'
 import Skills from '@/components/home/Skills'
 import CtaBand from '@/components/home/CtaBand'
@@ -23,6 +24,7 @@ export default function Homepage() {
       <AgentWorkflow />
       <ValueProps />
       <Backends />
+      <DataScale />
       <Showcase />
       <Skills />
       <CtaBand />
