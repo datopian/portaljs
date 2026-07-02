@@ -1,4 +1,5 @@
 import { CSSProperties, useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
 
 // Dual-interface hero (imported from the Claude Design "PortalJS Hero" project).
 // The site's <Nav> renders above this, so the design's own navbar is intentionally
@@ -19,6 +20,21 @@ type Seq = {
 const DOCS_URL = 'https://portaljs.com/docs'
 const BUILDER_URL = 'https://cloud.portaljs.com'
 const CMD = 'npm create portaljs@latest'
+
+// Primary CTA destination — the builder entry page reads ?prompt= on load.
+// The /build page itself is implemented separately (owned downstream); this
+// hero only wires the link and carries the typed prompt.
+const BUILDER_ROUTE = '/build'
+
+// Rotating placeholder examples that seed intent in the "Describe your portal"
+// input (AU/NZ municipalities). If the user hasn't typed anything, the visible
+// example is used as the prompt so Build is always functional.
+const BUILD_EXAMPLES = [
+  'Create an open-data portal for Auckland City Council',
+  'Build a data catalog for Wellington City Council',
+  'Open data for Christchurch City Council',
+  'A transport data portal for Brisbane City Council',
+]
 
 const TERMINAL_SEQ: Seq[] = [
   { typeChar: true, p: '$', pc: '#5b7083', t: 'npm create portaljs@latest my-portal', tc: '#e2e8f0' },
@@ -45,11 +61,15 @@ const GUI_SEQ: Seq[] = [
 ]
 
 export default function LandingHero() {
+  const router = useRouter()
   const [mode, setMode] = useState<'terminal' | 'gui'>('gui')
   const [revealed, setRevealed] = useState(0)
   const [typed, setTyped] = useState(0)
   const [copied, setCopied] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  // The "Describe your portal" CTA input + its rotating example placeholder.
+  const [prompt, setPrompt] = useState('')
+  const [exampleIdx, setExampleIdx] = useState(0)
   const copyT = useRef<ReturnType<typeof setTimeout> | null>(null)
   // mutable animation cursor kept in a ref so the interval reads fresh values
   const anim = useRef({ revealed: 0, typed: 0, wait: 0, hold: 0, showPreview: false })
@@ -120,8 +140,26 @@ export default function LandingHero() {
     return () => clearInterval(timer)
   }, [mode])
 
+  // Rotate the placeholder example while the input is empty, so it reads like a
+  // suggestion carousel. Pauses (visually) once the user types, since the
+  // placeholder only shows on an empty field.
+  useEffect(() => {
+    const id = setInterval(
+      () => setExampleIdx((i) => (i + 1) % BUILD_EXAMPLES.length),
+      3200,
+    )
+    return () => clearInterval(id)
+  }, [])
+
   function select(next: 'terminal' | 'gui') {
     if (next !== mode) setMode(next)
+  }
+
+  // Primary CTA: carry the typed prompt (or, if empty, the visible example) to
+  // the builder entry page as a url-encoded ?prompt= query param.
+  function build() {
+    const seed = (prompt.trim() || BUILD_EXAMPLES[exampleIdx]).trim()
+    router.push(`${BUILDER_ROUTE}?prompt=${encodeURIComponent(seed)}`)
   }
 
   function copy(e: React.MouseEvent) {
@@ -233,7 +271,8 @@ export default function LandingHero() {
           </p>
 
           <div className="mt-8 grid grid-cols-1 gap-3">
-            {/* Chat card (primary) — only the "Open the chat" link navigates */}
+            {/* Chat card (primary) — the input + Build submit to the builder
+                entry route; the "Open the chat" link is secondary. */}
             <div onMouseEnter={() => select('gui')} style={card}>
               {!isTerminal && <div style={cardRing} />}
               <div className="flex items-center justify-between">
@@ -242,11 +281,29 @@ export default function LandingHero() {
                   Chat · no setup
                 </span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: 0, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 9, padding: '10px 12px', fontSize: 12.5, color: '#94a3b8' }}>
-                <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Describe your portal…</span>
-                <span style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: 0, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 9, padding: '10px 12px', fontSize: 12.5 }}>
+                <input
+                  type="text"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      build()
+                    }
+                  }}
+                  placeholder={BUILD_EXAMPLES[exampleIdx]}
+                  aria-label="Describe your portal"
+                  style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', background: 'transparent', fontSize: 12.5, color: '#0f172a', padding: 0, cursor: 'text' }}
+                />
+                <button
+                  type="button"
+                  onClick={build}
+                  aria-label="Build your portal"
+                  style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6, border: 'none', cursor: 'pointer' }}
+                >
                   Build <span style={{ fontSize: 13, lineHeight: 1 }}>→</span>
-                </span>
+                </button>
               </div>
               <a
                 href={BUILDER_URL}
