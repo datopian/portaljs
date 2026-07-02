@@ -277,7 +277,9 @@ Ensure `slug` is unique within its `namespace` (suffix `-2`, `-3`, … on collis
      Staging writes the ~130-byte LFS pointers; each pointer carries the file's `oid sha256`.
   3. **Authenticate + push once** (mirror `/portaljs-add-dataset` → "Authenticate git-lfs"):
      claim the portal slug, mint a scoped write token, set `git config lfs.url`, then commit +
-     push — a single push uploads every object to R2 through Giftless.
+     push — a single push uploads every object to R2 through Giftless. **No GitHub remote is
+     required:** the bytes route to `lfs.url` regardless of any git remote (see the note below),
+     so a local-only scaffold works.
      ```bash
      SLUG=<portal-slug>   # the portal's deploy slug (same one /portaljs-deploy uses)
      API="${PORTALJS_ARC_API:-https://api.arc.portaljs.com}"
@@ -288,10 +290,19 @@ Ensure `slug` is unique within its `namespace` (suffix `-2`, `-3`, … on collis
        | node -e "process.stdin.on('data',d=>process.stdout.write(JSON.parse(d).lfs_url))")
      git config lfs.url "$LFS_URL"    # local only — never commit the token
      git commit -m "data: migrate <N> datasets from <source> via Giftless"
-     git push && git lfs prune        # prune reclaims the local .git/lfs cache
+     # Push objects to R2 without requiring a GitHub remote (scaffolds are local-only):
+     BRANCH=$(git rev-parse --abbrev-ref HEAD)
+     if git remote get-url --push origin >/dev/null 2>&1; then
+       git push -u origin "$BRANCH"                 # remote exists: commits + LFS bytes
+     else
+       git remote add r2-lfs . 2>/dev/null || true  # throwaway; lfs.url routes the bytes
+       git -c lfs.locksverify=false lfs push r2-lfs "$BRANCH"
+     fi
+     git lfs prune                    # prune reclaims the local .git/lfs cache
      ```
      (OSS self-host without an Arc account: mint locally with `giftless/mint-token.py` — see
-     the fallback in `/portaljs-add-dataset`.)
+     the fallback in `/portaljs-add-dataset`. A GitHub remote is optional — collaboration only,
+     not storage; see `giftless/README.md` → "Pushing objects without a Git remote".)
   4. **Set each `resources[].path` to the absolute R2 URL** so the browser fetches R2 directly
      (`resourceUrl()` passes absolute URLs through unchanged). The Giftless object key is
      `lfs/datopian/<portal-slug>/<oid>`:

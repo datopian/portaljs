@@ -21,7 +21,7 @@ to write into `path`.
 
 | Source | Default | What happens | Manifest `path` |
 |--------|---------|--------------|-----------------|
-| **Local file** | **R2 via Git LFS** | `mv` into the repo, `git lfs track <path>`, commit a ~134 B pointer, push → Giftless → R2 | **absolute R2 URL** (browser fetches R2 directly) |
+| **Local file** | **R2 via Git LFS** | `mv` into the repo, `git lfs track <path>`, commit a ~134 B pointer, `git lfs push` → Giftless → R2 (no GitHub remote needed) | **absolute R2 URL** (browser fetches R2 directly) |
 | **Local file** (fenced) | inline | *Only* bundled SAMPLE data or an OSS self-host with no R2: `cp` into `public/data/` (stays inline per `.gitattributes` fence) | bare filename → `/data/<file>` |
 | **Remote URL** | **passthrough** | record the URL as-is — **no download, no upload, zero duplication** | the **absolute URL**, unchanged |
 | **Remote URL** | adopt (opt-in) | user wants it hosted/versioned under the portal: fetch → route as a local file (R2/LFS) | **absolute R2 URL** |
@@ -183,11 +183,37 @@ git config lfs.url "$LFS_URL"     # local only — carries the token, never comm
 
 (See `giftless/README.md` → "Authenticating a Git LFS client".)
 
-**Push the bytes to R2, then reclaim local disk:**
+**Push the bytes to R2 (no GitHub remote required), then reclaim local disk.** The
+bytes route to wherever `lfs.url` points (set above) — a git *remote* is **not** a
+prerequisite. `git lfs push` needs only a remote *name* to enumerate objects from the
+branch; with `lfs.url` set, that remote's own URL is never contacted for the transfer.
+Scaffolded portals are local-only (`create-portaljs` does `git init` + an initial
+commit, **no remote**; a bare `git push` would fail with "No configured push
+destination"), so branch on whether a real remote exists:
+
 ```bash
-git push
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if git remote get-url --push origin >/dev/null 2>&1; then
+  # A GitHub remote exists (collaboration setup): a normal push carries commits +
+  # LFS pointers to GitHub AND streams the bytes to R2 via the pre-push hook.
+  git push -u origin "$BRANCH"
+else
+  # Local-only scaffold (the DEFAULT): no GitHub remote. Add a throwaway local
+  # remote just so git-lfs has an object source, then push the LFS objects — the
+  # bytes go to Giftless/R2 via lfs.url; GitHub is never contacted. (locksverify
+  # is off because Giftless serves no locking API — the check is cosmetic noise.)
+  git remote add r2-lfs . 2>/dev/null || true
+  git -c lfs.locksverify=false lfs push r2-lfs "$BRANCH"
+fi
 git lfs prune    # working tree + .git/lfs cache ≈ 2× locally until pruned
 ```
+
+> **A GitHub remote is optional — it's for collaboration, not storage.** Data-to-R2
+> is git-lfs talking to Giftless over HTTP (the LFS batch API at `lfs.url`); that URL
+> alone determines the upload destination, independent of any git remote. A GitHub
+> remote only shares commits + LFS *pointers* with collaborators — orthogonal to where
+> the bytes live. This is what makes create → add-data → deploy work for a non-dev user
+> who has never configured a remote.
 
 **Build the absolute R2 URL for the manifest.** The browser fetches R2 directly, so
 `path` must be the public R2 URL — `resourceUrl()` passes absolute URLs through unchanged.

@@ -106,6 +106,34 @@ The JWT provider accepts the token two ways:
 > the verify callback (clobbers Giftless's own verify token). The `_jwt` Basic
 > piggyback is scoped by git-lfs to the LFS API host only, which avoids both.
 
+### Pushing objects without a Git remote
+
+A **GitHub (or any git) remote is NOT required to store data.** `lfs.url` alone
+determines where the bytes go — git-lfs talks to Giftless over HTTP (the LFS batch
+API at `lfs.url`), which is fully independent of any configured git remote. A remote
+(GitHub) only shares commits + LFS *pointers* with collaborators; that's orthogonal to
+byte storage.
+
+This matters because scaffolded PortalJS portals are **local-only by default**
+(`create-portaljs` runs `git init` + an initial commit but adds **no remote**), so a
+bare `git push` fails with `No configured push destination`. To push LFS objects to R2
+without a remote, add a throwaway local remote just so git-lfs has an object source,
+then `git lfs push` — the bytes route to Giftless via `lfs.url` regardless of that
+remote's URL (it is never contacted for the transfer):
+
+```bash
+git config lfs.url "https://_jwt:$TOKEN@lfs.portaljs.com/datopian/my-catalog"  # local only
+git remote add r2-lfs . 2>/dev/null || true          # throwaway; URL is irrelevant
+git -c lfs.locksverify=false lfs push r2-lfs "$(git rev-parse --abbrev-ref HEAD)"
+```
+
+`git lfs push <remote> <ref>` needs only a remote *name* to enumerate objects from the
+branch; with `lfs.url` set, the batch API hits Giftless and the remote's own git URL is
+never used. `locksverify` is disabled because Giftless exposes no locking API (the check
+is cosmetic). `/portaljs-add-dataset` automates exactly this: it uses a real remote's
+`git push` when one exists, and falls back to the throwaway-remote `git lfs push` when
+the portal is local-only.
+
 ### Scope format
 
 ```
