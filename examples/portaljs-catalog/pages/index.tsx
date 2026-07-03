@@ -2,16 +2,21 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { suggestedQueries } from '../lib/datasets'
+import { provider } from '../lib/providers'
 
-// Suggested searches surfaced below the hero. These are starting points derived
-// from the sample datasets' themes — swap them for your portal's topics.
-const SUGGESTED_QUERIES = ['population', 'emissions', 'country codes', 'reference']
+// Popular searches are derived from the portal's own datasets at build time (see
+// suggestedQueries) rather than hardcoded, so every portal surfaces its real
+// topics without editing this file.
+export async function getStaticProps() {
+  return { props: { suggested: suggestedQueries(await provider.listDatasets()) } }
+}
 
 // Home surface (editorial design imported from the Claude Design mockups): an
 // eyebrow, the portal name in Newsreader, a one-line description, and search as
 // the primary call to action — an editorial input plus popular-search links that
 // route into the /search catalog.
-export default function Home() {
+export default function Home({ suggested }: { suggested: string[] }) {
   const router = useRouter()
   const [query, setQuery] = useState('')
 
@@ -55,20 +60,24 @@ export default function Home() {
           />
         </form>
 
-        <div className="mb-3.5 font-sans text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45">
-          Popular searches
-        </div>
-        <div className="flex flex-wrap gap-x-[22px] gap-y-2">
-          {SUGGESTED_QUERIES.map((q) => (
-            <Link
-              key={q}
-              href={`/search?q=${encodeURIComponent(q)}`}
-              className="font-serif text-base font-medium italic text-accent underline decoration-1 underline-offset-[3px] hover:text-ink"
-            >
-              {q}
-            </Link>
-          ))}
-        </div>
+        {suggested.length > 0 && (
+          <>
+            <div className="mb-3.5 font-sans text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45">
+              Popular searches
+            </div>
+            <div className="flex flex-wrap gap-x-[22px] gap-y-2">
+              {suggested.map((q) => (
+                <Link
+                  key={q}
+                  href={`/search?q=${encodeURIComponent(q)}`}
+                  className="font-serif text-base font-medium italic text-accent underline decoration-1 underline-offset-[3px] hover:text-ink"
+                >
+                  {q}
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
 
         <div className="mt-12">
           <Link

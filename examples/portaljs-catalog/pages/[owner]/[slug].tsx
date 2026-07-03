@@ -8,6 +8,7 @@ import {
   NAMESPACE_TYPE,
   getResources,
   resourceUrl,
+  resourceLabel,
   type Dataset,
   type Resource,
 } from '../../lib/datasets'
@@ -94,12 +95,12 @@ export default function DatasetPage({ dataset }: { dataset: Dataset }) {
                 <a
                   key={r.name + i}
                   href={resourceUrl(r)}
-                  className="flex items-center justify-between border-b border-dotted border-ink/25 py-4 no-underline"
+                  className="flex items-center justify-between gap-4 border-b border-dotted border-ink/25 py-4 no-underline hover:text-accent"
                 >
-                  <span className="font-sans text-[15px] font-medium text-ink">
-                    {r.path}
+                  <span className="min-w-0 truncate font-sans text-[15px] font-medium text-ink">
+                    {resourceLabel(r)}
                   </span>
-                  <span className="border border-accent/50 px-2 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.06em] text-accent">
+                  <span className="flex-shrink-0 border border-accent/50 px-2 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.06em] text-accent">
                     {r.format}
                   </span>
                 </a>
