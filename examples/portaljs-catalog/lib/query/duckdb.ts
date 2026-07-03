@@ -74,11 +74,18 @@ export class DuckDbQuery implements DataQuery {
         // projection/predicate pushdown reaches the file over range requests —
         // nothing is buffered up front. Reading the Parquet footer alone gives an
         // accurate count(*), so the preview stays cheap.
+        //
+        // directIO MUST be true: it makes DuckDB-Wasm read the file in place via
+        // HTTP range requests (fetching only the footer + touched row groups).
+        // With directIO=false DuckDB downloads the WHOLE file up front (verified:
+        // a 1.8 MB Parquet pulled all 1.8 MB on preview), which defeats the
+        // range-read tier this epic (po-g9y) exists to deliver. R2 serves ranges +
+        // CORS (giftless/r2-cors.json), so direct I/O is safe here.
         await this.db.registerFileURL(
           'data.parquet',
           source.url,
           duckdb.DuckDBDataProtocol.HTTP,
-          false
+          true
         )
         await this.conn.query(
           `CREATE OR REPLACE VIEW data AS SELECT * FROM read_parquet('data.parquet')`
