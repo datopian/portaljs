@@ -71,6 +71,11 @@ Metadata is the foundation of any effective data portal, improving searchability
           'Yes. Our **custom dashboards** add-on allows users to create interactive charts, maps, and reports directly from their datasets—no coding required.',
       },
       {
+        question: 'Does PortalJS Cloud support geospatial visualizations?',
+        answer:
+          'GeoJSON is supported natively — upload a GeoJSON file and users see an interactive map on the dataset page. iFrame embedding is also supported, so you can embed ArcGIS, Mapbox, or any other GIS tool directly into a dataset page. Other formats such as Shapefiles, KML, and GeoTIFF require custom development.\n\n[Read the full guide](https://www.portaljs.com/blog/portaljs-cloud-geospatial)',
+      },
+      {
         question: 'Can I use my own domain name?',
         answer:
           'Yes. You can use a custom domain name for your data portal, ensuring it aligns with your organization’s branding.',
@@ -79,6 +84,11 @@ Metadata is the foundation of any effective data portal, improving searchability
         question: 'Can I publish both public and private datasets?',
         answer:
           'Yes. You can choose to publish datasets publicly or keep them private for internal use. PortalJS Cloud allows controlled access to sensitive or restricted datasets.',
+      },
+      {
+        question: 'Can PortalJS Cloud users access private datasets in the frontend?',
+        answer:
+          'Yes, with custom implementation. Frontend authentication is technically possible but is not a built-in toggle. For organisations where private dataset access is a core requirement, the Enterprise plan is the right starting point.\n\n[Read the full guide](https://www.portaljs.com/blog/portaljs-cloud-private-datasets)',
       },
       {
         question:
@@ -118,9 +128,14 @@ Metadata is the foundation of any effective data portal, improving searchability
     category: 'Integrations & API',
     items: [
       {
-        question: 'Does PortalJS Cloud have a REST API?',
+        question: 'Does PortalJS Cloud have APIs?',
         answer:
-          'While PortalJS itself does not provide a standalone REST API, it is built to integrate with backend systems that offer RESTful services, thereby enabling rich data portal functionalities.',
+          'Yes. PortalJS Cloud is built on CKAN\'s APIs, so all standard CKAN endpoints continue to work after migration. Your existing integrations are unaffected — what changes is the frontend, not the data layer.\n\n[Read the full guide](https://www.portaljs.com/blog/portaljs-cloud-apis)',
+      },
+      {
+        question: 'What are the trade-offs of moving from CKAN to PortalJS Cloud?',
+        answer:
+          'You gain a modern frontend, fully managed hosting, AI-generated metadata, and natural language data exploration. The main trade-off is back-office customisation — PortalJS Cloud\'s admin interface is more constrained than a fully self-hosted CKAN instance, except on the Enterprise plan.\n\n[Read the full comparison](https://www.portaljs.com/blog/ckan-vs-portaljs-cloud)',
       },
       {
         question:
@@ -157,6 +172,11 @@ Metadata is the foundation of any effective data portal, improving searchability
         question: 'How does PortalJS Cloud ensure uptime and performance?',
         answer:
           'We use **load balancing**, **CDN distribution**, **caching**, and **optimized rendering strategies** like **SSG (Static Site Generation)** and **ISR (Incremental Static Regeneration)** to keep your portal fast and always available.',
+      },
+      {
+        question: 'Can we make changes to the portal frontend code independently?',
+        answer:
+          'Yes. Your developers can be added as GitHub contributors and submit changes via pull requests. Because portals are deployed via Vercel, changes go through a review step before going live — this is a technical requirement of the deployment architecture, not a policy constraint. Frontend-only work, including a full redesign, can be done entirely independently.\n\n[Read the full guide](https://www.portaljs.com/blog/portaljs-cloud-frontend-customization)',
       },
       {
         question:
@@ -208,6 +228,11 @@ See more details on our [pricing page](https://portaljs.com/pricing).`,
   {
     category: 'Support & Maintenance',
     items: [
+      {
+        question: 'Does PortalJS Cloud have documentation?',
+        answer:
+          'Yes, and we are actively expanding it. Documentation is available at [portaljs.com/cloud/docs](https://www.portaljs.com/cloud/docs). For questions not covered there, technical support is included in all paid plans — 48-hour response on Foundation, 24-hour on Institution and above.',
+      },
       {
         question: 'What kind of support does PortalJS Cloud offer?',
         answer:
