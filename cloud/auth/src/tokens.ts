@@ -29,6 +29,49 @@ export async function upsertUser(db: D1Database, githubId: number, login: string
   return (await find())?.id ?? id
 }
 
+export interface EmailUserProfile {
+  fullName?: string | null
+  org?: string | null
+}
+
+// Upsert an email-provider user (po-e6j). Lands in the SAME users table as GitHub sign-in:
+// find by email → refresh profile + stamp email_verified_at; else insert a github_id-less
+// row with auth_provider='email'. Returns the user id. `login` stays NULL for email users
+// (the dashboard / whoami fall back to email or full_name).
+export async function upsertEmailUser(
+  db: D1Database,
+  email: string,
+  profile: EmailUserProfile,
+  nowIso: string
+): Promise<string> {
+  const fullName = profile.fullName?.trim() || null
+  const org = profile.org?.trim() || null
+  const find = () =>
+    db.prepare('SELECT id FROM users WHERE email = ?').bind(email).first<{ id: string }>()
+
+  const existing = await find()
+  if (existing) {
+    // COALESCE keeps a previously-captured name/org if this sign-in didn't supply one.
+    await db
+      .prepare(
+        'UPDATE users SET full_name = COALESCE(?, full_name), org = COALESCE(?, org), email_verified_at = ? WHERE id = ?'
+      )
+      .bind(fullName, org, nowIso, existing.id)
+      .run()
+    return existing.id
+  }
+  // Atomic under concurrent verifies for the same email: the loser's INSERT updates instead
+  // of failing the unique index. Re-read for the winner's id (mirrors upsertUser).
+  const id = crypto.randomUUID()
+  await db
+    .prepare(
+      "INSERT INTO users (id, email, auth_provider, full_name, org, email_verified_at) VALUES (?, ?, 'email', ?, ?, ?) ON CONFLICT(email) DO UPDATE SET full_name = COALESCE(excluded.full_name, users.full_name), org = COALESCE(excluded.org, users.org), email_verified_at = excluded.email_verified_at"
+    )
+    .bind(id, email, fullName, org, nowIso)
+    .run()
+  return (await find())?.id ?? id
+}
+
 // Create a token, store only its hash, return the clear-text token (shown once).
 export async function createToken(db: D1Database, userId: string, label: string): Promise<string> {
   const token = generateToken()

@@ -38,6 +38,61 @@ export function landingPage(): string {
 <div class="card">
   <p>Sign in to create an API token for the <code>/portaljs-deploy</code> skill.</p>
   <a class="btn btn-primary" href="/auth/login">Sign in with GitHub</a>
+</div>
+<div class="card">
+  <p>No GitHub account? Sign in with your email — we'll send you a one-time link, no password.</p>
+  <form method="post" action="/email/start" style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+    <input type="email" name="email" placeholder="you@example.com" required autocomplete="email"
+      inputmode="email" style="width:16rem">
+    <button class="btn btn-primary" type="submit">Email me a link</button>
+  </form>
+</div>`
+  )
+}
+
+// Shown after POST /email/start. Deliberately neutral — it never reveals whether the
+// address exists, so it can't be used to enumerate accounts.
+export function emailSentPage(email: string): string {
+  return SHELL(
+    'PortalJS Arc — Check your email',
+    `<h1>Check your <span class="brand">email</span></h1>
+<div class="card">
+  <p>If <code>${esc(email)}</code> can sign in, a one-time link is on its way. It expires in 30 minutes.</p>
+  <p class="muted">Didn't get it? Check spam, or <a href="/">request a new link</a>.</p>
+</div>`
+  )
+}
+
+// GET /email/verify confirmation page — one explicit click consumes the link (a bare GET
+// never signs in), so an email scanner / link prefetcher can't burn the token.
+export function emailConfirmPage(token: string, email: string): string {
+  return SHELL(
+    'PortalJS Arc — Confirm sign-in',
+    `<h1>Sign in to <span class="brand">Arc</span></h1>
+<p class="muted">Finish signing in as <code>${esc(email)}</code>.</p>
+<div class="card">
+  <form method="post" action="/email/verify">
+    <input type="hidden" name="token" value="${esc(token)}">
+    <button class="btn btn-primary" type="submit">Continue as ${esc(email)}</button>
+  </form>
+  <p class="muted" style="margin-top:.8rem">Only continue if you requested this sign-in.</p>
+</div>`
+  )
+}
+
+// Terminal error page for an invalid / expired / already-used magic link.
+export function emailResultPage(status: 'not_found' | 'expired' | 'used'): string {
+  const msg: Record<'not_found' | 'expired' | 'used', string> = {
+    not_found: 'That sign-in link is invalid. Request a fresh one below.',
+    expired: 'That sign-in link expired. Request a fresh one below.',
+    used: 'That sign-in link was already used. Request a fresh one below.',
+  }
+  return SHELL(
+    'PortalJS Arc — Try again',
+    `<h1>Couldn't sign in</h1>
+<div class="card">
+  <p>${msg[status]}</p>
+  <a class="btn btn-ghost" href="/">Back to sign in</a>
 </div>`
   )
 }
@@ -90,7 +145,9 @@ export function activateResultPage(result: ApproveResult, code: string): string 
   )
 }
 
-export function dashboardPage(login: string, tokens: TokenRow[], newToken?: string): string {
+// `displayName` is already presentation-ready (e.g. "@octocat" for GitHub users, or the
+// email / full name for email users) — rendered verbatim, no "@" is prepended here.
+export function dashboardPage(displayName: string, tokens: TokenRow[], newToken?: string): string {
   const newBlock = newToken
     ? `<div class="card" style="border-color:#38bdf8">
   <strong>New token — copy it now, it won't be shown again:</strong>
@@ -118,7 +175,7 @@ export function dashboardPage(login: string, tokens: TokenRow[], newToken?: stri
     'PortalJS Arc — Dashboard',
     `<div style="display:flex;justify-content:space-between;align-items:center">
   <h1>Your <span class="brand">Arc</span> tokens</h1>
-  <span class="muted">@${esc(login)} · <a href="/auth/logout">sign out</a></span>
+  <span class="muted">${esc(displayName)} · <a href="/auth/logout">sign out</a></span>
 </div>
 ${newBlock}
 <div class="card">

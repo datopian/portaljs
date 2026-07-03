@@ -45,7 +45,9 @@ Two Workers (or one Worker with two route groups), one R2 bucket, one D1 databas
 - **D1** — relational state: `users`, `tokens`, `projects`, `deployments`.
 - **Auth app / dashboard** — `arc.portaljs.com` (apex of the new namespace; a wildcard
   `*.arc.portaljs.com` does not match the apex, so the dashboard and tenant portals coexist):
-  GitHub OAuth sign-up + API-token issuance.
+  GitHub OAuth sign-up + API-token issuance. Also passwordless **email** sign-in (po-e6j) —
+  a magic link (Resend) for the `/build` audience who lack GitHub; both providers write to
+  the SAME `users` row (`auth_provider` = `github` | `email`, `github_id` nullable).
 
 ### Hostnames (locked)
 

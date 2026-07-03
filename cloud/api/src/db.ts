@@ -21,7 +21,9 @@ export async function loginForToken(db: D1Database, token: string): Promise<stri
   const hash = await sha256Hex(token)
   const row = await db
     .prepare(
-      'SELECT u.login AS login FROM tokens t JOIN users u ON u.id = t.user_id WHERE t.hash = ? AND t.revoked_at IS NULL'
+      // COALESCE(login, email): email-provider users (po-e6j) have a NULL github login,
+      // so fall back to their email for "Logged in as …".
+      'SELECT COALESCE(u.login, u.email) AS login FROM tokens t JOIN users u ON u.id = t.user_id WHERE t.hash = ? AND t.revoked_at IS NULL'
     )
     .bind(hash)
     .first<{ login: string }>()
@@ -38,7 +40,9 @@ export async function userRowForToken(
   const hash = await sha256Hex(token)
   const row = await db
     .prepare(
-      'SELECT u.id AS id, u.login AS login FROM tokens t JOIN users u ON u.id = t.user_id WHERE t.hash = ? AND t.revoked_at IS NULL'
+      // COALESCE(login, email): email-provider users (po-e6j) carry a NULL github login;
+      // fall back to email so the minted LFS token's `sub` claim stays populated.
+      'SELECT u.id AS id, COALESCE(u.login, u.email) AS login FROM tokens t JOIN users u ON u.id = t.user_id WHERE t.hash = ? AND t.revoked_at IS NULL'
     )
     .bind(hash)
     .first<{ id: string; login: string }>()

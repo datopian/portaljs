@@ -10,6 +10,9 @@ BASE_URL = "https://arc-auth-staging.datopian.workers.dev"
 # GITHUB_CLIENT_ID is set per-environment; GITHUB_CLIENT_SECRET + SESSION_SECRET
 # are secrets (wrangler secret put), never committed.
 GITHUB_CLIENT_ID = "Ov23liXuXnCuAnyuIucc"
+# Passwordless email sign-in (po-e6j). EMAIL_FROM must be a Resend-verified sender;
+# RESEND_API_KEY is a secret: `wrangler secret put RESEND_API_KEY`.
+EMAIL_FROM = "PortalJS Arc <login@arc.portaljs.com>"
 
 [[d1_databases]]
 binding = "DB"
@@ -28,6 +31,7 @@ workers_dev = false
 [env.production.vars]
 BASE_URL = "https://arc.portaljs.com"
 GITHUB_CLIENT_ID = "Ov23liIIMttPpNtaa9o7"
+EMAIL_FROM = "PortalJS Arc <login@arc.portaljs.com>"
 
 [[env.production.d1_databases]]
 binding = "DB"

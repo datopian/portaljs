@@ -39,8 +39,18 @@ cd ../auth      && npx wrangler deploy --env production   # arc-auth   → arc.p
 cd cloud/auth
 npx wrangler secret put GITHUB_CLIENT_SECRET --env production   # from the prod OAuth app
 npx wrangler secret put SESSION_SECRET --env production         # openssl rand -hex 32
+npx wrangler secret put RESEND_API_KEY --env production         # passwordless email sign-in (po-e6j)
 ```
 (Router + API need no secrets.)
+
+### 4b. Email sign-in prerequisites (po-e6j)
+Passwordless email needs a Resend-verified sender and the shared-D1 migration applied:
+- Verify the `arc.portaljs.com` sending domain in Resend; confirm `[env.production.vars] EMAIL_FROM`
+  in `cloud/auth/wrangler.toml` matches a verified address.
+- Apply the new migration to the prod D1 (adds `users.email`/`auth_provider`/… + `email_logins`):
+  ```bash
+  cd cloud/api && npx wrangler d1 migrations apply portaljs-arc --remote
+  ```
 
 ### 5. Smoke test (mirror the staging verification)
 ```bash

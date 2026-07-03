@@ -3,9 +3,25 @@
 // shared D1 the deploy API reads). Stateless signed-cookie sessions.
 
 import { signSession, verifySession } from './session'
-import { upsertUser, createToken, listTokens, revokeToken } from './tokens'
-import { landingPage, dashboardPage, activatePage, activateResultPage } from './html'
+import { upsertUser, upsertEmailUser, createToken, listTokens, revokeToken } from './tokens'
+import {
+  landingPage,
+  dashboardPage,
+  activatePage,
+  activateResultPage,
+  emailSentPage,
+  emailConfirmPage,
+  emailResultPage,
+} from './html'
 import { createDeviceCode, approveDeviceCode, claimDeviceToken, formatUserCode } from './device'
+import {
+  normalizeEmail,
+  isValidEmail,
+  createEmailLogin,
+  peekEmailLogin,
+  verifyEmailLogin,
+  sendMagicLinkEmail,
+} from './email'
 import { b64url, timingSafeEqual } from './util'
 
 export interface Env {
@@ -14,6 +30,10 @@ export interface Env {
   GITHUB_CLIENT_SECRET: string
   SESSION_SECRET: string
   BASE_URL: string // e.g. https://arc.portaljs.com (must match the GitHub OAuth callback host)
+  // Passwordless email sign-in (po-e6j). Resend HTTPS API — RESEND_API_KEY is a secret
+  // (wrangler secret put), EMAIL_FROM a var (e.g. "PortalJS Arc <login@arc.portaljs.com>").
+  RESEND_API_KEY: string
+  EMAIL_FROM: string
 }
 
 const SESSION_COOKIE = 'arc_session'
@@ -83,6 +103,17 @@ async function currentUser(request: Request, env: Env): Promise<string | null> {
   return c ? verifySession(c, env.SESSION_SECRET, SESSION_MAX_AGE, now()) : null
 }
 
+// Presentation-ready name for the dashboard header: "@login" for GitHub users, else the
+// full name or email for email users (github_id / login are NULL for those). Falls back to
+// "you" if the row somehow has none.
+async function displayNameFor(env: Env, uid: string): Promise<string> {
+  const u = await env.DB.prepare('SELECT login, email, full_name FROM users WHERE id = ?')
+    .bind(uid)
+    .first<{ login: string | null; email: string | null; full_name: string | null }>()
+  if (u?.login) return `@${u.login}`
+  return u?.full_name || u?.email || 'you'
+}
+
 // CSRF guard for state-changing POSTs. SameSite=Lax does NOT protect against a
 // *same-site* request from a tenant subdomain (`evil.arc.portaljs.com`), which is the
 // multi-tenant risk here — so require the Origin to match the dashboard. Allow a missing
@@ -102,8 +133,7 @@ export default {
     if (path === '/' && request.method === 'GET') {
       const uid = await currentUser(request, env)
       if (!uid) return html(landingPage())
-      const login = (await env.DB.prepare('SELECT login FROM users WHERE id = ?').bind(uid).first<{ login: string }>())?.login ?? 'you'
-      return html(dashboardPage(login, await listTokens(env.DB, uid)))
+      return html(dashboardPage(await displayNameFor(env, uid), await listTokens(env.DB, uid)))
     }
 
     // --- Start GitHub OAuth ---
@@ -158,6 +188,63 @@ export default {
       const dest = safeReturnPath(getCookie(request, RETURN_COOKIE))
       h.append('set-cookie', cookie(RETURN_COOKIE, '', 0)) // clear return
       return redirect(dest, h)
+    }
+
+    // --- Passwordless email sign-in (magic link; po-e6j) ---
+    // A GitHub-free front door for the /build audience. Lands in the SAME users table as
+    // OAuth and issues the SAME signed-cookie session.
+
+    // Step 1: request a magic link. CSRF-guarded like the other state-changing POSTs.
+    // The response is deliberately NEUTRAL (always "check your email") so it can't be used
+    // to probe which addresses have accounts.
+    if (path === '/email/start' && request.method === 'POST') {
+      if (!isAllowedOrigin(request.headers.get('origin'), env.BASE_URL)) {
+        return new Response('Forbidden', { status: 403 })
+      }
+      const body = await readJsonOrForm(request)
+      const email = normalizeEmail(String(body.email ?? ''))
+      const fullName = typeof body.full_name === 'string' ? body.full_name : undefined
+      const org = typeof body.org === 'string' ? body.org : undefined
+      const ret = safeReturnPath(typeof body.return === 'string' ? body.return : null)
+      if (isValidEmail(email)) {
+        const { token } = await createEmailLogin(env.DB, now(), email, { fullName, org }, ret === '/' ? undefined : ret)
+        const link = `${env.BASE_URL}/email/verify?token=${encodeURIComponent(token)}`
+        // Fire the send but don't leak its success/failure into the response (neutrality).
+        await sendMagicLinkEmail(env, email, link)
+      }
+      // Echo back a best-effort address for the "check your email" copy; if it was invalid
+      // we still show the neutral page (with whatever the user typed, escaped).
+      return html(emailSentPage(email || String(body.email ?? '')))
+    }
+
+    // Step 2: the emailed link lands here. A bare GET never signs in — it shows a
+    // confirmation page so an email scanner / prefetcher can't consume the token.
+    if (path === '/email/verify' && request.method === 'GET') {
+      const token = url.searchParams.get('token') ?? ''
+      const peek = await peekEmailLogin(env.DB, now(), token)
+      if (peek.status === 'valid') return html(emailConfirmPage(token, peek.email ?? ''))
+      return html(emailResultPage(peek.status), 400)
+    }
+
+    // Step 3: consume the token exactly once and issue a session. CSRF-guarded.
+    if (path === '/email/verify' && request.method === 'POST') {
+      if (!isAllowedOrigin(request.headers.get('origin'), env.BASE_URL)) {
+        return new Response('Forbidden', { status: 403 })
+      }
+      const body = await readJsonOrForm(request)
+      const token = String(body.token ?? '')
+      const result = await verifyEmailLogin(env.DB, now(), token)
+      if (result.status !== 'verified') return html(emailResultPage(result.status), 400)
+      const uid = await upsertEmailUser(
+        env.DB,
+        result.email,
+        { fullName: result.fullName, org: result.org },
+        new Date(now() * 1000).toISOString()
+      )
+      const session = await signSession(uid, env.SESSION_SECRET, now())
+      const h = new Headers()
+      h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))
+      return redirect(safeReturnPath(result.returnPath), h)
     }
 
     // --- Device-authorization flow (CLI sign-in; po-j57) ---
@@ -244,10 +331,9 @@ export default {
       const form = await request.formData()
       const label = String(form.get('label') ?? 'token').slice(0, 60)
       const token = await createToken(env.DB, uid, label)
-      const login = (await env.DB.prepare('SELECT login FROM users WHERE id = ?').bind(uid).first<{ login: string }>())?.login ?? 'you'
       // The response embeds the one-time cleartext token — never cache it.
       const noStore = new Headers({ 'cache-control': 'no-store' })
-      return html(dashboardPage(login, await listTokens(env.DB, uid), token), 200, noStore)
+      return html(dashboardPage(await displayNameFor(env, uid), await listTokens(env.DB, uid), token), 200, noStore)
     }
 
     if (path === '/tokens/revoke' && request.method === 'POST') {
