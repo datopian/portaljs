@@ -138,11 +138,6 @@ Metadata is the foundation of any effective data portal, improving searchability
           'You gain a modern frontend, fully managed hosting, AI-generated metadata, and natural language data exploration. The main trade-off is back-office customisation — PortalJS Cloud\'s admin interface is more constrained than a fully self-hosted CKAN instance, except on the Enterprise plan.\n\n[Read the full comparison](https://www.portaljs.com/blog/ckan-vs-portaljs-cloud)',
       },
       {
-        question: 'Does PortalJS Cloud have a REST API?',
-        answer:
-          'While PortalJS itself does not provide a standalone REST API, it is built to integrate with backend systems that offer RESTful services, thereby enabling rich data portal functionalities.',
-      },
-      {
         question:
           'Can I connect my data portal to internal databases or cloud storage?',
         answer:
@@ -236,7 +231,7 @@ See more details on our [pricing page](https://portaljs.com/pricing).`,
       {
         question: 'Does PortalJS Cloud have documentation?',
         answer:
-          'Yes, and we are actively expanding it. Documentation is available at [portaljs.com/docs](https://www.portaljs.com/docs). For questions not covered there, technical support is included in all paid plans — 48-hour response on Foundation, 24-hour on Institution and above.',
+          'Yes, and we are actively expanding it. Documentation is available at [portaljs.com/cloud/docs](https://www.portaljs.com/cloud/docs). For questions not covered there, technical support is included in all paid plans — 48-hour response on Foundation, 24-hour on Institution and above.',
       },
       {
         question: 'What kind of support does PortalJS Cloud offer?',
