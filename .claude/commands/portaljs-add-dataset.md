@@ -135,6 +135,14 @@ mkdir -p data
 # mv (NOT cp) so an external local file isn't tripled on disk:
 mv "$SOURCE" "data/$DATASET_SLUG.$EXT"     # for 4b, $SOURCE is the temp download
 
+# Ensure the LFS clean/smudge filters are installed for THIS repo before tracking.
+# On a fresh machine `git lfs install` may never have run (brew install git-lfs does
+# NOT auto-run it), so without this `git add` commits the RAW bytes instead of a
+# ~134 B pointer and the later `git lfs push` has nothing to stream. Idempotent.
+if ! git config --get filter.lfs.clean >/dev/null 2>&1; then
+  git lfs install --local
+fi
+
 # Per-file, format-agnostic LFS tracking (appends a path entry to .gitattributes,
 # NOT an extension glob):
 git lfs track "data/$DATASET_SLUG.$EXT"
