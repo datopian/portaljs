@@ -94,5 +94,30 @@
         "description": "Tonnes of CO₂ emitted per person."
       }
     ]
+  },
+  {
+    "slug": "fruit-sales",
+    "namespace": "sales",
+    "name": "Fruit Sales",
+    "description": "Monthly fruit units sold and revenue — a small tabular sample.",
+    "file": "fruit-sales.csv",
+    "format": "csv",
+    "keywords": ["sales", "fruit"]
+  },
+  {
+    "slug": "region-metrics",
+    "namespace": "sales",
+    "name": "Region Metrics",
+    "description": "Regional sales and ratings, queried in your browser with SQL over DuckDB-Wasm. This resource is Parquet, so the showcase opens a SQL editor instead of a flat preview; point it at a remote Parquet on data.portaljs.com and DuckDB range-reads it in place.",
+    "keywords": ["sales", "regions", "duckdb", "sql"],
+    "resources": [
+      {
+        "name": "data",
+        "path": "region-metrics.parquet",
+        "format": "parquet",
+        "title": "Region metrics",
+        "query": "SELECT region, round(avg(rating), 2) AS avg_rating, sum(sales) AS total_sales\nFROM data\nGROUP BY region\nORDER BY total_sales DESC\nLIMIT 10;"
+      }
+    ]
   }
 ]

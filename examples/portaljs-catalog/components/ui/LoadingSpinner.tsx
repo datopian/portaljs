@@ -3,7 +3,7 @@ export default function LoadingSpinner() {
     <div role="status" className="w-fit mx-auto">
       <svg
         aria-hidden="true"
-        className="w-16 h-16 text-gray-200 animate-spin fill-slate-600"
+        className="w-16 h-16 text-ink/15 animate-spin fill-accent"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

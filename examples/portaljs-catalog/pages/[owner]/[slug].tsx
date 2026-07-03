@@ -14,8 +14,8 @@ import {
 import { provider } from '../../lib/providers'
 
 // DuckDB only runs in the browser, so load the query view client-side. The chunk
-// (and DuckDB-Wasm) is only fetched when DATA_QUERY === 'duckdb' and a showcase
-// actually renders it — flat portals never pay for it.
+// (and DuckDB-Wasm) is only fetched when a resource actually needs it — flat
+// portals never pay for it.
 const DataExplorer = dynamic(() => import('../../components/DataExplorer'), {
   ssr: false,
 })
@@ -42,165 +42,217 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return { props: { dataset } }
 }
 
+// Showcase surface (editorial design imported from the Claude Design mockups): an
+// eyebrow + title + italic description, then a two-column body — resources, a
+// data preview (simple filterable table for CSV/TSV, a DuckDB SQL editor for
+// Parquet or query-mode portals), schema, and a Views slot — beside a metadata
+// sidebar with the download.
 export default function DatasetPage({ dataset }: { dataset: Dataset }) {
   const resources = getResources(dataset)
   const namespaceLabel = NAMESPACE_TYPE === 'owner' ? 'Owner' : 'Theme'
+  const primary = resources[0]
 
   return (
     <>
       <Head>
         <title>{dataset.name}</title>
       </Head>
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <nav className="mb-6 text-sm text-gray-500">
-          <Link href="/" className="hover:text-gray-700">
+      <main className="mx-auto max-w-[940px] px-6 pb-24 sm:px-16">
+        <nav className="pt-7 font-sans text-[13px] font-medium text-ink/50">
+          <Link href="/" className="text-inherit no-underline hover:text-accent">
             Home
-          </Link>
-          <span className="mx-2">/</span>
-          <Link href="/search" className="hover:text-gray-700">
+          </Link>{' '}
+          /{' '}
+          <Link href="/search" className="text-inherit no-underline hover:text-accent">
             Search
-          </Link>
-          <span className="mx-2">/</span>
-          <span>{dataset.name}</span>
+          </Link>{' '}
+          <span className="text-ink">/ {dataset.name}</span>
         </nav>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          {dataset.name}
-        </h1>
-        {dataset.description && (
-          <p className="text-gray-500 mb-8">{dataset.description}</p>
-        )}
 
-        {/* Metadata block */}
-        <dl className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div>
-            <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-              {namespaceLabel}
-            </dt>
-            <dd className="mt-1 text-sm text-gray-800">@{dataset.namespace}</dd>
+        <header className="max-w-[640px] pb-10 pt-8">
+          <div className="mb-4 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+            Dataset
           </div>
-          <div>
-            <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+          <h1 className="mb-[18px] font-serif text-[42px] font-semibold leading-tight text-ink">
+            {dataset.name}
+          </h1>
+          {dataset.description && (
+            <p className="font-serif text-[19px] italic leading-[1.6] text-ink/70">
+              {dataset.description}
+            </p>
+          )}
+        </header>
+
+        <div className="grid grid-cols-1 gap-12 pb-6 lg:grid-cols-[1fr_280px] lg:gap-16">
+          <div className="min-w-0">
+            {/* Resource file list — every file in the dataset, each downloadable. */}
+            <SectionLabel className="border-t border-ink/[0.15] pt-[22px]">
               Resources
-            </dt>
-            <dd className="mt-1 text-sm text-gray-800">
-              {resources.length} file{resources.length === 1 ? '' : 's'}
-            </dd>
-          </div>
-          {dataset.version && (
-            <div>
-              <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                Version
-              </dt>
-              <dd className="mt-1 text-sm text-gray-800">{dataset.version}</dd>
+            </SectionLabel>
+            <div className="mb-11">
+              {resources.map((r, i) => (
+                <a
+                  key={r.name + i}
+                  href={resourceUrl(r)}
+                  className="flex items-center justify-between border-b border-dotted border-ink/25 py-4 no-underline"
+                >
+                  <span className="font-sans text-[15px] font-medium text-ink">
+                    {r.path}
+                  </span>
+                  <span className="border border-accent/50 px-2 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.06em] text-accent">
+                    {r.format}
+                  </span>
+                </a>
+              ))}
             </div>
-          )}
-          {dataset.modified && (
-            <div>
-              <dt className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                Modified
-              </dt>
-              <dd className="mt-1 text-sm text-gray-800">{dataset.modified}</dd>
-            </div>
-          )}
-        </dl>
 
-        {/* Keywords */}
-        {dataset.keywords && dataset.keywords.length > 0 && (
-          <div className="mb-8 flex flex-wrap gap-2">
-            {dataset.keywords.map((kw) => (
-              <span
-                key={kw}
-                className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600"
-              >
-                {kw}
-              </span>
+            {/* Data preview — one block per resource. A single-file dataset (the
+                common case, and what the mockups show) renders exactly one; a
+                multi-resource dataset renders one per file, each labelled. */}
+            {resources.map((r, i) => (
+              <ResourceSection
+                key={r.name + i}
+                resource={r}
+                showHeading={resources.length > 1}
+              />
             ))}
+
+            {/* Views placeholder — charts and maps are added here by the
+                /portaljs-add-chart and /portaljs-add-map skills. */}
+            <SectionLabel className="mt-11">Views</SectionLabel>
+            <div className="border border-ink/[0.15] p-11 text-center">
+              <div className="mb-2 font-serif text-[17px] italic text-ink/55">
+                No views yet.
+              </div>
+              <div className="font-sans text-xs text-ink/40">
+                Charts and maps for this dataset are added here.
+              </div>
+            </div>
+
+            {/* Sources & license — Data Package descriptor fields. */}
+            {((dataset.licenses && dataset.licenses.length > 0) ||
+              (dataset.sources && dataset.sources.length > 0)) && (
+              <section className="mt-11">
+                <SectionLabel>Sources &amp; license</SectionLabel>
+                {dataset.sources && dataset.sources.length > 0 && (
+                  <div className="mb-4">
+                    <div className="mb-1 font-sans text-[11px] font-semibold uppercase tracking-[0.08em] text-ink/45">
+                      Sources
+                    </div>
+                    <ul className="font-serif text-[15px] text-ink/80">
+                      {dataset.sources.map((s) => (
+                        <li key={s.title}>
+                          {s.path ? (
+                            <a href={s.path} className="text-accent underline underline-offset-2">
+                              {s.title}
+                            </a>
+                          ) : (
+                            s.title
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {dataset.licenses && dataset.licenses.length > 0 && (
+                  <div>
+                    <div className="mb-1 font-sans text-[11px] font-semibold uppercase tracking-[0.08em] text-ink/45">
+                      License
+                    </div>
+                    <ul className="font-serif text-[15px] text-ink/80">
+                      {dataset.licenses.map((l) => (
+                        <li key={l.name ?? l.title ?? l.path}>
+                          {l.path ? (
+                            <a href={l.path} className="text-accent underline underline-offset-2">
+                              {l.title ?? l.name}
+                            </a>
+                          ) : (
+                            l.title ?? l.name
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </section>
+            )}
           </div>
-        )}
 
-        {/* Data — one section per resource (a single-file dataset has exactly
-            one; multi-resource datasets render a section for each file). */}
-        {resources.map((r, i) => (
-          <ResourceSection
-            key={r.name + i}
-            resource={r}
-            showHeading={resources.length > 1}
-          />
-        ))}
-
-        {/* Sources & license — Data Package descriptor fields. */}
-        {((dataset.licenses && dataset.licenses.length > 0) ||
-          (dataset.sources && dataset.sources.length > 0)) && (
-          <section className="mt-10 border-t border-gray-200 pt-6">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Sources &amp; license
-            </h2>
-            {dataset.sources && dataset.sources.length > 0 && (
-              <div className="mt-3">
-                <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                  Sources
-                </h3>
-                <ul className="mt-1 text-sm text-gray-700">
-                  {dataset.sources.map((s) => (
-                    <li key={s.title}>
-                      {s.path ? (
-                        <a
-                          href={s.path}
-                          className="text-blue-600 underline hover:text-blue-700"
-                        >
-                          {s.title}
-                        </a>
-                      ) : (
-                        s.title
-                      )}
-                    </li>
+          {/* Metadata sidebar. */}
+          <aside className="flex h-fit flex-col gap-[18px] rounded-sm border border-ink/[0.18] p-[26px]">
+            <SidebarField label={namespaceLabel} value={`@${dataset.namespace}`} />
+            <SidebarField
+              label="Resources"
+              value={`${resources.length} file${resources.length === 1 ? '' : 's'}`}
+            />
+            {dataset.version && <SidebarField label="Version" value={dataset.version} />}
+            {dataset.modified && <SidebarField label="Modified" value={dataset.modified} />}
+            {dataset.keywords && dataset.keywords.length > 0 && (
+              <div>
+                <div className="mb-2 font-sans text-[10px] font-semibold uppercase tracking-[0.08em] text-ink/45">
+                  Keywords
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {dataset.keywords.map((kw) => (
+                    <span
+                      key={kw}
+                      className="bg-cream-panel px-2 py-0.5 font-sans text-[11px] text-ink/60"
+                    >
+                      {kw}
+                    </span>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
-            {dataset.licenses && dataset.licenses.length > 0 && (
-              <div className="mt-3">
-                <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                  License
-                </h3>
-                <ul className="mt-1 text-sm text-gray-700">
-                  {dataset.licenses.map((l) => (
-                    <li key={l.name ?? l.title ?? l.path}>
-                      {l.path ? (
-                        <a
-                          href={l.path}
-                          className="text-blue-600 underline hover:text-blue-700"
-                        >
-                          {l.title ?? l.name}
-                        </a>
-                      ) : (
-                        l.title ?? l.name
-                      )}
-                    </li>
-                  ))}
-                </ul>
+            {primary && (
+              <div className="border-t border-ink/[0.15] pt-[18px]">
+                <a
+                  href={resourceUrl(primary)}
+                  className="block rounded-sm bg-ink px-3 py-3 text-center font-sans text-xs font-semibold uppercase tracking-[0.06em] text-cream no-underline"
+                >
+                  Download {primary.format}
+                </a>
               </div>
             )}
-          </section>
-        )}
-
-        {/* Views placeholder — charts and maps are added here by the
-            /portaljs-add-chart and /portaljs-add-map skills. */}
-        <section className="mt-10 border-t border-gray-200 pt-6">
-          <h2 className="text-lg font-semibold text-gray-900">Views</h2>
-          <p className="mt-2 text-sm text-gray-400">
-            No views yet. Charts and maps for this dataset are added here.
-          </p>
-        </section>
+          </aside>
+        </div>
       </main>
     </>
   )
 }
 
-// One resource within a dataset: preview (flat <Table /> or the DuckDB SQL view),
-// its Frictionless Table Schema, and a download / API line. A single-file dataset
-// renders exactly one of these (getResources synthesizes it); multi-resource
-// datasets render one per file, each with its own heading.
+// Uppercase Work Sans section label, matching the mockups' hairline dividers.
+function SectionLabel({
+  children,
+  className = '',
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div
+      className={`mb-4 font-sans text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45 ${className}`}
+    >
+      {children}
+    </div>
+  )
+}
+
+function SidebarField({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="mb-1.5 font-sans text-[10px] font-semibold uppercase tracking-[0.08em] text-ink/45">
+        {label}
+      </div>
+      <div className="font-serif text-base font-semibold text-ink">{value}</div>
+    </div>
+  )
+}
+
+// One resource within a dataset: its data preview (the DuckDB SQL editor for
+// Parquet / query-mode portals, otherwise the flat filterable Table) and its
+// Frictionless Table Schema. A single-file dataset renders exactly one of these;
+// multi-resource datasets render one per file, each with its own heading.
 function ResourceSection({
   resource,
   showHeading,
@@ -212,33 +264,38 @@ function ResourceSection({
   const tabular = resource.format === 'csv' || resource.format === 'tsv'
   // Parquet has no flat preview (papaparse can't read it) — it's read through
   // DuckDB-Wasm, which also range-queries it in place when it lives on R2. So a
-  // Parquet resource always gets the query view, regardless of the DATA_QUERY
+  // Parquet resource always gets the SQL editor, regardless of the DATA_QUERY
   // flag; CSV/TSV get it only when the portal opts into the 'duckdb' engine.
   const useQueryView = resource.format === 'parquet' || (tabular && DATA_QUERY === 'duckdb')
   return (
-    <section className="mt-10 border-t border-gray-200 pt-6 first:mt-2 first:border-t-0 first:pt-0">
+    <section className="mb-11">
       {showHeading && (
         <div className="mb-3 flex items-baseline gap-3">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="font-serif text-xl font-semibold text-ink">
             {resource.title ?? resource.name}
           </h2>
-          <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs uppercase tracking-wide text-gray-500">
+          <span className="border border-accent/50 px-2 py-0.5 font-sans text-[10px] font-semibold uppercase tracking-[0.06em] text-accent">
             {resource.format}
           </span>
         </div>
       )}
       {showHeading && resource.description && (
-        <p className="mb-3 text-sm text-gray-500">{resource.description}</p>
+        <p className="mb-3 font-serif text-[15px] italic text-ink/60">
+          {resource.description}
+        </p>
       )}
 
       {useQueryView ? (
         <DataExplorer resource={resource} />
       ) : tabular ? (
-        <Table url={url} fullWidth />
+        <>
+          <SectionLabel>Preview</SectionLabel>
+          <Table url={url} />
+        </>
       ) : (
-        <p className="text-gray-500">
+        <p className="font-serif text-[15px] italic text-ink/60">
           Preview not available for {resource.format} files.{' '}
-          <a href={url} className="underline">
+          <a href={url} className="text-accent underline underline-offset-2">
             Download the file
           </a>
           .
@@ -248,17 +305,15 @@ function ResourceSection({
       {/* Per-resource Frictionless Table Schema (degrades cleanly when absent). */}
       {resource.schema?.fields && resource.schema.fields.length > 0 && (
         <div className="mt-6">
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-            Schema
-          </h3>
-          <div className="mt-2 overflow-x-auto">
-            <table className="min-w-full text-sm">
+          <SectionLabel>Schema</SectionLabel>
+          <div className="overflow-x-auto border border-ink/[0.18]">
+            <table className="min-w-full border-collapse text-sm">
               <thead>
-                <tr className="border-b border-gray-200 text-left text-xs uppercase tracking-wide text-gray-400">
-                  <th className="py-2 pr-4 font-semibold">Field</th>
-                  <th className="py-2 pr-4 font-semibold">Type</th>
-                  <th className="py-2 pr-4 font-semibold">Description</th>
-                  <th className="py-2 font-semibold">Constraints</th>
+                <tr className="bg-cream-panel text-left font-sans text-[11px] uppercase tracking-[0.06em] text-ink/60">
+                  <th className="px-4 py-3 font-semibold">Field</th>
+                  <th className="px-4 py-3 font-semibold">Type</th>
+                  <th className="px-4 py-3 font-semibold">Description</th>
+                  <th className="px-4 py-3 font-semibold">Constraints</th>
                 </tr>
               </thead>
               <tbody>
@@ -270,13 +325,13 @@ function ResourceSection({
                     c?.enum && `enum(${c.enum.length})`,
                   ].filter(Boolean) as string[]
                   return (
-                    <tr key={f.name} className="border-b border-gray-100 align-top">
-                      <td className="py-2 pr-4 font-mono text-gray-800">{f.name}</td>
-                      <td className="py-2 pr-4 text-gray-600">{f.type ?? '—'}</td>
-                      <td className="py-2 pr-4 text-gray-600">
+                    <tr key={f.name} className="border-t border-ink/[0.1] align-top">
+                      <td className="px-4 py-3 font-mono text-ink/80">{f.name}</td>
+                      <td className="px-4 py-3 font-sans text-ink/60">{f.type ?? '—'}</td>
+                      <td className="px-4 py-3 font-sans text-ink/60">
                         {f.description ?? f.title ?? ''}
                       </td>
-                      <td className="py-2 text-gray-500">{tags.join(', ')}</td>
+                      <td className="px-4 py-3 font-sans text-ink/50">{tags.join(', ')}</td>
                     </tr>
                   )
                 })}
@@ -284,9 +339,9 @@ function ResourceSection({
             </table>
           </div>
           {resource.schema.primaryKey && (
-            <p className="mt-2 text-xs text-gray-400">
+            <p className="mt-2 font-sans text-xs text-ink/45">
               Primary key:{' '}
-              <code className="rounded bg-gray-100 px-1">
+              <code className="font-mono text-ink/70">
                 {Array.isArray(resource.schema.primaryKey)
                   ? resource.schema.primaryKey.join(', ')
                   : resource.schema.primaryKey}
@@ -295,19 +350,6 @@ function ResourceSection({
           )}
         </div>
       )}
-
-      {/* Download + API for this resource. */}
-      <p className="mt-4 text-sm">
-        <a href={url} className="text-blue-600 underline hover:text-blue-700">
-          Download {resource.path}
-        </a>
-        <span className="text-gray-500">
-          {' '}
-          — served statically at{' '}
-          <code className="bg-gray-100 px-1 rounded">{url}</code> for programmatic
-          access.
-        </span>
-      </p>
     </section>
   )
 }

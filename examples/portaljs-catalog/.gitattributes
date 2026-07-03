@@ -19,3 +19,7 @@
 # git; do NOT route them through LFS. This is also the OSS self-host path for
 # users running without R2.
 public/data/** -filter -diff -merge text
+# The bundled sample Parquet (region-metrics, for the SQL editor demo) is binary:
+# keep it inline like the CSVs, but override `text` so git never applies EOL
+# normalization, which would corrupt it.
+public/data/*.parquet -filter -diff -merge -text

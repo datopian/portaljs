@@ -10,6 +10,9 @@ export async function getStaticProps() {
   return { props: { datasets: await provider.listDatasets() } }
 }
 
+// Catalog surface (editorial design imported from the Claude Design mockups): a
+// numbered index of datasets under a borderless search line. The number is a
+// stable position in the full catalog, so it doesn't shuffle as the list filters.
 export default function Search({ datasets }: { datasets: Dataset[] }) {
   const router = useRouter()
   const [query, setQuery] = useState('')
@@ -22,69 +25,93 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
     setQuery(typeof q === 'string' ? q : '')
   }, [router.isReady, router.query.q])
 
+  // Assign each dataset its stable 1-based catalog position before filtering, so
+  // a dataset keeps the same index number no matter what the search removes.
+  const numbered = useMemo(
+    () => datasets.map((d, i) => ({ ...d, num: String(i + 1).padStart(2, '0') })),
+    [datasets]
+  )
+
   // Client-side full-text filter over the datasets the provider returned. A
   // provider whose capabilities.search is true would instead call
   // provider.search({ q, … }) server-side (full-text / faceted by namespace,
   // format, tags) — the static provider filters here in the browser.
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return datasets
-    return datasets.filter(
+    if (!q) return numbered
+    return numbered.filter(
       (d) =>
         d.name.toLowerCase().includes(q) ||
         d.namespace.toLowerCase().includes(q) ||
         (d.description ?? '').toLowerCase().includes(q)
     )
-  }, [datasets, query])
+  }, [numbered, query])
 
   return (
     <>
       <Head>
         <title>Search — __PROJECT_NAME__</title>
       </Head>
-      <main className="max-w-5xl mx-auto px-4 py-12">
-        <header className="mb-8">
-          <nav className="mb-4 text-sm text-gray-500">
-            <Link href="/" className="hover:text-gray-700">
-              Home
-            </Link>
-            <span className="mx-2">/</span>
-            <span>Search</span>
-          </nav>
-          <h1 className="text-3xl font-bold text-gray-900">Datasets</h1>
-        </header>
+      <main className="mx-auto max-w-[720px] px-6 pb-24 sm:px-16">
+        <nav className="pt-7 font-sans text-[13px] font-medium text-ink/50">
+          <Link href="/" className="text-inherit no-underline hover:text-accent">
+            Home
+          </Link>
+          <span className="text-ink"> / Search</span>
+        </nav>
+
+        <div className="flex items-baseline gap-4 pb-6 pt-9">
+          <h1 className="font-serif text-[42px] font-semibold text-ink">Datasets</h1>
+          {datasets.length > 0 && (
+            <span className="font-sans text-[13px] font-medium text-ink/50">
+              {filtered.length} {filtered.length === 1 ? 'result' : 'results'}
+            </span>
+          )}
+        </div>
 
         {datasets.length === 0 ? (
-          <div className="rounded-lg border-2 border-dashed border-gray-200 p-12 text-center text-gray-400">
-            <p className="text-lg font-medium">No datasets yet</p>
-            <p className="mt-1 text-sm">
-              Add an entry to <code className="bg-gray-100 px-1 rounded">datasets.json</code> and
-              drop the file in <code className="bg-gray-100 px-1 rounded">public/data</code>.
-            </p>
+          <div className="py-10 font-serif text-[17px] italic text-ink/55">
+            No datasets yet — add an entry to{' '}
+            <code className="font-mono not-italic">datasets.json</code> and drop the
+            file in <code className="font-mono not-italic">public/data</code>.
           </div>
         ) : (
           <>
             <DebouncedInput
               value={query}
               onChange={(v) => setQuery(String(v))}
-              placeholder={`Search ${datasets.length} datasets...`}
+              placeholder="Search datasets…"
               aria-label="Search datasets"
-              className="mb-6 w-full max-w-sm px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border-0 border-b border-ink/30 bg-transparent pb-3.5 font-serif text-lg italic text-ink placeholder:text-ink/40 focus:border-accent focus:outline-none"
             />
             {filtered.length === 0 ? (
-              <p className="text-gray-400">No datasets match “{query}”.</p>
+              <div className="py-10 font-serif text-[17px] italic text-ink/55">
+                No datasets found for “{query}”.
+              </div>
             ) : (
-              <div className="grid gap-4">
+              <div className="pt-4">
                 {filtered.map((ds) => (
                   <Link
                     key={`${ds.namespace}/${ds.slug}`}
                     href={datasetHref(ds)}
-                    className="block rounded-lg border border-gray-200 p-6 hover:border-blue-400 hover:shadow-sm transition-all"
+                    className="flex items-baseline gap-6 border-b border-ink/[0.12] py-7 no-underline"
                   >
-                    <h2 className="text-xl font-semibold text-gray-900">{ds.name}</h2>
-                    {ds.description && (
-                      <p className="mt-1 text-gray-500">{ds.description}</p>
-                    )}
+                    <div className="w-9 flex-shrink-0 font-serif text-xl font-medium italic text-accent">
+                      {ds.num}
+                    </div>
+                    <div className="max-w-[480px]">
+                      <div className="mb-1.5 font-serif text-xl font-semibold text-ink">
+                        {ds.name}
+                      </div>
+                      {ds.description && (
+                        <div className="font-sans text-sm leading-normal text-ink/60">
+                          {ds.description}
+                        </div>
+                      )}
+                    </div>
+                    <div className="ml-auto whitespace-nowrap pt-1 font-sans text-[11px] font-semibold uppercase tracking-[0.08em] text-ink/40">
+                      {ds.namespace}
+                    </div>
                   </Link>
                 ))}
               </div>

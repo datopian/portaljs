@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Editorial defaults from the Claude Design mockups: a warm cream canvas and
+   Work Sans as the base UI face (headings and prose opt into the Newsreader
+   serif per-element). Setting the background on the body avoids a white flash
+   before the page wrapper paints. Light theme only — no dark-mode variants. */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    background-color: oklch(0.97 0.012 75);
+    font-family: 'Work Sans', system-ui, sans-serif;
+  }
+}

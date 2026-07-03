@@ -16,7 +16,9 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
   // absolute URL untouched for remote ones (e.g. a Parquet file on R2) — the
   // latter is what lets DuckDB range-query it in place.
   const url = resourceUrl(resource)
-  const defaultSql = `SELECT * FROM data LIMIT ${PREVIEW_LIMIT}`
+  // A query-first dataset can ship a starter query (resource.query) — otherwise
+  // open on a generic preview. The in-browser table is always named `data`.
+  const defaultSql = resource.query ?? `SELECT * FROM data LIMIT ${PREVIEW_LIMIT}`
 
   // One engine instance per source file.
   const engine = useMemo(() => new DuckDbQuery(), [url])
@@ -72,26 +74,26 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
 
   return (
     <div>
-      <div className="mb-3 flex items-center gap-2">
-        <label htmlFor="sql" className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-          SQL
-        </label>
+      <div className="mb-3.5 flex items-center gap-3">
+        <span className="font-sans text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45">
+          Query this dataset (SQL)
+        </span>
         {total !== null && (
-          <span className="text-xs text-gray-400">
-            {total.toLocaleString()} rows in <code className="bg-gray-100 px-1 rounded">data</code>
+          <span className="font-mono text-[11px] text-ink/40">
+            {total.toLocaleString()} rows in <code>data</code>
           </span>
         )}
         {ranged && (
           <span
             title="Parquet queried in place over HTTP range requests — only the bytes a query touches are fetched, never the whole file."
-            className="rounded bg-emerald-50 px-1.5 py-0.5 text-xs font-medium text-emerald-700"
+            className="border border-accent/50 px-1.5 py-0.5 font-sans text-[10px] font-medium uppercase tracking-[0.06em] text-accent"
           >
             queried in place · range requests
           </span>
         )}
       </div>
 
-      <div className="flex flex-col gap-2 sm:flex-row">
+      <div className="border border-ink/[0.18]">
         <textarea
           id="sql"
           value={draft}
@@ -100,65 +102,76 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
             // Cmd/Ctrl+Enter runs the query.
             if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') run()
           }}
-          rows={2}
+          rows={4}
           spellCheck={false}
-          className="w-full flex-1 rounded-md border border-gray-300 px-3 py-2 font-mono text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="block w-full resize-y border-0 bg-cream-code px-4 py-4 font-mono text-[13.5px] leading-relaxed text-ink focus:outline-none"
         />
-        <button
-          type="button"
-          onClick={run}
-          disabled={loading}
-          className="h-fit rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? 'Running…' : 'Run'}
-        </button>
+        <div className="flex items-center justify-between border-t border-ink/[0.15] px-4 py-2.5">
+          <span className="font-mono text-[11px] text-ink/40">
+            DuckDB-Wasm · runs in your browser · ⌘/Ctrl + Enter
+          </span>
+          <button
+            type="button"
+            onClick={run}
+            disabled={loading}
+            className="bg-accent px-[18px] py-2.5 font-sans text-xs font-semibold uppercase tracking-[0.06em] text-cream hover:opacity-90 disabled:opacity-50"
+          >
+            {loading ? 'Running…' : 'Run ▶'}
+          </button>
+        </div>
       </div>
 
-      <p className="mt-1 text-xs text-gray-400">
-        Query the dataset as the table <code className="bg-gray-100 px-1 rounded">data</code> — runs
-        in your browser with DuckDB-Wasm. ⌘/Ctrl + Enter to run.
+      <p className="mt-2 font-sans text-xs text-ink/45">
         {ranged
-          ? ' This Parquet file is queried directly on object storage; add a WHERE / column list so only the rows and columns you need are fetched.'
-          : ' Keep a LIMIT on exploratory queries so large results don’t overwhelm the browser.'}
+          ? 'This Parquet file is queried directly on object storage; add a WHERE / column list so only the rows and columns you need are fetched.'
+          : 'Keep a LIMIT on exploratory queries so large results don’t overwhelm the browser.'}
       </p>
 
-      <div className="mt-4">
+      <div className="mt-[18px]">
         {error ? (
-          <pre className="overflow-x-auto rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <pre className="overflow-x-auto border border-red-300 bg-red-50 p-3 font-mono text-sm text-red-700">
             {error}
           </pre>
         ) : loading && rows.length === 0 ? (
           <LoadingSpinner />
         ) : rows.length === 0 ? (
-          <p className="text-sm text-gray-400">No rows.</p>
+          <p className="font-serif text-[15px] italic text-ink/55">No rows.</p>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-gray-200">
-            <table className="min-w-full divide-y divide-gray-200 text-sm">
-              <thead className="bg-gray-50">
-                <tr>
-                  {columns.map((c) => (
-                    <th
-                      key={c}
-                      className="px-3 py-2 text-left font-semibold text-gray-600 whitespace-nowrap"
-                    >
-                      {c}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {rows.map((row, i) => (
-                  <tr key={i} className="hover:bg-gray-50">
+          <>
+            <div className="overflow-x-auto border border-ink/[0.18]">
+              <table className="min-w-full border-collapse text-sm">
+                <thead>
+                  <tr>
                     {columns.map((c) => (
-                      <td key={c} className="px-3 py-2 text-gray-800 whitespace-nowrap">
-                        {formatCell(row[c])}
-                      </td>
+                      <th
+                        key={c}
+                        className="whitespace-nowrap bg-cream-panel px-4 py-3 text-left font-sans text-[11px] font-semibold uppercase tracking-[0.06em] text-ink/60"
+                      >
+                        {c}
+                      </th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {rows.map((row, i) => (
+                    <tr key={i} className="border-t border-ink/[0.1] hover:bg-cream-panel/50">
+                      {columns.map((c) => (
+                        <td
+                          key={c}
+                          className="whitespace-nowrap px-4 py-3 font-mono text-[13px] text-ink"
+                        >
+                          {formatCell(row[c])}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-2.5 font-mono text-[11px] text-ink/40">
+              {rows.length} rows returned
+            </div>
+          </>
         )}
       </div>
     </div>
@@ -167,6 +180,13 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
 
 function formatCell(value: unknown): string {
   if (value === null || value === undefined) return ''
-  if (typeof value === 'object') return JSON.stringify(value)
+  // DuckDB returns wide integers (a HUGEINT from SUM/COUNT, or a BIGINT) as a
+  // BigInt or a small wrapper object whose toString() is the number — print that
+  // rather than JSON.stringify, which would wrap it in escaped quotes.
+  if (typeof value === 'bigint') return value.toString()
+  if (typeof value === 'object') {
+    const s = String(value)
+    return s === '[object Object]' ? JSON.stringify(value) : s
+  }
   return String(value)
 }

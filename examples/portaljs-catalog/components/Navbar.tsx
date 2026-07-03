@@ -1,37 +1,28 @@
 import Link from 'next/link'
 
-// Site navbar, rendered on every page via `_app.tsx`. Minimal and light to match
-// the catalog template's Tailwind style.
+// Site navbar, rendered on every page via `_app.tsx`. Editorial style imported
+// from the Claude Design mockups: a tall hairline-ruled bar with a Newsreader
+// italic wordmark on the left and an uppercase Work Sans "Search" link on the
+// right, over the warm cream canvas.
 //
-// BRANDING IS A PLACEHOLDER — the logo (`/icon.svg`) and the name (`__PROJECT_NAME__`,
-// substituted by /portaljs-new-portal) ship as PortalJS defaults. Swap `public/icon.svg`
-// (and the other files in `public/`) for your own mark; change the name in your portal's
-// metadata. A generated portal should not permanently wear the PortalJS logo.
+// BRANDING IS A PLACEHOLDER — the wordmark is the portal name (`__PROJECT_NAME__`,
+// substituted by /portaljs-new-portal) set in Newsreader italic. Change the name
+// in your portal's metadata; swap the files in `public/` for your own marks. A
+// generated portal should not permanently wear the PortalJS name.
 export default function Navbar() {
   return (
-    <header className="border-b border-gray-200 bg-white">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+    <header className="border-b border-ink/[0.12] bg-cream">
+      <nav className="mx-auto flex h-[88px] max-w-6xl items-center justify-between px-6 sm:px-16">
         <Link
           href="/"
-          className="group flex items-center gap-2.5"
+          className="font-serif text-[21px] font-medium italic text-ink no-underline"
           aria-label="__PROJECT_NAME__ — home"
         >
-          {/* Spin-on-hover: a ~0.6s rotate, disabled under prefers-reduced-motion
-              via Tailwind's `motion-reduce:` variant (see acceptance criteria). */}
-          <img
-            src="/icon.svg"
-            alt=""
-            width={28}
-            height={28}
-            className="h-7 w-7 transition-transform duration-700 ease-in-out group-hover:rotate-[360deg] motion-reduce:transform-none motion-reduce:transition-none"
-          />
-          <span className="text-base font-semibold text-gray-900">
-            __PROJECT_NAME__
-          </span>
+          __PROJECT_NAME__
         </Link>
         <Link
           href="/search"
-          className="text-sm font-medium text-gray-600 transition-colors hover:text-blue-600"
+          className="font-sans text-xs font-semibold uppercase tracking-[0.08em] text-ink/75 transition-colors hover:text-accent"
         >
           Search
         </Link>

@@ -25,6 +25,11 @@ export type Resource = {
   description?: string
   // Per-resource Frictionless Table Schema.
   schema?: TableSchema
+  // Optional starter SQL for the DuckDB query view (the SQL editor). When set,
+  // the editor opens with this query instead of the generic `SELECT * FROM data`
+  // preview — use it to show off a meaningful aggregate on a query-first dataset.
+  // The table is always named `data`.
+  query?: string
 }
 
 export type Dataset = {

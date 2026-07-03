@@ -3,10 +3,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
-// Suggested searches surfaced as chips below the hero. These are starting points
-// derived from the sample datasets' themes — swap them for your portal's topics.
+// Suggested searches surfaced below the hero. These are starting points derived
+// from the sample datasets' themes — swap them for your portal's topics.
 const SUGGESTED_QUERIES = ['population', 'emissions', 'country codes', 'reference']
 
+// Home surface (editorial design imported from the Claude Design mockups): an
+// eyebrow, the portal name in Newsreader, a one-line description, and search as
+// the primary call to action — an editorial input plus popular-search links that
+// route into the /search catalog.
 export default function Home() {
   const router = useRouter()
   const [query, setQuery] = useState('')
@@ -21,11 +25,16 @@ export default function Home() {
       <Head>
         <title>__PROJECT_NAME__</title>
       </Head>
-      <main className="max-w-3xl mx-auto px-4 py-24">
-        <header className="text-center">
-          <h1 className="text-5xl font-bold text-gray-900">__PROJECT_NAME__</h1>
-          <p className="mt-4 text-lg text-gray-500">__DESCRIPTION__</p>
-        </header>
+      <main className="mx-auto max-w-[660px] px-6 pb-24 pt-16 sm:px-16 sm:pt-[104px]">
+        <div className="mb-6 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+          Open Data Portal
+        </div>
+        <h1 className="mb-7 font-serif text-[44px] font-semibold leading-[1.06] tracking-[-0.01em] text-ink sm:text-[62px]">
+          __PROJECT_NAME__
+        </h1>
+        <p className="mb-11 max-w-[520px] font-serif text-xl leading-[1.55] text-ink/70">
+          __DESCRIPTION__
+        </p>
 
         {/* Search is the primary call to action — submitting navigates to /search. */}
         <form
@@ -33,36 +42,42 @@ export default function Home() {
             e.preventDefault()
             search(query)
           }}
-          className="mt-10"
           role="search"
+          className="mb-12"
         >
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search datasets..."
+            placeholder="Search datasets…"
             aria-label="Search datasets"
-            className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border-0 border-b border-ink/30 bg-transparent pb-3.5 font-serif text-lg italic text-ink placeholder:text-ink/40 focus:border-accent focus:outline-none"
           />
         </form>
 
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+        <div className="mb-3.5 font-sans text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45">
+          Popular searches
+        </div>
+        <div className="flex flex-wrap gap-x-[22px] gap-y-2">
           {SUGGESTED_QUERIES.map((q) => (
             <Link
               key={q}
               href={`/search?q=${encodeURIComponent(q)}`}
-              className="rounded-full border border-gray-200 px-3 py-1 text-sm text-gray-600 hover:border-blue-400 hover:text-blue-600 transition-colors"
+              className="font-serif text-base font-medium italic text-accent underline decoration-1 underline-offset-[3px] hover:text-ink"
             >
               {q}
             </Link>
           ))}
         </div>
 
-        <p className="mt-8 text-center text-sm">
-          <Link href="/search" className="text-blue-600 hover:text-blue-700">
+        <div className="mt-12">
+          <Link
+            href="/search"
+            className="border-b border-accent pb-[3px] font-serif text-[17px] font-medium italic text-ink no-underline hover:text-accent"
+          >
             Browse all datasets &rarr;
           </Link>
-        </p>
+        </div>
       </main>
     </>
   )
