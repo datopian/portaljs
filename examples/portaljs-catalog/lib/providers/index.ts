@@ -6,6 +6,9 @@ export type {
   Dataset,
   DataFormat,
   Resource,
+  ResourceVersion,
+  DiffLine,
+  ActivityEntry,
   DatasetQuery,
   ProviderCapabilities,
 } from './types'

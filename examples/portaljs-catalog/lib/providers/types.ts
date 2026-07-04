@@ -13,6 +13,35 @@ import type { License, Source, TableSchema } from '../metadata/types'
 // place over HTTP range requests — see lib/query.
 export type DataFormat = 'csv' | 'tsv' | 'json' | 'geojson' | 'parquet'
 
+// One line of a version-to-version diff, shown when a resource's history is expanded.
+// Only raw-text resources (CSV/TSV committed in git) produce these; an LFS-pointer
+// resource carries no content, so it gets a summary without lines.
+export type DiffLine = { type: 'add' | 'remove'; text: string }
+
+// One versioned state of a resource's file, derived from a git commit that touched it
+// (see lib/history.ts). Populated at build time; empty for files with no git history.
+export type ResourceVersion = {
+  version: string // v1 (oldest) … vN (newest)
+  sha: string // short commit sha
+  date: string // human date, e.g. "Jun 28, 2026"
+  dateISO: string // ISO date, for sorting the activity feed
+  message: string // commit subject
+  size?: string // humanized byte size at this version (from the LFS pointer or blob)
+  downloadHref?: string // per-version download (content-addressed on R2 for LFS files)
+  diffSummary?: string // short delta, e.g. "+3 rows"
+  diffLines?: DiffLine[] // capped line preview (raw-text files only)
+}
+
+// One entry in the portal activity feed: a single resource commit, surfaced across all
+// of a dataset's resources and sorted newest-first.
+export type ActivityEntry = {
+  date: string
+  dateISO: string
+  filename: string
+  message: string
+  sha: string
+}
+
 // A single file within a dataset (a Frictionless "resource"). A dataset can hold
 // several — data + a data dictionary + methodology, or quarterly files, etc.
 export type Resource = {
@@ -30,6 +59,9 @@ export type Resource = {
   // preview — use it to show off a meaningful aggregate on a query-first dataset.
   // The table is always named `data`.
   query?: string
+  // Version history of this file, captured from git at build time (lib/history.ts).
+  // Absent/empty for files with no git history; the showcase hides the affordance.
+  history?: ResourceVersion[]
 }
 
 export type Dataset = {

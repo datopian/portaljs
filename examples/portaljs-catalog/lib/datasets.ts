@@ -7,7 +7,13 @@
 
 import type { Dataset, Resource } from './providers'
 
-export type { Dataset, Resource } from './providers'
+export type {
+  Dataset,
+  Resource,
+  ResourceVersion,
+  DiffLine,
+  ActivityEntry,
+} from './providers'
 
 // A portal uses exactly ONE namespace mode. Set to 'theme' for a single-publisher
 // portal (datasets grouped by subject) or 'owner' for a multi-publisher portal
@@ -41,15 +47,16 @@ export function datasetHref(d: Dataset): string {
 export function getResources(d: Dataset): Resource[] {
   if (d.resources && d.resources.length > 0) return d.resources
   if (d.file) {
-    return [
-      {
-        name: 'data',
-        path: d.file,
-        format: d.format ?? 'csv',
-        title: d.name,
-        schema: d.schema,
-      },
-    ]
+    const resource: Resource = {
+      name: 'data',
+      path: d.file,
+      format: d.format ?? 'csv',
+      title: d.name,
+    }
+    // Only attach schema when present — an `undefined` field can't be serialized
+    // through getStaticProps once the resource is baked into static props.
+    if (d.schema) resource.schema = d.schema
+    return [resource]
   }
   return []
 }
