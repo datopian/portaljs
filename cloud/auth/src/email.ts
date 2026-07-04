@@ -53,6 +53,14 @@ export async function createEmailLogin(
   returnPath?: string
 ): Promise<EmailLoginStart> {
   const token = generateEmailToken()
+  // Cap concurrent live links per address (po-jwn): expire any still-valid pending token for
+  // this email so a flood of /email/start calls can't stockpile many simultaneously-usable
+  // links — only the newest one works. Setting expires_at into the past makes the old rows
+  // read as `expired` in both peekEmailLogin and verifyEmailLogin (which compare now > expires_at).
+  await db
+    .prepare("UPDATE email_logins SET expires_at = ? WHERE email = ? AND status = 'pending' AND expires_at >= ?")
+    .bind(nowSeconds - 1, email, nowSeconds)
+    .run()
   await db
     .prepare(
       'INSERT INTO email_logins (id, token_hash, email, full_name, org, return_path, status, created_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'

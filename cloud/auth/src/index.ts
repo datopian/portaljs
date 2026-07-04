@@ -22,6 +22,7 @@ import {
   verifyEmailLogin,
   sendMagicLinkEmail,
 } from './email'
+import { gateEmailSend } from './ratelimit'
 import { b64url, timingSafeEqual } from './util'
 
 export interface Env {
@@ -207,10 +208,17 @@ export default {
       const org = typeof body.org === 'string' ? body.org : undefined
       const ret = safeReturnPath(typeof body.return === 'string' ? body.return : null)
       if (isValidEmail(email)) {
-        const { token } = await createEmailLogin(env.DB, now(), email, { fullName, org }, ret === '/' ? undefined : ret)
-        const link = `${env.BASE_URL}/email/verify?token=${encodeURIComponent(token)}`
-        // Fire the send but don't leak its success/failure into the response (neutrality).
-        await sendMagicLinkEmail(env, email, link)
+        // Rate-limit accepted sends by target email + source IP (po-jwn) to prevent
+        // email-bombing a victim and burning Resend quota. gateEmailSend records the send
+        // when under the caps and returns false when over — in which case we silently skip
+        // minting/sending. Either way the response below is identical (see neutrality note).
+        const ip = request.headers.get('cf-connecting-ip') ?? ''
+        if (await gateEmailSend(env.DB, now(), email, ip)) {
+          const { token } = await createEmailLogin(env.DB, now(), email, { fullName, org }, ret === '/' ? undefined : ret)
+          const link = `${env.BASE_URL}/email/verify?token=${encodeURIComponent(token)}`
+          // Fire the send but don't leak its success/failure into the response (neutrality).
+          await sendMagicLinkEmail(env, email, link)
+        }
       }
       // Echo back a best-effort address for the "check your email" copy; if it was invalid
       // we still show the neutral page (with whatever the user typed, escaped).

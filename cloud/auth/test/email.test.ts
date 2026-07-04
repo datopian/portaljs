@@ -60,6 +60,18 @@ class Stmt {
       this.db.logins.push({ id, token_hash, email, full_name, org, return_path, status, created_at, expires_at })
       return { meta: { changes: 1 } }
     }
+    if (this.sql.startsWith('UPDATE email_logins SET expires_at')) {
+      // Token cap (po-jwn): expire still-valid pending links for this email.
+      const [newExpiry, email, nowSeconds] = this.args
+      let changes = 0
+      for (const l of this.db.logins) {
+        if (l.email === email && l.status === 'pending' && l.expires_at >= nowSeconds) {
+          l.expires_at = newExpiry
+          changes++
+        }
+      }
+      return { meta: { changes } }
+    }
     if (this.sql.startsWith("UPDATE email_logins SET status = 'claimed'")) {
       const [id] = this.args
       const row = this.db.logins.find((l) => l.id === id && l.status === 'pending')
@@ -133,6 +145,16 @@ describe('magic-link lifecycle', () => {
     expect(first).toMatchObject({ status: 'verified', email: 'a@b.co', returnPath: '/dashboard' })
     const second = await verifyEmailLogin(db as any, 1000, token)
     expect(second.status).toBe('used')
+  })
+
+  it('caps live links per email: requesting a new one invalidates the previous (po-jwn)', async () => {
+    const { token: first } = await createEmailLogin(db as any, 1000, 'a@b.co')
+    const { token: second } = await createEmailLogin(db as any, 1001, 'a@b.co')
+    // The older link is now treated as expired in both peek and verify…
+    expect((await peekEmailLogin(db as any, 1001, first)).status).toBe('expired')
+    expect((await verifyEmailLogin(db as any, 1001, first)).status).toBe('expired')
+    // …while the newest link still works exactly once.
+    expect((await verifyEmailLogin(db as any, 1001, second)).status).toBe('verified')
   })
 
   it('rejects an unknown token', async () => {
