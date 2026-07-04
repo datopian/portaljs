@@ -16,13 +16,16 @@ export type { Dataset, Resource } from './providers'
 export const NAMESPACE_TYPE: 'theme' | 'owner' = 'theme'
 
 // The compute engine for a dataset's data on its showcase page:
-//   'flat'   — fetch the file and preview it (papaparse). Lightest; the default.
 //   'duckdb' — load the file into in-browser DuckDB-Wasm and expose a SQL query
-//              view (filter/aggregate/join over CSV/Parquet, no server).
-// This is the "compute" slot on the storage+compute spectrum (see ROADMAP.md);
-// `/portaljs-architect` flips it to 'duckdb' when the portal needs querying, not just
-// preview. DuckDB only loads in the browser and only when a showcase renders.
-export const DATA_QUERY: 'flat' | 'duckdb' = 'flat'
+//              view (filter/aggregate/join over CSV/Parquet, no server). The
+//              default: every portal ships the AI-native SQL editor out of the box.
+//   'flat'   — fetch the file and preview it (papaparse). Lightest; downgrade to
+//              this for trivial reference-only portals that never need querying.
+// This is the "compute" slot on the storage+compute spectrum (see ROADMAP.md).
+// The duckdb-wasm chunk loads on-demand in the browser only when a query view
+// renders, so first-load cost is deferred. `/portaljs-architect` may downgrade to
+// 'flat' for preview-only portals but otherwise leaves this default in place.
+export const DATA_QUERY: 'flat' | 'duckdb' = 'duckdb'
 
 // Canonical URL for a dataset's showcase page. Datasets are namespaced under `@`
 // so they never collide with regular content/static pages (which never start

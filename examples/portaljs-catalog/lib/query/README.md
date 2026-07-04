@@ -13,17 +13,18 @@ interface DataQuery {
 }
 ```
 
-The flat/static default doesn't implement this — the showcase just previews the
-CSV with papaparse. Opting in (`DATA_QUERY = 'duckdb'` in `lib/datasets.ts`, or
-any Parquet resource) renders `components/DataExplorer.tsx`, which drives the
-engine below. This is the **compute** slot on the storage + compute spectrum (see
-`ROADMAP.md`).
+`DATA_QUERY = 'duckdb'` in `lib/datasets.ts` is the template default, so every
+tabular dataset (and any Parquet resource) renders `components/DataExplorer.tsx`,
+which drives the engine below. Downgrading to `DATA_QUERY = 'flat'` skips this —
+the showcase just previews the CSV with papaparse. This is the **compute** slot on
+the storage + compute spectrum (see `ROADMAP.md`).
 
 ## DuckDB-Wasm — two execution paths
 
 `lib/query/duckdb.ts` runs DuckDB entirely in the browser (no server, no
 datastore). `@duckdb/duckdb-wasm` and the wasm/worker bundles load on demand from
-jsDelivr only when a query view actually mounts — flat portals never pay for it.
+jsDelivr only when a query view actually mounts — preview-only (`'flat'`) portals
+never pay for it, and the default portal defers the cost until a query view renders.
 `open()` picks one of two paths by the source:
 
 | | Range query | Buffered |

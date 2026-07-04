@@ -98,8 +98,9 @@ scripts/csv-to-parquet.sh public/data/orders.csv orders.parquet
 # version with Git LFS (→ R2), then point the resource at the R2 URL with format: "parquet"
 ```
 
-A Parquet resource always renders the in-browser SQL explorer; CSV/TSV opt in via
-`DATA_QUERY = 'duckdb'` in `lib/datasets.ts`. The engine runs entirely client-side
+Every tabular resource renders the in-browser SQL explorer by default
+(`DATA_QUERY = 'duckdb'` in `lib/datasets.ts`); set it to `'flat'` for a
+preview-only portal that never needs querying. The engine runs entirely client-side
 (no server, no catalog DB) and loads only when a query view mounts. For data too
 big for the browser, the same `DataQuery` seam can route to an edge Worker or
 MotherDuck — see [`lib/query/README.md`](lib/query/README.md) for the contract and

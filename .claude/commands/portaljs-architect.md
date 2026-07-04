@@ -52,10 +52,12 @@ skills read directly. Name both explicitly in the brief — they are what gets *
 - **Query mode** — how the showcase *computes* over a dataset: the `DATA_QUERY` constant in
   `lib/datasets.ts`, `flat | duckdb`. This is the Compute slot made concrete, and it is
   **portal-wide**:
-  - **flat** — fetch + preview the file with papaparse. Lightest; the template default.
   - **duckdb** — load the file into in-browser DuckDB-Wasm and expose a SQL query view
-    (filter/aggregate/join, no server). A Parquet resource always renders the query view
-    regardless; `duckdb` opts CSV/TSV in too.
+    (filter/aggregate/join, no server). **The template default** — every portal ships the
+    SQL editor out of the box. A Parquet resource always renders the query view regardless;
+    `duckdb` renders it for CSV/TSV too.
+  - **flat** — fetch + preview the file with papaparse. Lightest; a *downgrade* from the
+    default for a preview-only portal that never needs querying.
 
 ## Steps
 
@@ -136,11 +138,15 @@ resolves to (this parameterizes `/portaljs-add-dataset`; first match wins):
 A portal can mix tiers per dataset; name the **default** tier (almost always **LFS**) and
 flag any dataset that deviates (e.g. a remote URL recorded as-is = external passthrough).
 
-**Query mode (`DATA_QUERY = flat | duckdb`)** — portal-wide, derived from the purpose:
-- Publishing/discovery only ("show me the rows" + download) → **flat**.
+**Query mode (`DATA_QUERY = flat | duckdb`)** — portal-wide; **defaults to `duckdb`** so
+every portal ships the SQL editor out of the box. Only deviate downward when the purpose is
+narrow:
 - Analytics/querying — filter, aggregate, join — or many/large datasets, or any Parquet
-  resource → **duckdb**. (A Parquet resource always renders the query view; `duckdb` extends
-  it to CSV/TSV too. DuckDB-Wasm only loads in the browser, only when a query view mounts.)
+  resource → keep the **duckdb** default. (A Parquet resource always renders the query view;
+  `duckdb` extends it to CSV/TSV too. DuckDB-Wasm only loads in the browser, only when a query
+  view mounts, so first-load cost is deferred.)
+- Publishing/discovery only ("show me the rows" + download), a trivial reference-only portal →
+  **downgrade to flat**.
 
 **Access · Hosting:**
 - All public → **static**, hosted on **Cloudflare Pages**.
@@ -204,13 +210,14 @@ Map the brief to concrete next commands and offer to run the first one:
 | Custom / extended / DCAT metadata | `/portaljs-define-schema` — describe a dataset's fields + metadata (Frictionless; DCAT export built later) |
 | Ship it | `/portaljs-deploy` (Cloudflare Pages, or Workers for the runtime mode) |
 
-**Landing the `DATA_QUERY` choice.** The template ships `DATA_QUERY = 'flat'`. If the brief
-chose `duckdb`, set it in the scaffolded portal's `lib/datasets.ts` (the `/portaljs-new-portal`
-step, alongside `NAMESPACE_TYPE`):
+**Landing the `DATA_QUERY` choice.** The template ships `DATA_QUERY = 'duckdb'` by default,
+so a `duckdb` portal needs no change. Only when the brief downgrades to `flat` (a preview-only
+portal) set it in the scaffolded portal's `lib/datasets.ts` (the `/portaljs-new-portal` step,
+alongside `NAMESPACE_TYPE`):
 ```bash
-perl -pi -e "s/export const DATA_QUERY: 'flat' \\| 'duckdb' = '[a-z]+'/export const DATA_QUERY: 'flat' | 'duckdb' = 'duckdb'/" "./$PROJECT_SLUG/lib/datasets.ts"
+perl -pi -e "s/export const DATA_QUERY: 'flat' \\| 'duckdb' = '[a-z]+'/export const DATA_QUERY: 'flat' | 'duckdb' = 'flat'/" "./$PROJECT_SLUG/lib/datasets.ts"
 ```
-Leave it `flat` otherwise — a Parquet resource still renders the query view on its own.
+Leave it at the `duckdb` default otherwise — a Parquet resource renders the query view either way.
 
 End by recommending the exact sequence, e.g.:
 ```

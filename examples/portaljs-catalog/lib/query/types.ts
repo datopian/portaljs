@@ -4,8 +4,8 @@
 // which datasets exist — this is about a dataset's *data*: running structured
 // queries over it, beyond a flat-file preview.
 //
-// The flat/static default doesn't implement this (the showcase just previews the
-// CSV). The DuckDB engine (lib/query/duckdb.ts) runs SQL over CSV/Parquet entirely
+// The 'flat' mode doesn't implement this (the showcase just previews the CSV);
+// the template defaults to 'duckdb'. The DuckDB engine (lib/query/duckdb.ts) runs SQL over CSV/Parquet entirely
 // in the browser; a backend datastore (e.g. CKAN's, or a server-side DuckDB) could
 // implement the same interface. This is the "compute" slot on the storage+compute
 // spectrum — see ROADMAP.md.
