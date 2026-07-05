@@ -106,7 +106,7 @@ cd PORTAL_DIR && npm install react-leaflet@^5 leaflet@^1.9 && npm install -D @ty
 
 Tell the user first: `Installing map dependencies (react-leaflet, leaflet)...`
 
-If install fails, tell the user (check Node.js >=18 and network access) and retry.
+If install fails, tell the user (check Node.js >=22 and network access) and retry.
 
 > Why `react-leaflet@^5`: v5 targets React 19, which the catalog template uses. (If a
 > portal is still on React 18, install `react-leaflet@^4` instead — its peer dep requires

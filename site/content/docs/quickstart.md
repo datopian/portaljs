@@ -6,7 +6,7 @@ description: Install the PortalJS skills, scaffold a portal, add your data, and 
 ---
 
 > [!tip] One-command start
-> The fastest way to a working portal — no AI, nothing to install beyond Node 18+:
+> The fastest way to a working portal — no AI, nothing to install beyond Node 22+:
 >
 > ```bash
 > npm create portaljs@latest my-portal
@@ -23,7 +23,7 @@ instead.
 
 > [!info] Prerequisites
 >
-> - **Node.js >= 18**
+> - **Node.js >= 22**
 > - **[Claude Code](https://docs.claude.com/en/docs/claude-code)** (or another
 >   agent that runs Claude Code skills)
 

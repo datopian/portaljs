@@ -25,7 +25,7 @@
 
 ## Quickstart
 
-**Create a portal** — one command, nothing to install beyond Node 18+:
+**Create a portal** — one command, nothing to install beyond Node 22+:
 
 ```bash
 npm create portaljs@latest my-portal

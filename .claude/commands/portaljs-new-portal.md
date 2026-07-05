@@ -168,7 +168,7 @@ fi
 
 If the remote fetch fails (bad ref, network, or tiged unavailable), tell the user plainly
 and ask how to proceed (retry / different ref / check network). The scaffolded portal
-(Next.js) requires **Node.js >=18**; `npx tiged` itself runs on older Node, but use >=18
+(Next.js) requires **Node.js >=22**; `npx tiged` itself runs on older Node, but use >=22
 to match the template. (The resolver already defaults to remote when no current local
 template is found, so a missing or stale local checkout falls through to the latest
 template automatically.)
@@ -261,7 +261,7 @@ cd "./$PROJECT_SLUG" && npm install
 
 Tell the user first: `Installing dependencies (2–5 min on cold cache)...`
 
-If `npm install` fails, report the error plainly and ask the user to check Node.js >=18
+If `npm install` fails, report the error plainly and ask the user to check Node.js >=22
 and network access before retrying.
 
 ### 9. Verify scaffold-ready

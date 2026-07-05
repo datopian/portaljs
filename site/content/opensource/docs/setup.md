@@ -16,7 +16,7 @@ If you have questions about anything related to PortalJS, you're always welcome 
 
 ## Prerequisites
 
-- Node v16.20.0 LTS or Node.js 18.16.0 LTS (recommended)
+- Node.js 22 LTS (recommended) or Node.js 24
 - MacOS, Windows (including WSL), and Linux are supported
 
 ## Create a PortalJS app

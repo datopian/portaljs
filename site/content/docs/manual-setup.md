@@ -11,7 +11,7 @@ the same project by hand. This page shows how.
 
 > [!info] Prerequisites
 >
-> - **Node.js >= 18**
+> - **Node.js >= 22**
 > - Familiarity with Next.js and Tailwind helps, but isn't required.
 
 ## 1. Get the template

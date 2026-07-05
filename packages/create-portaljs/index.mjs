@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // create-portaljs — scaffold a PortalJS data portal.
 //   npm create portaljs@latest my-portal
-// See SPEC.md. Plain ESM, Node >= 18, deps: giget + prompts.
+// See SPEC.md. Plain ESM, Node >= 22, deps: giget + prompts.
 
 import { existsSync, readdirSync, readFileSync, writeFileSync, statSync, rmSync } from 'node:fs'
 import { join, basename, resolve } from 'node:path'

@@ -76,7 +76,7 @@ Any option provided on the CLI skips its prompt. With `--yes`, all prompts are s
 
 ## Implementation notes
 
-- **Runtime:** Node >= 18, plain ESM (`index.mjs` with a shebang) — no build/transpile step.
+- **Runtime:** Node >= 22, plain ESM (`index.mjs` with a shebang) — no build/transpile step.
 - **Dependencies:** `giget` (template fetch) + `prompts` (interactive). Both small,
   established. No framework.
 - **Token substitution** walks the tree in JS (read → replace → write) over text

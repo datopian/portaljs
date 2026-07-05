@@ -54,6 +54,6 @@ Plugin commands are namespaced — run them as `/portaljs:new-portal`,
 
 - `/portaljs-new-portal` prefers a local checkout of the template when run inside this repo, and
   otherwise fetches it remotely via `npx tiged`. Override the template ref with
-  `PORTALJS_TEMPLATE_REF` (default `main`). Requires **Node.js >= 18**.
+  `PORTALJS_TEMPLATE_REF` (default `main`). Requires **Node.js >= 22**.
 - Only the OSS skills are packaged. Gas Town internal commands (`done`, `handoff`,
   `review`) are intentionally excluded.

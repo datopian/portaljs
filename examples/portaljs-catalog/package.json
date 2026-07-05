@@ -2,6 +2,9 @@
   "name": "__PROJECT_SLUG__",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "generate:dcat": "tsx scripts/generate-dcat.ts",
     "predev": "npm run generate:dcat",

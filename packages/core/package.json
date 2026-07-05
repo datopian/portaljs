@@ -2,6 +2,9 @@
   "name": "@portaljs/core",
   "version": "1.0.9",
   "description": "Core Portal.JS components, configs and utils.",
+  "engines": {
+    "node": ">=22"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/datopian/portaljs.git",

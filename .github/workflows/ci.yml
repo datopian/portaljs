@@ -1,0 +1,92 @@
+name: CI
+
+# Build + smoke the packages, the scaffold CLI, and the catalog template on the
+# Node versions we support: 22 (active LTS) and 24 (current). Node 18 is EOL
+# (2025-04-30) and is intentionally not tested. See po-b4w.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build packages + template (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22', '24']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # Root workspace install builds @portaljs/* via their prepare scripts.
+      - name: Install workspace deps
+        run: npm ci
+
+      - name: Build packages
+        run: |
+          npm run build -w @portaljs/ckan-api-client-js
+          npm run build -w @portaljs/core
+          npm run build -w @portaljs/ckan
+
+      - name: Lint @portaljs/ckan
+        run: npm run lint -w @portaljs/ckan
+
+      # create-portaljs is a plain-ESM CLI with no build step — just verify it
+      # loads and its --help path runs on this Node version.
+      - name: Smoke create-portaljs CLI
+        run: |
+          node --check packages/create-portaljs/index.mjs
+          node packages/create-portaljs/index.mjs --help
+
+      - name: Build catalog template
+        working-directory: examples/portaljs-catalog
+        run: |
+          npm ci
+          npm run build
+
+  scaffold:
+    name: Scaffold end-to-end (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22', '24']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install create-portaljs deps
+        working-directory: packages/create-portaljs
+        run: npm install --no-package-lock giget prompts
+
+      # Scaffold from THIS ref (giget pulls the template from GitHub), then
+      # install + build the generated portal. Exercises `npm create portaljs`.
+      - name: Scaffold + build a portal
+        env:
+          # Avoid unauthenticated GitHub API rate limits when giget fetches.
+          GIGET_AUTH: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node packages/create-portaljs/index.mjs smoke-portal \
+            --yes --no-git \
+            --namespace reference \
+            --name "Smoke Portal" \
+            --ref "${{ github.head_ref || github.ref_name }}"
+          cd smoke-portal
+          npm run build
