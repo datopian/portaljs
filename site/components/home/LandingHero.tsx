@@ -1,4 +1,6 @@
 import { CSSProperties, useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 import posthog from 'posthog-js'
 
 // Named landing/hero analytics events. Prefer these over DOM autocapture: they
@@ -35,14 +37,11 @@ type Seq = {
 }
 
 const DOCS_URL = 'https://portaljs.com/docs'
-const BUILDER_URL = 'https://cloud.portaljs.com'
+// Primary CTA destination — the builder entry page at /build reads ?prompt= on
+// load (po-76p) and captures the sign-up. Build/Enter navigates here carrying the
+// typed (or suggested) prompt so the funnel is: hero prompt → /build → email.
+const BUILD_ROUTE = '/build'
 const CMD = 'npm create portaljs@latest'
-
-// Primary CTA destination — the builder entry page at /build will read ?prompt=
-// on load. NOTE: /build isn't live yet, so the CTA shows a "coming soon" hint
-// instead of navigating (would 404). To re-enable when the page ships: add back
-// `import { useRouter }`, `const router = useRouter()`, and in build() call
-// `router.push('/build?prompt=' + encodeURIComponent(seed))`.
 
 // Rotating placeholder examples that seed intent in the "Describe your portal"
 // input (AU/NZ municipalities). If the user hasn't typed anything, the visible
@@ -82,6 +81,7 @@ const GUI_SEQ: Seq[] = [
 ]
 
 export default function LandingHero() {
+  const router = useRouter()
   const [mode, setMode] = useState<'terminal' | 'gui'>('gui')
   const [revealed, setRevealed] = useState(0)
   const [typed, setTyped] = useState(0)
@@ -90,10 +90,7 @@ export default function LandingHero() {
   // The "Describe your portal" CTA input + its rotating example placeholder.
   const [prompt, setPrompt] = useState('')
   const [exampleIdx, setExampleIdx] = useState(0)
-  // /build isn't live yet — Build shows a transient "coming soon" hint instead.
-  const [comingSoon, setComingSoon] = useState(false)
   const copyT = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const soonT = useRef<ReturnType<typeof setTimeout> | null>(null)
   // mutable animation cursor kept in a ref so the interval reads fresh values
   const anim = useRef({ revealed: 0, typed: 0, wait: 0, hold: 0, showPreview: false })
 
@@ -184,26 +181,21 @@ export default function LandingHero() {
     }
   }
 
-  // Primary CTA: /build isn't live yet, so instead of navigating (404) we show a
-  // transient "coming soon" hint. The typed prompt is intentionally not consumed
-  // yet — it will seed /build?prompt= once that page ships (see BUILDER_ROUTE note).
+  // Primary CTA: navigate to /build carrying the prompt (po-ctt). /build reads
+  // ?prompt= on load and persists it for the Phase 2 builder (po-76p).
   function build(method: 'click' | 'enter') {
     // When the field is empty the visible rotating example is used as the prompt,
-    // so a "suggestion" was effectively submitted.
+    // so a "suggestion" is effectively submitted.
     const usedSuggestion = prompt.trim() === ''
-    const effectiveLength = usedSuggestion ? BUILD_EXAMPLES[exampleIdx].length : prompt.trim().length
+    const seed = usedSuggestion ? BUILD_EXAMPLES[exampleIdx] : prompt.trim()
     track('hero_build_clicked', {
       method,
       used_suggestion: usedSuggestion,
       suggestion_index: usedSuggestion ? exampleIdx : null,
-      prompt_length: effectiveLength,
+      prompt_length: seed.length,
+      target: 'build',
     })
-    setComingSoon(true)
-    // /build isn't live — the CTA resolves to a "coming soon" state; track it as a
-    // proxy for build intent until the page ships (po-76p).
-    track('hero_coming_soon_shown')
-    if (soonT.current) clearTimeout(soonT.current)
-    soonT.current = setTimeout(() => setComingSoon(false), 3200)
+    router.push(`${BUILD_ROUTE}?prompt=${encodeURIComponent(seed)}`)
   }
 
   function copy(e: React.MouseEvent) {
@@ -326,7 +318,7 @@ export default function LandingHero() {
           {/* One mode-switched card below the tabs. */}
           <div className="mt-5" style={{ border: '1px solid #e2e8f0', background: '#fff', borderRadius: 12, padding: '16px 18px', display: 'flex', flexDirection: 'column' }}>
             {!isTerminal ? (
-              /* Visual builder (primary) — functional input + Build → coming soon. */
+              /* Visual builder (primary) — functional input + Build → /build. */
               <>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: 0, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 9, padding: '10px 12px', fontSize: 12.5 }}>
                   <input
@@ -347,26 +339,18 @@ export default function LandingHero() {
                     type="button"
                     onClick={() => build('click')}
                     aria-label="Build your portal"
-                    style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: comingSoon ? '#7c3aed' : '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6, border: 'none', cursor: 'pointer', transition: 'background 0.15s', boxShadow: '0 1px 6px rgba(37,99,235,0.5)' }}
+                    style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6, border: 'none', cursor: 'pointer', transition: 'background 0.15s', boxShadow: '0 1px 6px rgba(37,99,235,0.5)' }}
                   >
-                    {comingSoon ? 'Coming soon' : (<>Build <span style={{ fontSize: 13, lineHeight: 1 }}>→</span></>)}
+                    Build <span style={{ fontSize: 13, lineHeight: 1 }}>→</span>
                   </button>
                 </div>
-                {comingSoon && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#7c3aed', marginTop: 12 }}>
-                    <span>✨</span>
-                    <span>The visual builder is coming soon. Meanwhile, <a href={BUILDER_URL} target="_blank" rel="noopener noreferrer" onClick={() => track('hero_cta_link_clicked', { target: 'cloud.portaljs.com' })} style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>open the builder</a> or <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" onClick={() => track('hero_cta_link_clicked', { target: 'docs' })} style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>read the docs</a>.</span>
-                  </div>
-                )}
-                <a
-                  href={BUILDER_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => track('hero_cta_link_clicked', { target: 'open_the_builder' })}
+                <Link
+                  href={BUILD_ROUTE}
+                  onClick={() => track('hero_cta_link_clicked', { target: 'build' })}
                   style={ctaLink}
                 >
                   Open the builder <span style={{ fontSize: 15 }}>→</span>
-                </a>
+                </Link>
               </>
             ) : (
               /* Terminal (secondary) — click the command to copy; docs link. */
