@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 
 // The /build page — destination of the hero + navbar primary CTA (po-ctt repoints them here).
-// PHASED (po-76p): Phase 1 is SIGN-UP ONLY. Capture email (+ confirm), full name and
-// organization, gate out free/consumer email (steer those to the terminal path), request a
+// PHASED (po-76p): Phase 1 is SIGN-UP ONLY. Capture email (required) plus optional full name
+// and organization, gate out free/consumer email (steer those to the terminal path), request a
 // passwordless magic link from Arc, then show a "coming soon" state. The actual browser
 // builder is Phase 2. The hero's typed ?prompt= seed is carried through and persisted so the
 // builder can pick it up once it ships.
@@ -34,7 +34,6 @@ export default function BuildPage() {
 
   const [prompt, setPrompt] = useState('')
   const [email, setEmail] = useState('')
-  const [confirmEmail, setConfirmEmail] = useState('')
   const [fullName, setFullName] = useState('')
   const [org, setOrg] = useState('')
   const orgEdited = useRef(false)
@@ -77,10 +76,7 @@ export default function BuildPage() {
 
   function validate(): string | null {
     if (!isValidEmail(email)) return 'Enter a valid email address.'
-    if (email.trim().toLowerCase() !== confirmEmail.trim().toLowerCase()) return 'The two email addresses don’t match.'
     if (isFreeEmailDomain(email)) return 'free-email'
-    if (!fullName.trim()) return 'Enter your full name.'
-    if (!org.trim()) return 'Enter your organization.'
     return null
   }
 
@@ -198,8 +194,7 @@ export default function BuildPage() {
             Build your data portal
           </h1>
           <p className="mx-auto mt-4 max-w-lg text-[17px] leading-relaxed text-slate-500 dark:text-slate-400">
-            Create your account and we’ll take it from here — the AI builder scaffolds the site, loads your data and
-            wires a backend.
+            Create your account to start building your portal.
           </p>
         </div>
 
@@ -249,7 +244,6 @@ export default function BuildPage() {
                 onClick={() => {
                   setError(null)
                   setEmail('')
-                  setConfirmEmail('')
                 }}
                 className="mt-4 text-[14px] font-semibold text-slate-500 hover:text-slate-700 hover:underline dark:text-slate-400"
               >
@@ -271,7 +265,7 @@ export default function BuildPage() {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => onEmailChange(e.target.value)}
-                    placeholder="you@your-organization.org"
+                    placeholder="you@company.com"
                     className={inputClass}
                     aria-invalid={freemail}
                   />
@@ -282,27 +276,10 @@ export default function BuildPage() {
                     </p>
                   )}
                 </div>
-                <div>
-                  <label htmlFor="confirmEmail" className={labelClass}>
-                    Confirm email
-                  </label>
-                  <input
-                    id="confirmEmail"
-                    type="email"
-                    autoComplete="email"
-                    value={confirmEmail}
-                    onChange={(e) => {
-                      setConfirmEmail(e.target.value)
-                      setError(null)
-                    }}
-                    placeholder="you@your-organization.org"
-                    className={inputClass}
-                  />
-                </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="fullName" className={labelClass}>
-                      Full name
+                      Full name <span className="font-normal text-slate-400">(optional)</span>
                     </label>
                     <input
                       id="fullName"
@@ -319,7 +296,7 @@ export default function BuildPage() {
                   </div>
                   <div>
                     <label htmlFor="org" className={labelClass}>
-                      Organization
+                      Organization <span className="font-normal text-slate-400">(optional)</span>
                     </label>
                     <input
                       id="org"
@@ -345,7 +322,7 @@ export default function BuildPage() {
               <button
                 type="submit"
                 disabled={status === 'submitting'}
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-[15px] font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-br from-sky-400 to-blue-600 px-4 py-3 text-[15px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
               >
                 {status === 'submitting' ? 'Sending…' : 'Create account'}
                 {status !== 'submitting' && <span aria-hidden>→</span>}
