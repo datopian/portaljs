@@ -99,11 +99,23 @@ export default function BuildPage() {
       has_prompt: !!prompt,
       org_inferred: org === orgFromEmail(email),
     })
+    // Forward our PostHog anonymous id so Arc can attribute the server-side signup-completion
+    // event (arc_signup_completed) to the SAME person — joining this client funnel across the
+    // client→worker boundary (po-zbx). Never let a missing/failed SDK block the request.
+    let distinctId: string | undefined
+    try {
+      distinctId = posthog.get_distinct_id?.()
+    } catch (_) {}
     try {
       const res = await fetch(`${ARC_URL}/email/start`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), full_name: fullName.trim(), org: org.trim() }),
+        body: JSON.stringify({
+          email: email.trim(),
+          full_name: fullName.trim(),
+          org: org.trim(),
+          distinct_id: distinctId,
+        }),
       })
       if (!res.ok) throw new Error(`arc responded ${res.status}`)
       track('build_email_sent')

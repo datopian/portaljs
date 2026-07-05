@@ -21,6 +21,7 @@ interface EmailLoginRow {
   status: string
   created_at: number
   expires_at: number
+  ph_distinct_id: string | null
 }
 interface UserRow {
   id: string
@@ -57,8 +58,20 @@ class Stmt {
   }
   async run() {
     if (this.sql.startsWith('INSERT INTO email_logins')) {
-      const [id, token_hash, email, full_name, org, return_path, status, created_at, expires_at] = this.args
-      this.db.logins.push({ id, token_hash, email, full_name, org, return_path, status, created_at, expires_at })
+      const [id, token_hash, email, full_name, org, return_path, status, created_at, expires_at, ph_distinct_id] =
+        this.args
+      this.db.logins.push({
+        id,
+        token_hash,
+        email,
+        full_name,
+        org,
+        return_path,
+        status,
+        created_at,
+        expires_at,
+        ph_distinct_id: ph_distinct_id ?? null,
+      })
       return { meta: { changes: 1 } }
     }
     if (this.sql.startsWith('UPDATE email_logins SET expires_at')) {
@@ -168,6 +181,20 @@ describe('magic-link lifecycle', () => {
     expect(second.status).toBe('used')
   })
 
+  it('round-trips the client PostHog distinct-id through to verify (po-zbx)', async () => {
+    const { token } = await createEmailLogin(db as any, 1000, 'a@b.co', {}, undefined, 'anon-abc-123')
+    expect(db.logins[0].ph_distinct_id).toBe('anon-abc-123')
+    const result = await verifyEmailLogin(db as any, 1000, token)
+    expect(result).toMatchObject({ status: 'verified', distinctId: 'anon-abc-123' })
+  })
+
+  it('leaves distinct-id null when the client did not supply one (po-zbx)', async () => {
+    const { token } = await createEmailLogin(db as any, 1000, 'a@b.co')
+    expect(db.logins[0].ph_distinct_id).toBeNull()
+    const result = await verifyEmailLogin(db as any, 1000, token)
+    expect(result).toMatchObject({ status: 'verified', distinctId: null })
+  })
+
   it('caps live links per email: requesting a new one invalidates the previous (po-jwn)', async () => {
     const { token: first } = await createEmailLogin(db as any, 1000, 'a@b.co')
     const { token: second } = await createEmailLogin(db as any, 1001, 'a@b.co')
@@ -199,7 +226,8 @@ describe('upsertEmailUser', () => {
   })
 
   it('creates a github-less email user', async () => {
-    const id = await upsertEmailUser(db as any, 'a@b.co', { fullName: 'A B', org: 'Acme' }, '2026-07-03T00:00:00.000Z')
+    const { id, isNew } = await upsertEmailUser(db as any, 'a@b.co', { fullName: 'A B', org: 'Acme' }, '2026-07-03T00:00:00.000Z')
+    expect(isNew).toBe(true)
     expect(db.users).toHaveLength(1)
     const u = db.users[0]
     expect(u.id).toBe(id)
@@ -210,9 +238,11 @@ describe('upsertEmailUser', () => {
   })
 
   it('attaches to the existing account on repeat sign-in (no duplicate row)', async () => {
-    const id1 = await upsertEmailUser(db as any, 'a@b.co', { fullName: 'A B' }, '2026-07-03T00:00:00.000Z')
-    const id2 = await upsertEmailUser(db as any, 'a@b.co', { org: 'Acme' }, '2026-07-04T00:00:00.000Z')
-    expect(id2).toBe(id1)
+    const first = await upsertEmailUser(db as any, 'a@b.co', { fullName: 'A B' }, '2026-07-03T00:00:00.000Z')
+    const second = await upsertEmailUser(db as any, 'a@b.co', { org: 'Acme' }, '2026-07-04T00:00:00.000Z')
+    expect(second.id).toBe(first.id)
+    expect(first.isNew).toBe(true) // created
+    expect(second.isNew).toBe(false) // reused existing account
     expect(db.users).toHaveLength(1)
     const u = db.users[0]
     expect(u.full_name).toBe('A B') // preserved (not overwritten by a null)

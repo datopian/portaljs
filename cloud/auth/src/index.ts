@@ -24,6 +24,7 @@ import {
   sendMagicLinkEmail,
 } from './email'
 import { gateEmailSend } from './ratelimit'
+import { captureServerEvent } from './analytics'
 import { b64url, timingSafeEqual } from './util'
 
 export interface Env {
@@ -36,6 +37,11 @@ export interface Env {
   // (wrangler secret put), EMAIL_FROM a var (e.g. "PortalJS Arc <login@arc.portaljs.com>").
   RESEND_API_KEY: string
   EMAIL_FROM: string
+  // Server-side signup-completion analytics (po-zbx). POSTHOG_KEY is the public project key
+  // (phc_…, safe as a var); POSTHOG_HOST the ingestion host. Both optional — capture no-ops
+  // when the key is unset, so dev/test deploys stay silent.
+  POSTHOG_KEY?: string
+  POSTHOG_HOST?: string
 }
 
 const SESSION_COOKIE = 'arc_session'
@@ -151,9 +157,26 @@ function corsHeaders(origin: string, extra?: Headers): Headers {
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url)
     const path = url.pathname
+
+    // Fire the signup-completion event to PostHog without blocking the auth response
+    // (po-zbx). ctx.waitUntil keeps the Worker alive for the fetch after the redirect is
+    // returned; captureServerEvent itself never throws, so this is fully fire-and-forget.
+    const trackSignup = (
+      distinctId: string,
+      properties: Record<string, unknown>
+    ): void => {
+      ctx.waitUntil(
+        captureServerEvent(env, {
+          event: 'arc_signup_completed',
+          distinctId,
+          properties,
+          timestamp: new Date(now() * 1000).toISOString(),
+        })
+      )
+    }
 
     if (path === '/healthz') return new Response('ok')
 
@@ -208,7 +231,10 @@ export default {
       const gh = (await ghRes.json()) as { id?: number; login?: string }
       if (!gh.id || !gh.login) return html(landingPage(), 502)
 
-      const uid = await upsertUser(env.DB, gh.id, gh.login)
+      const { id: uid, isNew } = await upsertUser(env.DB, gh.id, gh.login)
+      // Signup completion (po-zbx). No client anon id crosses the OAuth redirect, so attribute
+      // by the new user id; has_org is always false (GitHub sign-in captures no org).
+      trackSignup(uid, { auth_provider: 'github', has_org: false, is_new_user: isNew, arc_user_id: uid })
       const session = await signSession(uid, env.SESSION_SECRET, now())
       const h = new Headers()
       h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))
@@ -250,6 +276,9 @@ export default {
       const fullName = typeof body.full_name === 'string' ? body.full_name : undefined
       const org = typeof body.org === 'string' ? body.org : undefined
       const ret = safeReturnPath(typeof body.return === 'string' ? body.return : null)
+      // Client PostHog anonymous id (po-zbx): the /build form forwards it so the server-side
+      // arc_signup_completed fired at verify time joins the client-side /build funnel.
+      const distinctId = typeof body.distinct_id === 'string' ? body.distinct_id : undefined
       // Skip minting/sending for free/consumer domains (po-76p corporate-email gate). The
       // /build page blocks these client-side with a friendly terminal-path message; this is
       // the server-side backstop so a bypassed POST doesn't burn a send. Neutral either way.
@@ -260,7 +289,7 @@ export default {
         // minting/sending. Either way the response below is identical (see neutrality note).
         const ip = request.headers.get('cf-connecting-ip') ?? ''
         if (await gateEmailSend(env.DB, now(), email, ip)) {
-          const { token } = await createEmailLogin(env.DB, now(), email, { fullName, org }, ret === '/' ? undefined : ret)
+          const { token } = await createEmailLogin(env.DB, now(), email, { fullName, org }, ret === '/' ? undefined : ret, distinctId)
           const link = `${env.BASE_URL}/email/verify?token=${encodeURIComponent(token)}`
           // Fire the send but don't leak its success/failure into the response (neutrality).
           await sendMagicLinkEmail(env, email, link)
@@ -289,12 +318,22 @@ export default {
       const token = String(body.token ?? '')
       const result = await verifyEmailLogin(env.DB, now(), token)
       if (result.status !== 'verified') return html(emailResultPage(result.status), 400)
-      const uid = await upsertEmailUser(
+      const { id: uid, isNew } = await upsertEmailUser(
         env.DB,
         result.email,
         { fullName: result.fullName, org: result.org },
         new Date(now() * 1000).toISOString()
       )
+      // Signup completion (po-zbx) — the metric that matters. Attribute to the client anon id
+      // captured at /email/start (joins the /build funnel) when present, else the new user id.
+      // from_build is proxied by that anon id: only the /build page forwards a distinct_id.
+      trackSignup(result.distinctId || uid, {
+        auth_provider: 'email',
+        has_org: !!result.org,
+        is_new_user: isNew,
+        from_build: !!result.distinctId,
+        arc_user_id: uid,
+      })
       const session = await signSession(uid, env.SESSION_SECRET, now())
       const h = new Headers()
       h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))

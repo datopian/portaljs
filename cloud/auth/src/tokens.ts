@@ -9,13 +9,22 @@ export function generateToken(): string {
   return 'arc_' + b64url(bytes)
 }
 
-export async function upsertUser(db: D1Database, githubId: number, login: string): Promise<string> {
+// Result of an upsert: the user id, plus whether this call created the row (a genuinely NEW
+// signup) vs. attached to an existing account (a return sign-in). `isNew` drives the
+// arc_signup_completed analytics so re-logins don't inflate the signup funnel (po-zbx). It's
+// decided by the pre-insert lookup — accurate outside the rare concurrent-first-signup race.
+export interface UpsertResult {
+  id: string
+  isNew: boolean
+}
+
+export async function upsertUser(db: D1Database, githubId: number, login: string): Promise<UpsertResult> {
   const find = () =>
     db.prepare('SELECT id FROM users WHERE github_id = ?').bind(githubId).first<{ id: string }>()
   const existing = await find()
   if (existing) {
     await db.prepare('UPDATE users SET login = ? WHERE id = ?').bind(login, existing.id).run()
-    return existing.id
+    return { id: existing.id, isNew: false }
   }
   // Atomic under concurrent OAuth callbacks for the same github_id: the loser's INSERT
   // updates the login instead of failing the unique constraint. Re-read for the winner's id.
@@ -26,7 +35,7 @@ export async function upsertUser(db: D1Database, githubId: number, login: string
     )
     .bind(id, githubId, login)
     .run()
-  return (await find())?.id ?? id
+  return { id: (await find())?.id ?? id, isNew: true }
 }
 
 export interface EmailUserProfile {
@@ -43,7 +52,7 @@ export async function upsertEmailUser(
   email: string,
   profile: EmailUserProfile,
   nowIso: string
-): Promise<string> {
+): Promise<UpsertResult> {
   const fullName = profile.fullName?.trim() || null
   const org = profile.org?.trim() || null
   const find = () =>
@@ -58,7 +67,7 @@ export async function upsertEmailUser(
       )
       .bind(fullName, org, nowIso, existing.id)
       .run()
-    return existing.id
+    return { id: existing.id, isNew: false }
   }
   // Atomic under concurrent verifies for the same email: the loser's INSERT updates instead
   // of failing the unique index. Re-read for the winner's id (mirrors upsertUser).
@@ -69,7 +78,7 @@ export async function upsertEmailUser(
     )
     .bind(id, email, fullName, org, nowIso)
     .run()
-  return (await find())?.id ?? id
+  return { id: (await find())?.id ?? id, isNew: true }
 }
 
 // Create a token, store only its hash, return the clear-text token (shown once).

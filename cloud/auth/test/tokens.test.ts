@@ -68,16 +68,18 @@ describe('users + tokens', () => {
     d = new FakeD1()
   })
 
-  it('upsert creates then reuses a user', async () => {
-    const id1 = await upsertUser(d as any, 42, 'octocat')
-    const id2 = await upsertUser(d as any, 42, 'octocat-renamed')
-    expect(id1).toBe(id2)
+  it('upsert creates then reuses a user (isNew reflects create vs reuse)', async () => {
+    const first = await upsertUser(d as any, 42, 'octocat')
+    const second = await upsertUser(d as any, 42, 'octocat-renamed')
+    expect(first.id).toBe(second.id)
+    expect(first.isNew).toBe(true) // created
+    expect(second.isNew).toBe(false) // reused
     expect(d.users).toHaveLength(1)
     expect(d.users[0].login).toBe('octocat-renamed')
   })
 
   it('createToken stores the sha256 hash (matches the API contract), returns clear text once', async () => {
-    const uid = await upsertUser(d as any, 1, 'u')
+    const { id: uid } = await upsertUser(d as any, 1, 'u')
     const token = await createToken(d as any, uid, 'laptop')
     expect(token.startsWith('arc_')).toBe(true)
     expect(d.tokens).toHaveLength(1)
@@ -86,7 +88,7 @@ describe('users + tokens', () => {
   })
 
   it('list + revoke (scoped to owner)', async () => {
-    const uid = await upsertUser(d as any, 1, 'u')
+    const { id: uid } = await upsertUser(d as any, 1, 'u')
     await createToken(d as any, uid, 'a')
     const [row] = await listTokens(d as any, uid)
     expect(row.revoked_at).toBeNull()

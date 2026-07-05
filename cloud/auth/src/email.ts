@@ -66,13 +66,17 @@ export interface EmailLoginStart {
 }
 
 // Step 1: mint a pending magic-link token for `email`. Optional profile (full_name/org)
-// captured at sign-up is carried on the row and copied to the user on verify.
+// captured at sign-up is carried on the row and copied to the user on verify. `distinctId`
+// is the client's PostHog anonymous id (po-zbx): stashed on the row so the server-side
+// arc_signup_completed event fired at verify time attributes to the SAME person as the
+// client's build_email_sent — joining the /build funnel across the client→server boundary.
 export async function createEmailLogin(
   db: D1Database,
   nowSeconds: number,
   email: string,
   profile: EmailProfile = {},
-  returnPath?: string
+  returnPath?: string,
+  distinctId?: string
 ): Promise<EmailLoginStart> {
   const token = generateEmailToken()
   // Cap concurrent live links per address (po-jwn): expire any still-valid pending token for
@@ -85,7 +89,7 @@ export async function createEmailLogin(
     .run()
   await db
     .prepare(
-      'INSERT INTO email_logins (id, token_hash, email, full_name, org, return_path, status, created_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+      'INSERT INTO email_logins (id, token_hash, email, full_name, org, return_path, status, created_at, expires_at, ph_distinct_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     )
     .bind(
       crypto.randomUUID(),
@@ -96,7 +100,8 @@ export async function createEmailLogin(
       returnPath ?? null,
       'pending',
       nowSeconds,
-      nowSeconds + EMAIL_TOKEN_TTL
+      nowSeconds + EMAIL_TOKEN_TTL,
+      (distinctId ?? '').slice(0, 200) || null
     )
     .run()
   return { token, expiresIn: EMAIL_TOKEN_TTL }
@@ -121,7 +126,14 @@ export async function peekEmailLogin(
 }
 
 export type EmailVerifyResult =
-  | { status: 'verified'; email: string; fullName: string | null; org: string | null; returnPath: string | null }
+  | {
+      status: 'verified'
+      email: string
+      fullName: string | null
+      org: string | null
+      returnPath: string | null
+      distinctId: string | null // client PostHog anon id captured at sign-up (po-zbx), if any
+    }
   | { status: 'not_found' }
   | { status: 'expired' }
   | { status: 'used' }
@@ -146,7 +158,14 @@ export async function verifyEmailLogin(
   if (res.meta && typeof res.meta.changes === 'number' && res.meta.changes === 0) {
     return { status: 'used' }
   }
-  return { status: 'verified', email: row.email, fullName: row.full_name, org: row.org, returnPath: row.return_path }
+  return {
+    status: 'verified',
+    email: row.email,
+    fullName: row.full_name,
+    org: row.org,
+    returnPath: row.return_path,
+    distinctId: row.ph_distinct_id,
+  }
 }
 
 interface EmailLoginRow {
@@ -157,12 +176,15 @@ interface EmailLoginRow {
   return_path: string | null
   status: string
   expires_at: number
+  ph_distinct_id: string | null
 }
 async function lookup(db: D1Database, token: string): Promise<EmailLoginRow | null> {
   if (!token) return null
   const hash = await sha256Hex(token)
   return db
-    .prepare('SELECT id, email, full_name, org, return_path, status, expires_at FROM email_logins WHERE token_hash = ?')
+    .prepare(
+      'SELECT id, email, full_name, org, return_path, status, expires_at, ph_distinct_id FROM email_logins WHERE token_hash = ?'
+    )
     .bind(hash)
     .first<EmailLoginRow>()
 }
