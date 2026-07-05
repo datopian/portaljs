@@ -6,6 +6,9 @@
     "test": "vitest run",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "deploy:staging": "bash ../deploy.sh worker staging",
+    "deploy:prod": "bash ../deploy.sh worker production",
+    "migrations:check:prod": "bash ../deploy.sh worker production --check",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

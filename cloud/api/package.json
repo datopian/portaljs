@@ -6,6 +6,9 @@
     "test": "vitest run",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "deploy:staging": "bash ../deploy.sh api staging",
+    "deploy:prod": "bash ../deploy.sh api production",
+    "migrations:check:prod": "bash ../deploy.sh api production --check",
     "typecheck": "tsc --noEmit",
     "migrate:staging": "wrangler d1 migrations apply portaljs-arc-staging --remote"
   },

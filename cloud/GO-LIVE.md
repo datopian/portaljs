@@ -28,11 +28,20 @@ Put its **client ID** into `cloud/auth/wrangler.toml` → `[env.production.vars]
 (replacing `REPLACE_WITH_PROD_OAUTH_CLIENT_ID`). Client ID is not a secret.
 
 ### 3. Deploy the three workers
+
+Use the deploy wrapper (`cloud/deploy.sh`) — it applies pending D1 migrations to the shared
+DB **before** each deploy, so code never ships ahead of its schema (po-3kq; incidents po-5vs,
+po-jwn). `npm run deploy:prod` in each worker dir calls it:
 ```bash
-cd cloud/worker && npx wrangler deploy --env production   # arc-router → *.arc.portaljs.com
-cd ../api       && npx wrangler deploy --env production   # arc-api    → api.arc.portaljs.com
-cd ../auth      && npx wrangler deploy --env production   # arc-auth   → arc.portaljs.com
+cd cloud/worker && npm run deploy:prod   # arc-router → *.arc.portaljs.com
+cd ../api       && npm run deploy:prod   # arc-api    → api.arc.portaljs.com
+cd ../auth      && npm run deploy:prod   # arc-auth   → arc.portaljs.com
 ```
+
+> **Do NOT use bare `wrangler deploy --env production`** for a schema-dependent change — it
+> skips the migration step. The migrations live in `cloud/api/migrations` and back the DB
+> shared by all three workers. To only *check* for pending migrations (e.g. in CI), run
+> `npm run migrations:check:prod` — it exits non-zero if the prod DB is behind.
 
 ### 4. Production secrets (auth worker)
 ```bash
@@ -47,7 +56,8 @@ npx wrangler secret put RESEND_API_KEY --env production         # passwordless e
 Passwordless email needs a Resend-verified sender and the shared-D1 migration applied:
 - Verify the `arc.portaljs.com` sending domain in Resend; confirm `[env.production.vars] EMAIL_FROM`
   in `cloud/auth/wrangler.toml` matches a verified address.
-- Apply the new migration to the prod D1 (adds `users.email`/`auth_provider`/… + `email_logins`):
+- Apply the new migration to the prod D1 (adds `users.email`/`auth_provider`/… + `email_logins`).
+  `npm run deploy:prod` (step 3) already does this before each deploy; to apply on its own:
   ```bash
   cd cloud/api && npx wrangler d1 migrations apply portaljs-arc --remote
   ```
