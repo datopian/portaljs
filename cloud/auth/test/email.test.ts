@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import {
   normalizeEmail,
   isValidEmail,
+  isFreeEmailDomain,
   createEmailLogin,
   peekEmailLogin,
   verifyEmailLogin,
@@ -113,6 +114,26 @@ describe('email address helpers', () => {
     expect(isValidEmail('a@b')).toBe(false)
     expect(isValidEmail('a @b.co')).toBe(false)
     expect(isValidEmail('')).toBe(false)
+  })
+})
+
+describe('isFreeEmailDomain (corporate-email gate backstop)', () => {
+  it('flags common consumer providers, case-insensitively', () => {
+    expect(isFreeEmailDomain('a@gmail.com')).toBe(true)
+    expect(isFreeEmailDomain('A@GMAIL.COM')).toBe(true)
+    expect(isFreeEmailDomain('a@outlook.com')).toBe(true)
+    expect(isFreeEmailDomain('a@hotmail.co.uk')).toBe(true)
+    expect(isFreeEmailDomain('a@icloud.com')).toBe(true)
+    expect(isFreeEmailDomain('a@proton.me')).toBe(true)
+  })
+  it('passes organization domains', () => {
+    expect(isFreeEmailDomain('a@datopian.com')).toBe(false)
+    expect(isFreeEmailDomain('jane@malmo.se')).toBe(false)
+    expect(isFreeEmailDomain('gov@data.gov.au')).toBe(false)
+  })
+  it('treats a missing domain as not-free', () => {
+    expect(isFreeEmailDomain('nope')).toBe(false)
+    expect(isFreeEmailDomain('')).toBe(false)
   })
 })
 

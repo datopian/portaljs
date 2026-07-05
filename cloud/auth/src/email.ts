@@ -33,6 +33,28 @@ export function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254
 }
 
+// Free/consumer email providers. The /build front door is for orgs (gov/ngo/enterprise/smb);
+// individuals on free mail are steered to the terminal path instead (po-76p). The /build page
+// enforces this client-side for a friendly message; this list is the server-side backstop so a
+// JS-bypassed POST to /email/start still doesn't burn a Resend send on a consumer address.
+// Kept in sync with site/lib/freemail.ts (two build roots, no shared import).
+export const FREE_EMAIL_DOMAINS: ReadonlySet<string> = new Set([
+  'gmail.com', 'googlemail.com',
+  'yahoo.com', 'yahoo.co.uk', 'yahoo.co.in', 'yahoo.fr', 'yahoo.de', 'ymail.com', 'rocketmail.com',
+  'outlook.com', 'hotmail.com', 'hotmail.co.uk', 'live.com', 'msn.com',
+  'icloud.com', 'me.com', 'mac.com',
+  'proton.me', 'protonmail.com', 'pm.me',
+  'aol.com', 'gmx.com', 'gmx.net', 'mail.com', 'yandex.com', 'yandex.ru',
+  'zoho.com', 'tutanota.com', 'fastmail.com', 'hey.com', 'inbox.com', 'hushmail.com',
+])
+
+// True when `email`'s domain is a known free/consumer provider. Case-insensitive; expects an
+// already-plausible address (call after isValidEmail).
+export function isFreeEmailDomain(email: string): boolean {
+  const domain = email.split('@')[1]?.toLowerCase().trim()
+  return !!domain && FREE_EMAIL_DOMAINS.has(domain)
+}
+
 export interface EmailProfile {
   fullName?: string
   org?: string
