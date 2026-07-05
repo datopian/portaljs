@@ -301,7 +301,17 @@ export default {
     }
 
     // Step 2: the emailed link lands here. A bare GET never signs in — it shows a
-    // confirmation page so an email scanner / prefetcher can't consume the token.
+    // confirmation page so an email scanner / prefetcher can't consume the token. This is
+    // the industry-standard mitigation for gov/enterprise mail security (Defender Safe
+    // Links, Proofpoint URL Defense, Mimecast, Barracuda), which GET-prefetch every link
+    // to scan it. peekEmailLogin is read-only (SELECT), so this route is fully IDEMPOTENT:
+    // any number of GETs leaves the token pending and issues no session cookie — only the
+    // explicit human POST below consumes it. Verified end-to-end in test/email.test.ts
+    // ("scanner/prefetch safety"). Residual risk: a JS-executing detonation sandbox that
+    // renders this page and auto-submits the form would post same-origin and pass the CSRF
+    // guard — but real scanners deliberately don't submit auth forms (it would break every
+    // sign-in on the web). If that ever proves untrue for the /build audience, the escape
+    // hatch is an OTP code the user types from the email (scanner-proof by construction).
     if (path === '/email/verify' && request.method === 'GET') {
       const token = url.searchParams.get('token') ?? ''
       const peek = await peekEmailLogin(env.DB, now(), token)

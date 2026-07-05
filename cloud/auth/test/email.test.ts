@@ -10,6 +10,7 @@ import {
 } from '../src/email'
 import { upsertEmailUser } from '../src/tokens'
 import { sha256Hex } from '../src/util'
+import worker, { type Env } from '../src/index'
 
 interface EmailLoginRow {
   id: string
@@ -216,6 +217,88 @@ describe('magic-link lifecycle', () => {
     const later = 1000 + EMAIL_TOKEN_TTL + 1
     expect((await peekEmailLogin(db as any, later, token)).status).toBe('expired')
     expect((await verifyEmailLogin(db as any, later, token)).status).toBe('expired')
+  })
+})
+
+// po-gq7 — end-to-end scanner/prefetch safety at the ROUTE level. Gov/enterprise mail
+// security (Defender Safe Links, Proofpoint URL Defense, Mimecast, Barracuda) auto-opens
+// links in email to scan them. The guarantee under test: a bare GET NEVER consumes the
+// token or issues a session — only the explicit human POST does. This drives the real
+// worker.fetch handler so the GET→peek / POST→verify wiring is exercised, not just the
+// underlying functions.
+describe('magic-link scanner/prefetch safety (route level, po-gq7)', () => {
+  const BASE = 'https://arc.portaljs.com'
+  // Real clock: the worker reads Date.now(), so mint the token against the same "now" the
+  // handler will see (well inside the 30-min TTL). No fake timers needed.
+  const t = Math.floor(Date.now() / 1000)
+  const ctx = { waitUntil() {}, passThroughOnException() {} } as unknown as ExecutionContext
+
+  const envFor = (db: FakeD1): Env =>
+    ({
+      DB: db as any,
+      GITHUB_CLIENT_ID: 'x',
+      GITHUB_CLIENT_SECRET: 'x',
+      SESSION_SECRET: 'test-secret-please-ignore',
+      BASE_URL: BASE,
+      RESEND_API_KEY: 'x',
+      EMAIL_FROM: 'Arc <login@arc.portaljs.com>',
+      // POSTHOG_KEY intentionally unset → captureServerEvent no-ops (no network in tests).
+    }) as Env
+
+  const getVerify = (env: Env, token: string) =>
+    worker.fetch(new Request(`${BASE}/email/verify?token=${encodeURIComponent(token)}`), env, ctx)
+  const postVerify = (env: Env, token: string) =>
+    worker.fetch(
+      new Request(`${BASE}/email/verify`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', origin: BASE },
+        body: JSON.stringify({ token }),
+      }),
+      env,
+      ctx
+    )
+
+  it('a scanner GET-prefetch does NOT consume the token or set a session cookie', async () => {
+    const db = new FakeD1()
+    const { token } = await createEmailLogin(db as any, t, 'user@agency.gov')
+    // Simulate an aggressive scanner opening the link several times.
+    for (let i = 0; i < 3; i++) {
+      const res = await getVerify(envFor(db), token)
+      expect(res.status).toBe(200)
+      expect(res.headers.get('set-cookie')).toBeNull() // no session issued on GET
+      expect(await res.text()).toContain('Continue as') // it's the confirm page
+      expect(db.logins[0].status).toBe('pending') // token still unspent
+    }
+  })
+
+  it('after any number of scanner GETs, the human POST still completes sign-in', async () => {
+    const db = new FakeD1()
+    const { token } = await createEmailLogin(db as any, t, 'user@agency.gov')
+    for (let i = 0; i < 3; i++) await getVerify(envFor(db), token)
+    const res = await postVerify(envFor(db), token)
+    expect(res.status).toBe(302) // redirect into the dashboard
+    expect(res.headers.get('set-cookie')).toContain('arc_session=') // session issued
+    expect(db.logins[0].status).toBe('claimed')
+    expect(db.users).toHaveLength(1) // user provisioned
+  })
+
+  it('the POST is single-use: a replay (double-click / prefetched POST) fails', async () => {
+    const db = new FakeD1()
+    const { token } = await createEmailLogin(db as any, t, 'user@agency.gov')
+    const first = await postVerify(envFor(db), token)
+    expect(first.status).toBe(302)
+    const second = await postVerify(envFor(db), token)
+    expect(second.status).toBe(400) // already-used → error page
+    expect(second.headers.get('set-cookie')).toBeNull() // no second session
+  })
+
+  it('a GET on an already-consumed link shows the used-page, never re-issues a session', async () => {
+    const db = new FakeD1()
+    const { token } = await createEmailLogin(db as any, t, 'user@agency.gov')
+    await postVerify(envFor(db), token) // human consumes it
+    const res = await getVerify(envFor(db), token)
+    expect(res.status).toBe(400)
+    expect(res.headers.get('set-cookie')).toBeNull()
   })
 })
 
