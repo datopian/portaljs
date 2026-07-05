@@ -12,10 +12,16 @@ function track(event: string, props?: Record<string, unknown>) {
   }
 }
 
-// Dual-interface hero (imported from the Claude Design "PortalJS Hero" project).
-// The site's <Nav> renders above this, so the design's own navbar is intentionally
-// dropped. Colors match the site palette (sky-400 → blue-600, slate); the section
-// inherits the page background + soft glows so it blends with the rest of the page.
+// Dual-interface hero (imported from the Claude Design "PortalJS Hero" project,
+// iterated in po-pdq from the updated mockup). The site's <Nav> renders above
+// this, so the design's own navbar is intentionally dropped. Colors match the
+// site palette (sky-400 → blue-600, slate); the section inherits the page
+// background + soft glows so it blends with the rest of the page.
+//
+// Layout vs the first import (po-jnv): the two always-visible mode cards + a
+// separate pill tab-strip are unified into ONE underline tab bar (left) that
+// drives ONE mode-switched card, and the floating live-preview card becomes an
+// inline "live at …" footer bar inside the showcase window.
 
 type Seq = {
   typeChar: boolean
@@ -24,7 +30,7 @@ type Seq = {
   t?: string
   tc?: string
   dwell?: number
-  role?: 'user' | 'step' | 'done'
+  role?: 'user' | 'upload' | 'step' | 'done'
   text?: string
 }
 
@@ -64,8 +70,11 @@ const TERMINAL_SEQ: Seq[] = [
   { typeChar: false, dwell: 3, p: '✓', pc: '#34d399', t: 'Portal running at my-portal.arc.portaljs.com', tc: '#cbd5e1' },
 ]
 
+// GUI showcase sequence. seq[0] is the composer prompt (types itself in), seq[1]
+// is the CSV upload chip (spins, then ✓), then the assistant work steps + done.
 const GUI_SEQ: Seq[] = [
   { typeChar: true, role: 'user', text: 'Build an open-data portal for the City of Malmö — load our air-quality dataset and connect CKAN.' },
+  { typeChar: false, dwell: 22, role: 'upload', text: 'air-quality.csv' },
   { typeChar: false, dwell: 16, role: 'step', text: 'Generated pages, theme & navigation' },
   { typeChar: false, dwell: 13, role: 'step', text: 'Loaded 12,480 rows · table + chart views' },
   { typeChar: false, dwell: 13, role: 'step', text: 'Wired CKAN backend · 84 datasets synced' },
@@ -165,10 +174,12 @@ export default function LandingHero() {
     return () => clearInterval(id)
   }, [])
 
-  function select(next: 'terminal' | 'gui', source: 'card_hover' | 'tab_click') {
+  function select(next: 'terminal' | 'gui', source: 'tab_click') {
     if (next !== mode) {
       setMode(next)
-      // Report the public-facing name: the "gui" mode is labelled "Chat" in the UI.
+      // Report the public-facing name: the "gui" mode is the "Visual builder" tab
+      // in the UI. The event value stays 'chat' for continuity with the po-607
+      // funnel/dashboard (taxonomy stable across the display rename).
       track('hero_mode_switched', { mode: next === 'gui' ? 'chat' : 'terminal', source })
     }
   }
@@ -214,60 +225,55 @@ export default function LandingHero() {
     cur = { ...c, t: c.typeChar ? (c.t || '').slice(0, typed) : c.t }
   }
 
+  // GUI derived: composer (idx 0) → CSV upload chip (idx 1) → assistant steps/done.
   const gUser = GUI_SEQ[0]
   const guiUserText = revealed === 0 ? (gUser.text || '').slice(0, typed) : gUser.text || ''
-  const guiUserShow = revealed > 0 || typed > 0
   // While the prompt is still being typed the composer sits in the middle of the
   // window (Claude-style); once it "submits" (revealed >= 1) the chat takes over.
   const guiComposing = revealed === 0
-  const guiAssistantShow = revealed >= 1
-  const assistant = seq.slice(1, revealed)
+  const guiUpload = GUI_SEQ[1]
+  const guiUploadShow = revealed >= 1
+  const guiUploadSpinning = revealed <= 1
+  const guiAssistantShow = revealed >= 2
+  const assistant = seq.slice(2, revealed)
   const guiSteps = assistant.filter((i) => i.role === 'step').map((i) => i.text || '')
   const doneItem = assistant.find((i) => i.role === 'done')
   const guiDoneShow = !!doneItem
-  const guiWorking = revealed >= 1 && !guiDoneShow
+  const guiWorking = revealed >= 2 && !guiDoneShow
   const guiTitle = guiDoneShow ? 'Your portal is ready' : 'Building your portal…'
   const previewUrl = isTerminal ? 'my-portal.arc.portaljs.com' : 'malmo.portaljs.cloud'
 
-  const card: CSSProperties = {
-    position: 'relative',
-    cursor: 'default',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 11,
-    border: '1px solid #e2e8f0',
-    background: '#ffffff',
-    borderRadius: 14,
-    padding: '16px 18px',
-    textDecoration: 'none',
-  }
-  const cardRing: CSSProperties = {
-    position: 'absolute',
-    inset: -1,
-    borderRadius: 14,
-    border: '1.5px solid #2563eb',
-    boxShadow: '0 0 0 3px rgba(37,99,235,0.12), 0 12px 30px -12px rgba(37,99,235,0.35)',
-    pointerEvents: 'none',
-  }
   const tab = (active: boolean): CSSProperties => ({
     cursor: 'pointer',
-    padding: '7px 15px',
-    borderRadius: 8,
-    fontSize: 13,
-    fontWeight: 600,
+    paddingBottom: 13,
+    marginBottom: -1,
     display: 'inline-flex',
     alignItems: 'center',
-    gap: 7,
-    background: active ? '#ffffff' : 'transparent',
-    color: active ? '#2563eb' : '#64748b',
-    boxShadow: active ? '0 1px 3px rgba(15,23,42,0.14)' : 'none',
+    gap: 9,
+    fontSize: 16,
+    fontWeight: active ? 700 : 600,
+    color: active ? '#0f172a' : '#94a3b8',
+    borderBottom: active ? '2.5px solid #2563eb' : '2.5px solid transparent',
   })
+  const ctaLink: CSSProperties = {
+    marginTop: 12,
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 6,
+    fontSize: 13.5,
+    fontWeight: 600,
+    color: '#2563eb',
+    textDecoration: 'none',
+    alignSelf: 'flex-start',
+  }
 
   return (
     <section id="top" className="relative overflow-hidden scroll-mt-32">
       <style>{`
         @keyframes hero-blink { 0%,50%{opacity:1} 50.01%,100%{opacity:0} }
         @keyframes hero-pulse { 0%,80%,100%{opacity:.25;transform:translateY(0)} 40%{opacity:1;transform:translateY(-2px)} }
+        @keyframes hero-fade-up { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes hero-spin { to{transform:rotate(360deg)} }
       `}</style>
       <div
         aria-hidden="true"
@@ -279,7 +285,7 @@ export default function LandingHero() {
       />
 
       <div className="grid items-center gap-12 pt-4 pb-14 sm:pt-6 sm:pb-16 lg:grid-cols-[1.02fr_1.12fr] lg:gap-14">
-        {/* LEFT: message + two ways to build */}
+        {/* LEFT: message + two ways to build (underline tabs → one mode card) */}
         <div>
           <div
             className="mb-6 inline-flex items-center gap-2.5 rounded-full border px-3 py-1.5 text-[12.5px] font-medium text-blue-600"
@@ -296,119 +302,103 @@ export default function LandingHero() {
             Build a data portal
             <br />
             by{' '}
-            <span className="bg-gradient-to-r from-sky-400 to-blue-700 bg-clip-text text-transparent">describing it.</span>
+            <span className="bg-gradient-to-r from-sky-400 via-blue-600 to-blue-900 bg-clip-text text-transparent">describing it.</span>
           </h1>
 
-          <p className="mt-5 max-w-[520px] text-[18px] leading-relaxed text-slate-500">
-            The AI-native framework for data portals. Tell your AI agent what you want — it scaffolds the site, loads your
-            data, and wires a backend. <span className="font-medium text-slate-700">You own plain, editable code.</span>
+          <p className="mt-5 max-w-[500px] text-[18px] leading-relaxed text-slate-500">
+            The AI-native framework for data portals — from your terminal, or a visual builder.{' '}
+            <span className="font-medium text-slate-700">Same AI skills, same plain editable code either way.</span>
           </p>
 
-          <div className="mt-8 grid grid-cols-1 gap-3">
-            {/* Chat card (primary) — the input + Build submit to the builder
-                entry route; the "Open the chat" link is secondary. */}
-            <div onMouseEnter={() => select('gui', 'card_hover')} style={card}>
-              {!isTerminal && <div style={cardRing} />}
-              <div className="flex items-center justify-between">
-                <span style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a' }}>Chat</span>
-                <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,0.09)', padding: '3px 7px', borderRadius: 5 }}>
-                  Chat · no setup
-                </span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: 0, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 9, padding: '10px 12px', fontSize: 12.5 }}>
-                <input
-                  type="text"
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault()
-                      build('enter')
-                    }
-                  }}
-                  placeholder={BUILD_EXAMPLES[exampleIdx]}
-                  aria-label="Describe your portal"
-                  style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', background: 'transparent', fontSize: 12.5, color: '#0f172a', padding: 0, cursor: 'text' }}
-                />
-                <button
-                  type="button"
-                  onClick={() => build('click')}
-                  aria-label="Build your portal"
-                  style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: comingSoon ? '#7c3aed' : '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6, border: 'none', cursor: 'pointer', transition: 'background 0.15s' }}
-                >
-                  {comingSoon ? 'Coming soon' : (<>Build <span style={{ fontSize: 13, lineHeight: 1 }}>→</span></>)}
-                </button>
-              </div>
-              {comingSoon && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#7c3aed' }}>
-                  <span>✨</span>
-                  <span>The chat builder is coming soon. Meanwhile, <a href={BUILDER_URL} target="_blank" rel="noopener noreferrer" onClick={() => track('hero_cta_link_clicked', { target: 'cloud.portaljs.com' })} style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>open the chat</a> or <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" onClick={() => track('hero_cta_link_clicked', { target: 'docs' })} style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>read the docs</a>.</span>
-                </div>
-              )}
-              <a
-                href={BUILDER_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => track('hero_cta_link_clicked', { target: 'open_the_chat' })}
-                style={{ marginTop: 'auto', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: '#2563eb', textDecoration: 'none' }}
-              >
-                Open the chat <span style={{ fontSize: 15 }}>→</span>
-              </a>
-            </div>
-
-            {/* Terminal card (secondary) — only the "Read the docs" link navigates */}
-            <div onMouseEnter={() => select('terminal', 'card_hover')} style={card}>
-              {isTerminal && <div style={cardRing} />}
-              <div className="flex items-center justify-between">
-                <span style={{ fontSize: 13.5, fontWeight: 600, color: '#0f172a' }}>Terminal</span>
-                <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#2563eb', background: 'rgba(37,99,235,0.09)', padding: '3px 7px', borderRadius: 5 }}>
-                  CLI · for devs
-                </span>
-              </div>
-              <div
-                onClick={copy}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: 0, background: '#0d1526', borderRadius: 9, padding: '10px 12px', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: 12, color: '#e2e8f0' }}
-              >
-                <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  <span style={{ color: '#64748b' }}>$ </span>
-                  {CMD}
-                </span>
-                <span style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: copied ? '#16a34a' : '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6 }}>
-                  {copied ? 'Copied ✓' : 'Copy'}
-                </span>
-              </div>
-              <a
-                href={DOCS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => track('hero_cta_link_clicked', { target: 'read_the_docs' })}
-                style={{ marginTop: 'auto', alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: '#2563eb', textDecoration: 'none' }}
-              >
-                Read the docs <span style={{ fontSize: 15 }}>→</span>
-              </a>
-            </div>
-          </div>
-
-          <p className="mt-4 text-[13px] text-slate-400">
-            One framework, two ways to drive it.{' '}
-            <span className="text-slate-500">Same AI skills, same plain editable code — from your terminal, or in chat.</span>
-          </p>
-        </div>
-
-        {/* RIGHT: animated showcase */}
-        <div className="relative flex flex-col">
-          <div className="mb-3.5 inline-flex items-center gap-0.5 self-start rounded-[10px] border border-slate-200 p-[3px]" style={{ background: '#eef2f7' }}>
+          {/* Underline tab bar — the single control that switches mode. */}
+          <div className="mt-8 flex items-center gap-8 border-b border-slate-200">
             <span onClick={() => select('gui', 'tab_click')} style={tab(!isTerminal)}>
-              <span style={{ width: 12, height: 11, border: '1.6px solid currentColor', borderRadius: 3, display: 'inline-block', position: 'relative' }}>
-                <span style={{ position: 'absolute', top: 2, left: 0, right: 0, height: 1.4, background: 'currentColor' }} />
+              <span style={{ width: 13, height: 12, border: '1.8px solid currentColor', borderRadius: 3, display: 'inline-block', position: 'relative', boxSizing: 'border-box' }}>
+                <span style={{ position: 'absolute', top: 3, left: 0, right: 0, height: 1.5, background: 'currentColor' }} />
               </span>{' '}
-              Chat
+              Visual builder
             </span>
             <span onClick={() => select('terminal', 'tab_click')} style={tab(isTerminal)}>
               <span style={{ fontFamily: 'ui-monospace, monospace', opacity: 0.7 }}>&gt;_</span> Terminal
             </span>
           </div>
 
+          {/* One mode-switched card below the tabs. */}
+          <div className="mt-5" style={{ border: '1px solid #e2e8f0', background: '#fff', borderRadius: 12, padding: '16px 18px', display: 'flex', flexDirection: 'column' }}>
+            {!isTerminal ? (
+              /* Visual builder (primary) — functional input + Build → coming soon. */
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: 0, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 9, padding: '10px 12px', fontSize: 12.5 }}>
+                  <input
+                    type="text"
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        build('enter')
+                      }
+                    }}
+                    placeholder={BUILD_EXAMPLES[exampleIdx]}
+                    aria-label="Describe your portal"
+                    style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', background: 'transparent', fontSize: 12.5, color: '#0f172a', padding: 0, cursor: 'text' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => build('click')}
+                    aria-label="Build your portal"
+                    style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: comingSoon ? '#7c3aed' : '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6, border: 'none', cursor: 'pointer', transition: 'background 0.15s', boxShadow: '0 1px 6px rgba(37,99,235,0.5)' }}
+                  >
+                    {comingSoon ? 'Coming soon' : (<>Build <span style={{ fontSize: 13, lineHeight: 1 }}>→</span></>)}
+                  </button>
+                </div>
+                {comingSoon && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#7c3aed', marginTop: 12 }}>
+                    <span>✨</span>
+                    <span>The visual builder is coming soon. Meanwhile, <a href={BUILDER_URL} target="_blank" rel="noopener noreferrer" onClick={() => track('hero_cta_link_clicked', { target: 'cloud.portaljs.com' })} style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>open the builder</a> or <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" onClick={() => track('hero_cta_link_clicked', { target: 'docs' })} style={{ color: '#7c3aed', fontWeight: 600, textDecoration: 'underline' }}>read the docs</a>.</span>
+                  </div>
+                )}
+                <a
+                  href={BUILDER_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => track('hero_cta_link_clicked', { target: 'open_the_builder' })}
+                  style={ctaLink}
+                >
+                  Open the builder <span style={{ fontSize: 15 }}>→</span>
+                </a>
+              </>
+            ) : (
+              /* Terminal (secondary) — click the command to copy; docs link. */
+              <>
+                <div
+                  onClick={copy}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: 0, background: '#0d1526', borderRadius: 9, padding: '10px 12px', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: 12.5, color: '#e2e8f0', cursor: 'pointer' }}
+                >
+                  <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <span style={{ color: '#64748b' }}>$ </span>
+                    {CMD}
+                  </span>
+                  <span style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: copied ? '#16a34a' : '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 11px', borderRadius: 6, boxShadow: copied ? 'none' : '0 1px 6px rgba(37,99,235,0.5)' }}>
+                    {copied ? 'Copied ✓' : 'Copy'}
+                  </span>
+                </div>
+                <a
+                  href={DOCS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => track('hero_cta_link_clicked', { target: 'read_the_docs' })}
+                  style={ctaLink}
+                >
+                  Read the docs <span style={{ fontSize: 15 }}>→</span>
+                </a>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* RIGHT: animated showcase (no tab strip — the left tabs drive it) */}
+        <div className="relative flex flex-col">
           {isTerminal ? (
             <div style={{ border: '1px solid #0d1526', borderRadius: 14, overflow: 'hidden', background: '#0a0f1a', boxShadow: '0 34px 80px -34px rgba(15,23,42,0.45), 0 2px 8px rgba(15,23,42,0.08)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', background: '#0d1424', borderBottom: '1px solid rgba(148,163,184,0.12)' }}>
@@ -432,105 +422,95 @@ export default function LandingHero() {
                   </span>
                 </div>
               </div>
+              {/* inline live-preview footer (replaces the old floating card) */}
+              <div style={{ height: 41, boxSizing: 'border-box', padding: '0 20px', borderTop: '1px solid rgba(148,163,184,0.12)', display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#64748b', opacity: showPreview ? 1 : 0, transition: 'opacity 0.3s ease' }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#16a34a', boxShadow: '0 0 8px rgba(22,163,74,0.6)', flexShrink: 0 }} /> live at {previewUrl}
+              </div>
             </div>
           ) : (
-            <div style={{ border: '1px solid #e2e8f0', borderRadius: 14, overflow: 'hidden', background: '#fff', boxShadow: '0 34px 80px -34px rgba(15,23,42,0.30), 0 2px 8px rgba(15,23,42,0.06)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', background: '#f8fafc', borderBottom: '1px solid #eef2f7' }}>
-                <span style={{ width: 11, height: 11, borderRadius: '50%', background: '#e2554e' }} />
-                <span style={{ width: 11, height: 11, borderRadius: '50%', background: '#e6a83f' }} />
-                <span style={{ width: 11, height: 11, borderRadius: '50%', background: '#4bb563' }} />
-                <span style={{ marginLeft: 8, fontSize: 12.5, fontWeight: 600, color: '#475569' }}>PortalJS Studio</span>
-                <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,0.09)', padding: '3px 8px', borderRadius: 6 }}>AI builder</span>
+            <div style={{ border: '1px solid #eef1f6', borderRadius: 16, overflow: 'hidden', background: '#fff', boxShadow: '0 34px 80px -34px rgba(15,23,42,0.30), 0 2px 8px rgba(15,23,42,0.06)' }}>
+              {/* browser-chrome header with a centered studio URL pill */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', background: '#fbfcfd', borderBottom: '1px solid #eef2f7' }}>
+                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#e6e9ef' }} />
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#e6e9ef' }} />
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#e6e9ef' }} />
+                </div>
+                <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#f1f4f8', borderRadius: 7, padding: '5px 14px', fontFamily: 'ui-monospace, monospace', fontSize: 11, color: '#7c8798' }}>
+                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#94a3b8', flexShrink: 0 }} /> studio.portaljs.com
+                  </div>
+                </div>
+                <div style={{ width: 34, flexShrink: 0 }} />
               </div>
-              <div style={{ padding: 18, minHeight: 380, display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ minHeight: 380, position: 'relative' }}>
                 {guiComposing ? (
                   /* Composer centered in the window — the prompt types itself in, then submits. */
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 22, textAlign: 'center', padding: '8px 6px' }}>
-                    <div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: '#0f172a' }}>What do you want to build?</div>
-                      <div style={{ marginTop: 7, fontSize: 13, color: '#94a3b8', maxWidth: 320 }}>
-                        Describe your portal in plain language — PortalJS builds it for you.
-                      </div>
-                    </div>
-                    <div style={{ width: '100%', maxWidth: 430, background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16, boxShadow: '0 10px 30px -14px rgba(15,23,42,0.20)', padding: '14px 15px 12px', display: 'flex', flexDirection: 'column', gap: 12, textAlign: 'left' }}>
-                      <div style={{ minHeight: 42, fontSize: 13.5, lineHeight: 1.55, color: guiUserText ? '#0f172a' : '#94a3b8' }}>
-                        {guiUserText || 'Describe your portal…'}
-                        <span style={{ display: 'inline-block', width: 7, height: 15, background: '#2563eb', marginLeft: 1, verticalAlign: -2, animation: 'hero-blink 1s infinite' }} />
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: '#cbd5e1' }}>PortalJS Studio</span>
-                        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: 9, background: '#2563eb', color: '#fff', fontSize: 15, lineHeight: 1 }}>↑</span>
-                      </div>
+                  <div style={{ height: 380, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 18, padding: '0 36px' }}>
+                    <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'conic-gradient(from 200deg, #1e3a8a, #2563eb, #38bdf8, #7dd3fc, #2563eb, #1e3a8a)', boxShadow: 'inset 0 0 0 4px #fff' }} />
+                    <div style={{ fontSize: 15.5, fontWeight: 600, color: '#0f172a' }}>What do you want to build?</div>
+                    <div style={{ width: '100%', maxWidth: 420, display: 'flex', alignItems: 'center', gap: 10, background: '#f8fafc', border: '1px solid #eef2f7', borderRadius: 12, padding: '12px 15px' }}>
+                      <span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, color: '#334155' }}>
+                        {guiUserText}
+                        <span style={{ display: 'inline-block', width: 7, height: 14, background: '#94a3b8', marginLeft: 1, verticalAlign: -2, animation: 'hero-blink 1s infinite' }} />
+                      </span>
+                      <span style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#2563eb', color: '#fff', fontSize: 11, fontWeight: 600, padding: '6px 12px', borderRadius: 7 }}>Build <span style={{ fontSize: 13, lineHeight: 1 }}>→</span></span>
                     </div>
                   </div>
                 ) : (
-                <>
-                {guiUserShow && (
-                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <div style={{ maxWidth: '82%', background: '#2563eb', color: '#fff', padding: '10px 14px', borderRadius: '15px 15px 5px 15px', fontSize: 13.5, lineHeight: 1.5 }}>
-                      {guiUserText}
+                  <div style={{ padding: 18, display: 'flex', flexDirection: 'column', gap: 14 }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <div style={{ maxWidth: '82%', background: '#eef2f7', border: '1px solid #e6eaf1', color: '#1e293b', padding: '10px 14px', borderRadius: '15px 15px 5px 15px', fontSize: 13.5, lineHeight: 1.5, animation: 'hero-fade-up 0.4s ease' }}>
+                        {guiUserText}
+                      </div>
                     </div>
+                    {guiUploadShow && (
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', animation: 'hero-fade-up 0.4s ease' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 9, background: '#fff', border: '1px solid #eef2f7', borderRadius: 10, padding: '8px 12px', fontSize: 12, color: '#475569' }}>
+                          <span style={{ flexShrink: 0, fontSize: 8.5, fontWeight: 700, letterSpacing: '0.02em', color: '#2563eb', background: '#eef4ff', padding: '4px 5px', borderRadius: 4 }}>CSV</span>
+                          <span>{guiUpload.text}</span>
+                          {guiUploadSpinning ? (
+                            <span style={{ width: 12, height: 12, border: '2px solid #e2e8f0', borderTopColor: '#2563eb', borderRadius: '50%', display: 'inline-block', animation: 'hero-spin 0.8s linear infinite' }} />
+                          ) : (
+                            <span style={{ color: '#16a34a', fontWeight: 700, fontSize: 13 }}>✓</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {guiAssistantShow && (
+                      <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', animation: 'hero-fade-up 0.4s ease' }}>
+                        <div style={{ flexShrink: 0, width: 26, height: 26, borderRadius: '50%', background: 'conic-gradient(from 200deg, #1e3a8a, #2563eb, #38bdf8, #7dd3fc, #2563eb, #1e3a8a)', boxShadow: 'inset 0 0 0 3px #fff' }} />
+                        <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #eef2f7', borderRadius: '15px 15px 15px 5px', padding: '14px 15px' }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: '#0f172a', marginBottom: 10 }}>{guiTitle}</div>
+                          {guiSteps.map((s, i) => (
+                            <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13, color: '#475569', padding: '3px 0' }}>
+                              <span style={{ color: '#16a34a', fontWeight: 700 }}>✓</span> {s}
+                            </div>
+                          ))}
+                          {guiWorking && (
+                            <div style={{ display: 'flex', gap: 4, alignItems: 'center', padding: '6px 0 2px' }}>
+                              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#94a3b8', animation: 'hero-pulse 1.2s infinite' }} />
+                              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#94a3b8', animation: 'hero-pulse 1.2s infinite 0.2s' }} />
+                              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#94a3b8', animation: 'hero-pulse 1.2s infinite 0.4s' }} />
+                            </div>
+                          )}
+                          {guiDoneShow && (
+                            <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #eef2f7', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5, fontWeight: 600, color: '#2563eb' }}>
+                              {doneItem?.text} <span style={{ fontSize: 15 }}>→</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
-                {guiAssistantShow && (
-                  <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                    <div style={{ flexShrink: 0, width: 26, height: 26, borderRadius: '50%', background: 'conic-gradient(from 200deg, #1e3a8a, #2563eb, #38bdf8, #7dd3fc, #2563eb, #1e3a8a)', boxShadow: 'inset 0 0 0 3px #fff' }} />
-                    <div style={{ flex: 1, background: '#f8fafc', border: '1px solid #eef2f7', borderRadius: '15px 15px 15px 5px', padding: '14px 15px' }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#0f172a', marginBottom: 10 }}>{guiTitle}</div>
-                      {guiSteps.map((s, i) => (
-                        <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13, color: '#475569', padding: '3px 0' }}>
-                          <span style={{ color: '#16a34a', fontWeight: 700 }}>✓</span> {s}
-                        </div>
-                      ))}
-                      {guiWorking && (
-                        <div style={{ display: 'flex', gap: 4, alignItems: 'center', padding: '6px 0 2px' }}>
-                          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#94a3b8', animation: 'hero-pulse 1.2s infinite' }} />
-                          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#94a3b8', animation: 'hero-pulse 1.2s infinite 0.2s' }} />
-                          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#94a3b8', animation: 'hero-pulse 1.2s infinite 0.4s' }} />
-                        </div>
-                      )}
-                      {guiDoneShow && (
-                        <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #eef2f7', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5, fontWeight: 600, color: '#2563eb' }}>
-                          {doneItem?.text} <span style={{ fontSize: 15 }}>→</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-                </>
-                )}
+              </div>
+              {/* inline live-preview footer (replaces the old floating card) */}
+              <div style={{ height: 41, boxSizing: 'border-box', padding: '0 18px', borderTop: '1px solid #eef2f7', display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#64748b', opacity: showPreview ? 1 : 0, transition: 'opacity 0.3s ease' }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#16a34a', boxShadow: '0 0 8px rgba(22,163,74,0.6)', flexShrink: 0 }} /> live at {previewUrl}
               </div>
             </div>
           )}
-
-          {/* floating live-preview card */}
-          <div className="relative mt-[-20px] hidden self-stretch sm:block" style={{ height: 158 }}>
-            {showPreview && (
-              <div style={{ position: 'absolute', top: 0, right: 12, zIndex: 3, width: 250, background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, boxShadow: '0 26px 54px -18px rgba(15,23,42,0.28)', overflow: 'hidden' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 10px', background: '#f8fafc', borderBottom: '1px solid #eef2f7' }}>
-                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#cbd5e1' }} />
-                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#cbd5e1' }} />
-                  <span style={{ marginLeft: 4, flex: 1, background: '#eef2f7', borderRadius: 5, padding: '3px 8px', fontFamily: 'ui-monospace, monospace', fontSize: 10, color: '#2563eb', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{previewUrl}</span>
-                </div>
-                <div style={{ padding: 12 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: '#0f172a' }}>Malmö Open Data</span>
-                    <span style={{ fontSize: 9.5, color: '#16a34a', display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#16a34a', boxShadow: '0 0 8px rgba(22,163,74,0.6)' }} />live
-                    </span>
-                  </div>
-                  <div style={{ height: 60, borderRadius: 7, border: '1px solid #eef2f7', background: '#f8fafc', display: 'flex', alignItems: 'flex-end', gap: 4, padding: 8 }}>
-                    {[42, 66, 50, 82, 58, 92, 70].map((h, i) => (
-                      <div key={i} style={{ flex: 1, height: `${h}%`, background: 'linear-gradient(#7dd3fc, #2563eb)', borderRadius: 3 }} />
-                    ))}
-                  </div>
-                  <div style={{ display: 'flex', gap: 8, marginTop: 10, fontFamily: 'ui-monospace, monospace', fontSize: 10, color: '#94a3b8' }}>
-                    <span>84 datasets</span><span>·</span><span>CKAN</span><span>·</span><span>12.4k rows</span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </section>
