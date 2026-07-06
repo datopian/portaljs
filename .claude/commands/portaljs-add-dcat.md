@@ -177,14 +177,36 @@ to the portal's deps): `npm i n3 rdfxml-streaming-parser jsonld`, parse each
 
 **Authoritative profile validation (SHACL).** For DCAT-AP/DCAT-US conformance, validate
 against the official SHACL shapes or the hosted validators — report the result, don't
-claim conformance without it:
-- **DCAT-AP:** the [data.europa.eu SHACL validator](https://data.europa.eu/mqa/shacl-validation/)
-  (or `pip install pyshacl` + the [DCAT-AP SHACL shapes](https://github.com/SEMICeu/DCAT-AP/tree/master/releases)):
-  `pyshacl -s dcat-ap-SHACL.ttl public/catalog.dcat-ap.ttl`.
-- **DCAT-US:** the [resources.data.gov](https://resources.data.gov/resources/dcat-us/)
-  guidance / POD validator.
-If `pyshacl` isn't installed, say so and give the validator URL rather than skipping
-silently.
+claim conformance without it. The built-in feeds are validated conformant to **DCAT-AP
+3.0.1 base** (the harvest gate) in all three serializations and **DCAT-US 3.0 SHACL**;
+re-run these after changing the mapping:
+- **DCAT-AP** — the EU's official ITB SHACL validator has a REST API (no browser). POST
+  the RDF and read `sh:conforms`. `base` is the mandatory harvest gate; `full` adds
+  ranges + recommendations (advisory — expect range warnings the validator can't
+  dereference for external vocabularies):
+  ```bash
+  curl -s https://www.itb.ec.europa.eu/shacl/dcat-ap/api/validate \
+    -H 'Content-Type: application/json' -H 'Accept: application/ld+json' \
+    -d "$(python3 -c 'import json,sys;print(json.dumps({"contentToValidate":open("public/catalog.dcat-ap.ttl").read(),"embeddingMethod":"STRING","contentSyntax":"text/turtle","validationType":"dcatap.3_0_1_base"}))')" \
+    | python3 -c 'import sys,json;g=json.load(sys.stdin);print([n["sh:conforms"] for n in g.get("@graph",[g]) if "sh:conforms" in n])'
+  ```
+  (validation types from `.../shacl/dcat-ap/api/info`; also usable offline via
+  `pip install pyshacl` + the [DCAT-AP SHACL shapes](https://github.com/SEMICeu/DCAT-AP/tree/master/releases)).
+- **DCAT-US** — `pip install pyshacl` + the official
+  [DCAT-US 3.0 SHACL shapes](https://raw.githubusercontent.com/DOI-DO/dcat-us/main/shacl/dcat-us_3.0_shacl_shapes.ttl):
+  `pyshacl -s dcat-us_3.0_shacl_shapes.ttl -a public/catalog.dcat-us.ttl`. DCAT-US
+  **requires an IRI-identified `dct:publisher`** — set `publisher.uri` (or `homepage`)
+  in `dcat.config.json`, else a blank-node publisher is rejected.
+
+Two things the mapping gets right for node-kind conformance (don't regress them): links
+(`dcat:downloadURL`, `dct:license`, `dcat:theme`, …) are IRIs — in JSON-LD they are typed
+`"@type": "@id"` in the `@context`, not bare strings; and `dct:format` / `dcat:mediaType`
+are emitted as IRIs (EU file-type authority + IANA media-type URIs), not the literals
+`"CSV"` / `"text/csv"`. Date values (`dct:issued/modified/created`) must be full
+`xsd:dateTime` timestamps.
+
+If `pyshacl` and network are both unavailable, say so and give the validator URL rather
+than skipping silently.
 
 ### 9. Verify the build
 

@@ -102,6 +102,36 @@ async function main() {
     }
   }
 
+  // Conformance-shape guards (po-hqe — validated against the ITB DCAT-AP SHACL
+  // validator + DCAT-US 3.0 SHACL). These properties MUST be IRIs, not literals, or
+  // the feed fails a national/EU harvester's node-kind constraint.
+  {
+    const ap = getDcatProfile('dcat-ap').apply(base, CONFIG) as Record<string, unknown>
+    const ctx = ap['@context'] as Record<string, unknown>
+    ok(
+      (ctx['dcat:downloadURL'] as { '@type'?: string })?.['@type'] === '@id',
+      'context: dcat:downloadURL typed @id (JSON-LD links are IRIs, not literals)',
+    )
+    ok(
+      (ctx['dct:modified'] as { '@type'?: string })?.['@type'] === 'xsd:dateTime',
+      'context: dct:modified typed xsd:dateTime',
+    )
+    const ds = (ap['dcat:dataset'] as Record<string, unknown>[])[0]
+    const dist = (ds['dcat:distribution'] as Record<string, unknown>[])[0]
+    ok(
+      /^https?:\/\//.test(dist['dct:format'] as string),
+      `dct:format is an IRI (got ${dist['dct:format']})`,
+    )
+    ok(
+      /^https?:\/\//.test(dist['dcat:mediaType'] as string),
+      `dcat:mediaType is an IRI (got ${dist['dcat:mediaType']})`,
+    )
+    ok(
+      typeof (ds['dct:publisher'] as Record<string, unknown>)?.['@id'] === 'string',
+      'dct:publisher is IRI-identified (@id) — required by DCAT-US',
+    )
+  }
+
   // Cross-serialization triple-count equivalence per profile.
   for (const pid of profileIds) {
     const catalog = getDcatProfile(pid).apply(base, CONFIG)

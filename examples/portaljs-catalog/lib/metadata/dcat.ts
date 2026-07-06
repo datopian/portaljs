@@ -54,7 +54,8 @@ export type DcatDataset = {
 }
 
 export type DcatCatalog = {
-  '@context': Record<string, string>
+  // Prefix map plus per-term definitions (e.g. { '@type': '@id' }); see DCAT_CONTEXT.
+  '@context': Record<string, unknown>
   '@type': 'dcat:Catalog'
   'dct:title'?: string
   'dct:description'?: string
@@ -81,11 +82,39 @@ export type CatalogEntry = FrictionlessLike & {
   description?: string
 }
 
-// The JSON-LD context: the prefixes used above. Kept compact and stable so a
-// harvester resolves the terms.
-export const DCAT_CONTEXT: Record<string, string> = {
+// The JSON-LD context: the prefixes used above PLUS per-term typing. In JSON-LD a
+// bare string is a literal — so an IRI-valued term (a link like dcat:downloadURL)
+// MUST be declared `"@type": "@id"` or a strict processor (e.g. the data.europa.eu /
+// ITB DCAT-AP SHACL validator) reads it as a string literal and the feed fails the
+// node-kind constraint. Likewise date terms need an xsd type or they parse as
+// xsd:string. Declaring them here makes the JSON-LD serialization carry the same RDF
+// as the Turtle/RDF-XML (which type these structurally in dcat-rdf.ts). Kept stable
+// so harvesters resolve the terms. See po-hqe (external-validator conformance).
+//
+// Note: date values are typed xsd:dateTime — supply full timestamps (a date-only
+// value would serialize as an ill-formed dateTime). foaf/vcard IRI terms are typed
+// by the profiles (dcat-profiles.ts) where those prefixes are introduced.
+export const DCAT_CONTEXT: Record<string, unknown> = {
   dcat: 'http://www.w3.org/ns/dcat#',
   dct: 'http://purl.org/dc/terms/',
+  xsd: 'http://www.w3.org/2001/XMLSchema#',
+  // IRI-valued terms (links) — string value ⇒ IRI, not a literal.
+  'dcat:downloadURL': { '@type': '@id' },
+  'dcat:accessURL': { '@type': '@id' },
+  'dcat:landingPage': { '@type': '@id' },
+  'dcat:theme': { '@type': '@id' },
+  'dcat:themeTaxonomy': { '@type': '@id' },
+  'dcat:mediaType': { '@type': '@id' },
+  'dct:license': { '@type': '@id' },
+  'dct:conformsTo': { '@type': '@id' },
+  'dct:source': { '@type': '@id' },
+  'dct:language': { '@type': '@id' },
+  'dct:accrualPeriodicity': { '@type': '@id' },
+  'dct:format': { '@type': '@id' },
+  // Date-valued terms.
+  'dct:issued': { '@type': 'xsd:dateTime' },
+  'dct:modified': { '@type': 'xsd:dateTime' },
+  'dct:created': { '@type': 'xsd:dateTime' },
 }
 
 // --- format helpers ------------------------------------------------------------
@@ -98,28 +127,48 @@ const MEDIA_TYPES: Record<string, string> = {
   parquet: 'application/vnd.apache.parquet',
 }
 
-const FORMAT_LABELS: Record<string, string> = {
+// EU file-type authority tokens (the DCAT-AP recommended vocabulary for dct:format).
+const FILE_TYPE_TOKENS: Record<string, string> = {
   csv: 'CSV',
   tsv: 'TSV',
   json: 'JSON',
-  geojson: 'GeoJSON',
-  parquet: 'Parquet',
+  geojson: 'GEOJSON',
+  parquet: 'PARQUET',
 }
 
-function mediaType(format?: string): string | undefined {
-  return format ? MEDIA_TYPES[format.toLowerCase()] : undefined
+const IANA_MEDIA_BASE = 'http://www.iana.org/assignments/media-types/'
+const EU_FILE_TYPE_BASE = 'http://publications.europa.eu/resource/authority/file-type/'
+
+// dcat:mediaType must be an IRI (range dct:MediaType) — an IANA media-type URI, not
+// the bare "text/csv" literal, or DCAT-AP's node-kind constraint rejects the feed.
+function mediaTypeIri(format?: string): string | undefined {
+  const mt = format ? MEDIA_TYPES[format.toLowerCase()] : undefined
+  return mt ? `${IANA_MEDIA_BASE}${mt}` : undefined
 }
 
-function formatLabel(format?: string): string | undefined {
+// dct:format must be an IRI (range dct:MediaTypeOrExtent) — the EU file-type
+// authority URI. Same reason: a literal "CSV" fails the DCAT-AP node-kind check.
+function formatIri(format?: string): string | undefined {
   if (!format) return undefined
-  return FORMAT_LABELS[format.toLowerCase()] ?? format.toUpperCase()
+  const tok = FILE_TYPE_TOKENS[format.toLowerCase()] ?? format.toUpperCase()
+  return `${EU_FILE_TYPE_BASE}${tok}`
 }
 
-// Invert a media type back to the short format token (for fromDCAT).
+// Invert a dcat:mediaType IRI back to the short format token (for fromDCAT). Accepts
+// an IANA media-type URI or a bare media-type string (feeds in the wild use either).
 function formatFromMedia(media?: string): string | undefined {
   if (!media) return undefined
-  const hit = Object.entries(MEDIA_TYPES).find(([, m]) => m === media)
+  const bare = media.replace(/^https?:\/\/www\.iana\.org\/assignments\/media-types\//, '')
+  const hit = Object.entries(MEDIA_TYPES).find(([, m]) => m === bare)
   return hit?.[0]
+}
+
+// Recover the short format token from a dct:format value — an EU file-type IRI
+// (…/file-type/CSV), another IRI, or a plain label. Takes the trailing segment.
+function formatFromFormat(fmt?: string): string | undefined {
+  if (!fmt) return undefined
+  const tail = fmt.split(/[/#]/).pop() ?? fmt
+  return tail.toLowerCase() || undefined
 }
 
 // Join a base URL and a path without doubling or dropping the slash. An empty base
@@ -170,8 +219,8 @@ export function toDCAT(input: FrictionlessLike, opts: ToDcatOptions = {}): DcatD
         'dct:title': input.title ?? input.name,
         'dcat:downloadURL': downloadURL,
         'dcat:accessURL': landingPage ?? downloadURL,
-        'dct:format': formatLabel(input.format),
-        'dcat:mediaType': mediaType(input.format),
+        'dct:format': formatIri(input.format),
+        'dcat:mediaType': mediaTypeIri(input.format),
       } as DcatDistribution)
     : undefined
 
@@ -202,9 +251,7 @@ export function fromDCAT(node: DcatDataset): FrictionlessLike {
   const dist = node['dcat:distribution']?.[0]
   const downloadURL = dist?.['dcat:downloadURL']
   const file = downloadURL ? downloadURL.split('/').pop() || undefined : undefined
-  const format =
-    formatFromMedia(dist?.['dcat:mediaType']) ??
-    (dist?.['dct:format'] ? dist['dct:format'].toLowerCase() : undefined)
+  const format = formatFromMedia(dist?.['dcat:mediaType']) ?? formatFromFormat(dist?.['dct:format'])
 
   const license = node['dct:license']
   return compact({

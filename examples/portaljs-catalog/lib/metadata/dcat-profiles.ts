@@ -31,7 +31,9 @@ import type { DcatCatalog } from './dcat'
 // A JSON-LD node with prefixed keys ('dct:title', '@type', …). Loose on purpose:
 // profiles add properties beyond dcat.ts's typed DcatDataset shape.
 export type JsonLdNode = Record<string, unknown>
-export type ProfiledCatalog = JsonLdNode & { '@context': Record<string, string> }
+// The context maps prefixes to namespaces AND may carry per-term definitions
+// ({ '@type': '@id' } etc.), so values are not all strings — see DCAT_CONTEXT.
+export type ProfiledCatalog = JsonLdNode & { '@context': Record<string, unknown> }
 
 // A responsible party (dct:publisher / dct:creator). Rendered as a nested
 // foaf:Agent node.
@@ -39,6 +41,10 @@ export type DcatAgent = {
   name: string
   homepage?: string
   mbox?: string
+  // A URI that identifies the agent. DCAT-US requires dct:publisher to be an IRI (a
+  // blank-node agent is rejected), and DCAT-AP recommends it — so the agent node is
+  // minted with this as its @id. Falls back to `homepage` when omitted.
+  uri?: string
   // foaf:Organization (default) or foaf:Person.
   type?: 'foaf:Organization' | 'foaf:Person'
 }
@@ -103,6 +109,10 @@ const NS = {
 function agentNode(a?: DcatAgent): JsonLdNode | undefined {
   if (!a?.name) return undefined
   const node: JsonLdNode = { '@type': a.type ?? 'foaf:Organization', 'foaf:name': a.name }
+  // Identify the agent by URI (DCAT-US mandates an IRI publisher; DCAT-AP recommends
+  // it). Prefer an explicit uri, else use the homepage as the agent's identifier.
+  const id = a.uri ?? a.homepage
+  if (id) node['@id'] = id
   if (a.homepage) node['foaf:homepage'] = a.homepage
   if (a.mbox) node['foaf:mbox'] = a.mbox.startsWith('mailto:') ? a.mbox : `mailto:${a.mbox}`
   return node
@@ -136,7 +146,7 @@ function overridesOf(node: JsonLdNode): DatasetOverrides {
 // where absent), and drop the internal `_dcat` carrier. Profile-specific extras are
 // layered by each profile after calling this.
 function baseAugment(base: DcatCatalog, cfg: DcatConfig, profile: DcatProfile): ProfiledCatalog {
-  const context = { ...base['@context'], ...profile.context }
+  const context: Record<string, unknown> = { ...base['@context'], ...profile.context }
   // Ensure the namespaces for the terms baseAugment itself introduces are declared,
   // even on a plain DCAT profile whose context didn't list them (DCAT uses foaf for
   // publisher and vcard for contactPoint). Without this, a foaf:/vcard: term would
@@ -150,6 +160,14 @@ function baseAugment(base: DcatCatalog, cfg: DcatConfig, profile: DcatProfile): 
     Boolean(catContact) || dsOverrides.some((o) => o.contactPoint?.fn || o.contactPoint?.email)
   if (needsFoaf && !context.foaf) context.foaf = NS.foaf
   if (needsVcard && !context.vcard) context.vcard = NS.vcard
+  // Type the foaf/vcard IRI-valued terms so the JSON-LD serialization reads them as
+  // IRIs, not literals (matches the dcat/dct terms typed in DCAT_CONTEXT). Only when
+  // the prefix is present — otherwise the term wouldn't resolve.
+  if (needsFoaf) {
+    if (!context['foaf:homepage']) context['foaf:homepage'] = { '@type': '@id' }
+    if (!context['foaf:mbox']) context['foaf:mbox'] = { '@type': '@id' }
+  }
+  if (needsVcard && !context['vcard:hasEmail']) context['vcard:hasEmail'] = { '@type': '@id' }
   const catalog: ProfiledCatalog = { ...(base as JsonLdNode), '@context': context }
 
   if (profile.conformsTo) catalog['dct:conformsTo'] = profile.conformsTo

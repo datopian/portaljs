@@ -35,6 +35,8 @@ const IRI_PROPS = new Set([
   'dcat:landingPage',
   'dcat:theme',
   'dcat:themeTaxonomy',
+  'dcat:mediaType',
+  'dct:format',
   'dct:license',
   'dct:conformsTo',
   'dct:source',
@@ -51,13 +53,21 @@ const IRI_PROPS = new Set([
 // Properties whose literal value is a date/dateTime (xsd typed).
 const DATE_PROPS = new Set(['dct:issued', 'dct:modified', 'dct:created'])
 
-function expand(ctx: Record<string, string>, term: string): string {
+// The context maps a prefix to a namespace string, but may also carry per-term
+// definitions ({ '@type': '@id' }, …) — only the string entries are namespaces.
+type Context = Record<string, unknown>
+function nsOf(ctx: Context, prefix: string): string | undefined {
+  const v = ctx[prefix]
+  return typeof v === 'string' ? v : undefined
+}
+
+function expand(ctx: Context, term: string): string {
   if (/^https?:|^mailto:|^urn:/.test(term)) return term
   const i = term.indexOf(':')
   if (i === -1) return term
   const prefix = term.slice(0, i)
   const local = term.slice(i + 1)
-  const ns = prefix === 'rdf' ? RDF : ctx[prefix]
+  const ns = prefix === 'rdf' ? RDF : nsOf(ctx, prefix)
   return ns ? ns + local : term
 }
 
@@ -69,7 +79,7 @@ function isDateish(v: string): boolean {
 // other nodes link to (its @id IRI, or a fresh blank node).
 function walkNode(
   node: JsonLdNode,
-  ctx: Record<string, string>,
+  ctx: Context,
   triples: Triple[],
   counter: { n: number }
 ): Term {
@@ -110,8 +120,8 @@ function walkNode(
 }
 
 // Flatten a profiled JSON-LD catalog into a triple list.
-function toTriples(catalog: JsonLdNode): { triples: Triple[]; ctx: Record<string, string> } {
-  const ctx = (catalog['@context'] as Record<string, string>) ?? {}
+function toTriples(catalog: JsonLdNode): { triples: Triple[]; ctx: Context } {
+  const ctx = (catalog['@context'] as Context) ?? {}
   const triples: Triple[] = []
   walkNode(catalog, ctx, triples, { n: 0 })
   return { triples, ctx }
@@ -138,7 +148,8 @@ function ttlTerm(t: Term): string {
 export function toTurtle(catalog: JsonLdNode): string {
   const { triples, ctx } = toTriples(catalog)
   const prefixes: string[] = [`@prefix rdf: <${RDF}> .`, `@prefix xsd: <${XSD}> .`]
-  for (const [p, ns] of Object.entries(ctx)) prefixes.push(`@prefix ${p}: <${ns}> .`)
+  for (const [p, ns] of Object.entries(ctx))
+    if (typeof ns === 'string') prefixes.push(`@prefix ${p}: <${ns}> .`)
 
   // Preserve first-seen subject order.
   const order: string[] = []
@@ -192,7 +203,8 @@ export function toRdfXml(catalog: JsonLdNode): string {
     [RDF, 'rdf'],
     [XSD, 'xsd'],
   ])
-  for (const [p, ns] of Object.entries(ctx)) if (!nsToPrefix.has(ns)) nsToPrefix.set(ns, p)
+  for (const [p, ns] of Object.entries(ctx))
+    if (typeof ns === 'string' && !nsToPrefix.has(ns)) nsToPrefix.set(ns, p)
   let auto = 0
   function prefixFor(ns: string): string {
     if (!nsToPrefix.has(ns)) nsToPrefix.set(ns, `ns${auto++}`)
