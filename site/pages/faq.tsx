@@ -190,6 +190,27 @@ Metadata is the foundation of any effective data portal, improving searchability
     category: 'Pricing & Plans',
     items: [
       {
+        question:
+          'Is $99/month sustainable? Will PortalJS be around in five years?',
+        answer: `PortalJS is open source (MIT) and maintained by Datopian, which has operated data infrastructure for 10+ years (OECD, Bank of England, NASA's data.nasa.gov migration). Because the framework is open source, your portal outlives any vendor — including us. That's the point.
+
+See what's shipping next on our [public roadmap](https://github.com/datopian/portaljs/blob/main/VISION.md).`,
+      },
+      {
+        question: 'Why are you so much cheaper than Socrata or Opendatasoft?',
+        answer:
+          'No license fees, no per-dataset caps, and a static-first architecture that costs cents to serve. You pay for hosting, compliance, and support — not a license.',
+      },
+      {
+        question: 'Can we migrate from Socrata / OpenDataSoft / ArcGIS Hub?',
+        answer: `Yes. We provide full migration support and have done large-scale migrations before (including NASA and the City of Santa Monica). [See our case studies](https://www.portaljs.com/case-studies) or [talk to us](https://calendar.app.google/sn2PU7ZvzjCPo1ok6).`,
+      },
+      {
+        question: 'Do you respond to RFPs and tenders?',
+        answer:
+          'Yes. Our Government and Enterprise tiers are built for public-sector procurement, with PO/invoice billing, vendor forms, security questionnaires, and procurement documentation available on request.',
+      },
+      {
         question: 'How much does PortalJS Cloud cost?',
         answer: `Unlike platforms like Socrata that charge six-figure annual fees, PortalJS Cloud offers simple, transparent pricing:
 

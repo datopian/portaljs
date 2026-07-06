@@ -1,12 +1,13 @@
 import {
   ChatBubbleBottomCenterIcon,
   CloudIcon,
-  UserIcon,
   ArrowPathIcon,
   CodeBracketSquareIcon,
   PresentationChartBarIcon,
+  AcademicCapIcon,
 } from '@heroicons/react/24/solid'
 import { FaInfoCircle } from 'react-icons/fa'
+import posthog from 'posthog-js'
 
 const addOns = [
   {
@@ -18,6 +19,8 @@ const addOns = [
     icon: CloudIcon,
     iconForeground: 'text-blue-500',
     iconBackground: 'bg-blue-50 dark:bg-blue-900/20',
+    // Included from Institution up; remains a paid add-on for Foundation only (po-xv5 §4).
+    chip: 'Included in Institution and above',
     useCase:
       'Example use case: A government agency allows developers to build apps using open data.',
   },
@@ -57,15 +60,38 @@ const addOns = [
       'Example use case: A research organization gathers and updates datasets from multiple open data portals.',
   },
   {
+    title: 'Research Pack',
+    subtitle: 'Make your datasets citable and FAIR.',
+    description:
+      'DOI/DataCite minting, ORCID integration, citation metadata, and data-access requests — everything a research institution needs to publish citable, FAIR datasets.',
+    href: 'https://calendar.app.google/sn2PU7ZvzjCPo1ok6',
+    icon: AcademicCapIcon,
+    iconForeground: 'text-rose-500',
+    iconBackground: 'bg-rose-50 dark:bg-rose-900/20',
+    useCase:
+      'Example use case: A university mints DOIs for its research datasets so they can be cited in publications.',
+  },
+  {
     title: 'Request Your Own Add-on',
     subtitle: 'Get exactly what your project requires.',
-    description:
-    <p>Need a specific feature or tailored support? <a className='underline' href='https://calendar.app.google/sn2PU7ZvzjCPo1ok6' target='_blank'>Schedule a quick call with us</a> to describe your requirements.</p>,
+    description: (
+      <p>
+        Need a specific feature or tailored support?{' '}
+        <a
+          className="underline"
+          href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Schedule a quick call with us
+        </a>{' '}
+        to describe your requirements.
+      </p>
+    ),
     href: 'https://calendar.app.google/sn2PU7ZvzjCPo1ok6',
     icon: ChatBubbleBottomCenterIcon,
     iconForeground: 'text-sky-500',
     iconBackground: 'bg-sky-50 dark:bg-sky-900/20',
-    style: 'col-span-2',
   },
 ]
 
@@ -73,20 +99,27 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+function trackAddonClick(title: string) {
+  try {
+    posthog.capture('pricing_addon_click', { addon: title })
+  } catch (_) {
+    /* never let analytics break the page */
+  }
+}
+
+export default function AddOns() {
   return (
     <div className="divide-y divide-gray-200 rounded-lg bg-gray-200 dark:bg-slate-800 shadow sm:grid sm:grid-cols-2 sm:gap-px sm:divide-y-0 shadow-lg mb-8 mx-1 dark:mx-0">
       {addOns.map((addOn, actionIdx) => (
         <div
           key={addOn.title}
+          onClick={() => trackAddonClick(addOn.title)}
           className={classNames(
-            actionIdx === 0
-              ? 'rounded-tl-lg rounded-tr-lg sm:rounded-tr-none'
-              : '',
+            actionIdx === 0 ? 'rounded-tl-lg rounded-tr-lg sm:rounded-tr-none' : '',
             actionIdx === 1 ? 'sm:rounded-tr-lg' : '',
-            actionIdx === addOns.length - 2 ? '' : '',
+            actionIdx === addOns.length - 2 ? 'sm:rounded-bl-lg' : '',
             actionIdx === addOns.length - 1
-              ? '!rounded-bl-lg !rounded-br-lg sm:rounded-bl-none col-span-2'
+              ? '!rounded-bl-lg !rounded-br-lg sm:!rounded-bl-none sm:!rounded-br-lg'
               : '',
             'relative bg-[#f5f5f5] hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500'
           )}
@@ -105,12 +138,17 @@ export default function Example() {
             </div>
           </div>
           <div className="mt-8 z-50">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-base font-semibold leading-6 hover:underline">
                 <div title={addOn.title} className="focus:outline-hidden">
                   {addOn.title}
                 </div>
               </h3>
+              {addOn.chip && (
+                <span className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 text-[11px] font-semibold rounded-full">
+                  {addOn.chip}
+                </span>
+              )}
               {addOn.useCase && (
                 <div className="relative group">
                   <FaInfoCircle className="text-gray-500 hover:text-blue-500 transition-colors duration-300 cursor-pointer" />

@@ -1,5 +1,7 @@
 import Layout from '@/components/Layout'
 import PricingPlans from '@/components/PricingPlans'
+import ProductLines from '@/components/ProductLines'
+import TcoComparison from '@/components/TcoComparison'
 import AddOns from '@/components/AddOns'
 import { generateNextSeo } from 'next-seo/pages';
 import Head from 'next/head';
@@ -10,13 +12,13 @@ export default function Pricing() {
     <Layout>
       <Head>
         {generateNextSeo({
-          title: "Pricing | PortalJS Cloud — Open Data Portal Plans",
-          description: "Simple, transparent pricing for PortalJS Cloud. Managed open data portals for governments, nonprofits, and enterprises — pay-as-you-go with no infrastructure overhead.",
+          title: "Pricing | PortalJS — Managed Open Data Portals",
+          description: "Transparent public pricing from $99/month — no per-dataset caps, no quota licensing. Managed open data portals for governments, institutions, and enterprises.",
           canonical: "https://www.portaljs.com/pricing",
           openGraph: {
             url: 'https://www.portaljs.com/pricing',
-            title: 'Pricing | PortalJS Cloud — Open Data Portal Plans',
-            description: 'Simple, transparent pricing for PortalJS Cloud. Managed open data portals for governments, nonprofits, and enterprises — pay-as-you-go with no infrastructure overhead.',
+            title: 'Pricing | PortalJS — Managed Open Data Portals',
+            description: 'Transparent public pricing from $99/month — no per-dataset caps, no quota licensing. Managed open data portals for governments, institutions, and enterprises.',
             site_name: 'PortalJS',
             type: 'website',
             images: [
@@ -46,7 +48,9 @@ export default function Pricing() {
                 Our plans cover all ranges of budgets and needs
               </p>
             </div>
+            <ProductLines />
             <PricingPlans />
+            <TcoComparison />
           </div>
         </div>
         <div className="relative" id="addons">
@@ -74,7 +78,7 @@ export default function Pricing() {
             <div className="relative z-10">
               <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">Not sure yet?</span>
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">Before you decide — explore more</h2>
-              <p className="mx-auto mt-4 max-w-[48ch] text-[17px] text-[#b9c9e4]">See how PortalJS Cloud compares to alternatives and what organisations have built with it.</p>
+              <p className="mx-auto mt-4 max-w-[48ch] text-[17px] text-[#b9c9e4]">See how PortalJS compares to alternatives and what organisations have built with it.</p>
               <div className="mt-[30px] flex flex-wrap justify-center gap-3.5">
                 <Link href="/case-studies" className="inline-flex items-center justify-center rounded-[10px] border border-white/20 bg-white/10 px-[18px] py-2.5 text-[14.5px] font-semibold text-white transition-all duration-150 hover:-translate-y-px hover:bg-white/20">Customer stories →</Link>
                 <Link href="/compare" className="inline-flex items-center justify-center rounded-[10px] border border-white/20 bg-white/10 px-[18px] py-2.5 text-[14.5px] font-semibold text-white transition-all duration-150 hover:-translate-y-px hover:bg-white/20">Compare alternatives →</Link>
