@@ -45,6 +45,11 @@ export const SKILLS = [
       "Infer a Frictionless Table Schema from a dataset's data, add license/source/keyword metadata, and surface a typed field table on its showcase.",
   },
   {
+    id: 'portaljs-add-dcat',
+    summary:
+      'Make the portal harvestable — emit standards-compliant DCAT feeds (DCAT 2/3, DCAT-AP, DCAT-US, national profiles) in JSON-LD, Turtle, and RDF/XML so national/EU/US open-data portals can harvest its datasets.',
+  },
+  {
     id: 'portaljs-connect-ckan',
     summary: 'Wire the portal to a CKAN backend over its API instead of static files.',
   },

@@ -65,6 +65,10 @@
         "href": "/docs/skills/portaljs-define-schema"
       },
       {
+        "title": "/portaljs-add-dcat",
+        "href": "/docs/skills/portaljs-add-dcat"
+      },
+      {
         "title": "/portaljs-connect-ckan",
         "href": "/docs/skills/portaljs-connect-ckan"
       },

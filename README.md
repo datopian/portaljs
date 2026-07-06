@@ -191,6 +191,7 @@ npm create portaljs@latest my-portal
 | [`/portaljs-add-chart`](.claude/commands/portaljs-add-chart.md) | Add a line, bar, area, pie, or scatter chart to a dataset's showcase. |
 | [`/portaljs-add-map`](.claude/commands/portaljs-add-map.md) | Render a GeoJSON dataset on an interactive map and register it on the home page. |
 | [`/portaljs-define-schema`](.claude/commands/portaljs-define-schema.md) | Infer a Frictionless Table Schema from a dataset's data, add license/source/keyword metadata, and surface a typed field table on its showcase. |
+| [`/portaljs-add-dcat`](.claude/commands/portaljs-add-dcat.md) | Make the portal harvestable — emit standards-compliant DCAT feeds (DCAT 2/3, DCAT-AP, DCAT-US, national profiles) in JSON-LD, Turtle, and RDF/XML so national/EU/US open-data portals can harvest its datasets. |
 | [`/portaljs-connect-ckan`](.claude/commands/portaljs-connect-ckan.md) | Wire the portal to a CKAN backend over its API instead of static files. |
 | [`/portaljs-check-data-quality`](.claude/commands/portaljs-check-data-quality.md) | Validate a dataset against its schema and flag quality issues (type mismatches, missing values, constraint violations). |
 | [`/portaljs-migrate`](.claude/commands/portaljs-migrate.md) | Harvest or migrate a whole catalog into the portal from CKAN, Socrata, OpenDataSoft, ArcGIS, or DCAT-US, over a canonical Frictionless/DCAT model. |

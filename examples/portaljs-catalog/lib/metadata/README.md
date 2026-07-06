@@ -148,11 +148,35 @@ fromDCAT(node) / fromDCATCatalog(catalog)              // harvest/import back to
 ```
 
 **The harvest endpoint.** `scripts/generate-dcat.ts` reads the catalog through the
-data provider and writes `public/catalog.jsonld` (a DCAT-3 `dcat:Catalog`). It runs
-automatically on `predev`/`prebuild`, so the file is always fresh — and because it's
-a static file it harvests on **any** host (static Cloudflare Pages, a CDN, a Worker),
-no runtime required. Set `SITE_URL` to emit absolute landing/download URLs; without
-it links are root-relative (fine for same-origin harvest).
+data provider and writes the feed files under `public/`. It runs automatically on
+`predev`/`prebuild`, so they're always fresh — and because they're static files they
+harvest on **any** host (static Cloudflare Pages, a CDN, a Worker), no runtime
+required. Set `SITE_URL` to emit absolute landing/download URLs; without it links are
+root-relative (fine for same-origin harvest).
+
+### DCAT application profiles (harvest-compatible)
+
+`dcat.ts` is the DCAT-3 core; `dcat-profiles.ts` is the **application-profile layer** on
+top of it — what national/EU/US portals actually harvest. A profile adds the extra
+namespaces, mandatory fields (`dct:publisher`, `dcat:contactPoint`, …), and
+`dct:conformsTo` a specific harvester requires, then reports what's still missing rather
+than silently claiming conformance (`dcat-validate.ts`). `dcat-rdf.ts` serializes the
+same graph to **Turtle** and **RDF/XML** alongside JSON-LD.
+
+```ts
+import { getDcatProfile, serialize, validateDcat } from './lib/metadata'
+
+const profile = getDcatProfile('dcat-ap')      // dcat-2 | dcat-3 | dcat-ap | dcat-us | dcat-ap-se | …
+const feed = profile.apply(baseDcat3Catalog, dcatConfig)   // augment to the profile
+validateDcat(feed, profile.id)                 // mandatory-field gaps
+serialize(feed, 'ttl')                         // 'jsonld' | 'ttl' | 'rdf'
+```
+
+Profiles are a **pluggable registry**: national profiles are config, not code —
+`registerDcatProfile(makeNationalProfile({ id, label, conformsTo, context }))`. A portal
+can emit several profiles at once. Which profiles + serializations to emit, and the
+catalog-level org/contact metadata they need, are authored in `dcat.config.json` and
+wired by the [`/portaljs-add-dcat`](/docs/skills/portaljs-add-dcat) skill.
 
 **What DCAT does not carry.** DCAT has no inline field schema — the Table Schema is
 referenced via a distribution's `dcat:describedBy`, not embedded. So `fromDCAT`
@@ -162,5 +186,8 @@ schema. That asymmetry is intrinsic to DCAT.
 ## Out of scope here
 
 - `/portaljs-define-schema` authoring skill (the interview/build layer) — see that skill.
-- A full DCAT-AP profile (mandatory EU-portal classes/properties) — this is the
-  pragmatic DCAT-3 core; extend `dcat.ts` for a specific national/domain profile.
+- Deep SHACL validation of a profiled feed — `dcat-validate.ts` does a structural
+  mandatory-field check; run the official DCAT-AP/DCAT-US SHACL shapes (or the
+  data.europa.eu / resources.data.gov validators) for authoritative conformance. The
+  [`/portaljs-add-dcat`](/docs/skills/portaljs-add-dcat) skill wires the whole feed
+  pipeline (profiles, serializations, autodiscovery, validation).

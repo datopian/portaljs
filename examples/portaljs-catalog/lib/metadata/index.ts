@@ -43,3 +43,30 @@ export {
   type ToDcatOptions,
   type ToDcatCatalogOptions,
 } from './dcat'
+
+// DCAT application profiles (DCAT-AP / DCAT-US / national) — the harvest layer.
+export {
+  getDcatProfile,
+  registerDcatProfile,
+  listDcatProfiles,
+  makeNationalProfile,
+  dcat2Profile,
+  dcat3Profile,
+  dcatApProfile,
+  dcatUsProfile,
+  dcatApSeProfile,
+  dcatApChProfile,
+  dcatApDeProfile,
+  type DcatProfile,
+  type DcatConfig,
+  type DcatAgent,
+  type DcatContact,
+  type JsonLdNode,
+  type ProfiledCatalog,
+} from './dcat-profiles'
+
+// RDF serializers for the feeds (Turtle + RDF/XML, alongside JSON-LD).
+export { toTurtle, toRdfXml, serialize, type RdfFormat } from './dcat-rdf'
+
+// Per-profile mandatory-field validation (the conformance gate).
+export { validateDcat } from './dcat-validate'

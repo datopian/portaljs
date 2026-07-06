@@ -1,0 +1,20 @@
+{
+  "$comment": "DCAT harvest feeds — read by scripts/generate-dcat.ts (runs on predev/prebuild). Configured by /portaljs-add-dcat. `profiles` selects which application profiles to emit (dcat-2, dcat-3, dcat-ap, dcat-us, or a national profile id like dcat-ap-se/ch/de — register more via registerDcatProfile). `serializations` picks the RDF formats. The rest is the catalog-level org/contact metadata DCAT-AP and DCAT-US require: fill `publisher` and `contactPoint` before claiming conformance (the generator warns which mandatory fields are still missing).",
+  "profiles": ["dcat-3"],
+  "serializations": ["jsonld", "ttl", "rdf"],
+  "title": "Data catalog",
+  "description": "DCAT catalog of datasets in this portal.",
+  "publisher": {
+    "name": "",
+    "homepage": ""
+  },
+  "contactPoint": {
+    "fn": "",
+    "email": ""
+  },
+  "license": "",
+  "themes": [],
+  "languages": [],
+  "homepage": "",
+  "accessLevel": "public"
+}
