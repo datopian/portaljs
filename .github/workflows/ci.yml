@@ -85,7 +85,7 @@ jobs:
         run: |
           node packages/create-portaljs/index.mjs smoke-portal \
             --yes --no-git \
-            --namespace reference \
+            --namespace theme \
             --name "Smoke Portal" \
             --ref "${{ github.head_ref || github.ref_name }}"
           cd smoke-portal
