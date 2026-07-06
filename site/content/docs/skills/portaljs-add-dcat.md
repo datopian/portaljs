@@ -50,6 +50,8 @@ profiles are config, not hardcoded, and a portal can emit several at once.
 | `dcat-2` | DCAT 2 (W3C) |
 | `dcat-ap` | DCAT-AP — the European profile (data.europa.eu) |
 | `dcat-us` | DCAT-US 3.0 — US federal / Project Open Data (data.gov) |
+| `geodcat-ap` | GeoDCAT-AP — DCAT-AP + spatial coverage (INSPIRE / geospatial catalogs) |
+| `croissant` | Croissant — MLCommons schema.org ML-dataset metadata (JSON-LD only) |
 | `dcat-ap-se` · `dcat-ap-ch` · `dcat-ap-de` | National profiles (Sweden / Switzerland / Germany) |
 
 Add another national profile without touching skill code:

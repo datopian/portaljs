@@ -91,8 +91,49 @@ external validators**. Two real node-kind defects were found and fixed:
 
 Regression guards for all three live in `scripts/harvest-roundtrip.test.ts`.
 
-## Out of scope
+## GeoDCAT-AP (spatial extension of DCAT-AP) — po-da5
 
-`Croissant` and `GeoDCAT-AP` are named in the epic as candidates but are **not
-implemented** as profiles yet — no feed is emitted, so nothing to validate. When added,
-validate Croissant with `mlcroissant` and GeoDCAT-AP against its ITB SHACL domain.
+GeoDCAT-AP IS DCAT-AP plus spatial coverage (`dct:spatial` → a `dct:Location` with
+`dcat:bbox` / `locn:geometry` as `gsp:wktLiteral`, and `dcat:spatialResolutionInMeters`).
+The emitted `geodcat-ap` feed passes the **DCAT-AP 3.0.1 base** harvest gate (the ITB SHACL
+validator) in all three serializations — spatial coverage adds no base violations:
+
+| Profile | JSON-LD | Turtle | RDF/XML |
+|---|---|---|---|
+| `geodcat-ap` (vs DCAT-AP 3.0.1 base) | ✅ | ✅ | ✅ |
+
+Against the official [GeoDCAT-AP 3.0.0 SHACL shapes](https://semiceu.github.io/GeoDCAT-AP/releases/3.0.0/shacl/geodcat-ap-SHACL.ttl)
+(`pyshacl`, the **full** profile) the feed reports the *same advisory range/recommendation
+class* as DCAT-AP full — 52 violations, **none spatial**: they're external-vocabulary range
+checks the validator can't confirm without dereferencing (publisher→`foaf:Agent`,
+theme→`skos:Concept`, conformsTo→`dc:Standard`, media-type/format IRIs, language). The
+spatial fields (`dct:spatial`, `dcat:bbox`, `gsp:wktLiteral`) draw **zero** violations. The
+round-trip harness recovers `dct:spatial` back to a canonical `spatial` string.
+
+Reproduce: `tsx scripts/validate-dcat-external.ts /tmp/dcat-validation`, then the ITB REST
+snippet (§8) with `validationType: dcatap.3_0_1_base` over `geodcat-ap.ttl`, and
+`pyshacl -s geodcat-ap-SHACL.ttl -df turtle -a geodcat-ap.ttl` for the full profile.
+
+## Croissant (MLCommons / schema.org) — po-da5
+
+The `croissant` profile emits a schema.org `DataCatalog` whose `dataset[]` are standalone
+Croissant `Dataset`s (`cr:FileObject` distributions with a `sha256` hashed from the local
+`public/data/<file>` bytes, and `cr:RecordSet`/`cr:Field` mapped from the Frictionless Table
+Schema). JSON-LD only — Croissant is a JSON-LD vocabulary. Validated with the official
+**MLCommons `mlcroissant` validator** (each `dataset[i]` extracted and validated standalone):
+
+| Datasets | Result |
+|---|---|
+| 6/6 (reference catalog) | ✅ `Done.` — no errors; only recommendation warnings (`citeAs`, `datePublished`) where the source manifest omits those fields |
+
+The `@context` matches mlcroissant's canonical Croissant 1.0 context exactly (no
+"non-standard context" warning). Inbound harvest reads Croissant back through the JSON-LD
+path (schema.org `@vocab`), recovering name / description / FileObject resources.
+
+Reproduce: `pip install mlcroissant` (Python 3.10+), then for each dataset in
+`croissant.jsonld` re-attach the `@context` and run `mlcroissant validate --jsonld <file>`.
+
+## Still out of scope
+
+`CKAN harvest compatibility` and `CSW` (named as epic candidates) are not implemented — the
+registry is the plug point when they're prioritized.

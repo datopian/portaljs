@@ -32,6 +32,8 @@ const CONFIG: DcatConfig = {
   contactPoint: { fn: 'Data Team', email: 'data@example.org' },
   license: 'https://creativecommons.org/licenses/by/4.0/',
   themes: ['http://publications.europa.eu/resource/authority/data-theme/GOVE'],
+  // Catalog-wide extent so GeoDCAT-AP emits dct:spatial to round-trip.
+  spatial: { bbox: 'POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))' },
 }
 
 async function main() {
@@ -45,7 +47,7 @@ async function main() {
     modified: '2026-07-06T00:00:00.000Z',
   })
 
-  const profileIds = ['dcat-3', 'dcat-2', 'dcat-ap', 'dcat-us', 'dcat-ap-se', 'dcat-ap-de']
+  const profileIds = ['dcat-3', 'dcat-2', 'dcat-ap', 'dcat-us', 'geodcat-ap', 'dcat-ap-se', 'dcat-ap-de']
   const formats: RdfFormat[] = ['jsonld', 'ttl', 'rdf']
 
   for (const pid of profileIds) {
@@ -130,6 +132,38 @@ async function main() {
       typeof (ds['dct:publisher'] as Record<string, unknown>)?.['@id'] === 'string',
       'dct:publisher is IRI-identified (@id) — required by DCAT-US',
     )
+  }
+
+  // GeoDCAT-AP spatial coverage must survive the round-trip (dct:spatial → bbox).
+  {
+    const geo = getDcatProfile('geodcat-ap').apply(base, CONFIG)
+    for (const fmt of formats) {
+      const got = harvest(serialize(geo, fmt), { format: fmt })
+      ok(
+        got.datasets.every((d) => typeof d.spatial === 'string' && d.spatial.includes('POLYGON')),
+        `geodcat-ap × ${fmt}: dct:spatial (bbox WKT) round-trips`,
+      )
+      ok(got.profiles.includes('geodcat-ap'), `geodcat-ap × ${fmt}: profile detected via conformsTo`)
+    }
+  }
+
+  // Croissant (schema.org JSON-LD): build from the raw entries (recordSets need the
+  // Table Schema DCAT drops), then harvest the schema.org Dataset nodes back.
+  {
+    const cr = getDcatProfile('croissant').applyFromEntries!(datasets, base, CONFIG)
+    const body = serialize(cr, 'jsonld')
+    const got = harvest(body, { format: 'jsonld' })
+    ok(got.datasets.length === datasets.length, `croissant: harvested ${got.datasets.length}/${datasets.length} datasets`)
+    ok(got.profiles.includes('croissant'), `croissant: profile detected (got [${got.profiles}])`)
+    ok(
+      got.datasets.every((d) => d.resources.length >= 1 && d.resources.every((r) => /^https?:\/\//.test(r.path))),
+      'croissant: every dataset has ≥1 FileObject with an absolute contentUrl',
+    )
+    // The country-codes dataset carries a Table Schema → a recordSet with fields.
+    const parsed = JSON.parse(body) as { dataset: Record<string, unknown>[] }
+    const cc = parsed.dataset.find((d) => d.name === 'reference_country-codes')
+    ok(Array.isArray(cc?.recordSet) && (cc!.recordSet as unknown[]).length >= 1, 'croissant: schema-bearing dataset emits a cr:RecordSet')
+    ok(cc?.conformsTo === 'http://mlcommons.org/croissant/1.0', 'croissant: dataset stamps Croissant 1.0 conformsTo')
   }
 
   // Cross-serialization triple-count equivalence per profile.

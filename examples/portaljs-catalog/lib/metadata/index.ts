@@ -54,6 +54,8 @@ export {
   dcat3Profile,
   dcatApProfile,
   dcatUsProfile,
+  geodcatApProfile,
+  croissantProfile,
   dcatApSeProfile,
   dcatApChProfile,
   dcatApDeProfile,
@@ -61,6 +63,7 @@ export {
   type DcatConfig,
   type DcatAgent,
   type DcatContact,
+  type DcatSpatial,
   type JsonLdNode,
   type ProfiledCatalog,
 } from './dcat-profiles'

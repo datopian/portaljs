@@ -28,6 +28,12 @@ const CATALOG_RULES: Record<string, Rule[]> = {
     { path: 'dct:description', label: 'catalog description', level: 'error' },
     { path: 'dct:publisher', label: 'catalog publisher (dct:publisher)', level: 'error' },
   ],
+  // Croissant is schema.org-shaped (sc:DataCatalog): name/description, not dct:title.
+  // The authoritative gate is mlcroissant — this catches the high-signal gaps only.
+  croissant: [
+    { path: 'name', label: 'catalog name', level: 'error' },
+    { path: 'description', label: 'catalog description', level: 'error' },
+  ],
 }
 
 // Dataset-level rules per profile family.
@@ -48,13 +54,26 @@ const DATASET_RULES: Record<string, Rule[]> = {
     { path: 'dct:accessLevel', label: 'access level (dct:accessLevel)', level: 'error' },
     { path: 'dct:identifier', label: 'identifier', level: 'warning' },
   ],
+  // Croissant datasets are schema.org sc:Dataset (name/description/distribution).
+  croissant: [
+    { path: 'name', label: 'name', level: 'error' },
+    { path: 'description', label: 'description', level: 'error' },
+    { path: 'distribution', label: 'distribution (cr:FileObject)', level: 'warning' },
+  ],
 }
 
-// National profiles inherit DCAT-AP's rule set.
+// The array of dataset nodes — DCAT catalogs key it dcat:dataset; the schema.org
+// Croissant DataCatalog keys it `dataset`.
+function datasetsOf(catalog: JsonLdNode, profileId: string): JsonLdNode[] {
+  const key = profileId === 'croissant' ? 'dataset' : 'dcat:dataset'
+  return (catalog[key] as JsonLdNode[]) ?? []
+}
+
+// National profiles inherit DCAT-AP's rule set; GeoDCAT-AP is DCAT-AP + spatial.
 function rulesFor(profileId: string, kind: 'catalog' | 'dataset'): Rule[] {
   const table = kind === 'catalog' ? CATALOG_RULES : DATASET_RULES
   if (table[profileId]) return table[profileId]
-  if (profileId.startsWith('dcat-ap')) return table['dcat-ap'] ?? []
+  if (profileId === 'geodcat-ap' || profileId.startsWith('dcat-ap')) return table['dcat-ap'] ?? []
   return [] // plain dcat-2 / dcat-3 have no mandatory-profile requirements
 }
 
@@ -78,7 +97,7 @@ export function validateDcat(catalog: JsonLdNode, profileId: string): Validation
     }
   }
 
-  const datasets = (catalog['dcat:dataset'] as JsonLdNode[]) ?? []
+  const datasets = datasetsOf(catalog, profileId)
   const dsRules = rulesFor(profileId, 'dataset')
   datasets.forEach((ds, i) => {
     const id = (ds['dct:identifier'] ?? ds['@id'] ?? `#${i}`) as string

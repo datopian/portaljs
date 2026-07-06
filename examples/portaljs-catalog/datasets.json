@@ -55,7 +55,12 @@
     "name": "World Population 2022",
     "description": "Estimated mid-year population for a sample of countries.",
     "file": "population-2022.csv",
-    "format": "csv"
+    "format": "csv",
+    "dcat": {
+      "spatial": {
+        "bbox": "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))"
+      }
+    }
   },
   {
     "slug": "co2-emissions",

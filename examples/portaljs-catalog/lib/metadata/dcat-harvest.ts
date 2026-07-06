@@ -107,7 +107,9 @@ function jsonldContext(ctx: unknown): Record<string, string> {
   const merge = (c: unknown) => {
     if (!c || typeof c !== 'object') return
     for (const [k, v] of Object.entries(c as Record<string, unknown>)) {
-      if (k.startsWith('@')) continue
+      // Keep @vocab (the default namespace for bare terms — Croissant/schema.org use
+      // it); skip other JSON-LD keywords.
+      if (k.startsWith('@') && k !== '@vocab') continue
       if (typeof v === 'string') out[k] = v
       else if (v && typeof v === 'object' && typeof (v as { '@id'?: string })['@id'] === 'string')
         out[k] = (v as { '@id': string })['@id']
@@ -130,6 +132,9 @@ function expandTerm(ctx: Record<string, string>, term: string): string {
   }
   // A bare term mapped directly in the context (e.g. "title" -> dct:title).
   if (ctx[term]) return expandTerm(ctx, ctx[term])
+  // A bare term under a default vocabulary (@vocab) — e.g. Croissant's schema.org
+  // `name`/`description`/`distribution`/`contentUrl`.
+  if (i === -1 && ctx['@vocab']) return ctx['@vocab'] + term
   return term
 }
 

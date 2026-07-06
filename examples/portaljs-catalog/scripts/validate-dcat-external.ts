@@ -3,7 +3,8 @@
 // against official external validators (ITB SHACL / pyshacl). NOT wired into the
 // build — run manually: `tsx scripts/validate-dcat-external.ts <outDir>`.
 
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, writeFile, readFile } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
 import { join } from 'node:path'
 import { provider } from '../lib/providers'
 import {
@@ -34,6 +35,9 @@ const CFG: DcatConfig = {
   languages: ['http://publications.europa.eu/resource/authority/language/ENG'],
   homepage: 'https://portaljs.com',
   accessLevel: 'public',
+  // Catalog-wide extent so the GeoDCAT-AP feed carries dct:spatial to validate (WKT
+  // world bounding box).
+  spatial: { bbox: 'POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))' },
 }
 
 const SITE = 'https://catalog.example.org'
@@ -46,6 +50,29 @@ async function main() {
     description: CFG.description,
     modified: '2026-07-06T00:00:00.000Z',
   })
+
+  // Hash local data files so the Croissant FileObjects carry sha256 (mlcroissant
+  // requires a checksum on a hosted file).
+  const DATA_DIR = join(process.cwd(), 'public', 'data')
+  await Promise.all(
+    datasets.map(async (d) => {
+      const paths = [
+        ...(d.file ? [d.file] : []),
+        ...(((d as { resources?: { path?: string }[] }).resources ?? [])
+          .map((r) => r.path)
+          .filter((p): p is string => Boolean(p))),
+      ]
+      const hashes: Record<string, string> = {}
+      for (const p of paths) {
+        try {
+          hashes[p] = createHash('sha256').update(await readFile(join(DATA_DIR, p))).digest('hex')
+        } catch {
+          /* remote/missing */
+        }
+      }
+      if (Object.keys(hashes).length) (d as { _hashes?: unknown })._hashes = hashes
+    })
+  )
 
   await mkdir(OUT, { recursive: true })
 
@@ -61,10 +88,14 @@ async function main() {
 
   for (const p of profiles) {
     const profile = getDcatProfile(p.id)
-    const catalog = profile.apply(structuredClone(base) as typeof base, CFG)
+    const cloned = structuredClone(base) as typeof base
+    const catalog = profile.applyFromEntries
+      ? profile.applyFromEntries(datasets, cloned, CFG)
+      : profile.apply(cloned, CFG)
     const internal = validateDcat(catalog as JsonLdNode, profile.id)
     const files: Record<string, string> = {}
-    for (const fmt of SER) {
+    const fmts = profile.serializations ? SER.filter((s) => profile.serializations!.includes(s)) : SER
+    for (const fmt of fmts) {
       const body = serialize(catalog as JsonLdNode, fmt)
       const fn = `${profile.id}.${EXT[fmt]}`
       await writeFile(join(OUT, fn), body, 'utf8')

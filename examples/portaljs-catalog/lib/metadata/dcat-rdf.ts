@@ -100,7 +100,16 @@ function walkNode(
     const values = Array.isArray(value) ? value : [value]
     for (const v of values) {
       let object: Term
-      if (v && typeof v === 'object') {
+      if (v && typeof v === 'object' && '@value' in (v as JsonLdNode)) {
+        // A JSON-LD value object: a typed/lang literal, not a nested node.
+        const vo = v as { '@value': unknown; '@type'?: string; '@language'?: string }
+        object = {
+          kind: 'literal',
+          value: String(vo['@value']),
+          ...(vo['@language'] ? { lang: vo['@language'] } : {}),
+          ...(vo['@type'] ? { datatype: expand(ctx, vo['@type']) } : {}),
+        }
+      } else if (v && typeof v === 'object') {
         object = walkNode(v as JsonLdNode, ctx, triples, counter)
       } else if (key === '@type') {
         object = { kind: 'iri', value: expand(ctx, String(v)) }
@@ -149,7 +158,7 @@ export function toTurtle(catalog: JsonLdNode): string {
   const { triples, ctx } = toTriples(catalog)
   const prefixes: string[] = [`@prefix rdf: <${RDF}> .`, `@prefix xsd: <${XSD}> .`]
   for (const [p, ns] of Object.entries(ctx))
-    if (typeof ns === 'string') prefixes.push(`@prefix ${p}: <${ns}> .`)
+    if (typeof ns === 'string' && !p.startsWith('@')) prefixes.push(`@prefix ${p}: <${ns}> .`)
 
   // Preserve first-seen subject order.
   const order: string[] = []
@@ -204,7 +213,7 @@ export function toRdfXml(catalog: JsonLdNode): string {
     [XSD, 'xsd'],
   ])
   for (const [p, ns] of Object.entries(ctx))
-    if (typeof ns === 'string' && !nsToPrefix.has(ns)) nsToPrefix.set(ns, p)
+    if (typeof ns === 'string' && !p.startsWith('@') && !nsToPrefix.has(ns)) nsToPrefix.set(ns, p)
   let auto = 0
   function prefixFor(ns: string): string {
     if (!nsToPrefix.has(ns)) nsToPrefix.set(ns, `ns${auto++}`)
