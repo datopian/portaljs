@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import CkanRequest from '@portaljs/ckan-api-client-js';
 import type { CkanResponse } from '@portaljs/ckan-api-client-js';
 import { Activity } from '../interfaces/activity.interface';
@@ -311,7 +310,7 @@ export default class CKAN {
 
   async datastoreSearch(resourceId: string) {
     const responseData = await CkanRequest.post<
-      CkanResponse<{ records: Array<any> }>
+      CkanResponse<{ records: Array<Record<string, unknown>> }>
     >('datastore_search', {
       ckanUrl: this.DMS,
       json: {
