@@ -1,5 +1,5 @@
 ---
-description: Migrate (harvest) datasets between open-data platforms. Reads CKAN, a DCAT-US /data.json catalog (DKAN, ArcGIS Hub, data.gov), Socrata, OpenDataSoft, or an ArcGIS FeatureServer, and writes them to a static PortalJS catalog (datasets.json, link-by-URL or download data files into Cloudflare R2 via Git LFS / Giftless) or pushes them into a CKAN instance over its API.
+description: Migrate (harvest) datasets between open-data platforms. Reads CKAN, a DCAT-US /data.json catalog (DKAN, ArcGIS Hub, data.gov), a DCAT / DCAT-AP RDF feed (JSON-LD, Turtle, or RDF/XML — data.europa.eu, national DCAT-AP portals, GeoDCAT-AP), Socrata, OpenDataSoft, or an ArcGIS FeatureServer, and writes them to a static PortalJS catalog (datasets.json, link-by-URL or download data files into Cloudflare R2 via Git LFS / Giftless) or pushes them into a CKAN instance over its API.
 allowed-tools: Read, Write, Edit, Bash, WebFetch
 ---
 
@@ -21,14 +21,15 @@ catalog, so the portal stands alone and needs no backend.
 Every source is read into one **canonical** shape (the template's `Dataset`/`Resource`
 type — a Frictionless-aligned `{ slug, namespace, name, description, resources[] }`), then
 written to the target from that canonical form. Add a source once and it migrates to every
-target. v1 ships two readers and one writer.
+target.
 
-**Sources (v1):**
+**Sources:**
 
 | Source | `--source` | How it's read | Covers |
 | ------ | ---------- | ------------- | ------ |
 | **CKAN** | `ckan` | REST API (`package_search` / `package_show`) | any CKAN instance |
-| **DCAT-US `/data.json`** | `dcat` | one catalog document | **DKAN, ArcGIS Hub, data.gov**, other DCAT-US publishers |
+| **DCAT-US `/data.json`** | `dcat` | one catalog document (plain JSON) | **DKAN, ArcGIS Hub, data.gov**, other DCAT-US publishers |
+| **DCAT / DCAT-AP RDF feed** | `dcat-rdf` | RDF catalog in JSON-LD, Turtle, or RDF/XML | **data.europa.eu**, national **DCAT-AP** portals (SE/CH/DE), GeoDCAT-AP, any DCAT 2/3 RDF feed |
 | **Socrata** | `socrata` | Discovery API + per-dataset resource exports | Socrata-powered open-data sites |
 | **OpenDataSoft** | `ods` | Explore API v2 catalog + exports | ODS-powered portals |
 | **ArcGIS FeatureServer / MapServer** | `arcgis` | layer metadata + GeoJSON query | individual ArcGIS map/feature services |
@@ -36,6 +37,15 @@ target. v1 ships two readers and one writer.
 > DKAN, ArcGIS Hub, and data.gov publish a DCAT-US `/data.json` — use the **dcat** source for
 > those whole catalogs. Use **arcgis** for an individual FeatureServer/MapServer (each layer
 > becomes a GeoJSON dataset, which `/data.json` doesn't expose).
+>
+> **`dcat` vs `dcat-rdf`.** `dcat` reads the flat DCAT-US **`/data.json`** (Project Open Data
+> JSON — `dataset[]` with `distribution[]`). `dcat-rdf` reads a **DCAT / DCAT-AP RDF graph**
+> serialized as JSON-LD (`.jsonld`), Turtle (`.ttl`), or RDF/XML (`.rdf`) — the form
+> data.europa.eu and national DCAT-AP portals publish. This is the **inbound** counterpart of
+> [`/portaljs-add-dcat`](portaljs-add-dcat.md) (which EXPOSES the portal as DCAT-AP RDF): the two
+> make a portal a full **two-way DCAT interop node** — expose to, and harvest from, national
+> DCAT-AP portals. Both read through the SAME profile registry (`lib/metadata/dcat-profiles.ts`),
+> so expose and consume stay in sync.
 
 **Targets:**
 
@@ -50,10 +60,12 @@ since any reader can feed any writer through the canonical shape.
 ## Required input — ask, don't error
 
 **Source:**
-- **Source type** — `ckan`, `dcat`, `socrata`, `ods`, or `arcgis` (auto-detected from the
-  URL if omitted; see step 3).
-- **Source URL** (required) — e.g. a CKAN base URL, a DCAT `/data.json` URL, a Socrata or
-  OpenDataSoft site root, or an ArcGIS `…/FeatureServer` (or `…/MapServer`) URL.
+- **Source type** — `ckan`, `dcat`, `dcat-rdf`, `socrata`, `ods`, or `arcgis` (auto-detected
+  from the URL if omitted; see step 3).
+- **Source URL** (required) — e.g. a CKAN base URL, a DCAT-US `/data.json` URL, a DCAT-AP RDF
+  feed URL (`…/catalog.jsonld` / `.ttl` / `.rdf`, or a portal page that autodiscovers one via
+  `<link rel="alternate">`), a Socrata or OpenDataSoft site root, or an ArcGIS
+  `…/FeatureServer` (or `…/MapServer`) URL.
 - **Filters** (optional) — CKAN: org / group names. Socrata/ODS: pass a search term or
   category to scope large catalogs.
 
@@ -78,7 +90,7 @@ dead-end with a missing-input error.** For `--target ckan`, if the target URL or
 ### 1. Gather input from `$ARGUMENTS` (interview if thin)
 
 Extract:
-- `SOURCE_TYPE` — `ckan` | `dcat` | `socrata` | `ods` | `arcgis` (default: auto-detect in step 3).
+- `SOURCE_TYPE` — `ckan` | `dcat` | `dcat-rdf` | `socrata` | `ods` | `arcgis` (default: auto-detect in step 3).
 - `SOURCE_URL` — required; strip any trailing slash.
 - `ORG_FILTER` / `GROUP_FILTER` — lists (CKAN source only; default empty).
 - `TARGET` — `static` | `ckan` (default `static`).
@@ -122,12 +134,18 @@ write without a confirmed key. If `OWNER_ORG` is set, confirm it exists
 
 If `SOURCE_TYPE` is unset, auto-detect:
 - URL contains `/FeatureServer` or `/MapServer` → **arcgis**.
-- URL ends in `.json` or contains `/data.json` → **dcat**.
+- URL ends in `.jsonld`, `.ttl`, or `.rdf`, or contains `/catalog.` (an RDF feed) → **dcat-rdf**.
+- URL ends in `.json` or contains `/data.json` → **dcat** (DCAT-US Project Open Data JSON).
 - URL contains `/api/explore/` → **ods**; `/api/catalog/` → **socrata**.
 - Otherwise probe CKAN: `curl -s -m 20 "SOURCE_URL/api/3/action/package_search?rows=1"` →
   if JSON with `"success": true`, it's **ckan**.
 - Else probe in turn: `SOURCE_URL/api/explore/v2.1/catalog/datasets?limit=1` (ods),
-  `SOURCE_URL/data.json` (dcat).
+  `SOURCE_URL/data.json` (dcat), then content-negotiate RDF:
+  `curl -fsSL -H "Accept: application/ld+json,text/turtle,application/rdf+xml" SOURCE_URL` — if
+  the body is JSON-LD/Turtle/RDF-XML (starts with `{`/`[`, `@prefix`/`PREFIX`, or `<?xml`/`<rdf:RDF`),
+  it's **dcat-rdf**. For an HTML page, look for a feed `<link rel="alternate" type="application/ld+json"
+  …>` (or `text/turtle` / `application/rdf+xml`) and follow its `href` — this is the autodiscovery
+  target `/portaljs-add-dcat` emits, so a portal's homepage URL is enough.
 - If still nothing resolves, tell the user the URL didn't look like a supported source and
   ask them to confirm the URL / pick the `--source` type — don't dead-end. (Socrata is read
   through the central Discovery API, so for a Socrata site pass `--source socrata` with the
@@ -189,6 +207,67 @@ Apply `ORG_FILTER`/`GROUP_FILTER` via the `fq` query
 | `resources[].name` | distribution `title` \|\| derived from URL |
 | `resources[].path` | distribution `downloadURL` \|\| `accessURL` (link mode) |
 | `resources[].format` | distribution `format` \|\| `mediaType` → normalized (below) |
+
+**DCAT / DCAT-AP RDF mapping** (`dcat-rdf`) — an RDF catalog graph in JSON-LD, Turtle, or
+RDF/XML. Do **not** hand-parse RDF: reuse the portal's harvester
+`lib/metadata/dcat-harvest.ts` — the inbound counterpart of the `lib/metadata/dcat-rdf.ts`
+serializer `/portaljs-add-dcat` uses, so expose/consume round-trip through one profile
+registry. It parses all three serializations into a triple graph and walks Catalog → Dataset
+→ Distribution → the canonical shape. (If the target portal predates it — no
+`lib/metadata/dcat-harvest.ts` — copy it and `dcat-profiles.ts` from
+`examples/portaljs-catalog/lib/metadata/`, same as `/portaljs-add-dcat` step 3.)
+
+Fetch the raw RDF (never a WebFetch summary — you need the bytes) and run the harvester:
+
+```bash
+cd PORTAL_DIR
+curl -fsSL -H "Accept: application/ld+json,text/turtle,application/rdf+xml" \
+  "SOURCE_URL" -o /tmp/portaljs-harvest-feed
+# lib/metadata is TypeScript — run the harvester through tsx (already a devDependency):
+npx tsx -e '
+  import { readFileSync, writeFileSync } from "node:fs"
+  import { harvest, toCanonicalEntry } from "./lib/metadata/dcat-harvest"
+  const r = harvest(readFileSync("/tmp/portaljs-harvest-feed", "utf8"))  // format auto-detected
+  console.error(`harvested ${r.datasets.length} datasets; profiles=[${r.profiles}]; warnings=${r.warnings.length}`)
+  for (const w of r.warnings.slice(0, 10)) console.error("  ⚠ " + w)
+  writeFileSync("/tmp/portaljs-harvest.json", JSON.stringify(r.datasets.map(toCanonicalEntry), null, 2))
+'
+```
+The written `/tmp/portaljs-harvest.json` is the canonical dataset array to feed step 4's
+in-memory list (then continue to step 5+ exactly as any other source).
+
+`harvest(text, { format? })` auto-detects the serialization (Content-Type + payload sniff) —
+pass `{ format: "ttl" | "rdf" | "jsonld" }` to force it. It returns
+`{ catalog, datasets, profiles, warnings }`; `toCanonicalEntry(d)` yields exactly the
+`datasets.json` entry shape. The RDF→canonical field map (see `dcat-harvest.ts`):
+
+| Canonical | DCAT RDF term |
+| --------- | ------------- |
+| `slug` | tail of `dct:identifier` \|\| slugified `dct:title` (unique within namespace) |
+| `namespace` | slugified `dct:publisher` → `foaf:name` (fallback first `dcat:theme` label, else `dataset`) |
+| `name` | `dct:title` |
+| `description` | `dct:description` |
+| `keywords` | `dcat:keyword[]` |
+| `resources[].path` | distribution `dcat:downloadURL` \|\| `dcat:accessURL` |
+| `resources[].format` | distribution `dct:format` \|\| `dcat:mediaType` → normalized |
+| `resources[].title` | distribution `dct:title` |
+
+**Profiles read.** DCAT 2/3, DCAT-AP + national (SE/CH/DE), and **GeoDCAT-AP** (spatial fields
+`dct:spatial` → `locn:geometry` / `dcat:bbox` are captured on the harvested dataset). The
+feed's `dct:conformsTo` is mapped back to the profile id via the same registry
+(`result.profiles`) so you can tell the user which profile the source claims. **Croissant**
+(schema.org / MLCommons ML-dataset JSON-LD) is read best-effort through the JSON-LD path
+(`schema:name`/`description`/`keywords`/`distribution` → canonical).
+
+**Large / paginated catalogs.** A single feed URL is one RDF document. A whole national
+catalog is usually paginated: follow `hydra:next` (or `dcat:Catalog` links / an `?page=` cursor
+the portal documents) and concatenate the harvest across pages, deduping on
+`(namespace, slug)`. As with CKAN, cap very large harvests and tell the user how many were
+imported vs. available (thousands of datasets = thousands of static pages, slow build).
+
+**Resilience.** The harvester skips datasets with no title/identifier and datasets with no
+distribution or landing page (logged in `warnings`) rather than aborting — a partial or
+slightly nonstandard feed still imports what it can. Surface `warnings` to the user.
 
 **Socrata mapping** (Discovery API at the central host, then per-dataset file exports):
 
@@ -433,4 +512,13 @@ Next: open <target-url> to review the imported datasets.
 - **DKAN / ArcGIS Hub / data.gov.** These are DCAT-US publishers — point `/portaljs-migrate` at their
   whole-catalog `/data.json` with `--source dcat`. For one ArcGIS service (not a Hub site),
   use `--source arcgis` against its `…/FeatureServer` so each layer becomes a GeoJSON dataset.
+- **Two-way DCAT interop.** `--source dcat-rdf` is the harvest (inbound) half;
+  [`/portaljs-add-dcat`](portaljs-add-dcat.md) is the expose (outbound) half. Together a PortalJS
+  portal both **publishes to** and **harvests from** national/EU DCAT-AP portals. Both use the
+  same `lib/metadata/dcat-profiles.ts` registry, so a feed this skill emits harvests back into
+  the canonical shape with no field loss on what both sides support — verify with the round-trip
+  test `examples/portaljs-catalog/scripts/harvest-roundtrip.test.ts`
+  (`npx tsx scripts/harvest-roundtrip.test.ts`: serialize the sample catalog to all profiles ×
+  serializations, harvest each back, assert fidelity). For a real source, harvest a
+  data.europa.eu dataset feed or a national DCAT-AP portal's `catalog.rdf`/`.ttl`/`.jsonld`.
 ```

@@ -68,5 +68,21 @@ export {
 // RDF serializers for the feeds (Turtle + RDF/XML, alongside JSON-LD).
 export { toTurtle, toRdfXml, serialize, type RdfFormat } from './dcat-rdf'
 
+// Inbound harvest — read an external DCAT/DCAT-AP RDF feed (JSON-LD/Turtle/RDF-XML)
+// back into canonical datasets (the two-way interop counterpart to dcat-rdf.ts).
+export {
+  harvest,
+  harvestTriples,
+  parseRdf,
+  detectFormat,
+  toCanonicalEntry,
+  type RdfInputFormat,
+  type HarvestOptions,
+  type HarvestResult,
+  type HarvestedDataset,
+  type HarvestedResource,
+  type Triple,
+} from './dcat-harvest'
+
 // Per-profile mandatory-field validation (the conformance gate).
 export { validateDcat } from './dcat-validate'
