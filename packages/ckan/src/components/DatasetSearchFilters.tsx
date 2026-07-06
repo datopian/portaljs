@@ -4,9 +4,7 @@ import { PackageSearchOptions, Tag, Group, Organization, FilterObj } from "../in
 
 function AutoSubmit({
   setOptions,
-  options,
 }: {
-  options: PackageSearchOptions;
   setOptions: Dispatch<SetStateAction<PackageSearchOptions>>;
 }) {
   const { values } = useFormikContext<{
@@ -15,13 +13,13 @@ function AutoSubmit({
     groups: string[];
   }>();
   useEffect(() => {
-    setOptions({
-      ...options,
+    setOptions((prev) => ({
+      ...prev,
       groups: values.groups,
       tags: values.tags,
       orgs: values.orgs,
-    });
-  }, [values]);
+    }));
+  }, [values, setOptions]);
   return null;
 }
 
@@ -30,7 +28,6 @@ export default function DatasetSearchFilters({
   orgs,
   groups,
   setOptions,
-  options,
   filtersName,
 }: {
   tags: Array<Tag>;
@@ -139,7 +136,7 @@ export default function DatasetSearchFilters({
             </button>
           )}
         </section>
-        <AutoSubmit options={options} setOptions={setOptions} />
+        <AutoSubmit setOptions={setOptions} />
       </Form>
     </Formik>
   );
