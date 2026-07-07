@@ -68,6 +68,6 @@ When it finishes:
 
 - **[`/portaljs-add-dataset`](/docs/skills/portaljs-add-dataset)** — load your first dataset into the
   new portal.
-- **[Manual setup](/docs/manual-setup)** — the same project, built by hand.
+- **[Editing by hand](/docs/manual-setup)** — the same project, worked on directly.
 
 <DocsPagination prev="/docs/skills" next="/docs/skills/portaljs-add-dataset" />

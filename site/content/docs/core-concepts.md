@@ -102,7 +102,7 @@ These three surfaces are delivered the PortalJS way:
   plus skills that do the assembly — you describe intent, the skill writes the code.
 - **Plain, editable code — no lock-in.** Every skill emits an ordinary Next.js
   project you can fork and hand to any developer. No magic runtime. See
-  [Manual setup](/docs/manual-setup).
+  [Editing by hand](/docs/manual-setup).
 - **Decoupled by default.** The frontend talks to the backend over an API — CKAN,
   DKAN, OpenMetadata, Purview, DataHub, GitHub, Frictionless, plain JSON, or custom.
   Start static, point at a real catalog later with [`/portaljs-connect-ckan`](/ckan).
@@ -112,7 +112,7 @@ These three surfaces are delivered the PortalJS way:
 ## Where to go next
 
 - **[Quickstart](/docs/quickstart)** — build all three surfaces with the skills.
-- **[Manual setup](/docs/manual-setup)** — or by hand.
+- **[Editing by hand](/docs/manual-setup)** — work on the project directly.
 - **[Open-source framework docs](/opensource)** — the classic framework reference.
 
-<DocsPagination prev="/docs/manual-setup" />
+<DocsPagination prev="/docs/quickstart" />

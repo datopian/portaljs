@@ -7,7 +7,7 @@ User-agent: *
 Disallow: /?amp=1
 
 # Host
-Host: https://portaljs.com
+Host: https://www.portaljs.com
 
 # Sitemaps
-Sitemap: https://portaljs.com/sitemap.xml
+Sitemap: https://www.portaljs.com/sitemap.xml

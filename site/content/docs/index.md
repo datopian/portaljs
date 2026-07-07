@@ -1,8 +1,8 @@
 ---
 metatitle: PortalJS Docs – Get Started
-metadescription: Build a data portal with PortalJS. Describe what you want and let your AI assistant scaffold it, or clone the template and edit by hand. Open source, no lock-in.
+metadescription: Build a data portal with PortalJS. Scaffold with one command, then describe what you want and let your AI assistant do the assembly. Plain, editable code — open source, no lock-in.
 title: Get started with PortalJS
-description: PortalJS is the AI-native framework for building data portals. Two paths to a live portal — describe it to your AI assistant, or build it by hand.
+description: PortalJS is the AI-native framework for building data portals. One command to scaffold, then your AI assistant does the assembly — and everything it writes is plain, editable code.
 ---
 
 > [!info] Looking for the classic framework docs?
@@ -26,22 +26,14 @@ You describe the portal you want; your AI assistant scaffolds it, loads your dat
 generates pages, and wires up a backend. Everything it writes is **plain, editable
 code** you own — no magic runtime, no lock-in.
 
-## Two ways to build
-
-| Path                      | When to use it                                         | Start here                           |
-| ------------------------- | ------------------------------------------------------ | ------------------------------------ |
-| **AI path** (recommended) | You have Claude Code and want a portal live in minutes | [Quickstart →](/docs/quickstart)     |
-| **Manual path**           | You'd rather clone the template and edit by hand       | [Manual setup →](/docs/manual-setup) |
-
-Both paths produce the **same project** — the AI path just does the typing for you.
-You can switch between them at any time: scaffold with skills, then edit the code
-directly, or vice versa.
+Because the output is an ordinary Next.js project, hand-editing isn't a separate
+path — scaffold with the skills, then open any file and change it directly,
+whenever you like.
 
 ## What's next
 
-- **[Quickstart](/docs/quickstart)** — install the skills and go from nothing to a
-  live portal with your data in a few minutes.
-- **[Manual setup](/docs/manual-setup)** — clone the template and build by hand.
+- **[Quickstart](/docs/quickstart)** — go from nothing to a live portal with your
+  data in a few minutes.
 - **[Core concepts](/docs/core-concepts)** — the four ideas that shape PortalJS:
   lightweight template + skills, plain editable code, decoupled by default, and
   bring-your-own-stack.

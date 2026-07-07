@@ -1,25 +1,15 @@
 ---
-metatitle: PortalJS Quickstart – Build a Portal with AI in Minutes
-metadescription: Install the PortalJS skills, scaffold a portal with /portaljs-new-portal, add your data with /portaljs-add-dataset, and go live — all from your AI assistant.
-title: Quickstart — the AI path
-description: Install the PortalJS skills, scaffold a portal, add your data, and go live in minutes — your AI assistant does the assembly.
+metatitle: PortalJS Quickstart – Build a Portal in Minutes
+metadescription: Scaffold a portal with npm create portaljs, add your data with /portaljs-add-dataset, and go live — the skills come pre-installed, your AI assistant does the assembly.
+title: Quickstart
+description: One command to scaffold a portal with the skills pre-installed, then drive data, charts, maps, and deploys from your AI assistant.
 ---
 
-> [!tip] One-command start
-> The fastest way to a working portal — no AI, nothing to install beyond Node 22+:
->
-> ```bash
-> npm create portaljs@latest my-portal
-> cd my-portal && npm run dev
-> ```
->
-> That scaffolds the full template. The rest of this page is the **AI-assisted** path:
-> install the skills and drive the whole build (and ongoing changes) from chat.
-
-This page is the AI path. You'll install the PortalJS skills into
-[Claude Code](https://docs.claude.com/en/docs/claude-code), then drive the whole
-build from chat. Prefer to build entirely by hand? See [Manual setup](/docs/manual-setup)
-instead.
+Go from nothing to a live portal in a few minutes: scaffold with one command,
+then drive everything else — data, charts, maps, deploys — from
+[Claude Code](https://docs.claude.com/en/docs/claude-code). Everything the skills
+write is **plain, editable Next.js code** you own, so you can open any file and
+change it by hand at any point.
 
 > [!info] Prerequisites
 >
@@ -27,43 +17,39 @@ instead.
 > - **[Claude Code](https://docs.claude.com/en/docs/claude-code)** (or another
 >   agent that runs Claude Code skills)
 
-## 1. Install the skills
-
-The skills are Claude Code commands — `/portaljs-architect`, `/portaljs-new-portal`, `/portaljs-add-dataset`,
-`/portaljs-add-chart`, `/portaljs-add-map`, `/portaljs-connect-ckan`, `/portaljs-define-schema`, `/portaljs-deploy`, and
-`/portaljs-check-data-quality`. Install them all once into your personal scope so they're
-available in every project:
+## 1. Create a portal
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/datopian/portaljs/main/scripts/install-portaljs-skills.sh | bash
-```
-
-Restart Claude Code (or open a new session) so it picks up the new commands.
-
-> [!note] Other install options
-> You can also run the skills straight from a clone of the
-> [portaljs repo](https://github.com/datopian/portaljs), or install them as a
-> versioned plugin. See the [install guide](https://github.com/datopian/portaljs/blob/main/.claude/INSTALL.md)
-> for all three paths.
-
-## 2. Scaffold a portal
-
-In Claude Code, describe the portal you want:
-
-```
-/portaljs-new-portal Auckland Council Open Data Portal — public datasets for the Auckland region
-```
-
-`/portaljs-new-portal` fetches the latest canonical catalog template, substitutes your project
-name and description, installs dependencies, and verifies the build. You get a
-real Next.js project — plain, editable code you own.
-
-Start the dev server to see it:
-
-```bash
-cd auckland-council-open-data
+npm create portaljs@latest my-portal
+cd my-portal
 npm run dev
 ```
+
+That scaffolds the full catalog template — a home page (`/`), a search catalog at
+`/search`, and per-dataset showcase pages — and **bundles the PortalJS skills into
+the project's `.claude/commands/`**, so they work the moment you open Claude Code.
+Open [http://localhost:3000](http://localhost:3000) to see it running.
+
+## 2. Open Claude Code
+
+Run `claude` in the project. The skills are already there — no install step:
+`/portaljs-architect`, `/portaljs-add-dataset`, `/portaljs-add-chart`, `/portaljs-add-map`,
+`/portaljs-define-schema`, `/portaljs-connect-ckan`, `/portaljs-check-data-quality`,
+and `/portaljs-deploy`.
+
+> [!note] Optional — skills for an existing project, or globally
+> The bundled skills only exist in projects created via `npm create portaljs`.
+> To add them to an **existing project**, or install them once into your personal
+> scope so they're available everywhere:
+>
+> ```bash
+> curl -fsSL https://raw.githubusercontent.com/datopian/portaljs/main/scripts/install-portaljs-skills.sh | bash
+> ```
+>
+> You can also run them from a clone of the
+> [portaljs repo](https://github.com/datopian/portaljs), or install them as a
+> versioned plugin — see the
+> [install guide](https://github.com/datopian/portaljs/blob/main/.claude/INSTALL.md).
 
 ## 3. Add your data
 
@@ -106,6 +92,7 @@ publishes it — you get a live URL at the end.
 
 - **[Core concepts](/docs/core-concepts)** — understand the model behind the
   skills so you can customize confidently.
-- **[Manual setup](/docs/manual-setup)** — the same project, built by hand.
+- **[Editing by hand](/docs/manual-setup)** — a reference for working on the
+  project directly: the `datasets.json` manifest, namespaces, and conventions.
 
-<DocsPagination prev="/docs" next="/docs/manual-setup" />
+<DocsPagination prev="/docs" next="/docs/core-concepts" />
