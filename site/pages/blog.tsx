@@ -46,6 +46,8 @@ const LABEL_OVERRIDES: Record<string, string[]> = {
   'talk-to-your-data-portal-in-plain-english-introducing-queryless-ai': ['PortalJS Cloud', 'AI Integration'],
   'mcp-server-ai-assistants-to-improve-data-portals':                  ['PortalJS', 'AI Integration'],
   'supercharging-data-portals-with-the-portaljs-mcp-server':           ['PortalJS', 'AI Integration'],
+  'portaljs-is-now-ai-native':                                         ['PortalJS', 'AI Integration'],
+  'rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code': ['PortalJS', 'AI Integration'],
   // PortalJS Cloud + Tutorial
   'keep-your-portal-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api': ['PortalJS Cloud', 'Tutorial'],
   // PortalJS open-source
@@ -91,6 +93,9 @@ const CATEGORY_MAP: Record<string, string[]> = {
   'portaljs-cloud-frontend-customization': ['cloud'],
   'portaljs-cloud-geospatial': ['cloud'],
   'portaljs-cloud-private-datasets': ['cloud'],
+  'portaljs-is-now-ai-native': ['ai', 'dev'],
+  'rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code': ['ai', 'dev'],
+  'scaling-portaljs-data-with-giftless-and-r2': ['dev'],
   'summer-updates-2023': ['dev'],
   'supercharging-data-portals-with-the-portaljs-mcp-server': ['ai', 'dev'],
   'talk-to-your-data-portal-in-plain-english-introducing-queryless-ai': ['ai', 'cloud'],

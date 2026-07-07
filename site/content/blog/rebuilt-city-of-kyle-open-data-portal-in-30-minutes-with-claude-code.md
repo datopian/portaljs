@@ -3,6 +3,11 @@ title: 'I rebuilt a Texas city''s open data portal in 30 minutes with Claude Cod
 created: 2026-07-06
 description: "The City of Kyle, TX publishes budgets, investment reports, and utility data on a portal that feels heavy and dated. Using PortalJS agent skills, one prompt scaffolded a modern replacement: 62 datasets, budget charts, department pages, deployed live. Four of us built four versions and voted for the best."
 authors: ['anuveyatsu']
+tags:
+  - PortalJS
+  - AI
+  - civic data
+  - open data
 filetype: 'blog'
 ---
 
