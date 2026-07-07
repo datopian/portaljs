@@ -56,6 +56,28 @@ jobs:
           npm ci
           npm run build
 
+  # site/ is NOT a root workspace — it has its own package-lock.json and
+  # resolves @portaljs/* from the npm registry, so it builds standalone
+  # (same as its production deploy). Node 22 only: site targets a single
+  # runtime and its build (mddb + next build) is the slow path. See po-8sd.
+  site:
+    name: Build site (www.portaljs.com)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build site
+        working-directory: site
+        run: |
+          npm ci
+          npm run build
+
   scaffold:
     name: Scaffold end-to-end (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
