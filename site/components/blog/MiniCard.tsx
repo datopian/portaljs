@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { DEFAULT_FEATURED_IMAGE } from './defaultFeaturedImage'
 
 interface Author {
   name: string
@@ -38,15 +39,11 @@ export default function MiniCard({ blog, labels }: { blog: BlogPost; labels?: st
     >
       {/* Thumbnail */}
       <div className="relative w-[72px] flex-none overflow-hidden rounded-lg">
-        {blog.image ? (
-          <img
-            src={blog.image}
-            alt={blog.title}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-sky-400/20 to-blue-600/15" />
-        )}
+        <img
+          src={blog.image || DEFAULT_FEATURED_IMAGE}
+          alt={blog.title}
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
       </div>
 
       {/* Content */}

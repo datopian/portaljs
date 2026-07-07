@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
+import { DEFAULT_FEATURED_IMAGE } from './defaultFeaturedImage'
 
 interface Author {
   name: string
@@ -48,15 +49,11 @@ export default function FeaturedBlogPost({ blog, labels }: { blog: BlogPost; lab
     >
       {/* Image side */}
       <div className="relative aspect-video overflow-hidden lg:aspect-auto lg:w-[58%] lg:flex-none">
-        {blog.image ? (
-          <img
-            src={blog.image}
-            alt={blog.title}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-sky-400/20 to-blue-600/15" />
-        )}
+        <img
+          src={blog.image || DEFAULT_FEATURED_IMAGE}
+          alt={blog.title}
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+        />
       </div>
 
       {/* Content side */}
