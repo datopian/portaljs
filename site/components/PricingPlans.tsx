@@ -6,9 +6,6 @@ import ButtonLink from './ButtonLink'
 import { FaInfoCircle } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 
-// GitHub VISION.md is the public roadmap — the removed not-yet-shipped bullets link here (po-xv5 §5).
-const ROADMAP_URL = 'https://github.com/datopian/portaljs/blob/main/VISION.md'
-
 // Never let analytics break the page.
 function track(event: string, props?: Record<string, unknown>) {
   try {
@@ -71,12 +68,12 @@ export const tiers: any[] = [
       { title: 'Unlimited datasets' },
       { title: 'Multiple users with role based access control' },
       { title: 'Unlimited groups and organizations' },
-      { title: 'PortalJS subdomain (yourname.portaljs.cloud)' },
+      { title: 'PortalJS subdomain (yourname.portaljs.com)' },
       { title: 'Basic branding included (logo, font, colour scheme)' },
       { title: '10 GB of blob storage' },
       { title: 'Dublin Core metadata standard' },
       { title: 'DCAT metadata standard' },
-      { title: 'Data previews (CSV, Excel, PDF, JSON, TXT)' },
+      { title: 'Data previews (CSV, Excel, PDF, JSON, TXT, Parquet)' },
       { title: 'Geospatial data views (GeoJSON)' },
       { title: 'Technical support (48 hours response time)' },
     ],
@@ -105,10 +102,12 @@ export const tiers: any[] = [
       { title: '50 GB of blob storage' },
       { title: 'Managed CKAN backend included' },
       { title: 'Searchable Data API included' },
+      { title: 'Large file upload' },
+      { title: 'Data versioning' },
       { title: 'Data curator support (business hours)' },
       { title: 'Priority technical support (24-hour response time)' },
     ],
-    footerLink: { text: 'See what’s shipping next →', href: ROADMAP_URL },
+    footerLink: { text: 'Explore add-ons →', href: '/pricing#addons' },
   },
   {
     title: 'Government',
@@ -131,6 +130,7 @@ export const tiers: any[] = [
     mainFeatures: [
       { title: 'Everything from Institution plan' },
       { title: 'Dedicated instance' },
+      { title: 'Multiple environments (e.g. staging/UAT and production)' },
       { title: 'SSO: SAML / OAuth / Azure AD' },
       {
         title:
@@ -148,8 +148,6 @@ export const tiers: any[] = [
           'Procurement-friendly: PO/invoice billing, vendor forms, security questionnaires',
       },
     ],
-    footerNote:
-      'One-time onboarding from $4,900 — agent-assisted setup, branding, and data migration.',
   },
   {
     title: 'Enterprise',
@@ -165,17 +163,12 @@ export const tiers: any[] = [
     price: { monthly: 'Contact us', annually: 'Contact us' },
     mainFeatures: [
       { title: 'Everything from Government plan' },
-      { title: 'Multi-portal / national programs' },
       { title: 'Bespoke development' },
       {
         title:
           'Fully managed and hosted based on your requirements (public/private/hybrid cloud or on-prem)',
       },
-      { title: 'FedRAMP-path conversations' },
-      {
-        title: 'Migration from Socrata, OpenDataSoft/Huwise, or ArcGIS Hub',
-        href: '/case-studies',
-      },
+      { title: 'Migration from Socrata, OpenDataSoft/Huwise, or ArcGIS Hub' },
       { title: 'Dedicated account manager and support team' },
     ],
   },
@@ -366,7 +359,7 @@ export default function PricingPlans() {
                           billed annually
                         </span>
                         <span className="opacity-75 text-sm py-[1px]">
-                          Annual billing only (2 months free!)
+                          Annual billing only
                         </span>
                       </div>
                     )}
@@ -381,9 +374,6 @@ export default function PricingPlans() {
                               tier.price.annualPrice * 12
                             )}{' '}
                             billed annually
-                          </span>
-                          <span className="opacity-75 text-sm py-[1px]">
-                            <span className="sm:pl-1 pl-0">(2 months free!)</span>
                           </span>
                         </div>
                       )}
