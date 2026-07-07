@@ -24,6 +24,10 @@
         "href": "/docs/core-concepts"
       },
       {
+        "title": "PortalJS vs Arc vs Cloud",
+        "href": "/docs/products"
+      },
+      {
         "title": "Architecture decision framework",
         "href": "/docs/architecture/decision-framework"
       }

@@ -265,7 +265,7 @@ export default function PricingPlans() {
         </p>
       )}
 
-      <main className="relative mx-auto mt-10 grid max-w-md grid-cols-1 gap-y-8 lg:-mb-14 lg:max-w-none lg:grid-cols-2 custom:grid-cols-5 gap-3 px-1 dark:px-0">
+      <main className="relative mx-auto mt-10 grid max-w-md grid-cols-1 gap-y-8 lg:-mb-14 lg:max-w-none sm:grid-cols-2 lg:grid-cols-5 gap-3 px-1 dark:px-0">
         <div
           className="hidden lg:absolute lg:inset-x-px lg:bottom-0 lg:top-4 lg:block lg:rounded-2xl"
           aria-hidden="true"
@@ -306,7 +306,7 @@ export default function PricingPlans() {
                   {tier.badge}
                 </span>
               )}
-              <div className="p-8 lg:pt-12 xl:p-8 xl:pt-14 flex flex-col flex-1">
+              <div className="p-5 pt-10 lg:pt-12 flex flex-col flex-1">
                 <h3 id={tier.id} className="text-xl font-bold leading-6">
                   {tier.title}
                 </h3>
@@ -327,9 +327,9 @@ export default function PricingPlans() {
                 </h4>
 
                 <div className="flex flex-col gap-4 sm:justify-between lg:flex-col lg:items-stretch">
-                  <div className="flex items-center gap-x-4 min-h-[70px] sm:-mt-2">
+                  <div className="flex items-center gap-x-3 min-h-[70px] sm:-mt-2">
                     <p className="text-2xl xl:text-xl semi-bold tracking-tight">
-                      <span className="text-4xl font-bold tracking-tight">
+                      <span className="text-3xl xl:text-4xl font-bold tracking-tight">
                         {priceValue}
                       </span>
                     </p>

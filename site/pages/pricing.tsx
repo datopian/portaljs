@@ -1,7 +1,6 @@
 import Layout from '@/components/Layout'
 import PricingPlans from '@/components/PricingPlans'
-import ProductLines from '@/components/ProductLines'
-import TcoComparison from '@/components/TcoComparison'
+import CostSavings from '@/components/CostSavings'
 import AddOns from '@/components/AddOns'
 import { generateNextSeo } from 'next-seo/pages';
 import Head from 'next/head';
@@ -48,9 +47,17 @@ export default function Pricing() {
                 Our plans cover all ranges of budgets and needs
               </p>
             </div>
-            <ProductLines />
             <PricingPlans />
-            <TcoComparison />
+            <p className="mx-auto mt-8 lg:mt-24 text-center text-[15px] text-slate-600 dark:text-slate-300">
+              Not sure which product?{' '}
+              <Link
+                href="/docs/products"
+                className="text-blue-600 dark:text-blue-400 underline"
+              >
+                PortalJS vs Arc vs Cloud →
+              </Link>
+            </p>
+            <CostSavings />
           </div>
         </div>
         <div className="relative" id="addons">
