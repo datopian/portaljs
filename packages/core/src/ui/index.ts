@@ -17,6 +17,7 @@ export { DocsLayout } from "./DocsLayout";
 export { UnstyledLayout } from "./UnstyledLayout";
 export { BlogLayout } from "./BlogLayout";
 export { Mermaid } from "./Mermaid";
+export { MapPreview, MapPreviewProps } from "./MapPreview";
 export { SiteToc, NavItem, NavGroup } from "./SiteToc";
 export { Comments, CommentsConfig } from "./Comments";
 export { AuthorConfig } from "./types";

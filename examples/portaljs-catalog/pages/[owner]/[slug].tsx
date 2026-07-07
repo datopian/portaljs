@@ -24,6 +24,13 @@ const DataExplorer = dynamic(() => import('../../components/DataExplorer'), {
   ssr: false,
 })
 
+// MapLibre GL touches `window` at module scope, so the map preview is likewise
+// client-only. The chunk (maplibre + pmtiles) loads only when a dataset
+// actually has a PMTiles resource.
+const MapPreview = dynamic(() => import('../../components/MapPreview'), {
+  ssr: false,
+})
+
 type PageProps = {
   dataset: Dataset
   resources: Resource[]
@@ -122,6 +129,7 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
                 key={r.name + i}
                 resource={r}
                 showHeading={resources.length > 1}
+                mapAttribution={dataset.sources?.[0]?.title}
               />
             ))}
 
@@ -406,9 +414,11 @@ function ActivityFeed({ activity }: { activity: ActivityEntry[] }) {
 function ResourceSection({
   resource,
   showHeading,
+  mapAttribution,
 }: {
   resource: Resource
   showHeading: boolean
+  mapAttribution?: string
 }) {
   const url = resourceUrl(resource)
   const tabular = resource.format === 'csv' || resource.format === 'tsv'
@@ -435,7 +445,11 @@ function ResourceSection({
         </p>
       )}
 
-      {useQueryView ? (
+      {resource.format === 'pmtiles' ? (
+        // Tiled geo data: MapLibre renders the archive in place over HTTP
+        // range requests — any dataset size, no tile server.
+        <MapPreview url={url} attribution={mapAttribution} />
+      ) : useQueryView ? (
         <DataExplorer resource={resource} />
       ) : tabular ? (
         <>
