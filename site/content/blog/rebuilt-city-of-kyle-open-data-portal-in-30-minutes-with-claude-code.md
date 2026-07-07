@@ -8,6 +8,7 @@ tags:
   - AI
   - civic data
   - open data
+image: "/static/img/blog/rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code/hero.png"
 filetype: 'blog'
 ---
 
