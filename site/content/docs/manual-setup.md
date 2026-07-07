@@ -1,13 +1,14 @@
 ---
-metatitle: PortalJS Manual Setup – Clone the Template and Build by Hand
-metadescription: Prefer to build by hand? Clone the PortalJS template, add CSV/JSON/GeoJSON data to /public/data, and edit plain Next.js pages directly. No AI required.
-title: Manual setup — build by hand
-description: Clone the lightweight template and edit it directly. No AI assistant required — the same project the skills produce, built by hand.
+metatitle: PortalJS – Editing by Hand
+metadescription: A reference for working on a PortalJS project directly — the datasets.json manifest, namespaces, /public/data, and plain Next.js pages. No AI required.
+title: Editing by hand
+description: A reference for working on the project directly — every skill emits plain, editable code, so anything the skills do, you can do by hand.
 ---
 
-The skills are the fast path, but PortalJS is **AI-native, not AI-only**. Every
-skill produces plain, editable code — so you can skip the agent entirely and build
-the same project by hand. This page shows how.
+PortalJS is **AI-native, not AI-only**. Every skill emits plain, editable code —
+so anything a skill does, you can also do by hand, and you can skip the agent
+entirely if you prefer. This page is the reference for working on the project
+directly.
 
 > [!info] Prerequisites
 >
@@ -105,6 +106,6 @@ npx vercel
 
 - **[Core concepts](/docs/core-concepts)** — the ideas behind the template and the
   skills.
-- **[Quickstart](/docs/quickstart)** — let the skills do the typing instead.
+- **[Quickstart](/docs/quickstart)** — let the skills do the typing.
 
 <DocsPagination prev="/docs/quickstart" next="/docs/core-concepts" />
