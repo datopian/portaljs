@@ -47,7 +47,9 @@
     "disqus-react": "^1.1.5",
     "framer-motion": "^10.0.1",
     "kbar": "0.1.0-beta.40",
+    "maplibre-gl": "^5.0.0",
     "mermaid": "^10.2.2",
+    "pmtiles": "^4.0.0",
     "prop-types": "^15.8.1"
   },
   "peerDependencies": {

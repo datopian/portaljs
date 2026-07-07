@@ -124,5 +124,28 @@
         "query": "SELECT region, round(avg(rating), 2) AS avg_rating, sum(sales) AS total_sales\nFROM data\nGROUP BY region\nORDER BY total_sales DESC\nLIMIT 10;"
       }
     ]
+  },
+  {
+    "slug": "world-boundaries",
+    "namespace": "reference",
+    "name": "World Country Boundaries",
+    "description": "Country boundary polygons for the whole world, tiled as a single PMTiles archive and rendered serverlessly — the map fetches only the tiles in view via HTTP range requests.",
+    "file": "world-boundaries.pmtiles",
+    "format": "pmtiles",
+    "licenses": [
+      {
+        "name": "PDDL-1.0",
+        "title": "Public domain (Natural Earth)",
+        "path": "https://www.naturalearthdata.com/about/terms-of-use/"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Natural Earth 1:110m Admin 0 — Countries",
+        "path": "https://www.naturalearthdata.com/downloads/110m-cultural-vectors/"
+      }
+    ],
+    "keywords": ["boundaries", "countries", "geospatial", "pmtiles"],
+    "version": "1.0.0"
   }
 ]

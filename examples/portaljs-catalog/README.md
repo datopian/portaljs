@@ -106,6 +106,27 @@ big for the browser, the same `DataQuery` seam can route to an edge Worker or
 MotherDuck — see [`lib/query/README.md`](lib/query/README.md) for the contract and
 device-tier / fallback guidance.
 
+## Map tier — preview any-size geo data (PMTiles)
+
+Big GeoJSON can't be previewed by loading the whole file. Tile it into a single
+**PMTiles** archive and the showcase renders it with MapLibre GL over HTTP range
+requests — the map fetches only the tiles in view, so a multi-GB dataset pans and
+zooms with no tile server (works from `/public/data`, R2, or any static host).
+
+Make PMTiles from GeoJSON/Shapefile with [tippecanoe](https://github.com/felt/tippecanoe)
+(`brew install tippecanoe`):
+
+```bash
+tippecanoe -zg --drop-densest-as-needed -o boundaries.pmtiles boundaries.geojson
+# small reference layers can cap the zoom instead: tippecanoe -z5 -o out.pmtiles in.geojson
+```
+
+Then add the resource with `format: "pmtiles"` (see the bundled
+`@reference/world-boundaries` sample) — the showcase renders the interactive map
+preview with click-to-inspect feature properties. This manual tippecanoe step is
+the interim ingest path; an automated GeoJSON→PMTiles pipeline is a separate
+roadmap phase.
+
 ## Why dataset URLs start with `@`
 
 Dataset showcase URLs are namespaced under `@` (`/@<owner-or-theme>/<dataset>`) so they

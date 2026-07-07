@@ -11,7 +11,11 @@ import type { License, Source, TableSchema } from '../metadata/types'
 // 'parquet' is the columnar format for the query tier: the showcase reads it
 // through DuckDB-Wasm (not the flat papaparse Table), and on R2 it's queried in
 // place over HTTP range requests — see lib/query.
-export type DataFormat = 'csv' | 'tsv' | 'json' | 'geojson' | 'parquet'
+// 'pmtiles' is the tiled format for the map tier: a single archive of vector
+// tiles the showcase renders with MapLibre GL over HTTP range requests — any
+// dataset size pans and zooms with no tile server. Made from GeoJSON/Shapefile
+// with tippecanoe; see components/MapPreview.tsx.
+export type DataFormat = 'csv' | 'tsv' | 'json' | 'geojson' | 'parquet' | 'pmtiles'
 
 // One line of a version-to-version diff, shown when a resource's history is expanded.
 // Only raw-text resources (CSV/TSV committed in git) produce these; an LFS-pointer

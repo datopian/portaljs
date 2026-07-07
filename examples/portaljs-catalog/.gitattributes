@@ -23,3 +23,6 @@ public/data/** -filter -diff -merge text
 # keep it inline like the CSVs, but override `text` so git never applies EOL
 # normalization, which would corrupt it.
 public/data/*.parquet -filter -diff -merge -text
+# Same for the bundled sample PMTiles (world-boundaries, for the map preview
+# demo): binary, inline, never EOL-normalized.
+public/data/*.pmtiles -filter -diff -merge -text
