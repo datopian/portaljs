@@ -13,16 +13,14 @@
 # including images and arbitrary binaries. So this file ships minimal below the
 # fence; the skill populates the per-file entries.
 
-# Fenced exception (storage decision, po-g9y): the bundled SAMPLE data committed
-# under public/data/ (a few KB each) stays INLINE so `create-portaljs` and
-# `npm run dev` work offline with zero credentials. Keep these as plain text in
-# git; do NOT route them through LFS. This is also the OSS self-host path for
-# users running without R2.
+# Fenced exception (storage decision, po-g9y): the bundled SAMPLE CSVs committed
+# under public/data/ (a few hundred bytes each) stay INLINE so `create-portaljs`
+# and `npm run dev` work offline with zero credentials for the basic CSV demos.
+# Keep these as plain text in git; do NOT route them through LFS.
+#
+# The larger binary samples — region-metrics (Parquet, SQL-editor demo) and
+# world-boundaries (PMTiles, map-preview demo) — are NOT committed here. They are
+# hosted on R2 via Giftless and referenced by their data.portaljs.com URLs in
+# datasets.json, so the showcase demonstrates the real serverless range-read path
+# (see .lfsconfig for the per-project LFS flow that /portaljs-add-dataset wires up).
 public/data/** -filter -diff -merge text
-# The bundled sample Parquet (region-metrics, for the SQL editor demo) is binary:
-# keep it inline like the CSVs, but override `text` so git never applies EOL
-# normalization, which would corrupt it.
-public/data/*.parquet -filter -diff -merge -text
-# Same for the bundled sample PMTiles (world-boundaries, for the map preview
-# demo): binary, inline, never EOL-normalized.
-public/data/*.pmtiles -filter -diff -merge -text

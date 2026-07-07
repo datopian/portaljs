@@ -54,8 +54,12 @@ That's it. `getStaticPaths` picks up the new `(namespace, slug)` pair at build t
 `/@reference/my-data` renders automatically. CSV and TSV files are previewed in an
 interactive `<Table />`; other formats (`json`, `geojson`) show a download link.
 
-The bundled sample files under `public/data/` are the small reference data that ships
-inline so the portal runs offline. For **large data**, see below.
+The bundled sample **CSVs** under `public/data/` are small reference data that ships
+inline so the basic table demos run offline with zero credentials. The two binary
+samples — `region-metrics` (Parquet) and `world-boundaries` (PMTiles) — are **not**
+committed; they are hosted on R2 via Giftless and referenced by their
+`data.portaljs.com` URLs in `datasets.json`, so the showcase demonstrates the real
+serverless range-read path rather than shipping bytes in git. For **large data**, see below.
 
 ## Large data (Git LFS → R2)
 
@@ -111,7 +115,7 @@ device-tier / fallback guidance.
 Big GeoJSON can't be previewed by loading the whole file. Tile it into a single
 **PMTiles** archive and the showcase renders it with MapLibre GL over HTTP range
 requests — the map fetches only the tiles in view, so a multi-GB dataset pans and
-zooms with no tile server (works from `/public/data`, R2, or any static host).
+zooms with no tile server (served from R2 here, or any static host / `/public/data`).
 
 Make PMTiles from GeoJSON/Shapefile with [tippecanoe](https://github.com/felt/tippecanoe)
 (`brew install tippecanoe`):
@@ -121,7 +125,7 @@ tippecanoe -zg --drop-densest-as-needed -o boundaries.pmtiles boundaries.geojson
 # small reference layers can cap the zoom instead: tippecanoe -z5 -o out.pmtiles in.geojson
 ```
 
-Then add the resource with `format: "pmtiles"` (see the bundled
+Then add the resource with `format: "pmtiles"` (see the R2-hosted
 `@reference/world-boundaries` sample) — the showcase renders the interactive map
 preview with click-to-inspect feature properties. This manual tippecanoe step is
 the interim ingest path; an automated GeoJSON→PMTiles pipeline is a separate
@@ -186,7 +190,7 @@ pages/search.tsx           — searchable dataset list, reads manifest via getSt
 pages/[owner]/[slug].tsx   — dynamic dataset showcase (/@<namespace>/<slug>)
 pages/_app.tsx             — renders the Navbar on every page
 pages/_document.tsx        — favicon / icon links + default meta description
-public/data/               — bundled SAMPLE data (inline, offline-friendly)
+public/data/               — bundled sample CSVs (inline); Parquet/PMTiles samples live on R2 (data.portaljs.com)
 public/{icon.svg,favicon.ico,apple-touch-icon.png,icon-512.png} — branding (placeholder)
 components/Navbar.tsx       — site navbar: logo (hover-spin) + name + link to /search
 components/Table.tsx       — interactive table (search, sort, paginate)
