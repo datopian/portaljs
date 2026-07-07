@@ -1,5 +1,7 @@
 import dynamic from 'next/dynamic'
-const Player = dynamic(() => import('@lottiefiles/react-lottie-player').then(mod => mod.Player), { ssr: false })
+import type { IPlayerProps } from '@lottiefiles/react-lottie-player'
+// Lottie Player class types predate React 19; cast the module, keep props typed via the generic.
+const Player = dynamic<IPlayerProps>(() => import('@lottiefiles/react-lottie-player').then(mod => mod.Player as any), { ssr: false })
 import { H1, H2, H3 } from '../custom/header'
 import { useTheme } from 'next-themes'
 

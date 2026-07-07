@@ -5,8 +5,9 @@ import { generateNextSeo } from 'next-seo/pages';
 import Head from 'next/head';
 import { useTheme } from 'next-themes';
 
-const Player = dynamic(
-  () => import('@lottiefiles/react-lottie-player').then((m) => m.Player),
+// Lottie Player class types predate React 19; cast the module, keep props typed via the generic.
+const Player = dynamic<import('@lottiefiles/react-lottie-player').IPlayerProps>(
+  () => import('@lottiefiles/react-lottie-player').then((m) => m.Player as any),
   { ssr: false }
 )
 
