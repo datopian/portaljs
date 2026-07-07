@@ -25,10 +25,10 @@ const GRID_PAGE_SIZE = 9
 // All other posts appear in the grid below the hero cluster as usual.
 // ─────────────────────────────────────────────────────────────────────────────
 const FEATURED_SLUGS = [
-  'civic-data-portal-examples',                                          // Position 1 — large card
-  'talk-to-your-data-portal-in-plain-english-introducing-queryless-ai', // Position 2 — mini top
-  'portaljs-cloud-apis',                                                 // Position 3 — mini middle
-  'portaljs-cloud-geospatial',                                           // Position 4 — mini bottom
+  'portaljs-is-now-ai-native',                                            // Position 1 — large card
+  'rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code', // Position 2 — mini top
+  'scaling-portaljs-data-with-giftless-and-r2',                           // Position 3 — mini middle
+  'talk-to-your-data-portal-in-plain-english-introducing-queryless-ai',   // Position 4 — mini bottom
 ]
 
 // Human-readable label for each segment ID (no hyphens, proper casing)
