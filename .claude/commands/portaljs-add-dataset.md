@@ -101,6 +101,12 @@ wasn't found and ask for a correct path. Detect format from the file extension.
 - `.tsv` or `text/tab-separated-values` → TSV
 - `.geojson` or `application/geo+json` or (JSON-parseable and `parsed.type === "FeatureCollection"`) → GeoJSON
 - `.json` or `application/json` → JSON array
+- **Vector geo formats** — `.zip` (zipped Shapefile), `.gpkg`, `.kml`/`.kmz`, `.fgb`, or a
+  `.csv` with a geometry/lat-lon column → **hand off to `/portaljs-add-geo`**. That skill
+  auto-ingests geo sources into a dual-tier dataset (PMTiles render + GeoParquet query) on
+  the user's machine. This tabular skill only previews flat files; it does not tile or build
+  GeoParquet. (A **small** GeoJSON you just want listed with a download link can stay here as
+  the `geojson` format; for a map/query view, prefer `/portaljs-add-geo` or `/portaljs-add-map`.)
 - Anything else: tell the user the showcase can't preview this format and ask them to
   convert to CSV, TSV, JSON array, or GeoJSON first.
 

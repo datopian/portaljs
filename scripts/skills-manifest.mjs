@@ -40,6 +40,11 @@ export const SKILLS = [
     summary: 'Render a GeoJSON dataset on an interactive map and register it on the home page.',
   },
   {
+    id: 'portaljs-add-geo',
+    summary:
+      'Auto-ingest a geospatial file (GeoJSON, Shapefile, GeoPackage, KML/KMZ, FlatGeobuf, CSV-with-geometry) on your own machine — no server: normalizes CRS to EPSG:4326, derives a PMTiles render tier and a GeoParquet query tier, pushes both plus the original to R2, and registers one dual-tier dataset the showcase maps and queries in place.',
+  },
+  {
     id: 'portaljs-define-schema',
     summary:
       "Infer a Frictionless Table Schema from a dataset's data, add license/source/keyword metadata, and surface a typed field table on its showcase.",
