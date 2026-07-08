@@ -47,7 +47,8 @@ const LABEL_OVERRIDES: Record<string, string[]> = {
   'mcp-server-ai-assistants-to-improve-data-portals':                  ['PortalJS', 'AI Integration'],
   'supercharging-data-portals-with-the-portaljs-mcp-server':           ['PortalJS', 'AI Integration'],
   'portaljs-is-now-ai-native':                                         ['PortalJS', 'AI Integration'],
-  'rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code': ['PortalJS', 'AI Integration'],
+  'rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code': ['PortalJS Cloud', 'Civic Data'],
+  'scaling-portaljs-data-with-giftless-and-r2':                         ['PortalJS'],
   // PortalJS Cloud + Tutorial
   'keep-your-portal-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api': ['PortalJS Cloud', 'Tutorial'],
   // PortalJS open-source
