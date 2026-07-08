@@ -131,6 +131,48 @@ preview with click-to-inspect feature properties. This manual tippecanoe step is
 the interim ingest path; an automated GeoJSON→PMTiles pipeline is a separate
 roadmap phase.
 
+## Geo query tier — spatial SQL over GeoParquet (no download)
+
+Where PMTiles *renders* geometry, **GeoParquet** lets you *query* it. Add a
+resource with `format: "geoparquet"` and the showcase opens `components/GeoQuery.tsx`:
+DuckDB-Wasm (with the `spatial` extension) reads the remote GeoParquet in place
+over HTTP range requests and runs spatial SQL — the geospatial analog of the
+Parquet SQL editor above. Results render as a live MapLibre overlay, a table, and
+a bar chart; clicking a feature does a DuckDB point-in-polygon lookup for its full
+attributes. A dataset can ship **both** a `pmtiles` and a `geoparquet` resource so
+render + query compose on one page (see `@reference/world-boundaries`).
+
+The queries use a **bbox-first** pattern — a cheap covering-bbox filter prunes
+Parquet row groups, then `ST_Intersects` refines to the exact predicate:
+
+```sql
+SELECT name, ST_AsGeoJSON(geometry) AS geojson   -- `geojson` column drives the overlay
+FROM data
+WHERE bbox.xmin <= 40 AND bbox.xmax >= -25        -- prune row groups (Parquet stats)
+  AND bbox.ymin <= 72 AND bbox.ymax >= 34
+  AND ST_Intersects(geometry, ST_MakeEnvelope(-25, 34, 40, 72))  -- exact predicate
+```
+
+Build a GeoParquet twin from the same source with duckdb — Hilbert-sorted, with a
+GeoParquet 1.1 covering `bbox` column so row-group pruning works:
+
+```bash
+duckdb -c "LOAD spatial;
+  COPY (
+    SELECT * EXCLUDE (geom),
+      {'xmin': ST_XMin(geom), 'ymin': ST_YMin(geom),
+       'xmax': ST_XMax(geom), 'ymax': ST_YMax(geom)} AS bbox,
+      geom AS geometry
+    FROM ST_Read('boundaries.geojson')
+    ORDER BY ST_Hilbert(geom, {'min_x':-180,'min_y':-90,'max_x':180,'max_y':90}::BOX_2D)
+  ) TO 'boundaries.parquet' (FORMAT PARQUET, ROW_GROUP_SIZE 25000);"
+```
+
+Keep result sets small (`ST_AsGeoJSON` is the slow path — decode, not query); for
+very large sets project WKB/GeoArrow instead of GeoJSON. `@duckdb/duckdb-wasm`
+loads on demand in the browser only. This manual duckdb step is the interim ingest
+path; an automated pipeline is a separate roadmap phase.
+
 ## Why dataset URLs start with `@`
 
 Dataset showcase URLs are namespaced under `@` (`/@<owner-or-theme>/<dataset>`) so they

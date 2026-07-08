@@ -15,7 +15,12 @@ import type { License, Source, TableSchema } from '../metadata/types'
 // tiles the showcase renders with MapLibre GL over HTTP range requests — any
 // dataset size pans and zooms with no tile server. Made from GeoJSON/Shapefile
 // with tippecanoe; see components/MapPreview.tsx.
-export type DataFormat = 'csv' | 'tsv' | 'json' | 'geojson' | 'parquet' | 'pmtiles'
+// 'geoparquet' is the query tier for geometry: a GeoParquet file DuckDB-Wasm
+// range-reads in place and runs spatial SQL over (bbox pre-filter → ST_Intersects),
+// rendering results as a live map overlay — see components/GeoQuery.tsx. It's the
+// geospatial analog of the 'parquet' query view; a dataset can ship BOTH a pmtiles
+// resource (render) and a geoparquet resource (query) so the two compose.
+export type DataFormat = 'csv' | 'tsv' | 'json' | 'geojson' | 'parquet' | 'pmtiles' | 'geoparquet'
 
 // One line of a version-to-version diff, shown when a resource's history is expanded.
 // Only raw-text resources (CSV/TSV committed in git) produce these; an LFS-pointer

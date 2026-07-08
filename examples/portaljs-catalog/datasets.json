@@ -129,9 +129,24 @@
     "slug": "world-boundaries",
     "namespace": "reference",
     "name": "World Country Boundaries",
-    "description": "Country boundary polygons for the whole world, tiled as a single PMTiles archive and rendered serverlessly — the map fetches only the tiles in view via HTTP range requests straight from R2.",
-    "file": "https://data.portaljs.com/lfs/datopian/portaljs-catalog/14b9f9c68e58e8c2f3b6fd5f6794e0f8196649b9a63bed57ece80cd1c8c18af4",
-    "format": "pmtiles",
+    "description": "Country boundaries for the whole world in two serverless geo tiers derived from the same Natural Earth source: a PMTiles archive the map renders in place (any size, no tile server), and a GeoParquet twin DuckDB-Wasm runs spatial SQL over in place — bbox pre-filter to prune Parquet row groups, then ST_Intersects, rendered as a live overlay. Render tier + query tier on one dataset.",
+    "resources": [
+      {
+        "name": "tiles",
+        "title": "Boundaries (PMTiles — render tier)",
+        "description": "Vector tiles rendered by MapLibre GL over HTTP range requests; only the tiles in view are fetched, so any dataset size pans and zooms with no tile server.",
+        "path": "https://data.portaljs.com/lfs/datopian/portaljs-catalog/14b9f9c68e58e8c2f3b6fd5f6794e0f8196649b9a63bed57ece80cd1c8c18af4",
+        "format": "pmtiles"
+      },
+      {
+        "name": "geo",
+        "title": "Boundaries (GeoParquet — query tier)",
+        "description": "GeoParquet 1.1 (Hilbert-sorted, covering bbox column) queried in place with DuckDB-Wasm + spatial. Pan the map and “Query viewport” to fetch only the features in view; click a feature for its full attributes via a DuckDB point-in-polygon lookup.",
+        "path": "https://data.portaljs.com/lfs/datopian/portaljs-catalog/437f70dcc2c8d464be9f2181175c37daa21b533351d4873039f78eff0e79f5f5",
+        "format": "geoparquet",
+        "query": "-- bbox-first: the covering bbox prunes Parquet row groups (cheap),\n-- then ST_Intersects refines to the exact predicate (only on survivors).\nSELECT name, continent, pop_est, ST_AsGeoJSON(geometry) AS geojson\nFROM data\nWHERE bbox.xmin <= 40 AND bbox.xmax >= -25\n  AND bbox.ymin <= 72 AND bbox.ymax >= 34\n  AND ST_Intersects(geometry, ST_MakeEnvelope(-25, 34, 40, 72))"
+      }
+    ],
     "licenses": [
       {
         "name": "PDDL-1.0",
@@ -145,7 +160,7 @@
         "path": "https://www.naturalearthdata.com/downloads/110m-cultural-vectors/"
       }
     ],
-    "keywords": ["boundaries", "countries", "geospatial", "pmtiles"],
-    "version": "1.0.0"
+    "keywords": ["boundaries", "countries", "geospatial", "pmtiles", "geoparquet", "duckdb"],
+    "version": "1.1.0"
   }
 ]

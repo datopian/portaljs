@@ -65,7 +65,16 @@ export class DuckDbQuery implements DataQuery {
       await this.db.instantiate(bundle.mainModule, bundle.pthreadWorker)
       this.conn = await this.db.connect()
 
-      const isParquet = source.format === 'parquet'
+      // GeoParquet spatial queries need the `spatial` extension: it provides the
+      // ST_* functions AND makes read_parquet auto-decode the GeoParquet geometry
+      // column to the GEOMETRY type. The extension loads in WASM from the DuckDB
+      // extension repository on demand.
+      if (source.spatial) {
+        await this.conn.query('INSTALL spatial; LOAD spatial;')
+      }
+
+      // 'geoparquet' is Parquet on the wire, so it takes the same range-read path.
+      const isParquet = source.format === 'parquet' || source.format === 'geoparquet'
       const isRemote = /^https?:\/\//i.test(source.url)
       this._ranged = isParquet && isRemote
 
