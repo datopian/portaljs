@@ -1,7 +1,7 @@
 # New Portal — Reference
 
 Detailed reference for the `portaljs-new-portal` skill. The executable workflow lives in
-[`.claude/commands/portaljs-new-portal.md`](../../../.claude/commands/portaljs-new-portal.md).
+[`.claude/commands/portaljs-new-portal.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-new-portal.md).
 
 ## Placeholder tokens
 

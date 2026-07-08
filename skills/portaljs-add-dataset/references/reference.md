@@ -1,7 +1,7 @@
 # Add Dataset — Reference
 
 Detailed reference for the `portaljs-add-dataset` skill. The executable workflow lives in
-[`.claude/commands/portaljs-add-dataset.md`](../../../.claude/commands/portaljs-add-dataset.md).
+[`.claude/commands/portaljs-add-dataset.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-dataset.md).
 
 ## `datasets.json` entry fields
 

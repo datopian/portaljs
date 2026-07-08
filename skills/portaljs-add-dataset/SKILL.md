@@ -1,7 +1,7 @@
 ---
 name: portaljs-add-dataset
 description: Add a dataset (CSV, TSV, JSON, or GeoJSON) to an existing PortalJS portal. Appends an entry to datasets.json so the catalog and showcase render it automatically; routes the data by source (local file vs remote URL) — R2 via Git LFS by default, remote URLs by passthrough. Use when registering a new dataset in a scaffolded portal.
-allowed-tools: Read, Write, Edit, Bash, WebFetch
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(git:*), Bash(curl:*), Bash(mkdir:*), Bash(cp:*), WebFetch
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
@@ -39,7 +39,7 @@ TSV, JSON (array), and GeoJSON.
 ## Instructions
 
 The canonical, full step-by-step workflow is
-[`.claude/commands/portaljs-add-dataset.md`](../../.claude/commands/portaljs-add-dataset.md) —
+[`.claude/commands/portaljs-add-dataset.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-dataset.md) —
 the single source of truth. Read and follow it when executing. Summary:
 
 1. Gather input from `$ARGUMENTS` — source (file path or URL), portal directory (default
@@ -114,7 +114,7 @@ the skill copies it into `public/data/` instead, per the `.gitattributes` inline
 
 ## Resources
 
-- Full workflow: [`.claude/commands/portaljs-add-dataset.md`](../../.claude/commands/portaljs-add-dataset.md)
+- Full workflow: [`.claude/commands/portaljs-add-dataset.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-dataset.md)
 - Manifest fields and routing details: [`references/reference.md`](references/reference.md)
 - Related skills: `portaljs-new-portal`, `portaljs-add-chart`, `portaljs-add-map`, `portaljs-define-schema`
 - Git LFS documentation: <https://git-lfs.com/>

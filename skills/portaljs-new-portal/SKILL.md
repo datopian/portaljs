@@ -1,7 +1,7 @@
 ---
 name: portaljs-new-portal
 description: Scaffold a new PortalJS data portal from a brief. Copies the canonical template from examples/portaljs-catalog and substitutes project tokens. Use when starting a brand-new data portal project from scratch.
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(cp:*), Bash(mkdir:*), Bash(git:*)
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
@@ -38,7 +38,7 @@ with a type check.
 ## Instructions
 
 The canonical, full step-by-step workflow is
-[`.claude/commands/portaljs-new-portal.md`](../../.claude/commands/portaljs-new-portal.md) —
+[`.claude/commands/portaljs-new-portal.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-new-portal.md) —
 the single source of truth. Read and follow it when executing. Summary:
 
 1. Interview the user in up to three rounds — Home/basics, Catalog & discovery
@@ -113,7 +113,7 @@ Picks `NAMESPACE_TYPE = 'theme'` with namespace `reference`, clears `datasets.js
 
 ## Resources
 
-- Full workflow: [`.claude/commands/portaljs-new-portal.md`](../../.claude/commands/portaljs-new-portal.md)
+- Full workflow: [`.claude/commands/portaljs-new-portal.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-new-portal.md)
 - Template and token reference: [`references/reference.md`](references/reference.md)
 - Related skills: `portaljs-add-dataset`, `portaljs-add-chart`, `portaljs-add-map`, `portaljs-connect-ckan`
 - PortalJS documentation: <https://portaljs.org>

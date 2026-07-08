@@ -1,7 +1,7 @@
 # PortalJS — Add Resource Reference
 
 Companion reference for the
-[`/portaljs-add-resource`](../../../.claude/commands/portaljs-add-resource.md) command —
+[`/portaljs-add-resource`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-resource.md) command —
 the command file is the single source of truth for the step-by-step workflow; this page
 covers the data shapes and troubleshooting detail that don't fit inline.
 

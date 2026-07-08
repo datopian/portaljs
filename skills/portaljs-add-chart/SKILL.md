@@ -1,7 +1,7 @@
 ---
 name: portaljs-add-chart
 description: Add a chart (line, bar, area, pie, or scatter) to a dataset's showcase in a PortalJS portal. Installs recharts, writes a reusable Chart component, and renders it in the showcase Views section. Use when visualizing a dataset already registered in datasets.json.
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
@@ -36,7 +36,7 @@ Five chart types are supported: line, bar, area, pie, and scatter.
 ## Instructions
 
 The canonical, full step-by-step workflow is
-[`.claude/commands/portaljs-add-chart.md`](../../.claude/commands/portaljs-add-chart.md) —
+[`.claude/commands/portaljs-add-chart.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-chart.md) —
 the single source of truth. Read and follow it when executing. Summary:
 
 1. Gather input — dataset slug, X column, Y column(s), chart type (default `line`), portal
@@ -90,7 +90,7 @@ the single source of truth. Read and follow it when executing. Summary:
 
 ## Resources
 
-- Full workflow: [`.claude/commands/portaljs-add-chart.md`](../../.claude/commands/portaljs-add-chart.md)
+- Full workflow: [`.claude/commands/portaljs-add-chart.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-chart.md)
 - Chart-type and prop reference: [`references/reference.md`](references/reference.md)
 - Related skills: `portaljs-add-dataset`, `portaljs-add-map`, `portaljs-define-schema`
 - recharts documentation: <https://recharts.org/>

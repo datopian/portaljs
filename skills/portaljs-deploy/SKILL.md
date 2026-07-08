@@ -1,7 +1,7 @@
 ---
 name: portaljs-deploy
-description: Deploy a PortalJS portal to PortalJS Arc — Datopian-managed static hosting on Cloudflare. Builds a static export, uploads it, and returns a live <slug>.arc.portaljs.com URL. One command, one target. Use when a portal is ready to publish or redeploy to a live URL.
-allowed-tools: Read, Write, Edit, Bash
+description: Deploy a PortalJS portal to PortalJS Arc — Datopian-managed static hosting on Cloudflare. Builds a static export, uploads it, and returns a live SLUG.arc.portaljs.com URL. One command, one target. Use when a portal is ready to publish or redeploy to a live URL.
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(curl:*)
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
@@ -21,7 +21,7 @@ tags:
 
 Publish an existing PortalJS portal to **PortalJS Arc** — Datopian's managed static
 hosting on Cloudflare. Build a static export, upload it to the Arc API, and print a live
-`https://<slug>.arc.portaljs.com` URL. Re-running redeploys the same portal (idempotent on
+`https://SLUG.arc.portaljs.com` URL. Re-running redeploys the same portal (idempotent on
 the slug). This is a single-target skill — it deploys to Arc only. For self-hosting, run
 `npm run build` and upload `out/` to any static host; no skill required for that path.
 Arc serves static exports only — SSR is not hosted on Arc yet.
@@ -41,7 +41,7 @@ Arc serves static exports only — SSR is not hosted on Arc yet.
 ## Instructions
 
 The canonical, full step-by-step workflow is
-[`.claude/commands/portaljs-deploy.md`](../../.claude/commands/portaljs-deploy.md) — the
+[`.claude/commands/portaljs-deploy.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-deploy.md) — the
 single source of truth. Read and follow it when executing. Summary:
 
 1. Gather input — portal directory (default `.`) and slug (default from `package.json`
@@ -64,7 +64,7 @@ single source of truth. Read and follow it when executing. Summary:
 - **Created (on first sign-in):** `~/.portaljs/credentials` (mode `0600`).
 - **Verified:** `npm run build` exits 0, `out/index.html` exists, the export-hygiene
   check passes.
-- **Result:** the portal is live at `https://<slug>.arc.portaljs.com`; re-running updates
+- **Result:** the portal is live at `https://SLUG.arc.portaljs.com`; re-running updates
   the same slug in place.
 
 ## Error Handling
@@ -102,7 +102,7 @@ export PORTALJS_TOKEN=arc_live_xxxxxxxx
 
 ## Resources
 
-- Full workflow: [`.claude/commands/portaljs-deploy.md`](../../.claude/commands/portaljs-deploy.md)
+- Full workflow: [`.claude/commands/portaljs-deploy.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-deploy.md)
 - Deploy internals reference: [`references/reference.md`](references/reference.md)
 - Related skills: `portaljs-new-portal`, `portaljs-add-dataset`, `portaljs-connect-ckan`
 - PortalJS Arc dashboard (sign in, manage tokens): <https://arc.portaljs.com>

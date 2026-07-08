@@ -1,7 +1,7 @@
 # Check Data Quality — Reference
 
 Detailed reference for the `portaljs-check-data-quality` skill. The executable workflow lives in
-[`.claude/commands/portaljs-check-data-quality.md`](../../../.claude/commands/portaljs-check-data-quality.md).
+[`.claude/commands/portaljs-check-data-quality.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-check-data-quality.md).
 
 ## Check catalog
 

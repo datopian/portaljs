@@ -1,7 +1,7 @@
 ---
 name: portaljs-architect
-description: Recommend a data-portal architecture (storage, compute, catalog, access, hosting, metadata) from your needs, then hand off to the build skills. The advisory entry point. Use when starting a new data-portal project and the underlying architecture has not yet been decided.
-allowed-tools: Read, Write, Bash
+description: Recommend a data-portal architecture (storage, compute, catalog, access, hosting, metadata) from stated needs, then hand off to the build skills. The advisory entry point. Use when starting a new data-portal project and the underlying architecture has not yet been decided.
+allowed-tools: Read, Write, Bash(du:*), Bash(wc:*), Bash(ls:*), Bash(head:*)
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
@@ -34,7 +34,7 @@ question has a sensible default, reachable by replying "use defaults."
 
 ## Instructions
 The canonical, full step-by-step workflow lives in
-[`.claude/commands/portaljs-architect.md`](../../.claude/commands/portaljs-architect.md) —
+[`.claude/commands/portaljs-architect.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-architect.md) —
 that file is the single source of truth. Follow it when executing this skill:
 
 1. Parse `$ARGUMENTS` for anything already specified, then interview for what's
@@ -101,7 +101,7 @@ Cloudflare Workers — flagged as the larger, opt-in build — while Storage/Cat
 still follow the volume-based defaults.
 
 ## Resources
-- Full workflow: [`.claude/commands/portaljs-architect.md`](../../.claude/commands/portaljs-architect.md)
+- Full workflow: [`.claude/commands/portaljs-architect.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-architect.md)
 - Reference: [`references/reference.md`](references/reference.md)
-- Decision framework: [`site/content/docs/architecture/decision-framework.md`](../../site/content/docs/architecture/decision-framework.md)
+- Decision framework: [`site/content/docs/architecture/decision-framework.md`](https://github.com/datopian/portaljs/blob/main/site/content/docs/architecture/decision-framework.md)
 - Related skills: `/portaljs-new-portal`, `/portaljs-add-dataset`, `/portaljs-connect-ckan`, `/portaljs-define-schema`, `/portaljs-deploy`

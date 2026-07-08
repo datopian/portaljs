@@ -1,7 +1,7 @@
 # Add Map — Reference
 
 Detailed reference for the `portaljs-add-map` skill. The executable workflow lives in
-[`.claude/commands/portaljs-add-map.md`](../../../.claude/commands/portaljs-add-map.md).
+[`.claude/commands/portaljs-add-map.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-map.md).
 
 ## `<Map />` props
 

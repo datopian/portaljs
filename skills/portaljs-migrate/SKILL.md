@@ -1,12 +1,18 @@
 ---
 name: portaljs-migrate
 description: Migrate (harvest) datasets between open-data platforms. Reads CKAN, a DCAT-US /data.json catalog (DKAN, ArcGIS Hub, data.gov), a DCAT / DCAT-AP RDF feed (JSON-LD, Turtle, or RDF/XML), Socrata, OpenDataSoft, or an ArcGIS FeatureServer, and writes them to a static PortalJS catalog or pushes them into a CKAN instance over its API. Use when moving datasets from an external open-data platform into a PortalJS portal, or bridging one CKAN instance to another.
-allowed-tools: Read, Write, Edit, Bash, WebFetch
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(node:*), Bash(curl:*), Bash(git:*), WebFetch
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
 compatibility: Claude Code with PortalJS portals (Next.js 14, React 18, Node 18+). Runs from any project via the plugin, a personal ~/.claude/commands install, or a portaljs clone.
-tags: portaljs, data-portal, migration, harvest, dcat, ckan
+tags:
+  - portaljs
+  - data-portal
+  - migration
+  - harvest
+  - dcat
+  - ckan
 ---
 
 # PortalJS — Migrate
@@ -44,7 +50,7 @@ the portal stands alone and needs no backend.
 ## Instructions
 
 Full step-by-step workflow:
-[`.claude/commands/portaljs-migrate.md`](../../.claude/commands/portaljs-migrate.md).
+[`.claude/commands/portaljs-migrate.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-migrate.md).
 
 1. Gather input — source type, source URL, target (`static`/`ckan`), portal
    directory, copy mode (`link`/`download`), filters. Interview instead of erroring.
@@ -121,7 +127,7 @@ Pushes every package from the old CKAN instance into the new one, filed under
 
 ## Resources
 
-- Command source: [`.claude/commands/portaljs-migrate.md`](../../.claude/commands/portaljs-migrate.md)
+- Command source: [`.claude/commands/portaljs-migrate.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-migrate.md)
 - Field mappings and troubleshooting: [`references/reference.md`](references/reference.md)
 - Related skills: `/portaljs-connect-ckan`, `/portaljs-add-dcat`,
   `/portaljs-check-data-quality`, `/portaljs-define-schema`

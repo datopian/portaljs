@@ -1,7 +1,7 @@
 ---
 name: portaljs-connect-ckan
-description: Wire a scaffolded PortalJS portal to a CKAN backend over its API. Generates a tiny server-side fetch client (no runtime dependency) and feeds the /search catalog and /@<namespace>/<slug> showcases from CKAN instead of datasets.json. Use when connecting an existing portal to a live CKAN instance instead of a static manifest.
-allowed-tools: Read, Write, Edit, Bash, WebFetch
+description: Wire a scaffolded PortalJS portal to a CKAN backend over its API. Generates a tiny server-side fetch client (no runtime dependency) and feeds the /search catalog and /@namespace/slug showcases from CKAN instead of datasets.json. Use when connecting an existing portal to a live CKAN instance instead of a static manifest.
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), WebFetch
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
@@ -22,7 +22,7 @@ tags:
 Connect an existing `portaljs-catalog` portal to a live CKAN backend for the "decoupled /
 any backend" path. The portal stops reading the static `datasets.json` manifest (and files
 in `/public/data/`) and instead feeds its two data surfaces — the **`/search` catalog** and
-the **`/@<namespace>/<slug>` showcases** — straight from a CKAN instance's REST API
+the **`/@namespace/slug` showcases** — straight from a CKAN instance's REST API
 (`package_search` / `package_show`) through a generated fetch client. Output is plain,
 editable Next.js code with **no runtime dependency** — never `@portaljs/ckan`, whose bundle
 wires React UI components to React 18 internals and crashes at import under the template's
@@ -40,7 +40,7 @@ after `portaljs-new-portal` to swap a freshly scaffolded portal's sample data ov
 ## Instructions
 
 The canonical, full step-by-step workflow is
-[`.claude/commands/portaljs-connect-ckan.md`](../../.claude/commands/portaljs-connect-ckan.md) —
+[`.claude/commands/portaljs-connect-ckan.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-connect-ckan.md) —
 the single source of truth. Read and follow it when executing. Summary:
 
 1. Gather input from `$ARGUMENTS` — CKAN base URL (required), org filter (optional), group
@@ -54,7 +54,7 @@ the single source of truth. Read and follow it when executing. Summary:
    `package_search` and `package_show`, with `DMS`, `ORG_FILTER`, `GROUP_FILTER`, and
    `MAX_DATASETS` as editable constants.
 5. Rewire `pages/search.tsx` to list datasets from `package_search`, linking each to
-   `/@<namespace>/<slug>` via `datasetHref`; leave `pages/index.tsx` untouched.
+   `/@namespace/slug` via `datasetHref`; leave `pages/index.tsx` untouched.
 6. Overwrite `pages/[owner]/[slug].tsx` to pre-render one page per dataset via
    `getStaticPaths` and fetch details with `package_show`, previewing tabular resources
    through the existing `Table` component.
@@ -68,7 +68,7 @@ the single source of truth. Read and follow it when executing. Summary:
   (showcase reads `package_show`, overwritten to drop the `datasets.json` source).
 - **Unchanged:** `pages/index.tsx` (still the static search-first landing page).
 - **Verified:** `npx next build` succeeds and prints the static page count.
-- **Result:** `/search` and `/@<namespace>/<slug>` are served from the CKAN backend; the
+- **Result:** `/search` and `/@namespace/slug` are served from the CKAN backend; the
   `DMS` env var can override the base URL at deploy time without editing code.
 
 ## Error Handling
@@ -104,7 +104,7 @@ the single source of truth. Read and follow it when executing. Summary:
 
 ## Resources
 
-- Full workflow: [`.claude/commands/portaljs-connect-ckan.md`](../../.claude/commands/portaljs-connect-ckan.md)
+- Full workflow: [`.claude/commands/portaljs-connect-ckan.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-connect-ckan.md)
 - Client, filters, and troubleshooting reference: [`references/reference.md`](references/reference.md)
 - Related skills: `portaljs-new-portal`, `portaljs-add-dataset`, `portaljs-deploy`
 - CKAN Action API documentation: <https://docs.ckan.org/en/latest/api/>

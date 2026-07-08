@@ -1,7 +1,7 @@
 ---
 name: portaljs-define-schema
 description: Define a dataset's metadata profile — infer a Frictionless Table Schema from its data, add Data Package metadata (license, sources, keywords), and write it into datasets.json so the showcase renders a typed field table. Extend or customize via the L0-L3 profile ladder. Use when a registered dataset needs field types, constraints, or catalog metadata before publishing.
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(node:*), Bash(head:*)
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
@@ -53,7 +53,7 @@ rounds, infers defaults from the data, echoes the schema for confirmation, and a
 ## Instructions
 
 The canonical, full step-by-step workflow is
-[`.claude/commands/portaljs-define-schema.md`](../../.claude/commands/portaljs-define-schema.md) —
+[`.claude/commands/portaljs-define-schema.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-define-schema.md) —
 the single source of truth. Read and follow it when executing. Summary:
 
 1. Gather `PORTAL_DIR`, `DATASET` (slug or `namespace/slug`), and `LEVEL` (default `L0`)
@@ -119,7 +119,7 @@ in `lib/metadata/registry.ts`, and sets `"profile": "co2-emissions-profile"` on 
 
 ## Resources
 
-- Full workflow: [`.claude/commands/portaljs-define-schema.md`](../../.claude/commands/portaljs-define-schema.md)
+- Full workflow: [`.claude/commands/portaljs-define-schema.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-define-schema.md)
 - Field-type and troubleshooting reference: [`references/reference.md`](references/reference.md)
 - Related skills: `portaljs-add-dataset`, `portaljs-add-dcat`, `portaljs-check-data-quality`
 - Frictionless Table Schema specification: <https://datapackage.org/standard/table-schema/>

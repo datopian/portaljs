@@ -1,7 +1,7 @@
 ---
 name: portaljs-check-data-quality
 description: Audit a local or remote tabular file (CSV/TSV) for common data quality issues — schema, nulls, types, duplicates. Read-only. Use when a dataset needs a quality check before publishing, or a showcase renders wrong (blank cells, garbled numbers, an unsortable date column) and the cause needs isolating.
-allowed-tools: Bash
+allowed-tools: Bash(curl:*), Bash(awk:*), Bash(sort:*), Bash(head:*), Bash(wc:*)
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
@@ -39,7 +39,7 @@ diagnose why a showcase renders wrong.
 ## Instructions
 
 The canonical, full step-by-step workflow is
-[`.claude/commands/portaljs-check-data-quality.md`](../../.claude/commands/portaljs-check-data-quality.md) —
+[`.claude/commands/portaljs-check-data-quality.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-check-data-quality.md) —
 the single source of truth. Read and follow it when executing. Summary:
 
 1. Gather input — the file path or URL to audit. If missing, ask for it; never dead-end.
@@ -118,7 +118,7 @@ Fix the flagged rows/columns, then re-run the audit before publishing.
 
 ## Resources
 
-- Full workflow: [`.claude/commands/portaljs-check-data-quality.md`](../../.claude/commands/portaljs-check-data-quality.md)
+- Full workflow: [`.claude/commands/portaljs-check-data-quality.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-check-data-quality.md)
 - Detailed check catalog and troubleshooting: [`references/reference.md`](references/reference.md)
 - Related skills: `portaljs-add-dataset`, `portaljs-define-schema`
 - Python `csv` module (parsing behavior this audit relies on): <https://docs.python.org/3/library/csv.html>

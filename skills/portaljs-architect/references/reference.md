@@ -1,7 +1,7 @@
 # Architect — Reference
 
 Detailed reference for the `portaljs-architect` skill. The executable workflow lives in
-[`.claude/commands/portaljs-architect.md`](../../../.claude/commands/portaljs-architect.md).
+[`.claude/commands/portaljs-architect.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-architect.md).
 
 ## The six slots (default in bold)
 

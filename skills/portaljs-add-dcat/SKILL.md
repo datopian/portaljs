@@ -1,7 +1,7 @@
 ---
 name: portaljs-add-dcat
 description: Make a PortalJS portal harvestable by national/EU/US open-data portals — emit standards-compliant DCAT catalog feeds (DCAT 2/3, DCAT-AP, DCAT-US, national profiles) in JSON-LD, Turtle, and RDF/XML at build, with autodiscovery and per-profile conformance checking. Use when a portal needs to be harvested by data.europa.eu, data.gov, or a national open-data catalog.
-allowed-tools: Read, Write, Edit, Bash, WebFetch
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(node:*), WebFetch
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
@@ -42,7 +42,7 @@ on any static host, with no runtime.
 ## Instructions
 
 The canonical, full step-by-step workflow is
-[`.claude/commands/portaljs-add-dcat.md`](../../.claude/commands/portaljs-add-dcat.md) —
+[`.claude/commands/portaljs-add-dcat.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-dcat.md) —
 the single source of truth. Read and follow it when executing. Summary:
 
 1. Gather input from `$ARGUMENTS` (interview if thin): portal directory (default `.`),
@@ -130,7 +130,7 @@ first profile listed also becomes the canonical, un-suffixed `catalog.jsonld`/`.
 
 ## Resources
 
-- Full workflow: [`.claude/commands/portaljs-add-dcat.md`](../../.claude/commands/portaljs-add-dcat.md)
+- Full workflow: [`.claude/commands/portaljs-add-dcat.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-dcat.md)
 - Profile registry, serialization formats, and validator details: [`references/reference.md`](references/reference.md)
 - Related skills: `portaljs-define-schema`, `portaljs-new-portal`, `portaljs-deploy`, `portaljs-migrate`
 - DCAT specification: <https://www.w3.org/TR/vocab-dcat-3/>

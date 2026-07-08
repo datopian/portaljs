@@ -1,7 +1,7 @@
 # Connect CKAN — Reference
 
 Detailed reference for the `portaljs-connect-ckan` skill. The executable workflow lives in
-[`.claude/commands/portaljs-connect-ckan.md`](../../../.claude/commands/portaljs-connect-ckan.md).
+[`.claude/commands/portaljs-connect-ckan.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-connect-ckan.md).
 
 ## Environment variables
 

@@ -1,7 +1,7 @@
 # Define Schema — Reference
 
 Detailed reference for the `portaljs-define-schema` skill. The executable workflow lives in
-[`.claude/commands/portaljs-define-schema.md`](../../../.claude/commands/portaljs-define-schema.md).
+[`.claude/commands/portaljs-define-schema.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-define-schema.md).
 
 ## The L0-L3 profile ladder
 

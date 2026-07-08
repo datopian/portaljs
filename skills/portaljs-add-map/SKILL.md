@@ -1,7 +1,7 @@
 ---
 name: portaljs-add-map
 description: Render a GeoJSON dataset on an interactive Leaflet map in the Views section of a dataset's showcase. Installs react-leaflet and a Map component, then renders the map for the chosen dataset. Use when a dataset's data is geographic and a map view is needed alongside the showcase's default metadata and download.
-allowed-tools: Read, Write, Edit, Bash, WebFetch
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), WebFetch
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
@@ -38,7 +38,7 @@ exist yet, the skill can copy the file and register it first.
 ## Instructions
 
 The canonical, full step-by-step workflow is
-[`.claude/commands/portaljs-add-map.md`](../../.claude/commands/portaljs-add-map.md) — the
+[`.claude/commands/portaljs-add-map.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-map.md) — the
 single source of truth. Read and follow it when executing. Summary:
 
 1. Gather input — dataset slug (or a GeoJSON source to register), portal directory. If any
@@ -101,7 +101,7 @@ single source of truth. Read and follow it when executing. Summary:
 
 ## Resources
 
-- Full workflow: [`.claude/commands/portaljs-add-map.md`](../../.claude/commands/portaljs-add-map.md)
+- Full workflow: [`.claude/commands/portaljs-add-map.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-map.md)
 - Map props and troubleshooting reference: [`references/reference.md`](references/reference.md)
 - Related skills: `portaljs-add-dataset`, `portaljs-add-chart`, `portaljs-define-schema`
 - react-leaflet documentation: <https://react-leaflet.js.org/>

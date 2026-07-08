@@ -1,12 +1,18 @@
 ---
 name: portaljs-add-resource
 description: Add another file (resource) to an EXISTING dataset in a PortalJS portal — a data dictionary, methodology, or an additional data file. Turns a single-file dataset into a multi-resource one; the showcase renders a section per resource. Use when a dataset needs a second file, such as a data dictionary, methodology doc, or an additional period's data.
-allowed-tools: Read, Write, Edit, Bash, WebFetch
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Bash(mkdir:*), Bash(cp:*), WebFetch
 version: 1.0.0
 author: Datopian <hello@datopian.com>
 license: MIT
 compatibility: Claude Code with PortalJS portals (Next.js 14, React 18, Node 18+). Runs from any project via the plugin, a personal ~/.claude/commands install, or a portaljs clone.
-tags: portaljs, data-portal, resource, data-dictionary, metadata, catalog
+tags:
+  - portaljs
+  - data-portal
+  - resource
+  - data-dictionary
+  - metadata
+  - catalog
 ---
 
 # PortalJS — Add Resource
@@ -35,7 +41,7 @@ first time a second file is added — no data is lost.
 ## Instructions
 
 The canonical, full step-by-step workflow lives in
-[`.claude/commands/portaljs-add-resource.md`](../../.claude/commands/portaljs-add-resource.md)
+[`.claude/commands/portaljs-add-resource.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-resource.md)
 in this repository — that file is the single source of truth. Read and follow it. Summary:
 
 1. Gather input (interview if thin): `DATASET` (slug or `namespace/slug`), `SOURCE`
@@ -105,7 +111,7 @@ extend and for the new file's path or URL, then proceeds through steps 2-6 above
 
 ## Resources
 
-- [`.claude/commands/portaljs-add-resource.md`](../../.claude/commands/portaljs-add-resource.md) — canonical workflow this skill follows
+- [`.claude/commands/portaljs-add-resource.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-resource.md) — canonical workflow this skill follows
 - [`references/reference.md`](references/reference.md) — resource entry fields, single-to-multi-resource layout, troubleshooting
 - Related skills: `/portaljs-add-dataset` (create a new dataset), `/portaljs-define-schema` (describe a resource's fields)
 - [Frictionless Data — Data Package resources](https://datapackage.org/standard/data-resource/) — the data model this feature mirrors

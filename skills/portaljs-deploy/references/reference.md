@@ -1,7 +1,7 @@
 # Deploy — Reference
 
 Detailed reference for the `portaljs-deploy` skill. The executable workflow lives in
-[`.claude/commands/portaljs-deploy.md`](../../../.claude/commands/portaljs-deploy.md).
+[`.claude/commands/portaljs-deploy.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-deploy.md).
 
 ## Static export config
 

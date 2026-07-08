@@ -1,7 +1,7 @@
 # PortalJS Migrate — Reference
 
 Field mappings, sink options, and troubleshooting detail for the
-[`/portaljs-migrate`](../../../.claude/commands/portaljs-migrate.md) command. Read the
+[`/portaljs-migrate`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-migrate.md) command. Read the
 command file first for the full step-by-step workflow; this document is the
 supporting lookup table.
 

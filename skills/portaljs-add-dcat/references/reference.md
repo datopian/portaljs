@@ -1,7 +1,7 @@
 # Add DCAT — Reference
 
 Detailed reference for the `portaljs-add-dcat` skill. The executable workflow lives in
-[`.claude/commands/portaljs-add-dcat.md`](../../../.claude/commands/portaljs-add-dcat.md).
+[`.claude/commands/portaljs-add-dcat.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-dcat.md).
 
 ## Supported DCAT profiles
 

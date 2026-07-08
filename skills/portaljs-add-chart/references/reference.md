@@ -1,7 +1,7 @@
 # Add Chart — Reference
 
 Detailed reference for the `portaljs-add-chart` skill. The executable workflow lives in
-[`.claude/commands/portaljs-add-chart.md`](../../../.claude/commands/portaljs-add-chart.md).
+[`.claude/commands/portaljs-add-chart.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-add-chart.md).
 
 ## Chart types
 
