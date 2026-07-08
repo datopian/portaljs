@@ -127,9 +127,11 @@ tippecanoe -zg --drop-densest-as-needed -o boundaries.pmtiles boundaries.geojson
 
 Then add the resource with `format: "pmtiles"` (see the R2-hosted
 `@reference/world-boundaries` sample) — the showcase renders the interactive map
-preview with click-to-inspect feature properties. This manual tippecanoe step is
-the interim ingest path; an automated GeoJSON→PMTiles pipeline is a separate
-roadmap phase.
+preview with click-to-inspect feature properties. The `/portaljs-add-geo` skill
+**automates this**: it shells out to `tippecanoe` (and `duckdb`) on your machine to
+derive PMTiles + GeoParquet from one geo upload, pushes them to R2, and registers
+the dual-tier dataset for you — the manual `tippecanoe` recipe below is the
+underlying step it runs.
 
 ## Geo query tier — spatial SQL over GeoParquet (no download)
 
@@ -170,8 +172,9 @@ duckdb -c "LOAD spatial;
 
 Keep result sets small (`ST_AsGeoJSON` is the slow path — decode, not query); for
 very large sets project WKB/GeoArrow instead of GeoJSON. `@duckdb/duckdb-wasm`
-loads on demand in the browser only. This manual duckdb step is the interim ingest
-path; an automated pipeline is a separate roadmap phase.
+loads on demand in the browser only. `/portaljs-add-geo` runs this exact `duckdb`
+recipe for you as part of its auto-ingest (GeoParquet query tier alongside the
+PMTiles render tier); the manual step above is what it automates.
 
 ## Why dataset URLs start with `@`
 
