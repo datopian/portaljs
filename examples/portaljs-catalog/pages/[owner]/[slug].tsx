@@ -31,6 +31,13 @@ const MapPreview = dynamic(() => import('../../components/MapPreview'), {
   ssr: false,
 })
 
+// DuckDB-Wasm + spatial + MapLibre are browser-only, so the GeoParquet query
+// view is client-side too. The chunk loads only when a dataset has a geoparquet
+// resource.
+const GeoQuery = dynamic(() => import('../../components/GeoQuery'), {
+  ssr: false,
+})
+
 type PageProps = {
   dataset: Dataset
   resources: Resource[]
@@ -449,6 +456,11 @@ function ResourceSection({
         // Tiled geo data: MapLibre renders the archive in place over HTTP
         // range requests — any dataset size, no tile server.
         <MapPreview url={url} attribution={mapAttribution} />
+      ) : resource.format === 'geoparquet' ? (
+        // Geometry query tier: DuckDB-Wasm runs spatial SQL over the remote
+        // GeoParquet in place (bbox pre-filter → ST_Intersects) and renders the
+        // result as a live map overlay — the geospatial analog of the SQL editor.
+        <GeoQuery resource={resource} mapAttribution={mapAttribution} />
       ) : useQueryView ? (
         <DataExplorer resource={resource} />
       ) : tabular ? (

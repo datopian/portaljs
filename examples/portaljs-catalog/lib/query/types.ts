@@ -18,7 +18,11 @@ export type QueryResult = {
 export type QuerySource = {
   // URL to the dataset file (e.g. /data/foo.csv, or a remote URL).
   url: string
-  format: 'csv' | 'tsv' | 'json' | 'parquet' | string
+  format: 'csv' | 'tsv' | 'json' | 'parquet' | 'geoparquet' | string
+  // Load the DuckDB `spatial` extension after connecting, so ST_* functions and
+  // GeoParquet geometry decoding are available. Set for GeoParquet sources
+  // (the <GeoQuery> spatial view); left off for plain tabular queries.
+  spatial?: boolean
 }
 
 export interface DataQuery {
