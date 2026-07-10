@@ -196,6 +196,7 @@ npm create portaljs@latest my-portal
 | [`/portaljs-connect-ckan`](.claude/commands/portaljs-connect-ckan.md) | Wire the portal to a CKAN backend over its API instead of static files. |
 | [`/portaljs-check-data-quality`](.claude/commands/portaljs-check-data-quality.md) | Validate a dataset against its schema and flag quality issues (type mismatches, missing values, constraint violations). |
 | [`/portaljs-migrate`](.claude/commands/portaljs-migrate.md) | Harvest or migrate a whole catalog into the portal from CKAN, Socrata, OpenDataSoft, ArcGIS, or DCAT-US, over a canonical Frictionless/DCAT model. |
+| [`/arcgis-to-portaljs`](.claude/commands/arcgis-to-portaljs.md) | Migrate a whole ArcGIS Hub site into the portal end-to-end — harvest its `/data.json`, export every FeatureService layer via the ArcGIS REST API, convert to the serverless dual tier (PMTiles + GeoParquet), push to R2, and write a source-vs-derived parity report. |
 | [`/portaljs-deploy`](.claude/commands/portaljs-deploy.md) | Build a static export and publish it to PortalJS Arc — Datopian-managed hosting on Cloudflare — with a live `<slug>.arc.portaljs.com` URL. |
 
 <!-- END:skills-table -->

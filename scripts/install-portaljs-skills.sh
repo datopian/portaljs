@@ -24,7 +24,7 @@ RAW_BASE="https://raw.githubusercontent.com/datopian/portaljs/${REF}/.claude/com
 # All skills carry a uniform `portaljs-` prefix. The bare old names are thin alias
 # stubs kept for one minor release (back-compat) — installed too so existing
 # `/deploy`-style invocations keep working this release. (`login` was removed.)
-SKILLS="portaljs-architect portaljs-new-portal portaljs-add-dataset portaljs-add-resource portaljs-add-chart portaljs-add-map portaljs-connect-ckan portaljs-migrate portaljs-define-schema portaljs-deploy portaljs-check-data-quality architect new-portal add-dataset add-resource add-chart add-map connect-ckan migrate define-schema deploy check-data-quality"
+SKILLS="portaljs-architect portaljs-new-portal portaljs-add-dataset portaljs-add-resource portaljs-add-chart portaljs-add-map portaljs-connect-ckan portaljs-migrate arcgis-to-portaljs portaljs-define-schema portaljs-deploy portaljs-check-data-quality architect new-portal add-dataset add-resource add-chart add-map connect-ckan migrate define-schema deploy check-data-quality"
 
 # Detect a local checkout: this script lives in <repo>/scripts/, so the commands
 # dir is ../.claude/commands relative to the script.

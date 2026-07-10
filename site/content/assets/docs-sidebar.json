@@ -85,6 +85,10 @@
         "href": "/docs/skills/portaljs-migrate"
       },
       {
+        "title": "/arcgis-to-portaljs",
+        "href": "/docs/skills/arcgis-to-portaljs"
+      },
+      {
         "title": "/portaljs-deploy",
         "href": "/docs/skills/portaljs-deploy"
       }

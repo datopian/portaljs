@@ -215,6 +215,7 @@ See `.claude/commands/` for available slash commands:
 - `/portaljs-add-chart` — add a chart (line/bar/area/pie/scatter) to a dataset page via recharts
 - `/portaljs-add-map` — render a GeoJSON dataset on an interactive Leaflet map
 - `/portaljs-add-geo` — auto-ingest a geospatial file (Shapefile/GeoPackage/KML/FGB/GeoJSON/CSV-geom) into a dual-tier dataset on your machine: PMTiles render tier + GeoParquet query tier → R2, no server
+- `/arcgis-to-portaljs` — migrate a whole ArcGIS Hub site end-to-end: harvest its `/data.json`, export every FeatureService layer via the ArcGIS REST API, convert to the dual tier (PMTiles + GeoParquet), push to R2, and write a source-vs-derived parity report
 - `/portaljs-deploy` — one-shot deploy to Vercel or static hosting
 - `/portaljs-connect-ckan` — wire a portal to a CKAN backend over its API (decoupled / any backend)
 - `/portaljs-check-data-quality` — audit a dataset for quality issues (schema, nulls, types)
