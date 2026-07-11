@@ -120,13 +120,27 @@ Classify each `dataset[]` item:
 
 | Class | Detect on | Migration path |
 |-------|-----------|----------------|
-| **vector** | a distribution `accessURL`/`downloadURL` matching `/FeatureServer/\d+` or `/MapServer/\d+`, or `format` in {GeoService, GeoJSON, Shapefile, File Geodatabase, GeoPackage} | REST export (§5) → dual tier (§6) |
+| **vector** | a distribution `accessURL` matching `/FeatureServer/\d+$` or `/MapServer/\d+$` (note the **trailing layer index** — service-root URLs with no `/N` are web maps, not data) **and** the title is not a 3D/mesh/tile give-away | REST export (§5) → dual tier (§6) |
 | **table** | only tabular distributions (CSV/Excel), no geometry | download → Parquet (§6b) |
-| **non-data** | web map, 3D scene, dashboard, StoryMap, imagery, or an Esri basemap reference (`type` ∈ {Web Map, Web Scene, Dashboard, StoryMap, Image Service} or publisher = Esri) | **skip** — log to the report as "link-out / out of scope", do not migrate |
+| **non-data** | everything else: web maps (a REST distribution at the service root, no `/N`), 3D scenes/meshes/multipatch, `tiles.arcgis.com/.../MapServer` tile services, dashboards, StoryMaps, web apps, imagery, Esri basemaps | **skip** — log to the report as "link-out / out of scope", do not migrate |
+
+> **`/data.json` does not carry an Esri item `type`.** DCAT-US gives you title, description,
+> and distributions — *not* the AGOL item type (Web Map / Web Scene / Dashboard …). So classify
+> on **distribution shape**, not a `type` field: the presence of a real `…/FeatureServer/<id>`
+> (with the numeric layer index) is the signal that data can be exported. A distribution whose
+> `accessURL` stops at the service root, or points at `tiles.arcgis.com`, or whose title screams
+> 3D/mesh/LiDAR-colored/reprojected, is a viewer or tile cache — skip it. Then **probe each
+> vector candidate** (`?f=json` → `geometryType`, `/query?returnCountOnly=true` → count): a real
+> feature layer returns a point/line/polygon geometry type and a count; a 3D/multipatch or
+> broken service does not. This probe is what separates a genuine vector layer from a
+> REST-shaped non-data item. (Lewisville: 44 items → 7 real vector layers, 37 skipped.)
 
 Record per item: the FeatureServer layer URL (strip to `…/FeatureServer/<id>`), geometry
 type, `format` list offered, `modified` (drives future sync — Phase 3), and publisher (the
-namespace under `--namespace-mode owner`). **Cross-check completeness:** `/data.json` can omit
+namespace under `--namespace-mode owner`). **Note duplicate layers:** a Hub often exposes the
+same underlying data twice (a hosted *view* + its source table — Lewisville has two identical
+39-point benchmark items). Migrate each as its own dataset (faithful to the Hub) but flag the
+duplication in the report. **Cross-check completeness:** `/data.json` can omit
 unshared items — note in the report that the harvest reflects only what the Hub published.
 
 ### 5. Export each vector layer via the ArcGIS REST query API
@@ -146,29 +160,70 @@ TOTAL=$(curl -fsS "$LAYER/query?where=1%3D1&returnCountOnly=true&f=json" | jq -r
 node - "$LAYER" "$MAX" "$OUT" <<'NODE'
 const [,,layer,maxStr,out] = process.argv
 const max = parseInt(maxStr,10) || 1000
+// A bare fetch() will hang forever on a slow/stalled FeatureServer page (common on
+// dense geometry like contours/parcels). Cap every request and retry — without this the
+// whole run wedges on one bad page. This bit is load-bearing, not optional.
+async function getJSON(url, tries = 5) {
+  let err
+  for (let i = 0; i < tries; i++) {
+    const ac = new AbortController()
+    const t = setTimeout(() => ac.abort(), 45000)
+    try {
+      const r = await fetch(url, { signal: ac.signal })
+      if (!r.ok) throw new Error(`HTTP ${r.status}`)
+      return await r.json()
+    } catch (e) { err = e; await new Promise(r => setTimeout(r, 1500 * (i + 1))) }
+    finally { clearTimeout(t) }
+  }
+  throw err
+}
 ;(async () => {
+  const fs = require('fs')
   const feats = []
-  for (let off = 0; ; off += max) {
+  let off = 0
+  for (;;) {
     const u = `${layer}/query?where=1%3D1&outFields=*&outSR=4326&f=geojson`
            + `&resultOffset=${off}&resultRecordCount=${max}`
-    const r = await fetch(u); const j = await r.json()
+    const j = await getJSON(u)
     const page = j.features || []
     feats.push(...page)
-    if (page.length < max) break
+    off += page.length            // advance by what actually returned, not by `max`
+    if (page.length < max) break  // short page = last page
+    process.stderr.write(`\r${out}: ${feats.length} `)
   }
-  require('fs').writeFileSync(out, JSON.stringify(
-    { type:'FeatureCollection', features: feats }))
-  console.error(`${out}: ${feats.length} features`)
+  fs.writeFileSync(out, JSON.stringify({ type:'FeatureCollection', features: feats }))
+  console.error(`\n${out}: ${feats.length} features`)
 })()
 NODE
 ```
 
+- **Per-request timeout is mandatory, not a nicety.** ArcGIS FeatureServers routinely stall
+  mid-page on dense geometry; a bare `fetch()` with no `AbortController` will hang the entire
+  migration on a single layer. The snippet above caps each request at 45 s and retries 5×.
+- **Resume, don't restart.** Large layers take minutes to page; write a manifest of completed
+  slugs and skip them on re-run so a mid-run failure (or a killed session) doesn't re-page
+  everything from zero.
 - **`exceededTransferLimit` / server caps:** if a page hits a hard cap regardless of
-  `resultRecordCount`, switch to `orderByFields=<oid>` + `where=<oid> > <last>` keyset paging.
-- **Very large layers** (parcels, contours, LiDAR): paging is slow. **Ask the customer for a
-  File Geodatabase export** — as the data owner they generate one from ArcGIS Pro in seconds,
-  and `ogr2ogr` reads the `.gdb` directly, skipping paging entirely. Support an override:
-  `--fgdb <slug>=<path.gdb>` to feed a local dump in place of the REST export.
+  `resultRecordCount`, switch to keyset paging: discover the OID field from the layer metadata
+  (`?f=json` → `.objectIdField`; **do not assume `OBJECTID`** — hosted views often rename it),
+  then page `orderByFields=<oidField>` + `where=<oidField> > <last>`.
+- **Page size must scale *down* with geometry weight, not up.** `maxRecordCount` is an upper
+  bound, not a target. A 2 000-record page of dense polylines/polygons can be tens of MB and
+  time out; the same page count of points is trivial. Tune `resultRecordCount` per layer by
+  weight: points → the full `maxRecordCount` (e.g. 2000), dense lines/polygons → **200–500**.
+  (Lewisville contours: 8 906 3D polylines total **514 MB** — at 2000/page the fat middle pages
+  stalled every retry; at 200/page each page is ~11 MB and the layer completes.) A layer whose
+  *total* export would exceed the local RAM/time budget is the "very large" case below.
+- **Very large layers** (huge parcels/contours/LiDAR fabrics): even well-sized paging is slow,
+  and the resulting GeoJSON can exceed the size escape hatch (§6). Two escapes: (a) **the Hub
+  bulk download API** — `…/api/download/v1/items/<id>/geojson?layers=0` 302-redirects to a
+  pre-generated file that returns the whole layer in one request (caveat: it comes back in the
+  layer's **native CRS with Z coordinates** — e.g. Lewisville contours download as EPSG:3857 +
+  Z — so always pipe it through `ogr2ogr -t_srs EPSG:4326 -dim XY`; and it can be enormous, 514 MB
+  for contours, so use a long `curl --max-time`); or (b) **ask the customer for a File Geodatabase
+  export** — as the data owner they generate one from ArcGIS Pro in seconds, and `ogr2ogr` reads
+  the `.gdb` directly, skipping paging entirely. Support an override: `--fgdb <slug>=<path.gdb>`
+  to feed a local dump in place of the REST export.
 - Failure on one layer → log it to the report and **continue** (don't abort the whole run):
   `ERROR: [arcgis-to-portaljs] EXPORT_FAILED <layer> <status> — skipped, see report.`
 
@@ -214,9 +269,20 @@ migration is faithful:
 | **Record count** | `…/query?where=1=1&returnCountOnly=true` (`TOTAL`, §5) | `duckdb -c "SELECT count(*) FROM read_parquet('…parquet')"` | equal |
 | **Extent (bbox)** | layer `?f=json` → `.extent` (reproject to 4326) | `duckdb` min/max of `bbox` struct | within tolerance |
 | **Attribute schema** | layer `?f=json` → `.fields[].name` | parquet column names | source fields ⊆ derived |
-| **Geometry validity** | — | `duckdb -c "SELECT count(*) FROM … WHERE NOT ST_IsValid(geometry)"` | 0 invalid |
+| **Geometry validity** | — | `duckdb -c "SELECT count(*) FROM … WHERE NOT ST_IsValid(geometry)"` | see below |
 
-Emit a per-dataset **PASS / WARN** table plus the inventory accounting (migrated vs skipped
+**Verdict rules — a mismatched count is the only FAIL.** Record count is the hard gate: derived
+≠ source ⇒ **FAIL** (paging dropped features). Everything else is a **WARN**, not a failure:
+- **Invalid geometry is a WARN, never a FAIL.** Source ArcGIS layers routinely carry a handful
+  of self-intersecting / zero-area rings (Lewisville parcels have 4 of 30,694). The migration
+  preserved them faithfully — that is correct behavior, not a defect. Report the count; only if
+  the customer needs strictly-valid output, offer `ST_MakeValid(geometry)` as an opt-in repair
+  (it changes vertices, so never apply it silently).
+- **Schema:** source fields ⊆ derived ⇒ PASS. Extra derived columns (`bbox`, `geometry`) are
+  expected. A missing source field is a WARN (ArcGIS drops `Shape__Area`/`Shape__Length`-style
+  computed fields from `f=geojson` — note them, they are not data loss).
+
+Emit a per-dataset **PASS / WARN / FAIL** table plus the inventory accounting (migrated vs skipped
 vs failed, with reasons). Also list every **non-data** item (web maps, 3D, imagery) so the
 customer sees exactly what was and wasn't carried over. A parity report is the deliverable
 even when a few layers fail — never suppress a mismatch.
