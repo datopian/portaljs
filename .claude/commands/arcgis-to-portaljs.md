@@ -1,6 +1,6 @@
 ---
 description: Migrate a whole ArcGIS Hub site (opendata.arcgis.com or a Hub Premium custom domain) into a PortalJS Arc portal end-to-end. Harvests the Hub /data.json (DCAT-US) inventory, exports every FeatureService layer through the ArcGIS REST query API (resultOffset paging), converts each to the serverless dual tier (PMTiles render + GeoParquet query) with tabular items to Parquet, pushes everything to Cloudflare R2 via Git LFS, appends dual-tier datasets.json entries, and writes a source-vs-derived parity report. The reusable arcgis-to-portaljs migrator.
-allowed-tools: Read, Write, Edit, Bash(ogr2ogr:*), Bash(ogrinfo:*), Bash(tippecanoe:*), Bash(duckdb:*), Bash(git:*), Bash(curl:*), Bash(jq:*), Bash(npx:*), Bash(node:*), Bash(mkdir:*), Bash(cp:*), Bash(wc:*), Bash(command:*), WebFetch
+allowed-tools: Read, Write, Edit, Bash(ogr2ogr:*), Bash(ogrinfo:*), Bash(tippecanoe:*), Bash(duckdb:*), Bash(git:*), Bash(curl:*), Bash(jq:*), Bash(npx:*), Bash(node:*), Bash(mkdir:*), Bash(cp:*), Bash(wc:*), Bash(zip:*), Bash(command:*), WebFetch
 ---
 
 # /arcgis-to-portaljs
@@ -197,8 +197,10 @@ short page returns. Prefer `f=geojson` (Hub FeatureServers support it); fall bac
 ```bash
 LAYER="…/FeatureServer/0"                       # from step 4
 OUT="data/$NS/$SLUG.source.geojson"
-# Discover paging + expected count up front (used by the parity report, §8):
-MAX=$(curl -fsS "$LAYER?f=json" | jq -r '.maxRecordCount // 1000')
+# Fetch the layer definition ONCE and reuse it (paging size, count, AND the field
+# definitions — name/type/alias — which drive the schema + English headers, §6d):
+curl -fsS "$LAYER?f=json" -o "/tmp/a2p-layerdef-$SLUG.json"
+MAX=$(jq -r '.maxRecordCount // 1000' "/tmp/a2p-layerdef-$SLUG.json")
 TOTAL=$(curl -fsS "$LAYER/query?where=1%3D1&returnCountOnly=true&f=json" | jq -r '.count')
 # Page and concatenate features:
 node - "$LAYER" "$MAX" "$OUT" <<'NODE'
@@ -244,6 +246,18 @@ NODE
 - **Per-request timeout is mandatory, not a nicety.** ArcGIS FeatureServers routinely stall
   mid-page on dense geometry; a bare `fetch()` with no `AbortController` will hang the entire
   migration on a single layer. The snippet above caps each request at 45 s and retries 5×.
+- **Capture the field definitions (name / type / alias) from the layer def** — this is the
+  cheapest UX win in the whole migration and costs nothing extra (the `?f=json` you already
+  fetched for `MAX` carries `.fields[]`). Each field has a raw DB `name` (`PROP_TYPE`), an Esri
+  `type` (`esriFieldTypeString`), and a display `alias` (`"Property Type"`) — the human label
+  Hub shows in its table. Persist this list per layer; §6d turns it into a Frictionless
+  `schema.fields[]` (`name` + `title`=alias + mapped `type`) so the showcase renders English
+  headers instead of raw DB names. Skip the geometry/OID housekeeping fields
+  (`esriFieldTypeGeometry`, and `Shape__Area`/`Shape__Length`, which don't survive to GeoJSON):
+  ```bash
+  jq -c '[.fields[] | select(.name|test("^Shape__";"i")|not)
+          | {name, type, alias}]' "/tmp/a2p-layerdef-$SLUG.json" > "/tmp/a2p-fields-$SLUG.json"
+  ```
 - **Resume, don't restart.** Large layers take minutes to page; write a manifest of completed
   slugs and skip them on re-run so a mid-run failure (or a killed session) doesn't re-page
   everything from zero.
@@ -283,13 +297,76 @@ add-geo's **size escape hatch** unchanged (> 2 GB → GeoParquet-only, documente
 repo) or `duckdb -c "COPY (SELECT * FROM read_csv_auto('…')) TO '…parquet' (FORMAT PARQUET)"`.
 Keep the original CSV as a download.
 
+**6c. Additional download formats (CSV always; Shapefile + GeoPackage for the GIS crowd).**
+Hub offers a whole download menu (CSV / Shapefile / GeoJSON / KML / FileGDB / Excel / GeoPackage);
+PortalJS shipped only PMTiles + GeoParquet + the source GeoJSON, which forces every non-web
+consumer to take GeoJSON. These are nearly free from the same normalized `*.4326.geojson` via
+`ogr2ogr` — emit them as **extra download resources** (they get no showcase preview; they're
+download-only artifacts, pushed to R2 alongside the tiers in §7):
+
+```bash
+GEO="data/$NS/$SLUG.4326.geojson"     # normalized EPSG:4326 (from §6a)
+# CSV — attributes + geometry as WKT (universal; opens in any spreadsheet/DB):
+ogr2ogr -f CSV "data/$NS/$SLUG.csv" "$GEO" -lco GEOMETRY=AS_WKT
+# GeoPackage — single-file, modern, lossless (keeps long field names + types):
+ogr2ogr -f GPKG "data/$NS/$SLUG.gpkg" "$GEO"
+# Shapefile — legacy but still demanded; multi-file, so zip the set into one artifact:
+mkdir -p "/tmp/a2p-shp-$SLUG" && ogr2ogr -f "ESRI Shapefile" "/tmp/a2p-shp-$SLUG/$SLUG.shp" "$GEO"
+( cd "/tmp/a2p-shp-$SLUG" && zip -q "$OLDPWD/data/$NS/$SLUG.shp.zip" ./* )
+```
+
+- **CSV is the minimum** and always emitted. Shapefile + GeoPackage matter to GIS users;
+  emit them by default and let `--formats csv,gpkg,shp` (default `csv,gpkg,shp`) trim the set.
+- **Shapefile is lossy by design — flag it, don't hide it.** The DBF format truncates field
+  names to 10 chars (`ABST_SUBD_NUM` → `ABST_SUBD_`, `ABST_SUBD_NAME` → `ABST_SUB_1`) and can't
+  hold very long text. `ogr2ogr` prints `Warning 6: Normalized/laundered field name…` per
+  collision — this is exactly why the **alias-carrying `schema` (§6d) travels on the GeoParquet
+  and CSV**, not the shapefile. Note the truncation in the parity report; don't treat the
+  warning as a failure.
+- Skip a format cleanly if its `ogr2ogr` invocation fails (log it, continue) — a missing
+  convenience export is never a hard stop.
+
+**6d. Build the field schema (aliases → English headers).** Turn the captured field list
+(`/tmp/a2p-fields-$SLUG.json`, §5) into a Frictionless `TableSchema`: raw `name`, `title`=alias
+(only when the alias differs from the name — the showcase renders `title` as the header and the
+raw name as a mono subtitle; an alias equal to the name is just noise, so drop it), and `type`
+mapped from the Esri field type. This `schema` is attached to the GeoParquet and CSV resources
+in §7 so the showcase's field table reads "Property Type" / "Address Number" instead of
+`PROP_TYPE` / `SITUS_NUM`.
+
+| Esri `type` | Frictionless `type` |
+|-------------|---------------------|
+| `esriFieldTypeString` / `esriFieldTypeGUID` / `esriFieldTypeGlobalID` | `string` |
+| `esriFieldTypeOID` / `esriFieldTypeInteger` / `esriFieldTypeSmallInteger` / `esriFieldTypeBigInteger` | `integer` |
+| `esriFieldTypeSingle` / `esriFieldTypeDouble` | `number` |
+| `esriFieldTypeDate` / `esriFieldTypeDateOnly` / `esriFieldTypeTimestampOffset` | `datetime` (`date` if date-only) |
+| anything else (`esriFieldTypeBlob`, `…Raster`, `…Geometry`) | omit the field |
+
+```bash
+jq -c '{fields: [ .[]
+  | {name,
+     title: (if .alias and .alias != .name then .alias else empty end),
+     type: ( {"esriFieldTypeString":"string","esriFieldTypeGUID":"string",
+              "esriFieldTypeGlobalID":"string","esriFieldTypeOID":"integer",
+              "esriFieldTypeInteger":"integer","esriFieldTypeSmallInteger":"integer",
+              "esriFieldTypeBigInteger":"integer","esriFieldTypeSingle":"number",
+              "esriFieldTypeDouble":"number","esriFieldTypeDate":"datetime",
+              "esriFieldTypeDateOnly":"date"}[.type] // "string" ) } ]}' \
+  "/tmp/a2p-fields-$SLUG.json" > "/tmp/a2p-schema-$SLUG.json"
+```
+
+Optionally stamp the alias map into the GeoParquet's file-level metadata so it travels with the
+data (DuckDB `COPY … (FORMAT PARQUET, KV_METADATA {aliases: '<json>'})`); the load-bearing
+carrier for the UI, though, is the `schema` on the `datasets.json` entry (§7).
+
 Preserve **both** the native-CRS original (as downloaded) and the normalized derivative, per
 the plan (§3 practical notes).
 
 ### 7. Publish — bulk Git-LFS → R2 + `datasets.json`
 
 Reuse `/portaljs-migrate` §5 **download mode** mechanics, applied to every derived file
-(`.pmtiles`, `.parquet`, originals): `git lfs track "data/**"`, one commit, claim the slug +
+(`.pmtiles`, `.parquet`, the source original, **and the §6c download formats
+`.csv`/`.gpkg`/`.shp.zip`**): `git lfs track "data/**"`, one commit, claim the slug +
 mint the Arc JWT, `git config lfs.url`, one push (bytes → Giftless/R2, no GitHub remote
 required), `git lfs prune`. Then build each absolute R2 URL
 (`$R2_PUBLIC_BASE/lfs/datopian/$PROJECT_SLUG/<oid>`, `R2_PUBLIC_BASE` default
@@ -299,6 +376,22 @@ Append `datasets.json` entries (**upsert** on `(namespace, slug)` so re-runs are
 - **vector** → the dual-tier entry from `/portaljs-add-geo` §10 (`tiles` pmtiles + `geo`
   geoparquet + `source` original; fill the `query` bbox from the layer extent).
 - **table** → a plain resource entry (`format: parquet` + original `csv`), per `/portaljs-add-dataset`.
+
+**Add the §6c download formats as extra `resources[]`** on the vector entry — download-only
+artifacts (no showcase preview), each with its R2 URL. So a vector dataset's `resources[]`
+becomes: `tiles` (pmtiles) + `geo` (geoparquet) + `source` (original geojson) + `csv` + `gpkg`
++ `shp` (the `.shp.zip`). Give each a plain `{name,title,path,format}`; the showcase renders a
+download link for any format it can't preview. Set `format` to `csv`/`gpkg`/`shp` (the latter
+two aren't previewable `DataFormat`s — that's fine, they list as downloads).
+
+**Attach the §6d `schema` (aliases) to the queryable resources** — put it on the `geo`
+(geoparquet) resource and the `csv` resource so the showcase field table renders English
+headers. Read it from `/tmp/a2p-schema-$SLUG.json`. (Don't attach it to `tiles`/`source` —
+they aren't the tabular preview.)
+
+**Set `recordCount` on the entry** = `TOTAL` (the source feature count from §5). The showcase
+renders it as a "Records" sidebar field. This is the count the parity report already gates on,
+so the number shown to the user is provably the migrated row count, not an estimate.
 
 **Merge the §4b metadata onto every entry** — `/portaljs-add-geo` §10's entry omits it:
 `description` (sanitized), `licenses` (source license or the "No license provided" sentinel —
@@ -323,10 +416,17 @@ migration is faithful:
 | **Attribute schema** | layer `?f=json` → `.fields[].name` | parquet column names | source fields ⊆ derived |
 | **Geometry validity** | — | `duckdb -c "SELECT count(*) FROM … WHERE NOT ST_IsValid(geometry)"` | see below |
 | **Metadata** (license / description / dates — §4b) | DCAT + AGOL item | the emitted `datasets.json` entry | license reflects source (or "No license provided", never fabricated); description carries no `{{placeholder}}`/server path; `created`/`modified` are the source dates, `migratedAt` separate |
+| **Field aliases** (§6d) | layer `?f=json` → `.fields[].alias` | `schema.fields[].title` on the geoparquet/csv resource | every source alias that differs from its raw name is carried as `title` (so the showcase shows "Property Type", not `PROP_TYPE`) |
+| **Record count** displayed (§7) | `TOTAL` (returnCountOnly) | `datasets.json` entry `recordCount` | `recordCount` == source count == derived parquet count (all three equal) |
+| **Download formats** (§6c) | Hub download menu | the entry's `resources[]` formats | at least `csv` present; `gpkg`/`shp` present unless trimmed by `--formats` |
 
-For each dataset, print the resolved **license**, **description** (first ~120 chars), and
-**created / modified / migratedAt** — the before/after that proves no CC-BY was fabricated and
-no `{{…}}` leaked.
+For each dataset, print the resolved **license**, **description** (first ~120 chars),
+**created / modified / migratedAt**, the **record count**, the **download formats emitted**,
+and a **field-alias sample** (2–3 `name → title` pairs, e.g. `PROP_TYPE → Property Type`) —
+the before/after that proves no CC-BY was fabricated, no `{{…}}` leaked, the count is shown,
+English headers render, and GIS-friendly downloads exist. Note any Shapefile field-name
+truncation (§6c) as a WARN, not a FAIL — it's an inherent DBF limit, and the untruncated names
+survive on the GeoParquet/CSV.
 
 **Verdict rules — a mismatched count is the only FAIL.** Record count is the hard gate: derived
 ≠ source ⇒ **FAIL** (paging dropped features). Everything else is a **WARN**, not a failure:
@@ -350,7 +450,10 @@ even when a few layers fail — never suppress a mismatch.
 ✓ ArcGIS Hub migrated: <SITE_ROOT>
   - Inventory:   <N> items  (<V> vector, <T> table, <X> non-data skipped)
   - Migrated:    <M> datasets → datasets.json  (dual-tier vector + parquet tables)
-  - Data:        R2 via Git LFS  (<size> across pmtiles/geoparquet/originals)
+  - Data:        R2 via Git LFS  (<size> across pmtiles/geoparquet/originals/csv/gpkg/shp)
+  - Records:     feature count shown per dataset (e.g. Parcels 30,694; Trees 376,215)
+  - Headers:     English field aliases carried (Property Type, Address Number, …)
+  - Downloads:   CSV + GeoPackage + Shapefile per vector dataset (beyond PMTiles/GeoParquet/GeoJSON)
   - Parity:      <P> PASS / <W> WARN / <F> failed   → arcgis-parity-report.md
   - Showcase:    /@<namespace>/<slug> — <MapPreview> + <GeoQuery> per vector dataset
 Next: review arcgis-parity-report.md, then `npm run dev` to click through the top datasets.

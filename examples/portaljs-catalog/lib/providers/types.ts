@@ -113,6 +113,11 @@ export type Dataset = {
   // data's own freshness, so the showcase renders it as a separate "Migrated"
   // field and never lets it masquerade as "Last updated".
   migratedAt?: string
+  // Number of records (rows/features) in the dataset's primary data. Known at
+  // migration time (e.g. an ArcGIS layer's feature count) and surfaced on the
+  // showcase so a dataset advertises its size the way the source portal does.
+  // Optional: absent for datasets whose count wasn't captured.
+  recordCount?: number
   version?: string
 }
 

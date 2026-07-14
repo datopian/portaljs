@@ -217,6 +217,12 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
               label="Resources"
               value={`${resources.length} file${resources.length === 1 ? '' : 's'}`}
             />
+            {typeof dataset.recordCount === 'number' && (
+              <SidebarField
+                label="Records"
+                value={dataset.recordCount.toLocaleString('en-US')}
+              />
+            )}
             {dataset.version && <SidebarField label="Version" value={dataset.version} />}
             {created && <SidebarField label="Created" value={created} />}
             {lastUpdated && <SidebarField label="Last updated" value={lastUpdated} />}
@@ -511,12 +517,26 @@ function ResourceSection({
                     c?.unique && 'unique',
                     c?.enum && `enum(${c.enum.length})`,
                   ].filter(Boolean) as string[]
+                  // Prefer the human field label (Frictionless `title` — e.g. the
+                  // ArcGIS field alias "Property Type") as the header, keeping the raw
+                  // database column name (PROP_TYPE) as a mono subtitle. Falls back to
+                  // the raw name alone when there's no distinct alias.
+                  const hasAlias = f.title && f.title !== f.name
                   return (
                     <tr key={f.name} className="border-t border-ink/[0.1] align-top">
-                      <td className="px-4 py-3 font-mono text-ink/80">{f.name}</td>
+                      <td className="px-4 py-3">
+                        {hasAlias ? (
+                          <>
+                            <div className="font-sans text-ink/80">{f.title}</div>
+                            <div className="font-mono text-[11px] text-ink/45">{f.name}</div>
+                          </>
+                        ) : (
+                          <span className="font-mono text-ink/80">{f.name}</span>
+                        )}
+                      </td>
                       <td className="px-4 py-3 font-sans text-ink/60">{f.type ?? '—'}</td>
                       <td className="px-4 py-3 font-sans text-ink/60">
-                        {f.description ?? f.title ?? ''}
+                        {f.description ?? ''}
                       </td>
                       <td className="px-4 py-3 font-sans text-ink/50">{tags.join(', ')}</td>
                     </tr>

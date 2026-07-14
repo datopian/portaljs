@@ -369,6 +369,17 @@ GET `<service-url>?f=json` to list `layers[]` (and `tables[]`). For each layer:
 | `description` | `cleanDescription(layer.description)` ?? layer `name` — layer `description` is often empty or a placeholder/server path, so sanitize and fall back (see the DCAT-US hygiene guard above) |
 | `resources[].path` | `<service-url>/<layerId>/query?where=1%3D1&outFields=*&f=geojson` (link mode) |
 | `resources[].format` | `geojson` |
+| `recordCount` | `<service-url>/<layerId>/query?where=1=1&returnCountOnly=true&f=json` → `.count` (the showcase renders it as a "Records" field) |
+| `schema.fields[]` | layer `?f=json` → `.fields[]`: `{name, title: alias (when it differs from name), type: <esri→frictionless>}` — carries the display aliases so the showcase field table reads "Property Type", not `PROP_TYPE` |
+
+The layer `?f=json` you already fetch to enumerate `layers[]` carries `.maxRecordCount` and each
+layer's `.fields[]` (name / type / **alias**); capture the aliases into `schema.fields[].title`
+and the count via `returnCountOnly` — both are cheap and are the same UX wins `/arcgis-to-portaljs`
+§6d/§7 make (Esri→Frictionless type map lives there). In **link** mode also offer a CSV pull
+alongside the GeoJSON — add a second resource `…/query?where=1%3D1&outFields=*&f=csv`
+(`format: csv`) so consumers aren't forced to take GeoJSON. (The full CSV/Shapefile/GeoPackage
+export set is `/arcgis-to-portaljs`'s job, since it downloads + converts; link mode only exposes
+what the server renders.)
 
 A bare FeatureServer layer exposes no license or issued/modified metadata over the query API —
 those live on the AGOL **item** (`…/sharing/rest/content/items/<id>?f=json` → `snippet`,
