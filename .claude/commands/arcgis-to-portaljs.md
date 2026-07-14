@@ -136,12 +136,56 @@ Classify each `dataset[]` item:
 > REST-shaped non-data item. (Lewisville: 44 items → 7 real vector layers, 37 skipped.)
 
 Record per item: the FeatureServer layer URL (strip to `…/FeatureServer/<id>`), geometry
-type, `format` list offered, `modified` (drives future sync — Phase 3), and publisher (the
-namespace under `--namespace-mode owner`). **Note duplicate layers:** a Hub often exposes the
-same underlying data twice (a hosted *view* + its source table — Lewisville has two identical
-39-point benchmark items). Migrate each as its own dataset (faithful to the Hub) but flag the
-duplication in the report. **Cross-check completeness:** `/data.json` can omit
-unshared items — note in the report that the harvest reflects only what the Hub published.
+type, `format` list offered, `issued`/`modified` (source dates — see §4b; `modified` also
+drives future sync, Phase 3), and publisher (the namespace under `--namespace-mode owner`).
+**Note duplicate layers:** a Hub often exposes the same underlying data twice (a hosted *view*
++ its source table — Lewisville has two identical 39-point benchmark items). Migrate each as
+its own dataset (faithful to the Hub) but flag the duplication in the report. **Cross-check
+completeness:** `/data.json` can omit unshared items — note in the report that the harvest
+reflects only what the Hub published.
+
+### 4b. Enrich + sanitize per-item metadata (license, description, dates)
+
+**This is a P0 correctness step, not polish.** The Hub `/data.json` fields, copied verbatim,
+produce three demo-blocking errors a city GIS manager spots in the first minute: a fabricated
+license, a literal `{{description}}`, and the harvest date shown as the data's last-updated.
+Apply `/portaljs-migrate`'s **DCAT-US metadata hygiene** rules (license sentinel, description
+sanitizer + fallback chain, source-date preservation) to every migrated item. DCAT-US alone
+is missing the short summary and item-level license, so **fetch the AGOL item** to complete
+the chain.
+
+Every Hub `dataset[]` item's `identifier` embeds the AGOL item id
+(`https://www.arcgis.com/home/item.html?id=<ITEM_ID>&sublayer=<n>`). Extract it and GET the
+item — it carries the `snippet` (the real short summary Hub hides from `/data.json`),
+`licenseInfo`, and `accessInformation` (attribution):
+
+```bash
+ITEM_ID=$(jq -r '.identifier' <<<"$ITEM" | sed -nE 's/.*[?&]id=([0-9a-f]{32}).*/\1/p')
+# Prefer the Hub's own portal host; www.arcgis.com works for public AGOL items.
+curl -fsSL "https://www.arcgis.com/sharing/rest/content/items/$ITEM_ID?f=json" \
+  -o "/tmp/a2p-item-$ITEM_ID.json"   # → .snippet .description .licenseInfo .accessInformation
+```
+
+Then build the canonical entry's metadata (reusing `cleanDescription()` from
+`/portaljs-migrate`'s hygiene guard):
+
+- **`description`** = first survivor of the chain:
+  `cleanDescription(dcat.description)` → `cleanDescription(item.snippet)` →
+  `cleanDescription(item.description)` → the layer/dataset `name`. (Lewisville *Trees From
+  LiDAR*: DCAT `description` is the literal `"{{description}}"` → rejected → `item.snippet`
+  `"Trees Layer extracted from LiDAR 2017"` wins.)
+- **`licenses`** = the source license if asserted (DCAT `license`, else `item.licenseInfo`)
+  → `[{…}]`; **otherwise the sentinel `{ "name": "notspecified", "title": "No license
+  provided" }`**. Never emit CC-BY (or any license) the source didn't state — this is the one
+  gap with legal exposure. (Lewisville: DCAT `license` `""` + `licenseInfo` `""` → sentinel.)
+- **`sources`** = an attribution entry from `item.accessInformation` when present
+  (Lewisville Parcels: `"City of Lewisville"`) — the "whom to ask for permission" hint, not a
+  license.
+- **`created`** = DCAT `issued`; **`modified`** = DCAT `modified` (the data's dates — preserved,
+  never overwritten by the harvest time). Record the harvest time as **`migratedAt`** (§7).
+
+Items with no resolvable item id (rare — a raw service with no AGOL item) fall back to the
+DCAT/layer fields through the same sanitizer, with the license sentinel.
 
 ### 5. Export each vector layer via the ArcGIS REST query API
 
@@ -256,6 +300,14 @@ Append `datasets.json` entries (**upsert** on `(namespace, slug)` so re-runs are
   geoparquet + `source` original; fill the `query` bbox from the layer extent).
 - **table** → a plain resource entry (`format: parquet` + original `csv`), per `/portaljs-add-dataset`.
 
+**Merge the §4b metadata onto every entry** — `/portaljs-add-geo` §10's entry omits it:
+`description` (sanitized), `licenses` (source license or the "No license provided" sentinel —
+never CC-BY), `sources` (attribution from `accessInformation`), `created`/`modified` (source
+`issued`/`modified`), and `migratedAt` (the harvest time — an ISO timestamp; the showcase
+renders it as a separate "Migrated" field so it never masquerades as the data's last-updated).
+Set `migratedAt` once per run from a fixed `date -u +%FT%TZ` captured at the start, so re-runs
+are stable.
+
 `--dry-run` stops before any write/push and prints the plan (mirror `/portaljs-migrate` §6).
 
 ### 8. Parity report (source vs derived) — the migration promise
@@ -270,6 +322,11 @@ migration is faithful:
 | **Extent (bbox)** | layer `?f=json` → `.extent` (reproject to 4326) | `duckdb` min/max of `bbox` struct | within tolerance |
 | **Attribute schema** | layer `?f=json` → `.fields[].name` | parquet column names | source fields ⊆ derived |
 | **Geometry validity** | — | `duckdb -c "SELECT count(*) FROM … WHERE NOT ST_IsValid(geometry)"` | see below |
+| **Metadata** (license / description / dates — §4b) | DCAT + AGOL item | the emitted `datasets.json` entry | license reflects source (or "No license provided", never fabricated); description carries no `{{placeholder}}`/server path; `created`/`modified` are the source dates, `migratedAt` separate |
+
+For each dataset, print the resolved **license**, **description** (first ~120 chars), and
+**created / modified / migratedAt** — the before/after that proves no CC-BY was fabricated and
+no `{{…}}` leaked.
 
 **Verdict rules — a mismatched count is the only FAIL.** Record count is the hard gate: derived
 ≠ source ⇒ **FAIL** (paging dropped features). Everything else is a **WARN**, not a failure:

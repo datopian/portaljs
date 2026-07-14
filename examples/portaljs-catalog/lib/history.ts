@@ -16,6 +16,7 @@
 import { execFileSync } from 'child_process'
 import type { Dataset, Resource, ResourceVersion, ActivityEntry } from './providers'
 import { getResources } from './datasets'
+import { formatDate } from './format'
 
 // Run git, returning stdout — or null if git isn't available / the command fails (not a
 // repo, path untracked, etc.). Never throws: history is a progressive enhancement.
@@ -50,16 +51,6 @@ function humanSize(bytes: number): string {
   if (kb < 1024) return `${kb.toFixed(kb < 10 ? 1 : 0)} KB`
   const mb = kb / 1024
   return `${mb.toFixed(mb < 10 ? 1 : 0)} MB`
-}
-
-function formatDate(iso: string): string {
-  const t = Date.parse(iso)
-  if (Number.isNaN(t)) return iso
-  return new Date(t).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
 }
 
 // Map every tracked Git LFS pointer to its repo-relative path, keyed by oid. A resource

@@ -103,8 +103,16 @@ export type Dataset = {
   licenses?: License[]
   sources?: Source[]
   keywords?: string[]
+  // Source-provenance dates (ISO 8601), preserved from the origin platform on
+  // migration — `created` from DCAT `issued`, `modified` from DCAT `modified`.
+  // These describe the DATA, and drive the showcase "Last updated" field.
   created?: string
   modified?: string
+  // When this dataset was harvested into this catalog (ISO 8601). Distinct from
+  // `modified`: the migration/sync time is provenance about the COPY, never the
+  // data's own freshness, so the showcase renders it as a separate "Migrated"
+  // field and never lets it masquerade as "Last updated".
+  migratedAt?: string
   version?: string
 }
 

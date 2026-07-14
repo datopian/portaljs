@@ -165,13 +165,23 @@ shaped like the template's `Dataset`:
   "slug": "...",            // URL-safe, unique within a namespace
   "namespace": "...",       // groups the dataset (CKAN org / DCAT publisher or theme)
   "name": "...",            // human title
-  "description": "...",     // one paragraph (optional)
+  "description": "...",     // one paragraph (optional) — sanitized, never a placeholder
   "keywords": ["..."],      // optional
+  "licenses": [             // optional; map from source, never fabricate (see hygiene below)
+    { "name": "...", "title": "...", "path": "<url>" }
+  ],
+  "created": "...",         // optional ISO 8601 — source "issued"/first-published date
+  "modified": "...",        // optional ISO 8601 — source "last-modified" date (the DATA's)
   "resources": [
     { "name": "...", "path": "<url-or-filename>", "format": "csv", "title": "..." }
   ]
 }
 ```
+
+`created`/`modified` are **source-provenance** dates copied from the origin — they describe
+the data, and drive the showcase "Last updated". Never set them to the harvest time; when
+you copy files in (`download` mode / a migrator), record the harvest time as `migratedAt`
+instead, which the showcase renders as a separate "Migrated" field.
 
 A single-file dataset may instead use the `file`/`format` sugar, but prefer `resources[]`
 so multi-file datasets are uniform.
@@ -202,11 +212,57 @@ Apply `ORG_FILTER`/`GROUP_FILTER` via the `fq` query
 | `slug` | slugified `identifier` \|\| slugified `title` |
 | `namespace` | slugified `publisher.name` (fallback first `theme`, else `dataset`) |
 | `name` | `title` |
-| `description` | `description` |
+| `description` | `description` **sanitized** — fallback chain, never a placeholder (see hygiene) |
 | `keywords` | `keyword[]` |
+| `licenses` | `license` → `[{…}]` when present, else the "no license" sentinel (see hygiene) |
+| `created` | `issued` (ISO 8601 — the data's first-published date) |
+| `modified` | `modified` (ISO 8601 — the data's last-modified date) |
 | `resources[].name` | distribution `title` \|\| derived from URL |
 | `resources[].path` | distribution `downloadURL` \|\| `accessURL` (link mode) |
 | `resources[].format` | distribution `format` \|\| `mediaType` → normalized (below) |
+
+**DCAT-US metadata hygiene — license, description, dates (do NOT skip).** A raw DCAT-US feed
+carries three fields that are wrong-by-default if copied verbatim; a demo reviewer spots all
+three in the first minute:
+
+- **License — map it, never fabricate.** DCAT-US `license` is a string (SPDX id or a license
+  URL). When it is **present**, emit one `licenses[]` entry: if it's a URL →
+  `{ path: <url>, title: <label from the SPDX/URL, e.g. "CC-BY 4.0"> }`; if it's an SPDX id →
+  `{ name: <id> }`. When it is **empty/absent, emit the honest sentinel**
+  `{ "name": "notspecified", "title": "No license provided" }` — the showcase renders that
+  literally. **Never default to CC-BY (or any license) the source didn't assert** — a
+  fabricated permissive license is a legal-exposure bug, the one metadata error with real
+  consequences. If the source offers a rights/contact hint (DCAT `contactPoint`, or an ArcGIS
+  item's `accessInformation`), you may add it as a `sources[]` attribution so users know whom
+  to ask — but that is not a license.
+
+- **Description — sanitize + fallback, never render a placeholder or a server path.** Hub and
+  other publishers leave un-rendered template tokens (`{{description}}`, `{{default.summary}}`)
+  and ArcGIS Server file paths (`F:\arcgisserver\…\map.mxd`, `\\SERVER\…`) in the `description`.
+  These must never reach `datasets.json`. Run each candidate through this guard and walk a
+  fallback chain, taking the first candidate that survives — **description → (source's short
+  summary/snippet, if the source exposes one — see the ArcGIS enrichment in
+  `/arcgis-to-portaljs` §4) → the dataset/layer `name`**:
+
+  ```js
+  // Reject Handlebars-style placeholders and map-document / server file paths outright.
+  function cleanDescription(s) {
+    if (!s) return null
+    const t = String(s).trim()
+    if (!t) return null
+    if (/\{\{.*?\}\}/.test(t)) return null                 // {{description}}, {{default.x}}
+    if (/\.(mxd|aprx|sd|msd|lyr|lyrx)\b/i.test(t)) return null  // ArcGIS map-doc paths
+    if (/^[A-Za-z]:\\|^\\\\/.test(t)) return null          // C:\… or UNC \\SERVER\…
+    return t
+  }
+  // description = cleanDescription(dcat.description) ?? cleanDescription(snippet) ?? name
+  ```
+
+- **Dates — preserve source provenance, keep the harvest time separate.** Map DCAT `issued` →
+  `created` and `modified` → `modified` so the showcase "Last updated" shows the *data's* real
+  date (e.g. 2021-08-25), not the harvest date. Record the migration time as `migratedAt`
+  (ISO) on each entry you write — the showcase renders it as a separate "Migrated" field, so
+  the copy's timestamp never masquerades as the data's freshness.
 
 **DCAT / DCAT-AP RDF mapping** (`dcat-rdf`) — an RDF catalog graph in JSON-LD, Turtle, or
 RDF/XML. Do **not** hand-parse RDF: reuse the portal's harvester
@@ -310,9 +366,16 @@ GET `<service-url>?f=json` to list `layers[]` (and `tables[]`). For each layer:
 | `slug` | slugified `name` (fallback `layer-<id>`) |
 | `namespace` | slugified service name (last path segment before `/FeatureServer`) |
 | `name` | layer `name` |
-| `description` | layer `description` (often empty) |
+| `description` | `cleanDescription(layer.description)` ?? layer `name` — layer `description` is often empty or a placeholder/server path, so sanitize and fall back (see the DCAT-US hygiene guard above) |
 | `resources[].path` | `<service-url>/<layerId>/query?where=1%3D1&outFields=*&f=geojson` (link mode) |
 | `resources[].format` | `geojson` |
+
+A bare FeatureServer layer exposes no license or issued/modified metadata over the query API —
+those live on the AGOL **item** (`…/sharing/rest/content/items/<id>?f=json` → `snippet`,
+`licenseInfo`, `accessInformation`) and in the Hub `/data.json`. When migrating a whole Hub
+site, `/arcgis-to-portaljs` §4 fetches the item and applies the license/description/date
+hygiene above; for a standalone FeatureServer with no item id, emit the "no license" sentinel
+and leave dates unset rather than guessing.
 
 **Format normalization.** Lowercase and map to the formats the showcase can preview
 (`csv`, `tsv`, `json`, `geojson`); keep any other format string as-is (the showcase shows a

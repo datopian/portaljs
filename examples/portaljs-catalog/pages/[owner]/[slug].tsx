@@ -16,6 +16,7 @@ import {
 } from '../../lib/datasets'
 import { provider } from '../../lib/providers'
 import { withHistory } from '../../lib/history'
+import { formatDate } from '../../lib/format'
 
 // DuckDB only runs in the browser, so load the query view client-side. The chunk
 // (and DuckDB-Wasm) is only fetched when a resource actually needs it — flat
@@ -77,9 +78,17 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 export default function DatasetPage({ dataset, resources, activity }: PageProps) {
   const namespaceLabel = NAMESPACE_TYPE === 'owner' ? 'Owner' : 'Theme'
   const primary = resources[0]
-  // The freshest commit across all resources — a truer "last updated" than the
-  // manifest's static `modified` field (falls back to it when there's no history).
-  const lastUpdated = activity[0]?.date ?? dataset.modified
+  // "Last updated" describes the DATA's freshness. The manifest's source-provenance
+  // `modified` (preserved from the origin platform on migration) is the truth when
+  // present — it must win over git activity, whose freshest commit for a migrated
+  // dataset is the migration itself (that would wrongly show the harvest date as the
+  // data's last-updated). Fall back to git history only for hand-added datasets that
+  // carry no source `modified`.
+  const lastUpdated = (dataset.modified && formatDate(dataset.modified)) ?? activity[0]?.date
+  const created = dataset.created && formatDate(dataset.created)
+  // Migration/sync time is provenance about the COPY, shown as its own field so it
+  // never masquerades as the data's freshness.
+  const migratedAt = dataset.migratedAt && formatDate(dataset.migratedAt)
 
   return (
     <>
@@ -209,7 +218,9 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
               value={`${resources.length} file${resources.length === 1 ? '' : 's'}`}
             />
             {dataset.version && <SidebarField label="Version" value={dataset.version} />}
+            {created && <SidebarField label="Created" value={created} />}
             {lastUpdated && <SidebarField label="Last updated" value={lastUpdated} />}
+            {migratedAt && <SidebarField label="Migrated" value={migratedAt} />}
             {dataset.keywords && dataset.keywords.length > 0 && (
               <div>
                 <div className="mb-2 font-sans text-[10px] font-semibold uppercase tracking-[0.08em] text-ink/45">
