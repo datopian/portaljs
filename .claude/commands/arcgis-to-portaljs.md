@@ -401,6 +401,12 @@ renders it as a separate "Migrated" field so it never masquerades as the data's 
 Set `migratedAt` once per run from a fixed `date -u +%FT%TZ` captured at the start, so re-runs
 are stable.
 
+**Also write the sync ledger `arcgis-sync-state.json`** — one entry per migrated layer keyed on
+`(namespace, slug)` carrying `serviceUrl`, `recordCount` (= `TOTAL`), `dataLastEditDate` (from the
+layer `?f=json` `editingInfo`), `extent`, and `migratedAt`. Phase 3 sync (§10) reads it to detect
+per-layer drift cheaply on a schedule; producing it here is what makes the shadow re-syncable at no
+extra cost. See [`sync-and-cutover.md`](https://github.com/datopian/portaljs/blob/main/skills/arcgis-to-portaljs/references/sync-and-cutover.md).
+
 `--dry-run` stops before any write/push and prints the plan (mirror `/portaljs-migrate` §6).
 
 ### 8. Parity report (source vs derived) — the migration promise
@@ -457,8 +463,53 @@ even when a few layers fail — never suppress a mismatch.
   - Parity:      <P> PASS / <W> WARN / <F> failed   → arcgis-parity-report.md
   - Showcase:    /@<namespace>/<slug> — <MapPreview> + <GeoQuery> per vector dataset
 Next: review arcgis-parity-report.md, then `npm run dev` to click through the top datasets.
-      Deploy with /portaljs-deploy. (Sync + cutover = Phase 3; see the child beads on po-0qe.)
+      Deploy with /portaljs-deploy. Keep it current + retire the old site with §10 (Phase 3).
 ```
+
+### 10. Sync mode & cutover (Phase 3) — keep the shadow current, retire the old site
+
+Phase 0 migrates **once**. Phase 3 keeps the PortalJS shadow tracking the live Hub and preserves old
+URLs at cutover. Full design + copy-paste templates:
+[`sync-and-cutover.md`](https://github.com/datopian/portaljs/blob/main/skills/arcgis-to-portaljs/references/sync-and-cutover.md).
+Mental model is unchanged — **AGOL edits, PortalJS shadows**.
+
+**(a) Scheduled sync.** Write a sync ledger `arcgis-sync-state.json` in §7 (one entry per layer:
+`serviceUrl`, `recordCount`, `dataLastEditDate`, `extent`, `migratedAt`). A cron re-runs §5→§7 **only
+for layers that drifted**. Detect drift cheaply per layer before any export:
+
+```bash
+LIVE_EDIT=$(curl -sS -m30 "$SVC?f=json" | jq -r '.editingInfo.dataLastEditDate // .editingInfo.lastEditDate // empty')
+LIVE_COUNT=$(curl -sS -m30 "$SVC/query?where=1=1&returnCountOnly=true&f=json" | jq -r '.count')
+# changed if LIVE_EDIT > stored edit  OR  LIVE_COUNT != stored count
+```
+
+Keep **both** signals: `editingInfo` is authoritative but null when a service disables editor
+tracking; the count delta is the always-available fallback (and catches silent add/delete). Upsert on
+`(namespace, slug)` — unchanged layers do no work. Run it in **CI cron (GitHub Actions), not a
+Worker** — the conversion tier is native `ogr2ogr`/`tippecanoe`/`duckdb`, which a Worker can't run;
+the workflow installs the toolchain, runs the detect-and-apply loop, commits `datasets.json` +
+`data/**` back, redeploys. Never delete a layer on a single miss (track `missCount`, flag at ≥3).
+
+**(b) Parity dashboard.** Append one row per layer per run to `arcgis-parity-history.jsonl`
+(`{run, slug, source, derived, verdict, edit}`); a small node script folds it into
+`arcgis-parity-dashboard.md` (counts, drift-since-first-migration, last sync, verdict streak).
+Optionally surface it as a `/sync-status` content page so "how current is this portal?" is answerable
+from the site.
+
+**(c) Cutover — preserve `…/datasets/<slug>` links.** Preserve slugs (map the Hub slug → showcase
+slug at migration; don't re-derive). Then:
+- **You own the domain** (custom Hub domain / Stream) → emit 301s old→new (Cloudflare Bulk Redirects
+  or Next `redirects()`), generated from the DCAT `landingPage` × `datasets.json` crosswalk.
+- **You don't** (Lewisville is on `opendata.arcgis.com` — Esri controls it, no redirects possible) →
+  publish `sitemap.xml` (submit to Search Console), a public **crosswalk page** (old item → new URL),
+  self-`canonical` tags, and request the city add a "moved to <url>" link-out on the Hub items. Track
+  it in `cutover-checklist.md`.
+
+**(d) Post-cutover options.** Document three futures for the owner: **1)** keep AGOL upstream (status
+quo — PortalJS is a free public read-shadow, still paying Esri); **2)** git-native publishing per
+layer (QGIS/CSV → git, portal becomes source of truth, low-churn layers first); **3)** full Esri exit
+(open stack; a Koop FeatureServer facade — Phase 4 — keeps old REST consumers working during the
+window). Recommend **1 → 2 (layer by layer) → 3**, never big-bang.
 
 ## Error handling
 

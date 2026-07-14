@@ -111,5 +111,6 @@ The canonical, full step-by-step workflow is
 
 - Full workflow: [`.claude/commands/arcgis-to-portaljs.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/arcgis-to-portaljs.md)
 - REST export, classification, parity, and phasing details: [`references/reference.md`](references/reference.md)
+- Ongoing sync, parity dashboard, and cutover (Phase 3): [`references/sync-and-cutover.md`](references/sync-and-cutover.md)
 - Related skills: `portaljs-migrate`, `portaljs-add-geo`, `portaljs-add-dataset`, `portaljs-deploy`
 - ArcGIS REST query API: <https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer/> · tippecanoe: <https://github.com/felt/tippecanoe> · DuckDB spatial: <https://duckdb.org/docs/extensions/spatial>
