@@ -25,17 +25,12 @@ const DataExplorer = dynamic(() => import('../../components/DataExplorer'), {
   ssr: false,
 })
 
-// MapLibre GL touches `window` at module scope, so the map preview is likewise
-// client-only. The chunk (maplibre + pmtiles) loads only when a dataset
-// actually has a PMTiles resource.
+// MapLibre GL touches `window` at module scope, so the map is client-only. The
+// chunk (maplibre + pmtiles, and lazily @duckdb/duckdb-wasm) loads only when a
+// dataset actually has a geo resource. ONE component carries both geo tiers: the
+// PMTiles render layer AND the GeoParquet + DuckDB-Wasm query engine bound to the
+// same map viewport — a dual-tier dataset gets one map, not two.
 const MapPreview = dynamic(() => import('../../components/MapPreview'), {
-  ssr: false,
-})
-
-// DuckDB-Wasm + spatial + MapLibre are browser-only, so the GeoParquet query
-// view is client-side too. The chunk loads only when a dataset has a geoparquet
-// resource.
-const GeoQuery = dynamic(() => import('../../components/GeoQuery'), {
   ssr: false,
 })
 
@@ -78,6 +73,17 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 export default function DatasetPage({ dataset, resources, activity }: PageProps) {
   const namespaceLabel = NAMESPACE_TYPE === 'owner' ? 'Owner' : 'Theme'
   const primary = resources[0]
+  // The two serverless geo tiers render as ONE map (see MapPreview): the PMTiles
+  // archive is the render layer, the GeoParquet twin is the query engine bound to
+  // the same viewport. Pull both out of the per-resource preview loop so a
+  // dual-tier dataset shows a single map instead of two. The files still appear
+  // individually in the Resources download list above.
+  const pmtilesResource = resources.find((r) => r.format === 'pmtiles')
+  const geoparquetResource = resources.find((r) => r.format === 'geoparquet')
+  const hasGeo = Boolean(pmtilesResource || geoparquetResource)
+  const nonGeoResources = resources.filter(
+    (r) => r.format !== 'pmtiles' && r.format !== 'geoparquet'
+  )
   // "Last updated" describes the DATA's freshness. The manifest's source-provenance
   // `modified` (preserved from the origin platform on migration) is the truth when
   // present — it must win over git activity, whose freshest commit for a migrated
@@ -139,8 +145,18 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
 
             {/* Data preview — one block per resource. A single-file dataset (the
                 common case, and what the mockups show) renders exactly one; a
-                multi-resource dataset renders one per file, each labelled. */}
-            {resources.map((r, i) => (
+                multi-resource dataset renders one per file, each labelled. The
+                geo tiers are the exception: PMTiles + GeoParquet collapse into a
+                single map (rendered first). */}
+            {hasGeo && (
+              <GeoSection
+                pmtilesResource={pmtilesResource}
+                geoparquetResource={geoparquetResource}
+                showHeading={resources.length > 1}
+                mapAttribution={dataset.sources?.[0]?.title}
+              />
+            )}
+            {nonGeoResources.map((r, i) => (
               <ResourceSection
                 key={r.name + i}
                 resource={r}
@@ -431,10 +447,54 @@ function ActivityFeed({ activity }: { activity: ActivityEntry[] }) {
   )
 }
 
+// The geo tiers of a dataset, rendered as ONE map. PMTiles is the render layer
+// (passed as `url`), GeoParquet is the query engine bound to the same viewport
+// (passed as `queryResource`) — MapPreview composes them into a single MapLibre
+// instance, so a dual-tier dataset never shows two maps. Either tier may be
+// absent (render-only or query-only). Each tier's Frictionless schema (when
+// present) is shown below the map.
+function GeoSection({
+  pmtilesResource,
+  geoparquetResource,
+  showHeading,
+  mapAttribution,
+}: {
+  pmtilesResource?: Resource
+  geoparquetResource?: Resource
+  showHeading: boolean
+  mapAttribution?: string
+}) {
+  const pmtilesUrl = pmtilesResource ? resourceUrl(pmtilesResource) : undefined
+  return (
+    <section className="mb-11">
+      {showHeading && (
+        <div className="mb-3 flex items-baseline gap-3">
+          <h2 className="font-serif text-xl font-semibold text-ink">Map</h2>
+          <span className="border border-accent/50 px-2 py-0.5 font-sans text-[10px] font-semibold uppercase tracking-[0.06em] text-accent">
+            {pmtilesResource && geoparquetResource
+              ? 'pmtiles + geoparquet'
+              : pmtilesResource
+                ? 'pmtiles'
+                : 'geoparquet'}
+          </span>
+        </div>
+      )}
+      <MapPreview
+        url={pmtilesUrl}
+        queryResource={geoparquetResource}
+        attribution={mapAttribution}
+      />
+      {pmtilesResource && <ResourceSchema resource={pmtilesResource} />}
+      {geoparquetResource && <ResourceSchema resource={geoparquetResource} />}
+    </section>
+  )
+}
+
 // One resource within a dataset: its data preview (the DuckDB SQL editor for
 // Parquet / query-mode portals, otherwise the flat filterable Table) and its
 // Frictionless Table Schema. A single-file dataset renders exactly one of these;
-// multi-resource datasets render one per file, each with its own heading.
+// multi-resource datasets render one per file, each with its own heading. Geo
+// resources are handled by <GeoSection>, not here.
 function ResourceSection({
   resource,
   showHeading,
@@ -451,6 +511,7 @@ function ResourceSection({
   // Parquet resource always gets the SQL editor, regardless of the DATA_QUERY
   // flag; CSV/TSV get it only when the portal opts into the 'duckdb' engine.
   const useQueryView = resource.format === 'parquet' || (tabular && DATA_QUERY === 'duckdb')
+  void mapAttribution // geo resources (which use it) are routed to <GeoSection>
   return (
     <section className="mb-11">
       {showHeading && (
@@ -469,16 +530,7 @@ function ResourceSection({
         </p>
       )}
 
-      {resource.format === 'pmtiles' ? (
-        // Tiled geo data: MapLibre renders the archive in place over HTTP
-        // range requests — any dataset size, no tile server.
-        <MapPreview url={url} attribution={mapAttribution} />
-      ) : resource.format === 'geoparquet' ? (
-        // Geometry query tier: DuckDB-Wasm runs spatial SQL over the remote
-        // GeoParquet in place (bbox pre-filter → ST_Intersects) and renders the
-        // result as a live map overlay — the geospatial analog of the SQL editor.
-        <GeoQuery resource={resource} mapAttribution={mapAttribution} />
-      ) : useQueryView ? (
+      {useQueryView ? (
         <DataExplorer resource={resource} />
       ) : tabular ? (
         <>
@@ -495,68 +547,71 @@ function ResourceSection({
         </p>
       )}
 
-      {/* Per-resource Frictionless Table Schema (degrades cleanly when absent). */}
-      {resource.schema?.fields && resource.schema.fields.length > 0 && (
-        <div className="mt-6">
-          <SectionLabel>Schema</SectionLabel>
-          <div className="overflow-x-auto border border-ink/[0.18]">
-            <table className="min-w-full border-collapse text-sm">
-              <thead>
-                <tr className="bg-cream-panel text-left font-sans text-[11px] uppercase tracking-[0.06em] text-ink/60">
-                  <th className="px-4 py-3 font-semibold">Field</th>
-                  <th className="px-4 py-3 font-semibold">Type</th>
-                  <th className="px-4 py-3 font-semibold">Description</th>
-                  <th className="px-4 py-3 font-semibold">Constraints</th>
-                </tr>
-              </thead>
-              <tbody>
-                {resource.schema.fields.map((f) => {
-                  const c = f.constraints
-                  const tags = [
-                    c?.required && 'required',
-                    c?.unique && 'unique',
-                    c?.enum && `enum(${c.enum.length})`,
-                  ].filter(Boolean) as string[]
-                  // Prefer the human field label (Frictionless `title` — e.g. the
-                  // ArcGIS field alias "Property Type") as the header, keeping the raw
-                  // database column name (PROP_TYPE) as a mono subtitle. Falls back to
-                  // the raw name alone when there's no distinct alias.
-                  const hasAlias = f.title && f.title !== f.name
-                  return (
-                    <tr key={f.name} className="border-t border-ink/[0.1] align-top">
-                      <td className="px-4 py-3">
-                        {hasAlias ? (
-                          <>
-                            <div className="font-sans text-ink/80">{f.title}</div>
-                            <div className="font-mono text-[11px] text-ink/45">{f.name}</div>
-                          </>
-                        ) : (
-                          <span className="font-mono text-ink/80">{f.name}</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 font-sans text-ink/60">{f.type ?? '—'}</td>
-                      <td className="px-4 py-3 font-sans text-ink/60">
-                        {f.description ?? ''}
-                      </td>
-                      <td className="px-4 py-3 font-sans text-ink/50">{tags.join(', ')}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-          {resource.schema.primaryKey && (
-            <p className="mt-2 font-sans text-xs text-ink/45">
-              Primary key:{' '}
-              <code className="font-mono text-ink/70">
-                {Array.isArray(resource.schema.primaryKey)
-                  ? resource.schema.primaryKey.join(', ')
-                  : resource.schema.primaryKey}
-              </code>
-            </p>
-          )}
-        </div>
-      )}
+      <ResourceSchema resource={resource} />
     </section>
+  )
+}
+
+// Per-resource Frictionless Table Schema (degrades cleanly when absent).
+function ResourceSchema({ resource }: { resource: Resource }) {
+  if (!resource.schema?.fields || resource.schema.fields.length === 0) return null
+  return (
+    <div className="mt-6">
+      <SectionLabel>Schema</SectionLabel>
+      <div className="overflow-x-auto border border-ink/[0.18]">
+        <table className="min-w-full border-collapse text-sm">
+          <thead>
+            <tr className="bg-cream-panel text-left font-sans text-[11px] uppercase tracking-[0.06em] text-ink/60">
+              <th className="px-4 py-3 font-semibold">Field</th>
+              <th className="px-4 py-3 font-semibold">Type</th>
+              <th className="px-4 py-3 font-semibold">Description</th>
+              <th className="px-4 py-3 font-semibold">Constraints</th>
+            </tr>
+          </thead>
+          <tbody>
+            {resource.schema.fields.map((f) => {
+              const c = f.constraints
+              const tags = [
+                c?.required && 'required',
+                c?.unique && 'unique',
+                c?.enum && `enum(${c.enum.length})`,
+              ].filter(Boolean) as string[]
+              // Prefer the human field label (Frictionless `title` — e.g. the
+              // ArcGIS field alias "Property Type") as the header, keeping the raw
+              // database column name (PROP_TYPE) as a mono subtitle. Falls back to
+              // the raw name alone when there's no distinct alias.
+              const hasAlias = f.title && f.title !== f.name
+              return (
+                <tr key={f.name} className="border-t border-ink/[0.1] align-top">
+                  <td className="px-4 py-3">
+                    {hasAlias ? (
+                      <>
+                        <div className="font-sans text-ink/80">{f.title}</div>
+                        <div className="font-mono text-[11px] text-ink/45">{f.name}</div>
+                      </>
+                    ) : (
+                      <span className="font-mono text-ink/80">{f.name}</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 font-sans text-ink/60">{f.type ?? '—'}</td>
+                  <td className="px-4 py-3 font-sans text-ink/60">{f.description ?? ''}</td>
+                  <td className="px-4 py-3 font-sans text-ink/50">{tags.join(', ')}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+      {resource.schema.primaryKey && (
+        <p className="mt-2 font-sans text-xs text-ink/45">
+          Primary key:{' '}
+          <code className="font-mono text-ink/70">
+            {Array.isArray(resource.schema.primaryKey)
+              ? resource.schema.primaryKey.join(', ')
+              : resource.schema.primaryKey}
+          </code>
+        </p>
+      )}
+    </div>
   )
 }

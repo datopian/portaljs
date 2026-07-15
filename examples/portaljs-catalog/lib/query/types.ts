@@ -21,7 +21,7 @@ export type QuerySource = {
   format: 'csv' | 'tsv' | 'json' | 'parquet' | 'geoparquet' | string
   // Load the DuckDB `spatial` extension after connecting, so ST_* functions and
   // GeoParquet geometry decoding are available. Set for GeoParquet sources
-  // (the <GeoQuery> spatial view); left off for plain tabular queries.
+  // (the MapPreview spatial query tier); left off for plain tabular queries.
   spatial?: boolean
 }
 

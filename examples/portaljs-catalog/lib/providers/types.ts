@@ -17,9 +17,10 @@ import type { License, Source, TableSchema } from '../metadata/types'
 // with tippecanoe; see components/MapPreview.tsx.
 // 'geoparquet' is the query tier for geometry: a GeoParquet file DuckDB-Wasm
 // range-reads in place and runs spatial SQL over (bbox pre-filter → ST_Intersects),
-// rendering results as a live map overlay — see components/GeoQuery.tsx. It's the
-// geospatial analog of the 'parquet' query view; a dataset can ship BOTH a pmtiles
-// resource (render) and a geoparquet resource (query) so the two compose.
+// rendering results as a highlight overlay on the render map — see the query tier
+// in components/MapPreview.tsx. It's the geospatial analog of the 'parquet' query
+// view; a dataset can ship BOTH a pmtiles resource (render) and a geoparquet
+// resource (query) and MapPreview composes them into one map.
 export type DataFormat = 'csv' | 'tsv' | 'json' | 'geojson' | 'parquet' | 'pmtiles' | 'geoparquet'
 
 // One line of a version-to-version diff, shown when a resource's history is expanded.
