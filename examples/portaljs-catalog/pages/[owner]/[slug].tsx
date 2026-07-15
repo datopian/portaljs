@@ -66,10 +66,14 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 }
 
 // Showcase surface (editorial design imported from the Claude Design mockups): an
-// eyebrow + title + italic description, then a two-column body — resources (each with
-// an expandable git version history), a portal activity feed, a data preview (simple
-// filterable table for CSV/TSV, a DuckDB SQL editor for Parquet or query-mode portals),
-// schema, and a Views slot — beside a metadata sidebar with the download.
+// eyebrow + title + italic description, then a two-column body that follows the
+// user's mental model — see it → query it → download it. First the data preview
+// (ONE map for a geo dataset — PMTiles render + GeoParquet query on a single
+// viewport, with Table/Chart/SQL tabs; a filterable table or DuckDB SQL editor for
+// tabular datasets), then a single "Download & API" block (every file is a FORMAT
+// of the one dataset — download + copy-URL + a DuckDB snippet, with sizes), then a
+// portal activity feed and a Views slot — beside a metadata sidebar with the
+// primary download.
 export default function DatasetPage({ dataset, resources, activity }: PageProps) {
   const namespaceLabel = NAMESPACE_TYPE === 'owner' ? 'Owner' : 'Theme'
   const primary = resources[0]
@@ -83,6 +87,22 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
   const hasGeo = Boolean(pmtilesResource || geoparquetResource)
   const nonGeoResources = resources.filter(
     (r) => r.format !== 'pmtiles' && r.format !== 'geoparquet'
+  )
+  // Which resources get an INLINE preview. A geo dataset's non-geo files (GeoJSON,
+  // CSV, GeoPackage, Shapefile) are alternate FORMATS of the data already shown on
+  // the map, so they never preview — they only appear as download rows. A tabular
+  // dataset previews its CSV/TSV (Table or SQL editor) and Parquet (SQL editor);
+  // anything else is download-only.
+  const previewResources = hasGeo
+    ? []
+    : nonGeoResources.filter(
+        (r) => r.format === 'parquet' || r.format === 'csv' || r.format === 'tsv'
+      )
+  // Every file, ordered for the Download & API block: the two serverless geo tiers
+  // first (GeoParquet for analysis, PMTiles for maps), then the source archive
+  // (GeoJSON), then the remaining tabular/export formats.
+  const orderedResources = [...resources].sort(
+    (a, b) => downloadRank(a.format) - downloadRank(b.format)
   )
   // "Last updated" describes the DATA's freshness. The manifest's source-provenance
   // `modified` (preserved from the origin platform on migration) is the truth when
@@ -129,41 +149,40 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
 
         <div className="grid grid-cols-1 gap-12 pb-6 lg:grid-cols-[1fr_280px] lg:gap-16">
           <div className="min-w-0">
-            {/* Resource file list — every file in the dataset, each downloadable, each
-                with an expandable git version history. */}
-            <SectionLabel className="border-t border-ink/[0.15] pt-[22px]">
-              Resources
-            </SectionLabel>
-            <div className="mb-11">
-              {resources.map((r, i) => (
-                <ResourceRow key={r.name + i} resource={r} />
+            {/* Data preview — the "see it / query it" surface. A geo dataset gets
+                ONE map (PMTiles render + GeoParquet query on a single viewport,
+                with Table/Chart/SQL tabs). A tabular dataset gets a filterable
+                Table or the DuckDB SQL editor per previewable file. Download-only
+                formats never render here — they live in the Download & API block. */}
+            <div className="border-t border-ink/[0.15] pt-[22px]">
+              {hasGeo && (
+                <GeoSection
+                  pmtilesResource={pmtilesResource}
+                  geoparquetResource={geoparquetResource}
+                  showHeading={resources.length > 1}
+                  mapAttribution={dataset.sources?.[0]?.title}
+                />
+              )}
+              {previewResources.map((r, i) => (
+                <ResourceSection
+                  key={r.name + i}
+                  resource={r}
+                  showHeading={previewResources.length > 1}
+                />
               ))}
             </div>
 
+            {/* Download & API — every file is a FORMAT of the one dataset, not a
+                separate resource: a single block, each row with its size, a
+                copy-URL, and (for the columnar tiers) a ready-to-run DuckDB
+                snippet. Dual-tier geo datasets get a one-line architecture note. */}
+            <DownloadApiBlock
+              resources={orderedResources}
+              dualTier={Boolean(pmtilesResource && geoparquetResource)}
+            />
+
             {/* Activity — every resource commit across the dataset, newest first. */}
             {activity.length > 0 && <ActivityFeed activity={activity} />}
-
-            {/* Data preview — one block per resource. A single-file dataset (the
-                common case, and what the mockups show) renders exactly one; a
-                multi-resource dataset renders one per file, each labelled. The
-                geo tiers are the exception: PMTiles + GeoParquet collapse into a
-                single map (rendered first). */}
-            {hasGeo && (
-              <GeoSection
-                pmtilesResource={pmtilesResource}
-                geoparquetResource={geoparquetResource}
-                showHeading={resources.length > 1}
-                mapAttribution={dataset.sources?.[0]?.title}
-              />
-            )}
-            {nonGeoResources.map((r, i) => (
-              <ResourceSection
-                key={r.name + i}
-                resource={r}
-                showHeading={resources.length > 1}
-                mapAttribution={dataset.sources?.[0]?.title}
-              />
-            ))}
 
             {/* Views placeholder — charts and maps are added here by the
                 /portaljs-add-chart and /portaljs-add-map skills. */}
@@ -305,37 +324,129 @@ function SidebarField({ label, value }: { label: string; value: string }) {
   )
 }
 
-// One row in the Resources list: the file (a download link + format tag) with a toggle
-// that reveals its git version history — a timeline of commits that touched the file,
-// each downloadable, each with an optional expandable diff. Degrades to a plain download
-// row when the file has no git history.
-function ResourceRow({ resource }: { resource: Resource }) {
-  const history = resource.history ?? []
+// Format-priority for the Download & API list: the serverless geo tiers lead
+// (GeoParquet for analysis/SQL, PMTiles for maps), then the source archive
+// (GeoJSON), then the remaining tabular/export formats. Unlisted formats sort last.
+function downloadRank(format: string): number {
+  const order = ['geoparquet', 'pmtiles', 'geojson', 'csv', 'tsv', 'parquet', 'json']
+  const i = order.indexOf(format)
+  return i === -1 ? order.length : i
+}
+
+// A tiny copy-to-clipboard button that flips to a "Copied" confirmation for a
+// moment. Used for both the raw file URL and the ready-to-run DuckDB snippet.
+function CopyButton({ text, label }: { text: string; label: string }) {
+  const [copied, setCopied] = useState(false)
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        void navigator.clipboard?.writeText(text).then(() => {
+          setCopied(true)
+          setTimeout(() => setCopied(false), 1500)
+        })
+      }}
+      className="whitespace-nowrap font-sans text-[11px] font-medium text-ink/55 underline underline-offset-2 hover:text-accent"
+    >
+      {copied ? 'Copied' : label}
+    </button>
+  )
+}
+
+// The single "Download & API" block: every file in the dataset presented as a
+// FORMAT of one thing, not a separate resource. Each row carries its size, a
+// direct download, a copy-URL (for files served from a public URL), and — for the
+// columnar/query tiers — a ready-to-run DuckDB snippet. A dual-tier geo dataset
+// gets a one-line architecture note (the vendor story, not the user's model).
+function DownloadApiBlock({
+  resources,
+  dualTier,
+}: {
+  resources: Resource[]
+  dualTier: boolean
+}) {
+  if (resources.length === 0) return null
+  return (
+    <section className="mt-11">
+      <SectionLabel>Download &amp; API</SectionLabel>
+      <div>
+        {resources.map((r, i) => (
+          <ResourceDownloadRow key={r.name + i} resource={r} />
+        ))}
+      </div>
+      {dualTier && (
+        <p className="mt-3 font-sans text-xs leading-relaxed text-ink/45">
+          Rendered from PMTiles, queried in-browser from GeoParquet — no server.{' '}
+          <a
+            href="https://portaljs.com"
+            className="text-accent underline underline-offset-2"
+          >
+            How this works
+          </a>
+        </p>
+      )}
+    </section>
+  )
+}
+
+// One file in the Download & API block: label + format tag + size on the left,
+// actions on the right (Download always; Copy URL when the file is served from a
+// public URL; Copy DuckDB snippet for columnar formats). A short caption names the
+// format's role — GeoJSON is flagged as the original export archive. Version
+// history (when git captured any) stays available behind a per-row toggle.
+function ResourceDownloadRow({ resource }: { resource: Resource }) {
   const [open, setOpen] = useState(false)
+  const history = resource.history ?? []
+  const url = resourceUrl(resource)
+  const isPublicUrl = /^(https?:)?\/\//.test(resource.path)
+  // Newest version first (see lib/history.ts), so history[0] is the current size.
+  const size = history[0]?.size
+  const isColumnar = resource.format === 'geoparquet' || resource.format === 'parquet'
+  const caption = downloadCaption(resource.format)
 
   return (
     <div className="border-b border-dotted border-ink/25">
-      <div className="flex items-center justify-between gap-4 py-4">
-        <a
-          href={resourceUrl(resource)}
-          className="flex min-w-0 items-center gap-2.5 no-underline hover:text-accent"
-        >
-          <span className="min-w-0 truncate font-sans text-[15px] font-medium text-ink">
-            {resourceLabel(resource)}
-          </span>
-          <span className="flex-shrink-0 border border-accent/50 px-2 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.06em] text-accent">
-            {resource.format}
-          </span>
-        </a>
-        {history.length > 0 && (
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            className="flex-shrink-0 whitespace-nowrap font-sans text-xs font-medium text-ink/55 hover:text-accent"
+      <div className="flex items-start justify-between gap-4 py-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2.5">
+            <span className="min-w-0 truncate font-sans text-[15px] font-medium text-ink">
+              {resourceLabel(resource)}
+            </span>
+            <span className="flex-shrink-0 border border-accent/50 px-2 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.06em] text-accent">
+              {resource.format}
+            </span>
+            {size && (
+              <span className="flex-shrink-0 font-sans text-[11px] text-ink/40">{size}</span>
+            )}
+          </div>
+          {caption && (
+            <div className="mt-1 font-sans text-[12px] text-ink/50">{caption}</div>
+          )}
+        </div>
+        <div className="flex flex-shrink-0 flex-wrap items-center justify-end gap-x-3 gap-y-1">
+          <a
+            href={url}
+            className="whitespace-nowrap font-sans text-[11px] font-medium text-ink/55 underline underline-offset-2 hover:text-accent"
           >
-            {open ? 'Hide history' : `History (${history.length})`}
-          </button>
-        )}
+            Download
+          </a>
+          {isPublicUrl && <CopyButton text={url} label="Copy URL" />}
+          {isColumnar && isPublicUrl && (
+            <CopyButton
+              text={`SELECT * FROM read_parquet('${url}')`}
+              label="Copy DuckDB snippet"
+            />
+          )}
+          {history.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              className="whitespace-nowrap font-sans text-[11px] font-medium text-ink/55 hover:text-accent"
+            >
+              {open ? 'Hide history' : `History (${history.length})`}
+            </button>
+          )}
+        </div>
       </div>
       {open && (
         <div className="mb-2 flex flex-col gap-5 border-l-2 border-ink/[0.15] py-1 pb-5 pl-[18px]">
@@ -346,6 +457,31 @@ function ResourceRow({ resource }: { resource: Resource }) {
       )}
     </div>
   )
+}
+
+// A short, human caption for a file's role in the dataset. GeoJSON is the full,
+// unsimplified FeatureService export — flagged as an archive so visitors reach for
+// GeoParquet (query) or PMTiles (maps) first. Returns '' for formats that need no
+// caption (the format tag already says enough).
+function downloadCaption(format: string): string {
+  switch (format) {
+    case 'geoparquet':
+      return 'Columnar — query with DuckDB / SQL'
+    case 'pmtiles':
+      return 'Vector tiles — embed in a map'
+    case 'geojson':
+      return 'Original export (archive)'
+    case 'parquet':
+      return 'Columnar — query with DuckDB / SQL'
+    case 'gpkg':
+    case 'geopackage':
+      return 'GeoPackage — GIS desktop (QGIS, ArcGIS)'
+    case 'shp':
+    case 'shapefile':
+      return 'Shapefile — legacy GIS interchange'
+    default:
+      return ''
+  }
 }
 
 // One commit in a resource's history timeline: version tag, date, download, message,
@@ -490,19 +626,18 @@ function GeoSection({
   )
 }
 
-// One resource within a dataset: its data preview (the DuckDB SQL editor for
+// One PREVIEWABLE tabular resource: its data preview (the DuckDB SQL editor for
 // Parquet / query-mode portals, otherwise the flat filterable Table) and its
-// Frictionless Table Schema. A single-file dataset renders exactly one of these;
-// multi-resource datasets render one per file, each with its own heading. Geo
-// resources are handled by <GeoSection>, not here.
+// Frictionless Table Schema. Only previewable formats (CSV/TSV/Parquet) reach here
+// — download-only formats live in the Download & API block, and geo resources are
+// handled by <GeoSection>. A single-file dataset renders exactly one of these;
+// multi-resource datasets render one per file, each with its own heading.
 function ResourceSection({
   resource,
   showHeading,
-  mapAttribution,
 }: {
   resource: Resource
   showHeading: boolean
-  mapAttribution?: string
 }) {
   const url = resourceUrl(resource)
   const tabular = resource.format === 'csv' || resource.format === 'tsv'
@@ -511,7 +646,6 @@ function ResourceSection({
   // Parquet resource always gets the SQL editor, regardless of the DATA_QUERY
   // flag; CSV/TSV get it only when the portal opts into the 'duckdb' engine.
   const useQueryView = resource.format === 'parquet' || (tabular && DATA_QUERY === 'duckdb')
-  void mapAttribution // geo resources (which use it) are routed to <GeoSection>
   return (
     <section className="mb-11">
       {showHeading && (
@@ -532,19 +666,11 @@ function ResourceSection({
 
       {useQueryView ? (
         <DataExplorer resource={resource} />
-      ) : tabular ? (
+      ) : (
         <>
           <SectionLabel>Preview</SectionLabel>
           <Table url={url} />
         </>
-      ) : (
-        <p className="font-serif text-[15px] italic text-ink/60">
-          Preview not available for {resource.format} files.{' '}
-          <a href={url} className="text-accent underline underline-offset-2">
-            Download the file
-          </a>
-          .
-        </p>
       )}
 
       <ResourceSchema resource={resource} />
