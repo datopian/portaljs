@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import type { Map as MapLibreMap, MapMouseEvent, StyleSpecification } from 'maplibre-gl'
+import type {
+  Map as MapLibreMap,
+  MapMouseEvent,
+  StyleSpecification,
+  LngLatBoundsLike,
+} from 'maplibre-gl'
 
 // Serverless map preview for a PMTiles resource. MapLibre GL reads the single
 // .pmtiles archive straight from its URL (bundled /data file, R2, any static
@@ -16,21 +21,32 @@ import type { Map as MapLibreMap, MapMouseEvent, StyleSpecification } from 'mapl
 // paint needs a literal color, not a Tailwind class.
 const ACCENT = '#9d4a2c'
 
-// Free, keyless basemap style. Loaded at runtime in the browser only; if it is
-// unreachable the map falls back to a plain background and still renders the
-// data layer, so previews (and offline dev) never break on the basemap.
-const BASEMAP_STYLE = 'https://demotiles.maplibre.org/style.json'
+// Light, neutral, keyless vector basemap (Carto Positron via OpenFreeMap),
+// loaded at runtime in the browser only. Low-contrast greys/whites so the data
+// layer reads first — the previous MapLibre demo style painted land solid green,
+// which a large point layer disappeared into. If the style is unreachable the
+// map falls back to a plain background and still renders the data layer, so
+// previews (and offline dev) never break on the basemap.
+const BASEMAP_STYLE = 'https://tiles.openfreemap.org/styles/positron'
+
+// Basemap credit — always shown (the OpenFreeMap/Carto style is built from
+// OpenStreetMap data, whose licence requires attribution). The data-source
+// credit from the `attribution` prop is appended after it.
+const BASEMAP_ATTRIBUTION = '© OpenStreetMap · Carto'
 
 // The handful of maplibre-gl.css rules the canvas needs to lay out correctly,
 // inlined so no global CSS import has to be wired through next.config. The
 // stock stylesheet mostly styles controls/popups, which this component
-// replaces with its own overlays.
+// replaces with its own overlays — but the scale control IS a stock control,
+// so its rules are included below.
 const BASE_CSS = `
 .maplibregl-map{overflow:hidden;position:relative;-webkit-tap-highlight-color:rgba(0,0,0,0)}
 .maplibregl-canvas-container{height:100%;width:100%}
 .maplibregl-canvas{left:0;position:absolute;top:0}
 .maplibregl-canvas-container.maplibregl-interactive{cursor:grab;user-select:none}
 .maplibregl-canvas-container.maplibregl-interactive:active{cursor:grabbing}
+.maplibregl-ctrl-bottom-left{position:absolute;bottom:0;left:0;z-index:2;pointer-events:none}
+.maplibregl-ctrl-scale{background:rgba(247,244,236,0.8);border:1px solid rgba(43,40,38,0.25);border-top:none;color:#2b2826;font:10px/1.4 ui-sans-serif,system-ui,sans-serif;padding:1px 5px;white-space:nowrap}
 `
 
 function injectBaseCss() {
@@ -42,6 +58,15 @@ function injectBaseCss() {
   document.head.appendChild(style)
 }
 
+// Rough initial zoom for a lon/lat span, so the map opens framed on the data
+// (never the world view) before the precise fitBounds on load. Derived from the
+// Web-Mercator relationship zoom ≈ log2(360 / span); clamped to sane bounds.
+function zoomForSpan(lonSpan: number, latSpan: number): number {
+  const span = Math.max(lonSpan, latSpan, 1e-6)
+  const z = Math.log2(360 / span) - 0.5
+  return Math.min(16, Math.max(1, z))
+}
+
 type Inspected = {
   lngLat: [number, number]
   properties: Record<string, unknown>
@@ -51,12 +76,20 @@ type Inspected = {
 export default function MapPreview({
   url,
   attribution,
+  bbox,
 }: {
   url: string
   attribution?: string
+  // Authoritative initial extent [minLon, minLat, maxLon, maxLat] (e.g. from
+  // dataset metadata / DCAT spatial). When omitted, the PMTiles header bounds
+  // are used — accurate for any tippecanoe-built archive.
+  bbox?: [number, number, number, number]
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
+  // Data extent to (re)frame on — set once the map is up. Backs the
+  // "reset to data extent" control.
+  const boundsRef = useRef<LngLatBoundsLike | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [inspected, setInspected] = useState<Inspected | null>(null)
@@ -109,6 +142,22 @@ export default function MapPreview({
       }
       if (cancelled || !containerRef.current) return
 
+      // Resolve the data extent: the caller-supplied bbox wins (authoritative
+      // metadata), else the archive header bounds. Used both to frame the
+      // initial view and to back the reset control.
+      const hasHeaderBounds = header.maxLon > header.minLon
+      const extent: [number, number, number, number] | null = bbox
+        ? bbox
+        : hasHeaderBounds
+          ? [header.minLon, header.minLat, header.maxLon, header.maxLat]
+          : null
+      if (extent) {
+        boundsRef.current = [
+          [extent[0], extent[1]],
+          [extent[2], extent[3]],
+        ]
+      }
+
       const offlineStyle: StyleSpecification = {
         version: 8,
         sources: {},
@@ -122,11 +171,14 @@ export default function MapPreview({
         map = new maplibregl.Map({
           container: containerRef.current,
           style: BASEMAP_STYLE,
-          center: [
-            (header.minLon + header.maxLon) / 2,
-            (header.minLat + header.maxLat) / 2,
-          ],
-          zoom: 1,
+          // Open framed on the data (never the world) even before the precise
+          // fitBounds on load fires.
+          center: extent
+            ? [(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2]
+            : [0, 0],
+          zoom: extent
+            ? zoomForSpan(extent[2] - extent[0], extent[3] - extent[1])
+            : 1,
           attributionControl: false,
         })
       } catch (e) {
@@ -139,6 +191,9 @@ export default function MapPreview({
         return
       }
       mapRef.current = map
+
+      // Stock scale bar (bottom-left), styled by BASE_CSS above.
+      map.addControl(new maplibregl.ScaleControl({ maxWidth: 90, unit: 'metric' }), 'bottom-left')
 
       // An unreachable basemap must never take the data layer down: swap to
       // the plain background and carry on. Match only network-shaped failures
@@ -160,40 +215,82 @@ export default function MapPreview({
         if (!map.getSource('preview')) {
           map.addSource('preview', { type: 'vector', url: `pmtiles://${absoluteUrl}` })
         }
-        // Each source-layer gets a fill/line/point trio filtered by geometry
-        // type — sensible defaults whatever the tileset contains.
+        // Each source-layer gets a geometry-aware stack, added ON TOP of the
+        // basemap. Filtered by geometry type so a layer only paints what it
+        // actually contains — sensible defaults whatever the tileset holds.
         for (const layer of vectorLayers) {
-          if (map.getLayer(`preview-fill/${layer.id}`)) continue
-          map.addLayer({
-            id: `preview-fill/${layer.id}`,
-            type: 'fill',
-            source: 'preview',
-            'source-layer': layer.id,
-            filter: ['==', '$type', 'Polygon'],
-            paint: { 'fill-color': ACCENT, 'fill-opacity': 0.22 },
-          })
-          map.addLayer({
-            id: `preview-line/${layer.id}`,
-            type: 'line',
-            source: 'preview',
-            'source-layer': layer.id,
-            filter: ['!=', '$type', 'Point'],
-            paint: { 'line-color': ACCENT, 'line-width': 1.1 },
-          })
-          map.addLayer({
-            id: `preview-point/${layer.id}`,
-            type: 'circle',
-            source: 'preview',
-            'source-layer': layer.id,
-            filter: ['==', '$type', 'Point'],
-            paint: {
-              'circle-color': ACCENT,
-              'circle-radius': 4,
-              'circle-opacity': 0.85,
-              'circle-stroke-color': '#ffffff',
-              'circle-stroke-width': 1,
-            },
-          })
+          // --- Polygons: semi-transparent fill + thin stroke ---
+          if (!map.getLayer(`preview-fill/${layer.id}`)) {
+            map.addLayer({
+              id: `preview-fill/${layer.id}`,
+              type: 'fill',
+              source: 'preview',
+              'source-layer': layer.id,
+              filter: ['==', '$type', 'Polygon'],
+              paint: { 'fill-color': ACCENT, 'fill-opacity': 0.22 },
+            })
+          }
+          // --- Lines (and polygon outlines): thin stroke, no fill ---
+          if (!map.getLayer(`preview-line/${layer.id}`)) {
+            map.addLayer({
+              id: `preview-line/${layer.id}`,
+              type: 'line',
+              source: 'preview',
+              'source-layer': layer.id,
+              filter: ['!=', '$type', 'Point'],
+              paint: { 'line-color': ACCENT, 'line-width': 1.1 },
+            })
+          }
+          // --- Points, low zoom: heatmap so a large layer (e.g. 376k trees)
+          //     reads as density instead of a solid mass of dots. Fades out as
+          //     the circles fade in around z12. ---
+          if (!map.getLayer(`preview-heat/${layer.id}`)) {
+            map.addLayer({
+              id: `preview-heat/${layer.id}`,
+              type: 'heatmap',
+              source: 'preview',
+              'source-layer': layer.id,
+              filter: ['==', '$type', 'Point'],
+              maxzoom: 13,
+              paint: {
+                'heatmap-weight': 0.6,
+                'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 0.6, 12, 1.4],
+                'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 12, 12, 22],
+                // Transparent → accent ramp so density reads on the light basemap.
+                'heatmap-color': [
+                  'interpolate',
+                  ['linear'],
+                  ['heatmap-density'],
+                  0, 'rgba(157,74,44,0)',
+                  0.2, 'rgba(157,74,44,0.25)',
+                  0.5, 'rgba(157,74,44,0.55)',
+                  1, 'rgba(157,74,44,0.85)',
+                ],
+                // Fade the heatmap out over z11→13 as the circle layer fades in.
+                'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 11, 0.9, 13, 0],
+              },
+            })
+          }
+          // --- Points, high zoom: small graduated circles (never fixed-radius
+          //     dots at city extent). Radius + opacity grow with zoom. ---
+          if (!map.getLayer(`preview-point/${layer.id}`)) {
+            map.addLayer({
+              id: `preview-point/${layer.id}`,
+              type: 'circle',
+              source: 'preview',
+              'source-layer': layer.id,
+              filter: ['==', '$type', 'Point'],
+              minzoom: 11,
+              paint: {
+                'circle-color': ACCENT,
+                'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 1.5, 14, 3, 17, 6],
+                'circle-opacity': ['interpolate', ['linear'], ['zoom'], 11, 0.5, 14, 0.85],
+                'circle-stroke-color': '#ffffff',
+                // Hairline stroke only once circles are big enough to carry it.
+                'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 13, 0, 15, 1],
+              },
+            })
+          }
         }
       }
 
@@ -205,21 +302,21 @@ export default function MapPreview({
       map.once('load', () => {
         if (!map) return
         setLoading(false)
-        // Frame the tileset from the PMTiles header bounds.
-        if (header.maxLon > header.minLon) {
-          map.fitBounds(
-            [
-              [header.minLon, header.minLat],
-              [header.maxLon, header.maxLat],
-            ],
-            { padding: 24, duration: 0 }
-          )
+        // Frame the resolved data extent precisely (bbox prop, else header).
+        if (boundsRef.current) {
+          map.fitBounds(boundsRef.current, { padding: 24, duration: 0 })
         }
       })
 
+      // Point layers use heatmap below z12 and circles above; both are query
+      // targets for click-to-inspect, plus fills and lines.
       const previewLayerIds = () =>
         vectorLayers
-          .flatMap((l) => [`preview-fill/${l.id}`, `preview-line/${l.id}`, `preview-point/${l.id}`])
+          .flatMap((l) => [
+            `preview-fill/${l.id}`,
+            `preview-line/${l.id}`,
+            `preview-point/${l.id}`,
+          ])
           .filter((id) => map?.getLayer(id))
 
       // Click-to-inspect: tippecanoe preserves the source attributes on every
@@ -254,9 +351,10 @@ export default function MapPreview({
     return () => {
       cancelled = true
       mapRef.current = null
+      boundsRef.current = null
       map?.remove()
     }
-  }, [url])
+  }, [url, bbox])
 
   // Keep the popup glued to its geographic anchor while the user pans/zooms.
   useEffect(() => {
@@ -279,7 +377,16 @@ export default function MapPreview({
     map.zoomTo(map.getZoom() + delta, { duration: 200 })
   }
 
+  const resetExtent = () => {
+    const map = mapRef.current
+    if (!map || !boundsRef.current) return
+    map.fitBounds(boundsRef.current, { padding: 24, duration: 400 })
+  }
+
   const entries = inspected ? Object.entries(inspected.properties) : []
+  const attributionLine = attribution
+    ? `${BASEMAP_ATTRIBUTION} · ${attribution}`
+    : BASEMAP_ATTRIBUTION
 
   return (
     <div>
@@ -302,7 +409,8 @@ export default function MapPreview({
             collapse the div to zero height. */}
         <div ref={containerRef} className="h-full w-full" />
 
-        {/* Zoom controls (custom, so none of maplibre's control CSS is needed). */}
+        {/* Map controls (custom, so none of maplibre's control CSS is needed):
+            zoom, and reset-to-data-extent. */}
         <div className="absolute right-2.5 top-2.5 z-[2] flex flex-col gap-px">
           <button
             type="button"
@@ -319,6 +427,16 @@ export default function MapPreview({
             className="h-7 w-7 border border-ink/25 bg-cream text-center font-sans text-base leading-none text-ink hover:text-accent"
           >
             −
+          </button>
+          <button
+            type="button"
+            aria-label="Reset to data extent"
+            title="Reset to data extent"
+            onClick={resetExtent}
+            className="mt-px flex h-7 w-7 items-center justify-center border border-ink/25 bg-cream font-sans text-[13px] leading-none text-ink hover:text-accent"
+          >
+            {/* framing-corners glyph — "fit to extent" */}
+            ⤢
           </button>
         </div>
 
@@ -362,11 +480,11 @@ export default function MapPreview({
           </div>
         )}
 
-        {attribution && (
-          <div className="absolute bottom-0 right-0 z-[2] bg-cream/80 px-1.5 py-0.5 font-sans text-[10px] text-ink/60">
-            {attribution}
-          </div>
-        )}
+        {/* Attribution: basemap credit always, data source appended. Sits above
+            the scale bar (bottom-left) at bottom-right. */}
+        <div className="absolute bottom-0 right-0 z-[2] bg-cream/80 px-1.5 py-0.5 font-sans text-[10px] text-ink/60">
+          {attributionLine}
+        </div>
 
         {loading && !error && (
           <div className="absolute inset-0 z-[4] flex items-center justify-center bg-cream-panel/80">
