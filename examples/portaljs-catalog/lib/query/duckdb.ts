@@ -96,9 +96,15 @@ export class DuckDbQuery implements DataQuery {
           duckdb.DuckDBDataProtocol.HTTP,
           true
         )
+        // The raw file is `__source`; the public table `data` is a view over it.
+        // Keeping the raw read behind `__source` lets a logical layer redefine
+        // `data` as an aliased / spatially-clipped view (see lib/query/logical.ts,
+        // the clean query surface) WITHOUT re-reading the file — `data` never feeds
+        // `__source`, so CREATE OR REPLACE VIEW data stays non-circular.
         await this.conn.query(
-          `CREATE OR REPLACE VIEW data AS SELECT * FROM read_parquet('data.parquet')`
+          `CREATE OR REPLACE VIEW __source AS SELECT * FROM read_parquet('data.parquet')`
         )
+        await this.conn.query(`CREATE OR REPLACE VIEW data AS SELECT * FROM __source`)
         return
       }
 
@@ -120,7 +126,11 @@ export class DuckDbQuery implements DataQuery {
         ? `read_csv_auto('${fname}', delim='\t')`
         : `read_csv_auto('${fname}')`
 
-      await this.conn.query(`CREATE OR REPLACE TABLE data AS SELECT * FROM ${reader}`)
+      // Materialize the raw file once as `__source`, then expose `data` as a view
+      // over it — same two-name split as the range path (see above), so a logical
+      // layer can redefine `data` without touching the loaded data.
+      await this.conn.query(`CREATE OR REPLACE TABLE __source AS SELECT * FROM ${reader}`)
+      await this.conn.query(`CREATE OR REPLACE VIEW data AS SELECT * FROM __source`)
     } catch (e) {
       // Don't leave a half-initialized engine behind on failure.
       await this.close()

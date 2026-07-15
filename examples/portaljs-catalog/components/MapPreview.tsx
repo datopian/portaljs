@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type {
   Map as MapLibreMap,
   MapMouseEvent,
@@ -6,6 +6,18 @@ import type {
   LngLatBoundsLike,
 } from 'maplibre-gl'
 import { DuckDbQuery } from '../lib/query/duckdb'
+import {
+  GEOJSON_COL,
+  buildDataViewSql,
+  deriveColumns,
+  humanizeError,
+  wrapForMap,
+  attributeColumns,
+  type Bounds,
+  type DescribeRow,
+  type LogicalColumn,
+} from '../lib/query/logical'
+import MapQueryPanel from './MapQueryPanel'
 import { resourceUrl, type Resource } from '../lib/datasets'
 
 // The dataset-page map — ONE MapLibre instance that carries both serverless geo
@@ -45,14 +57,6 @@ const ACCENT = '#9d4a2c'
 // and the light basemap. Deliberately NOT the accent — the highlight has to read
 // as "these are the rows your query matched", distinct from the full render.
 const HIGHLIGHT = '#1d4ed8'
-
-// GeoParquet query plumbing (mirrors lib/query): the emitted GeoJSON column, the
-// result cap, and the default geometry / covering-bbox column names for the demo
-// GeoParquet. A dataset with different names ships its own `resource.query`.
-const GEOJSON_COL = 'geojson'
-const MAX_RESULTS = 5000
-const GEOM = 'geometry'
-const BBOX = 'bbox'
 
 // Light, neutral, keyless vector basemap (Carto Positron via OpenFreeMap),
 // loaded at runtime in the browser only. Low-contrast greys/whites so the data
@@ -100,29 +104,11 @@ function zoomForSpan(lonSpan: number, latSpan: number): number {
   return Math.min(16, Math.max(1, z))
 }
 
-type Bounds = { minX: number; minY: number; maxX: number; maxY: number }
-
-// bbox-first viewport query: prune row groups on the covering bbox (cheap,
-// Parquet stats), THEN refine with the exact ST_Intersects predicate on the
-// survivors, and emit GeoJSON for the overlay.
-function buildViewportSql(b: Bounds): string {
-  const env = `ST_MakeEnvelope(${b.minX}, ${b.minY}, ${b.maxX}, ${b.maxY})`
-  return (
-    `SELECT * EXCLUDE ("${GEOM}", "${BBOX}"), ST_AsGeoJSON("${GEOM}") AS ${GEOJSON_COL}\n` +
-    `FROM data\n` +
-    `WHERE "${BBOX}".xmin <= ${b.maxX} AND "${BBOX}".xmax >= ${b.minX}\n` +
-    `  AND "${BBOX}".ymin <= ${b.maxY} AND "${BBOX}".ymax >= ${b.minY}\n` +
-    `  AND ST_Intersects("${GEOM}", ${env})\n` +
-    `LIMIT ${MAX_RESULTS}`
-  )
-}
-
 type Inspected = {
   lngLat: [number, number]
   properties: Record<string, unknown>
   sourceLayer: string
 }
-type ViewMode = 'table' | 'chart'
 type FeatureCollection = { type: 'FeatureCollection'; features: unknown[] }
 type Output = {
   columns: string[]
@@ -165,27 +151,27 @@ export default function MapPreview({
   // Pixel position of the popup, re-projected from lngLat on every map move.
   const [anchor, setAnchor] = useState<{ x: number; y: number } | null>(null)
 
-  // --- Query tier (GeoParquet + DuckDB-Wasm), all lazy ---
+  // --- Query tier (GeoParquet + DuckDB-Wasm) ---
   const geoUrl = queryResource ? resourceUrl(queryResource) : null
-  // The engine and its open() promise are created only on the FIRST query, never
-  // at mount — the render tier must not wait for the DuckDB wasm bundle.
+  // The engine opens once when a query tier is present. Unlike the render tier
+  // (PMTiles, interactive in ~1s) this pulls the ~10 MB DuckDB wasm bundle — but
+  // it's a SEPARATE effect, so the map never waits on it, and having it ready is
+  // what lets the Table tab show rows on load (§4) without a user click.
   const engineRef = useRef<DuckDbQuery | null>(null)
-  const openedRef = useRef<Promise<void> | null>(null)
+  // Logical columns of the `data` view + the geometry/bbox column names, resolved
+  // from DESCRIBE once the engine opens. Refs so the run() closure always sees the
+  // latest without re-creating it; mirrored into state to drive the panel.
+  const colsRef = useRef<LogicalColumn[]>([])
+  const geomColRef = useRef<string | undefined>(undefined)
+  const bboxColRef = useRef<string | undefined>(undefined)
   // Last FeatureCollection painted; re-applied on every 'styledata' so the
   // overlay survives a basemap style (re)load (initial + offline fallback).
   const lastFcRef = useRef<FeatureCollection | null>(null)
-  const initialSql = useMemo(
-    () => queryResource?.query ?? buildViewportSql({ minX: -180, minY: -85, maxX: 180, maxY: 85 }),
-    [queryResource]
-  )
-  const [draft, setDraft] = useState(initialSql)
-  const [showSql, setShowSql] = useState(false)
-  const [querying, setQuerying] = useState(false)
-  const [queryError, setQueryError] = useState<string | null>(null)
   const [ranged, setRanged] = useState(false)
-  const [resultView, setResultView] = useState<ViewMode>('table')
-  const [output, setOutput] = useState<Output>({ columns: [], rows: [], featureCollection: null })
-  const [hasQueried, setHasQueried] = useState(false)
+  const [querying, setQuerying] = useState(false)
+  // Logical columns for the panel (null = engine still opening).
+  const [logicalColumns, setLogicalColumns] = useState<LogicalColumn[] | null>(null)
+  const [totalRows, setTotalRows] = useState<number | null>(null)
 
   // Normalize a query result into { table rows, FeatureCollection }, pulling the
   // `geojson` column (when present) out as the overlay geometry.
@@ -259,63 +245,91 @@ export default function MapPreview({
     })
   }
 
-  // Open the DuckDB engine on first use (LOAD spatial + register the remote
-  // GeoParquet as `data`). Returns the opened engine, or null when there's no
-  // query resource. Subsequent calls reuse the same engine/open promise.
-  const ensureEngine = async (): Promise<DuckDbQuery | null> => {
-    if (!geoUrl) return null
-    if (!openedRef.current) {
-      const engine = new DuckDbQuery()
-      engineRef.current = engine
-      openedRef.current = engine
-        .open({ url: geoUrl, format: 'geoparquet', spatial: true })
-        .then(() => {
-          setRanged(engine.ranged)
-        })
+  // Open the engine once per query tier: LOAD spatial + register the GeoParquet as
+  // `__source`, DESCRIBE it to resolve the logical columns (aliased from the
+  // Frictionless schema when present), then define the clean `data` VIEW and read
+  // the total feature count. Separate from the map effect so the map never blocks
+  // on the wasm bundle; the panel's Table tab renders once `logicalColumns` set.
+  useEffect(() => {
+    if (!geoUrl) return
+    let cancelled = false
+    const engine = new DuckDbQuery()
+    engineRef.current = engine
+    ;(async () => {
+      await engine.open({ url: geoUrl, format: 'geoparquet', spatial: true })
+      if (cancelled) return
+      setRanged(engine.ranged)
+      const desc = await engine.query('DESCRIBE __source')
+      const { columns, geomCol, bboxCol } = deriveColumns(
+        desc.rows as unknown as DescribeRow[],
+        queryResource?.schema?.fields
+      )
+      colsRef.current = columns
+      geomColRef.current = geomCol
+      bboxColRef.current = bboxCol
+      // Define the clean logical view (aliased columns, no clip yet).
+      await engine.query(buildDataViewSql(columns, geomCol, bboxCol))
+      const count = await engine.query('SELECT count(*) AS n FROM __source')
+      if (cancelled) return
+      setTotalRows(Number(count.rows[0]?.n ?? 0))
+      setLogicalColumns(columns)
+    })().catch(() => {
+      // Leave logicalColumns null → the panel shows its loading state rather than
+      // a hard error; the map (render tier) is unaffected.
+    })
+    return () => {
+      cancelled = true
+      void engine.close()
+      engineRef.current = null
     }
-    await openedRef.current
-    return engineRef.current
+  }, [geoUrl, queryResource])
+
+  const currentBounds = (): Bounds | undefined => {
+    const b = mapRef.current?.getBounds()
+    if (!b) return undefined
+    return { minX: b.getWest(), minY: b.getSouth(), maxX: b.getEast(), maxY: b.getNorth() }
   }
 
-  const runSql = async (sql: string) => {
+  // Run one LOGICAL query for the panel: (re)clip the `data` view to the viewport
+  // when "limit to map view" is on, wrap the query so the map gets serialized
+  // geometry (and the table doesn't), paint the matches when asked, and hand back
+  // the aliased table rows. Aggregate/projected queries that carry no geometry
+  // fail the map wrapper's EXCLUDE bind — caught here and re-run raw. Throws a
+  // HUMANIZED error string so the panel can show plain language.
+  const runLogical = async (
+    userSql: string,
+    opts: { limitToView: boolean; paint: boolean }
+  ): Promise<{ columns: string[]; rows: Record<string, unknown>[] }> => {
+    const engine = engineRef.current
+    if (!engine) return { columns: [], rows: [] }
     setQuerying(true)
-    setQueryError(null)
     try {
-      const engine = await ensureEngine()
-      if (!engine) return
-      const res = await engine.query(sql)
+      // Rebuild the view with/without the viewport clip.
+      const clip = opts.limitToView ? currentBounds() : undefined
+      await engine.query(
+        buildDataViewSql(colsRef.current, geomColRef.current, bboxColRef.current, clip)
+      )
+      let res: { columns: string[]; rows: Record<string, unknown>[] }
+      try {
+        res = await engine.query(
+          wrapForMap(userSql, geomColRef.current, bboxColRef.current, opts.paint)
+        )
+      } catch {
+        // No geometry in the projection (aggregate/explicit column list): run raw.
+        res = await engine.query(userSql)
+      }
       const out = toOutput(res.columns, res.rows)
-      setOutput(out)
-      setHasQueried(true)
-      paintOverlay(out.featureCollection)
+      if (opts.paint) paintOverlay(out.featureCollection)
+      return { columns: out.columns, rows: out.rows }
     } catch (e) {
-      setQueryError(e instanceof Error ? e.message : String(e))
+      const aliases = attributeColumns(colsRef.current).map((c) => c.alias)
+      throw humanizeError(e instanceof Error ? e.message : String(e), aliases)
     } finally {
       setQuerying(false)
     }
   }
 
-  // Rewrite the query to the current map viewport (bbox pre-filter → ST_Intersects)
-  // and paint the matches as the highlight overlay on this same map.
-  const queryViewport = () => {
-    const map = mapRef.current
-    if (!map) return
-    const b = map.getBounds()
-    const sql = buildViewportSql({
-      minX: b.getWest(),
-      minY: b.getSouth(),
-      maxX: b.getEast(),
-      maxY: b.getNorth(),
-    })
-    setDraft(sql)
-    void runSql(sql)
-  }
-
-  const clearHighlight = () => {
-    setOutput({ columns: [], rows: [], featureCollection: null })
-    setHasQueried(false)
-    paintOverlay(null)
-  }
+  const clearOverlay = () => paintOverlay(null)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -587,10 +601,8 @@ export default function MapPreview({
       mapRef.current = null
       boundsRef.current = null
       lastFcRef.current = null
-      // Release the DuckDB engine if one was ever opened.
-      void engineRef.current?.close()
-      engineRef.current = null
-      openedRef.current = null
+      // The DuckDB engine has its own effect/lifecycle (see the query-tier
+      // effect); the map only tears down the map.
       map?.remove()
     }
   }, [url, bbox, geoUrl])
@@ -754,193 +766,17 @@ export default function MapPreview({
         )}
       </div>
 
-      {/* Query tier controls — only when the dataset ships a GeoParquet resource.
-          These drive spatial SQL over the remote file and highlight the matches
-          on the SAME map above; DuckDB-Wasm spins up on the first click here. */}
+      {/* Query surface — only when the dataset ships a GeoParquet resource. The
+          filter builder, example queries, schema panel, and Table/Chart/SQL tabs
+          all drive the SAME map above: each query highlights its matches as the
+          overlay. See components/MapQueryPanel. */}
       {queryResource ? (
-        <div className="mt-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={queryViewport}
-              disabled={querying}
-              title="Run a spatial query over the current map viewport (bbox pre-filter → ST_Intersects) and highlight the matches on this map."
-              className="bg-accent px-[18px] py-2.5 font-sans text-xs font-semibold uppercase tracking-[0.06em] text-cream hover:opacity-90 disabled:opacity-50"
-            >
-              {querying ? 'Querying…' : 'Query viewport ▶'}
-            </button>
-            {hasQueried && (
-              <button
-                type="button"
-                onClick={clearHighlight}
-                disabled={querying}
-                className="border border-ink/25 px-[14px] py-2.5 font-sans text-xs font-semibold uppercase tracking-[0.06em] text-ink hover:border-accent hover:text-accent disabled:opacity-50"
-              >
-                Clear
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={() => setShowSql((s) => !s)}
-              className="border border-ink/20 px-[14px] py-2.5 font-sans text-xs font-semibold uppercase tracking-[0.06em] text-ink/70 hover:border-accent hover:text-accent"
-            >
-              {showSql ? 'Hide SQL' : 'Edit SQL'}
-            </button>
-            {hasQueried && (
-              <span className="ml-auto font-mono text-[11px] text-ink/40">{output.rows.length} matched</span>
-            )}
-          </div>
-
-          {showSql && (
-            <div className="mt-3 border border-ink/[0.18]">
-              <textarea
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={(e) => {
-                  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') void runSql(draft)
-                }}
-                rows={6}
-                spellCheck={false}
-                className="block w-full resize-y border-0 bg-cream-code px-4 py-4 font-mono text-[13.5px] leading-relaxed text-ink focus:outline-none"
-              />
-              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-ink/[0.15] px-4 py-2.5">
-                <span className="font-mono text-[11px] text-ink/40">
-                  DuckDB-Wasm + spatial · runs in your browser · ⌘/Ctrl + Enter
-                </span>
-                <button
-                  type="button"
-                  onClick={() => void runSql(draft)}
-                  disabled={querying}
-                  className="bg-accent px-[18px] py-2.5 font-sans text-xs font-semibold uppercase tracking-[0.06em] text-cream hover:opacity-90 disabled:opacity-50"
-                >
-                  {querying ? 'Running…' : 'Run ▶'}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {queryError && (
-            <pre className="mt-3 overflow-x-auto whitespace-pre-wrap border border-red-300 bg-red-50 p-3 font-mono text-sm text-red-700">
-              {queryError}
-            </pre>
-          )}
-
-          {/* Result rows (table / chart) — a supplementary view of the matched
-              features; the map above is always the primary render. */}
-          {hasQueried && output.rows.length > 0 && (
-            <div className="mt-3">
-              <div className="flex items-center gap-1.5">
-                {(['table', 'chart'] as ViewMode[]).map((m) => (
-                  <button
-                    key={m}
-                    type="button"
-                    onClick={() => setResultView(m)}
-                    className={`border px-3 py-1 font-sans text-[11px] font-semibold uppercase tracking-[0.06em] ${
-                      resultView === m
-                        ? 'border-accent bg-accent text-cream'
-                        : 'border-ink/20 bg-cream text-ink/70 hover:text-accent'
-                    }`}
-                  >
-                    {m}
-                  </button>
-                ))}
-              </div>
-              {resultView === 'table' ? (
-                <ResultTable columns={output.columns} rows={output.rows} />
-              ) : (
-                <ResultChart columns={output.columns} rows={output.rows} />
-              )}
-            </div>
-          )}
-
-          <p className="mt-2 font-sans text-xs text-ink/45">
-            Pan/zoom the map, then “Query viewport” to fetch only the features in view — the bbox pre-filter
-            prunes Parquet row groups before ST_Intersects runs, and the matches highlight on this same map.
-            Click any feature for its attributes.
-          </p>
-        </div>
+        <MapQueryPanel columns={logicalColumns} totalRows={totalRows} run={runLogical} clear={clearOverlay} />
       ) : (
         <div className="mt-2 font-mono text-[11px] text-ink/40">
           Click a feature to inspect its properties · pan and zoom fetch only the tiles in view
         </div>
       )}
-    </div>
-  )
-}
-
-function ResultTable({
-  columns,
-  rows,
-}: {
-  columns: string[]
-  rows: Record<string, unknown>[]
-}) {
-  if (!rows.length) return <p className="mt-3 font-serif text-[15px] italic text-ink/55">No rows.</p>
-  return (
-    <div className="mt-3 overflow-x-auto border border-ink/[0.18]">
-      <table className="min-w-full border-collapse text-sm">
-        <thead>
-          <tr>
-            {columns.map((c) => (
-              <th
-                key={c}
-                className="whitespace-nowrap bg-cream-panel px-4 py-3 text-left font-sans text-[11px] font-semibold uppercase tracking-[0.06em] text-ink/60"
-              >
-                {c}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={i} className="border-t border-ink/[0.1] hover:bg-cream-panel/50">
-              {columns.map((c) => (
-                <td key={c} className="whitespace-nowrap px-4 py-3 font-mono text-[13px] text-ink">
-                  {formatCell(row[c])}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
-// Dependency-free horizontal bar chart: first text column = labels, first numeric
-// column = values. Shows a hint when the result has no numeric column.
-function ResultChart({ columns, rows }: { columns: string[]; rows: Record<string, unknown>[] }) {
-  const numericCol = columns.find((c) => rows.some((r) => typeof r[c] === 'number'))
-  const labelCol = columns.find((c) => c !== numericCol && rows.some((r) => typeof r[c] === 'string')) ?? columns[0]
-  if (!numericCol || !rows.length) {
-    return (
-      <p className="mt-3 font-serif text-[15px] italic text-ink/55">
-        Add a numeric column to chart the result (e.g. an aggregate like <code>sum(pop_est)</code>).
-      </p>
-    )
-  }
-  const values = rows.map((r) => Number(r[numericCol]) || 0)
-  const max = Math.max(...values, 1)
-  const shown = rows.slice(0, 30)
-  return (
-    <div className="mt-3 border border-ink/[0.18] p-4">
-      <div className="mb-2.5 font-sans text-[11px] font-semibold uppercase tracking-[0.06em] text-ink/50">
-        {numericCol} by {labelCol}
-      </div>
-      {shown.map((r, i) => {
-        const v = Number(r[numericCol]) || 0
-        return (
-          <div key={i} className="mb-1 flex items-center gap-2.5">
-            <span className="w-32 flex-shrink-0 truncate font-sans text-[12px] text-ink/80">
-              {String(r[labelCol] ?? '')}
-            </span>
-            <span className="relative h-4 flex-1 bg-cream-panel">
-              <span className="absolute inset-y-0 left-0 bg-accent" style={{ width: `${(v / max) * 100}%` }} />
-            </span>
-            <span className="w-24 flex-shrink-0 text-right font-mono text-[12px] text-ink/70">{v.toLocaleString()}</span>
-          </div>
-        )
-      })}
     </div>
   )
 }
