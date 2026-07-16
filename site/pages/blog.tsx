@@ -47,8 +47,9 @@ const LABEL_OVERRIDES: Record<string, string[]> = {
   'mcp-server-ai-assistants-to-improve-data-portals':                  ['PortalJS', 'AI Integration'],
   'supercharging-data-portals-with-the-portaljs-mcp-server':           ['PortalJS', 'AI Integration'],
   'portaljs-is-now-ai-native':                                         ['PortalJS', 'AI Integration'],
-  'rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code': ['PortalJS Cloud', 'Civic Data'],
+  'rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code': ['PortalJS'],
   'scaling-portaljs-data-with-giftless-and-r2':                         ['PortalJS'],
+  'civic-data-portal-examples':                                         ['PortalJS Cloud', 'Civic Data'],
   // PortalJS Cloud + Tutorial
   'keep-your-portal-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api': ['PortalJS Cloud', 'Tutorial'],
   // PortalJS open-source
@@ -75,6 +76,7 @@ const CATEGORY_MAP: Record<string, string[]> = {
   'basics-of-metadata-how-it-helps-to-understand-your-data': ['data'],
   'ckan-resource-uploads-via-api': ['dev', 'ckan'],
   'ckan-vs-portaljs-cloud': ['ckan', 'cloud'],
+  'civic-data-portal-examples': ['cloud'],
   'create-a-simple-catalog-of-anything-using-markdown': ['dev'],
   'effortless-user-management-portaljs': ['cloud'],
   'enhancing-geospatial-data-visualization-with-portaljs': ['dev'],
