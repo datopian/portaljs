@@ -9,6 +9,7 @@ tags:
   - agents
   - skills
   - data portals
+image: "/static/img/blog/portaljs-is-now-ai-native/hero.png"
 filetype: 'blog'
 ---
 

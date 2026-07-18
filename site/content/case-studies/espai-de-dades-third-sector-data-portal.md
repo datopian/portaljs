@@ -71,6 +71,7 @@ quote:
     '/images/casestudies/onetandem-logo.webp',
     'Pere Rovira, OneTandem',
   ]
+fullCaseStudy: "https://www.datopian.com/showcase/case-studies/open-data-portal-catalan-third-sector-portaljs-cloud"
 portal:
   [
     'Espai de Dades',

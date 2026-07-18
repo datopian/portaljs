@@ -10,6 +10,7 @@ tags:
   - Cloudflare R2
   - data portals
   - AI
+image: "/static/img/blog/scaling-portaljs-data-with-giftless-and-r2/hero.png"
 filetype: 'blog'
 ---
 
