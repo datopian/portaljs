@@ -138,6 +138,19 @@ Classify each `dataset[]` item:
 Record per item: the FeatureServer layer URL (strip to `…/FeatureServer/<id>`), geometry
 type, `format` list offered, `issued`/`modified` (source dates — see §4b; `modified` also
 drives future sync, Phase 3), and publisher (the namespace under `--namespace-mode owner`).
+
+**Multi-publisher namespace resolution (`--namespace-mode owner`, Phase 2/Stream).** Raw
+`publisher.name` strings are NOT namespace-safe on a multi-publisher Hub — Stream's feed
+carried 28 labels for ~22 real publishers (`Anglian Water` + `Anglian Water Services`,
+`Yorkshire Water` + `Yorkshire Water Services`, `Northumbrian Water` + `… Ltd`) plus 53
+items with the literal broken template `{{source}}`. Resolve in three steps: (1) a
+**normalization table** raw label → canonical namespace slug (build it from the feed's
+publisher histogram; merge obvious legal-suffix variants); (2) for `{{source}}`/empty
+publishers, **longest title-prefix match** against the canonical brand list — include
+sub-brands mapped to their parent (`Essex And Suffolk Water` → `northumbrian-water`,
+`Hartlepool Water` → `anglian-water`); (3) fallback to the platform's own namespace (e.g.
+`stream`). Keep a namespace → display-title map for the catalog. Don't derive namespaces
+from Hub `<org>::<slug>` landing-page keys — on Stream only 29/378 items carried one.
 **Dedup near-duplicate view layers:** a Hub often exposes the same underlying data twice — a
 hosted *view* + its source layer (Lewisville: "Monument Survey Network Benchmarks" AND
 "… Benchmarks view", two identical 39-point items). Both as separate catalog entries is
@@ -152,7 +165,13 @@ the source layer a vendor contact block) — run both through the §4b descripti
 keep the better survivor (a short human summary beats an address/contact blob) on the kept
 entry. If counts differ, the "view" is a real filtered
 subset — keep both and only flag. On re-runs the upsert must also **remove** a previously
-migrated entry that this rule now skips (§7). **Cross-check
+migrated entry that this rule now skips (§7). **The count check is MANDATORY before any
+drop, not a confirmation nicety** (Phase 2 lesson): on a multi-publisher Hub, different
+datasets legitimately share a normalized title within one namespace (Stream/Wessex exposed
+five `Asset Nodes` / `Model Links` / `Flow Pressure 15min` sets — different scenario runs,
+different counts). Probe `returnCountOnly` for BOTH twins; equal ⇒ dedup, different ⇒
+**keep both** (suffix the slug `-2`, `-3`, …) and log them as `restored-distinct`, never
+`deduped`. A title-only dedup on Stream would have silently dropped 24 real datasets. **Cross-check
 completeness:** `/data.json` can omit unshared items — note in the report that the harvest
 reflects only what the Hub published.
 
@@ -417,6 +436,23 @@ carrier for the UI, though, is the `schema` on the `datasets.json` entry (§7).
 Preserve **both** the native-CRS original (as downloaded) and the normalized derivative, per
 the plan (§3 practical notes).
 
+**6e. Year-series consolidation (the "PortalJS improves on the source" pattern).** Hubs
+often publish one dataset per year (`<Publisher> Domestic Consumption 2022/2023/2024/…`) —
+same schema, same grain, a `Year` (or date) column already present or trivially derived.
+Consolidate the series into **one Parquet ordered by year** (`COPY (SELECT … ORDER BY
+year_col, key_col) … (FORMAT PARQUET, ROW_GROUP_SIZE <~one year's rows>)`) so DuckDB range
+reads prune row groups by year, and emit:
+- **one canonical entry** (`<series>-consolidated` naming: e.g. `domestic-consumption`,
+  titled "… (2022–2025)") carrying the consolidated Parquet + CSV, `recordCount` = total,
+  and a `query` preset showing the per-year rollup (`SELECT Year, count(*) … GROUP BY Year`)
+  — the instant proof the consolidation is faithful;
+- **one legacy view entry per source year** (original slug → URL stability) whose single
+  resource points at the SAME consolidated Parquet with `query: "SELECT * FROM data WHERE
+  <year_col> = <yr>"` and a description marking it a view. Legacy links keep working;
+  no bytes are duplicated. Drop per-layer housekeeping fields (`OBJECTID`) before writing.
+Detect candidates by title regex (`^<same prefix> (19|20)\d\d$` groups with identical
+probed field lists); parity-gate on per-year row counts matching each source layer.
+
 ### 7. Publish — bulk Git-LFS → R2 + `datasets.json`
 
 Reuse `/portaljs-migrate` §5 **download mode** mechanics, applied to every derived file
@@ -596,6 +632,15 @@ are hard stops.
 - **`/data.json` completeness:** the DCAT feed can lag or omit private/unshared items;
   cross-check against the org's ArcGIS REST search API when the count looks low, and always
   say in the report that the harvest reflects only published items.
+- **Host discovery — check TLS before harvesting a custom domain.** A Hub Premium custom
+  domain can rot independently of the Hub: Stream's apex `streamwaterdata.co.uk` serves a
+  certificate for an unrelated site (only `www.` — the CNAME to `hub.arcgis.com` — works).
+  `curl -sv` the apex AND `www.` first, pick the working host for every fetch, and record
+  the broken variant in the report (it's also a cutover selling point).
+- **Content pages are machine-harvestable (Phase 2 / content→MDX):** the Hub site item's
+  `values.pages[]` (site id is in the page HTML as `"siteId"`) lists every page slug + item
+  id; each page's layout JSON is at `/sharing/rest/content/items/<pageId>/data`, with the
+  copy in `…sections[].rows[].cards[].component.settings.markdown`. No scraping needed.
 - **Licensing hygiene:** strip Esri basemaps/imagery references; migrate only content the
   customer owns (classified `non-data` → skipped, listed in the report).
 - **AGOL stays upstream (Phase 3):** the migrator treats ArcGIS Online as an editing source

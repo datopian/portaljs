@@ -55,7 +55,12 @@ The canonical, full step-by-step workflow is
 3. Validate the portal directory and confirm the geo showcase components exist.
 4. Harvest the Hub `/data.json` (reuse the `portaljs-migrate` DCAT-US map) and classify each
    item: vector (FeatureService), table, or non-data (web map / 3D / imagery → skipped).
-   Dedup near-duplicate hosted-`view` layers (keep the source layer, log the pair). Enrich
+   Under `--namespace-mode owner`, resolve namespaces through a publisher-normalization
+   table with title-prefix fallback for broken `{{source}}` publishers (multi-publisher
+   Hubs ship dirty publisher labels). Dedup near-duplicate hosted-`view` layers — but only
+   after a mandatory live record-count check on BOTH twins: equal ⇒ dedup (keep the source
+   layer, log the pair); different ⇒ keep both as distinct datasets. Consolidate per-year
+   dataset series into one year-partitioned Parquet with legacy per-year view entries. Enrich
    from the AGOL item: sanitized metadata (license/description/dates), cleaned display title
    (`cleanTitle` — raw title still drives the slug), `category` (item categories → meaningful
    theme → keyword mapping), and a `thumbnail` snapshot into `public/thumbnails/`.
