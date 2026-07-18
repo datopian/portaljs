@@ -138,9 +138,21 @@ Classify each `dataset[]` item:
 Record per item: the FeatureServer layer URL (strip to `…/FeatureServer/<id>`), geometry
 type, `format` list offered, `issued`/`modified` (source dates — see §4b; `modified` also
 drives future sync, Phase 3), and publisher (the namespace under `--namespace-mode owner`).
-**Note duplicate layers:** a Hub often exposes the same underlying data twice (a hosted *view*
-+ its source table — Lewisville has two identical 39-point benchmark items). Migrate each as
-its own dataset (faithful to the Hub) but flag the duplication in the report. **Cross-check
+**Dedup near-duplicate view layers:** a Hub often exposes the same underlying data twice — a
+hosted *view* + its source layer (Lewisville: "Monument Survey Network Benchmarks" AND
+"… Benchmarks view", two identical 39-point items). Both as separate catalog entries is
+source junk, not fidelity. Detect: normalize each title (lowercase, collapse non-alphanumerics
+to single spaces, strip a trailing `view` token) — two vector items that collide on the
+normalized title are a dedup candidate; confirm with the §5 record counts (equal ⇒ same data).
+**Migrate only the source layer** (the one whose raw title has no `view` marker; if both or
+neither carry it, keep the later `modified`) and skip the other, logging the pair to the
+report as `deduped: <kept> ⇠ <skipped>`. **Merge metadata across the pair**: the twins often
+carry different descriptions/snippets (Lewisville: the view had the clean one-line summary,
+the source layer a vendor contact block) — run both through the §4b description chain and
+keep the better survivor (a short human summary beats an address/contact blob) on the kept
+entry. If counts differ, the "view" is a real filtered
+subset — keep both and only flag. On re-runs the upsert must also **remove** a previously
+migrated entry that this rule now skips (§7). **Cross-check
 completeness:** `/data.json` can omit unshared items — note in the report that the harvest
 reflects only what the Hub published.
 
@@ -186,6 +198,49 @@ Then build the canonical entry's metadata (reusing `cleanDescription()` from
 
 Items with no resolvable item id (rare — a raw service with no AGOL item) fall back to the
 DCAT/layer fields through the same sanitizer, with the license sentinel.
+
+### 4c. Catalog presentation — clean title, category, thumbnail
+
+The catalog/search page is the first thing a reviewer sees; raw layer names, a flat list, and
+text-only cards read as a data dump next to the Hub's grouped, illustrated catalog. Three
+per-item fields fix that, all from data you already fetched in §4b:
+
+- **`name`** = `cleanTitle(dcat.title)` — `/portaljs-migrate`'s title hygiene rule (strip
+  trailing 6/8-digit date blobs, stray 1–2-digit indexes, and `view` markers; keep 4-digit
+  vintages). `Boil Water Areas 20200218 1` → `Boil Water Areas`; `3D Buildings 082020` →
+  `3D Buildings`. **Slugs derive from the RAW title** so dataset URLs never change when the
+  cleanup rules do. Record every `raw → cleaned` pair in the parity report.
+- **`category`** = the catalog grouping label (the template's /search page renders grouped
+  sections whenever any entry carries one). Chain, first hit wins:
+  1. AGOL item `.categories[]` / `.groupCategories[]` — strip the `/Categories/` path prefix,
+     Title Case the leaf.
+  2. A meaningful DCAT `theme[]` (skip feed-wide fillers like `geospatial` that would bucket
+     the whole catalog together).
+  3. A keyword→category mapping over the item tags/keywords — a small operator-editable table
+     covering the common municipal-GIS buckets, e.g.:
+     `parcels|zoning|land use → Planning` · `boundar|district|city limits|council →
+     Boundaries` · `tree|park|environment|water area → Environment` · `contour|elevation|
+     lidar|3d|terrain|building → Elevation & 3D` · `monument|benchmark|survey|geodetic →
+     Survey & Reference` · `hydrant|utility|boil water|sewer|storm → Utilities & Public
+     Safety`. Print the table with the plan so the operator can adjust it per city.
+  4. Nothing matches → omit `category`; the template lists the entry under "Other".
+- **`thumbnail`** — every AGOL item carries one (`.thumbnail`, a path under the item's
+  `info/`). **Snapshot it into the portal, never hotlink** (the Hub may be retired after
+  cutover):
+
+  ```bash
+  THUMB=$(jq -r '.thumbnail // empty' "/tmp/a2p-item-$ITEM_ID.json")
+  if [ -n "$THUMB" ]; then
+    mkdir -p public/thumbnails
+    EXT="${THUMB##*.}"   # png / gif / jpg — keep the source extension
+    curl -fsSL "https://www.arcgis.com/sharing/rest/content/items/$ITEM_ID/info/$THUMB" \
+      -o "public/thumbnails/$SLUG.$EXT" && echo "thumbnail: /thumbnails/$SLUG.$EXT"
+  fi
+  ```
+
+  Set the entry's `thumbnail: "/thumbnails/<slug>.<ext>"` only when the download succeeded —
+  a broken image is worse than none. These are small (a few KB each) and ship in the static
+  bundle, not through LFS/R2.
 
 ### 5. Export each vector layer via the ArcGIS REST query API
 
@@ -401,6 +456,12 @@ renders it as a separate "Migrated" field so it never masquerades as the data's 
 Set `migratedAt` once per run from a fixed `date -u +%FT%TZ` captured at the start, so re-runs
 are stable.
 
+**Merge the §4c presentation fields**: the cleaned `name`, `category` (when resolved), and
+`thumbnail` (when the snapshot download succeeded). The upsert must also **delete** any
+existing entry whose `(namespace, slug)` matches an item the §4 dedup rule now skips — a
+previously migrated `_view` twin must disappear from the catalog on re-run, not linger. Its
+R2 objects can stay (they're content-addressed and harmless); note the removal in the report.
+
 **Also write the sync ledger `arcgis-sync-state.json`** — one entry per migrated layer keyed on
 `(namespace, slug)` carrying `serviceUrl`, `recordCount` (= `TOTAL`), `dataLastEditDate` (from the
 layer `?f=json` `editingInfo`), `extent`, and `migratedAt`. Phase 3 sync (§10) reads it to detect
@@ -425,6 +486,8 @@ migration is faithful:
 | **Field aliases** (§6d) | layer `?f=json` → `.fields[].alias` | `schema.fields[].title` on the geoparquet/csv resource | every source alias that differs from its raw name is carried as `title` (so the showcase shows "Property Type", not `PROP_TYPE`) |
 | **Record count** displayed (§7) | `TOTAL` (returnCountOnly) | `datasets.json` entry `recordCount` | `recordCount` == source count == derived parquet count (all three equal) |
 | **Download formats** (§6c) | Hub download menu | the entry's `resources[]` formats | at least `csv` present; `gpkg`/`shp` present unless trimmed by `--formats` |
+| **Catalog presentation** (§4c) | raw DCAT title / AGOL item | the entry's `name`/`category`/`thumbnail` | `name` carries no trailing date blob / stray index / `view` marker (list each `raw → cleaned`); `category` resolved or explicitly "Other"; `thumbnail` snapshot present in `/public/thumbnails` when the item had one |
+| **View dedup** (§4) | near-dup title pairs in `/data.json` | `datasets.json` | each deduped pair appears once, `deduped: <kept> ⇠ <skipped>` logged; count-differing "views" kept + flagged |
 
 For each dataset, print the resolved **license**, **description** (first ~120 chars),
 **created / modified / migratedAt**, the **record count**, the **download formats emitted**,

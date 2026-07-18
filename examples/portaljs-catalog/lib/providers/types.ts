@@ -104,6 +104,16 @@ export type Dataset = {
   licenses?: License[]
   sources?: Source[]
   keywords?: string[]
+  // Catalog grouping label (e.g. "Boundaries", "Environment"). Sourced from the
+  // origin portal's categories on migration (AGOL item categories → meaningful
+  // DCAT theme → keyword mapping) or hand-assigned. When any dataset carries
+  // one, the /search catalog renders grouped sections; datasets without one
+  // fall under "Other".
+  category?: string
+  // Card image for the catalog list (a site path like "/thumbnails/<slug>.png"
+  // or an absolute URL). Migrations snapshot the source item's thumbnail into
+  // /public/thumbnails so cards never hotlink the source portal.
+  thumbnail?: string
   // Source-provenance dates (ISO 8601), preserved from the origin platform on
   // migration — `created` from DCAT `issued`, `modified` from DCAT `modified`.
   // These describe the DATA, and drive the showcase "Last updated" field.

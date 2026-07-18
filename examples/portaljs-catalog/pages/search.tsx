@@ -43,9 +43,28 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
       (d) =>
         d.name.toLowerCase().includes(q) ||
         d.namespace.toLowerCase().includes(q) ||
-        (d.description ?? '').toLowerCase().includes(q)
+        (d.description ?? '').toLowerCase().includes(q) ||
+        (d.category ?? '').toLowerCase().includes(q)
     )
   }, [numbered, query])
+
+  // Group the filtered list under category headers when the catalog uses
+  // categories at all (any dataset carries one). Categories sort A→Z with
+  // "Other" (the uncategorized bucket) last; a catalog with no categories
+  // renders the flat list unchanged.
+  const grouped = useMemo(() => {
+    if (!numbered.some((d) => d.category)) return null
+    const buckets = new Map<string, typeof filtered>()
+    for (const d of filtered) {
+      const c = d.category ?? 'Other'
+      const bucket = buckets.get(c)
+      if (bucket) bucket.push(d)
+      else buckets.set(c, [d])
+    }
+    return Array.from(buckets.entries()).sort(([a], [b]) =>
+      a === 'Other' ? 1 : b === 'Other' ? -1 : a.localeCompare(b)
+    )
+  }, [numbered, filtered])
 
   return (
     <>
@@ -88,31 +107,23 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
               <div className="py-10 font-serif text-[17px] italic text-ink/55">
                 No datasets found for “{query}”.
               </div>
+            ) : grouped ? (
+              <div className="pt-4">
+                {grouped.map(([category, items]) => (
+                  <section key={category}>
+                    <h2 className="mb-1 mt-8 font-sans text-[12px] font-semibold uppercase tracking-[0.12em] text-accent first:mt-2">
+                      {category}
+                    </h2>
+                    {items.map((ds) => (
+                      <DatasetRow key={`${ds.namespace}/${ds.slug}`} ds={ds} />
+                    ))}
+                  </section>
+                ))}
+              </div>
             ) : (
               <div className="pt-4">
                 {filtered.map((ds) => (
-                  <Link
-                    key={`${ds.namespace}/${ds.slug}`}
-                    href={datasetHref(ds)}
-                    className="flex items-baseline gap-6 border-b border-ink/[0.12] py-7 no-underline"
-                  >
-                    <div className="w-9 flex-shrink-0 font-serif text-xl font-medium italic text-accent">
-                      {ds.num}
-                    </div>
-                    <div className="max-w-[480px]">
-                      <div className="mb-1.5 font-serif text-xl font-semibold text-ink">
-                        {ds.name}
-                      </div>
-                      {ds.description && (
-                        <div className="font-sans text-sm leading-normal text-ink/60">
-                          {ds.description}
-                        </div>
-                      )}
-                    </div>
-                    <div className="ml-auto whitespace-nowrap pt-1 font-sans text-[11px] font-semibold uppercase tracking-[0.08em] text-ink/40">
-                      {ds.namespace}
-                    </div>
-                  </Link>
+                  <DatasetRow key={`${ds.namespace}/${ds.slug}`} ds={ds} />
                 ))}
               </div>
             )}
@@ -120,5 +131,40 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
         )}
       </main>
     </>
+  )
+}
+
+// One catalog row: stable index number, optional thumbnail, name + description,
+// namespace tag. Shared by the grouped and flat renderings so they never drift.
+function DatasetRow({ ds }: { ds: Dataset & { num: string } }) {
+  return (
+    <Link
+      href={datasetHref(ds)}
+      className="flex items-baseline gap-6 border-b border-ink/[0.12] py-7 no-underline"
+    >
+      <div className="w-9 flex-shrink-0 font-serif text-xl font-medium italic text-accent">
+        {ds.num}
+      </div>
+      {ds.thumbnail && (
+        // Plain <img>: the portal builds to a static export, so next/image has
+        // no optimizer to run through — and the thumbnail is already tiny.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={ds.thumbnail}
+          alt=""
+          loading="lazy"
+          className="h-14 w-14 flex-shrink-0 self-center border border-ink/[0.15] object-cover"
+        />
+      )}
+      <div className="max-w-[480px]">
+        <div className="mb-1.5 font-serif text-xl font-semibold text-ink">{ds.name}</div>
+        {ds.description && (
+          <div className="font-sans text-sm leading-normal text-ink/60">{ds.description}</div>
+        )}
+      </div>
+      <div className="ml-auto whitespace-nowrap pt-1 font-sans text-[11px] font-semibold uppercase tracking-[0.08em] text-ink/40">
+        {ds.namespace}
+      </div>
+    </Link>
   )
 }

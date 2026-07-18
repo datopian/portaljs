@@ -55,6 +55,10 @@ The canonical, full step-by-step workflow is
 3. Validate the portal directory and confirm the geo showcase components exist.
 4. Harvest the Hub `/data.json` (reuse the `portaljs-migrate` DCAT-US map) and classify each
    item: vector (FeatureService), table, or non-data (web map / 3D / imagery → skipped).
+   Dedup near-duplicate hosted-`view` layers (keep the source layer, log the pair). Enrich
+   from the AGOL item: sanitized metadata (license/description/dates), cleaned display title
+   (`cleanTitle` — raw title still drives the slug), `category` (item categories → meaningful
+   theme → keyword mapping), and a `thumbnail` snapshot into `public/thumbnails/`.
 5. Export each vector layer through the ArcGIS REST `query` API with `resultOffset` paging
    (`f=geojson`, `outSR=4326`); fall back to keyset paging on transfer limits; accept a
    customer File Geodatabase dump for very large layers.

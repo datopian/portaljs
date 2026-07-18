@@ -209,11 +209,12 @@ Apply `ORG_FILTER`/`GROUP_FILTER` via the `fq` query
 
 | Canonical | DCAT field |
 | --------- | ---------- |
-| `slug` | slugified `identifier` \|\| slugified `title` |
+| `slug` | slugified `identifier` \|\| slugified `title` (from the RAW title — slugs/URLs stay stable even after title cleanup) |
 | `namespace` | slugified `publisher.name` (fallback first `theme`, else `dataset`) |
-| `name` | `title` |
+| `name` | `title` **cleaned** — `cleanTitle()` strips trailing date blobs / stray index digits / "view" markers (see hygiene) |
 | `description` | `description` **sanitized** — fallback chain, never a placeholder (see hygiene) |
 | `keywords` | `keyword[]` |
+| `category` | first meaningful `theme[]` value (Title Case) — skip generic feed-wide values like `geospatial` that would put the whole catalog in one bucket; source-specific enrichment (e.g. AGOL item categories, `/arcgis-to-portaljs` §4c) takes precedence |
 | `licenses` | `license` → `[{…}]` when present, else the "no license" sentinel (see hygiene) |
 | `created` | `issued` (ISO 8601 — the data's first-published date) |
 | `modified` | `modified` (ISO 8601 — the data's last-modified date) |
@@ -221,9 +222,9 @@ Apply `ORG_FILTER`/`GROUP_FILTER` via the `fq` query
 | `resources[].path` | distribution `downloadURL` \|\| `accessURL` (link mode) |
 | `resources[].format` | distribution `format` \|\| `mediaType` → normalized (below) |
 
-**DCAT-US metadata hygiene — license, description, dates (do NOT skip).** A raw DCAT-US feed
-carries three fields that are wrong-by-default if copied verbatim; a demo reviewer spots all
-three in the first minute:
+**DCAT-US metadata hygiene — license, description, dates, title (do NOT skip).** A raw DCAT-US
+feed carries fields that are wrong-by-default if copied verbatim; a demo reviewer spots them
+in the first minute:
 
 - **License — map it, never fabricate.** DCAT-US `license` is a string (SPDX id or a license
   URL). When it is **present**, emit one `licenses[]` entry: if it's a URL →
@@ -263,6 +264,29 @@ three in the first minute:
   date (e.g. 2021-08-25), not the harvest date. Record the migration time as `migratedAt`
   (ISO) on each entry you write — the showcase renders it as a separate "Migrated" field, so
   the copy's timestamp never masquerades as the data's freshness.
+
+- **Title — clean the GIS-layer artifacts out of the display name (slug stays raw).** Source
+  titles are frequently raw layer names: `Boil Water Areas 20200218 1`, `3D Buildings 082020`,
+  `Monument Survey Network Benchmarks view`. Run the display `name` through `cleanTitle()`;
+  derive the `slug` from the RAW title so URLs stay stable across re-runs and title-rule
+  changes. Record `raw → cleaned` pairs in the migration report so the operator can veto a
+  bad cleanup:
+
+  ```js
+  // Conservative, order-matters: strip only unambiguous machine artifacts.
+  function cleanTitle(s) {
+    let t = String(s ?? '').replace(/[_]+/g, ' ').replace(/\s+/g, ' ').trim()
+    t = t.replace(/\s+view$/i, '')                  // hosted-view marker: "… Benchmarks view"
+    t = t.replace(/\s+\d{1,2}$/, '')                // stray trailing index: "… 20200218 1"
+    t = t.replace(/\s+(?:\d{8}|\d{6})$/, '')        // trailing date blob: 20200218 / 082020
+    return t.trim() || String(s ?? '').trim()       // never clean a title into nothing
+  }
+  ```
+
+  Keep meaningful 4-digit vintages (`Council Districts 2021`, `Contours 2017 10 ft`) — only
+  6/8-digit date blobs and stray 1–2-digit trailing indexes are machine noise. If a stripped
+  date is the only thing distinguishing two datasets (e.g. quarterly snapshots), keep the
+  date in the title formatted readably (`Boil Water Areas (2020-02-18)`) instead of dropping it.
 
 **DCAT / DCAT-AP RDF mapping** (`dcat-rdf`) — an RDF catalog graph in JSON-LD, Turtle, or
 RDF/XML. Do **not** hand-parse RDF: reuse the portal's harvester
