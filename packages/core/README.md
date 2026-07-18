@@ -15,7 +15,8 @@ import { MapPreview } from "@portaljs/core";
 <MapPreview
   url="https://example.com/data/boundaries.pmtiles" // or a relative path
   // center={[0, 20]} zoom={3}      — omit to auto-fit the tileset bounds
-  // basemap={false}                — offline mode; defaults to the free MapLibre demo tiles style
+  // bbox={[-11, 35, 32, 61]}       — authoritative data extent (wins over the archive header)
+  // basemap={false}                — offline mode; defaults to the keyless Carto Positron style (OpenFreeMap)
   // color="#2f6f4f" height={480}
   attribution="Natural Earth"
 />

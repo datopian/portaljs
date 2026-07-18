@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import type { Map as MapLibreMap, MapMouseEvent, StyleSpecification } from "maplibre-gl";
+import type {
+  Map as MapLibreMap,
+  MapMouseEvent,
+  StyleSpecification,
+  LngLatBoundsLike,
+} from "maplibre-gl";
 
 // <MapPreview> — serverless preview of any-size vector tileset stored as a
 // single PMTiles archive on R2 / any static HTTP host. MapLibre GL fetches
@@ -19,10 +24,18 @@ export interface MapPreviewProps {
   center?: [number, number];
   zoom?: number;
   /**
+   * Authoritative data extent [minLon, minLat, maxLon, maxLat] (e.g. from
+   * dataset metadata / DCAT spatial). Wins over the PMTiles header bounds for
+   * the initial framing and the reset-to-extent control. Ignored when an
+   * explicit center/zoom is pinned.
+   */
+  bbox?: [number, number, number, number];
+  /**
    * Basemap style: a MapLibre style JSON URL, or `false` for a plain
    * background (fully offline — no external requests). Defaults to the free,
-   * keyless MapLibre demo tiles style; if it fails to load the map degrades
-   * to the plain background so the data layer always renders.
+   * keyless Carto Positron style served by OpenFreeMap — light, neutral
+   * greys/whites so the data layer reads first; if it fails to load the map
+   * degrades to the plain background so the data layer always renders.
    */
   basemap?: string | false;
   /** Accent color for the rendered features. */
@@ -33,8 +46,14 @@ export interface MapPreviewProps {
   attribution?: string;
 }
 
-const DEFAULT_BASEMAP = "https://demotiles.maplibre.org/style.json";
+const DEFAULT_BASEMAP = "https://tiles.openfreemap.org/styles/positron";
 const DEFAULT_COLOR = "#2f6f4f";
+
+// Basemap credit for the default style — the OpenFreeMap/Carto style is built
+// from OpenStreetMap data, whose licence requires attribution. Appended before
+// the data-source credit from the `attribution` prop; not shown for a custom
+// or disabled basemap (the consumer owns attribution there).
+const BASEMAP_ATTRIBUTION = "© OpenStreetMap · Carto";
 
 // The handful of maplibre-gl.css rules the map canvas actually needs to lay
 // out correctly. Inlined so consumers don't have to wire a global CSS import
@@ -47,6 +66,8 @@ const BASE_CSS = `
 .maplibregl-map:fullscreen{height:100%;width:100%}
 .maplibregl-canvas-container.maplibregl-interactive{cursor:grab;user-select:none}
 .maplibregl-canvas-container.maplibregl-interactive:active{cursor:grabbing}
+.maplibregl-ctrl-bottom-left{position:absolute;bottom:0;left:0;z-index:2;pointer-events:none}
+.maplibregl-ctrl-scale{background:rgba(255,255,255,0.75);border:1px solid rgba(0,0,0,0.25);border-top:none;color:#333;font:10px/1.4 ui-sans-serif,system-ui,sans-serif;padding:1px 5px;white-space:nowrap}
 `;
 
 function injectBaseCss() {
@@ -56,6 +77,31 @@ function injectBaseCss() {
   style.id = id;
   style.textContent = BASE_CSS;
   document.head.appendChild(style);
+}
+
+// Rough initial zoom for a lon/lat span, so the map opens framed on the data
+// (never the world view) before the precise fitBounds on load. Derived from the
+// Web-Mercator relationship zoom ≈ log2(360 / span); clamped to sane bounds.
+function zoomForSpan(lonSpan: number, latSpan: number): number {
+  const span = Math.max(lonSpan, latSpan, 1e-6);
+  const z = Math.log2(360 / span) - 0.5;
+  return Math.min(16, Math.max(1, z));
+}
+
+// The heatmap density ramp needs rgba() stops built from the accent color.
+// Parses #rgb/#rrggbb; any other color format falls back to the default
+// accent's channels so the ramp still renders.
+function rgbaFromColor(color: string, alpha: number): string {
+  const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(color.trim());
+  const hex = m
+    ? m[1].length === 3
+      ? m[1].split("").map((c) => c + c).join("")
+      : m[1]
+    : DEFAULT_COLOR.slice(1);
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
 }
 
 // A clicked feature held for the inspect popup: geographic anchor + properties.
@@ -69,6 +115,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
   url,
   center,
   zoom,
+  bbox,
   basemap = DEFAULT_BASEMAP,
   color = DEFAULT_COLOR,
   height = 480,
@@ -76,6 +123,9 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  // Data extent to (re)frame on — set once the map is up. Backs the
+  // "reset to data extent" control.
+  const boundsRef = useRef<LngLatBoundsLike | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [inspected, setInspected] = useState<Inspected | null>(null);
   // Pixel position of the popup anchor, re-projected on every map move.
@@ -128,6 +178,20 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
       }
       if (cancelled || !containerRef.current) return;
 
+      // The caller-supplied bbox wins (authoritative metadata), else the
+      // archive header bounds.
+      const extent: [number, number, number, number] | null =
+        bbox ??
+        (header.maxLon > header.minLon
+          ? [header.minLon, header.minLat, header.maxLon, header.maxLat]
+          : null);
+      if (extent) {
+        boundsRef.current = [
+          [extent[0], extent[1]],
+          [extent[2], extent[3]],
+        ];
+      }
+
       const offlineStyle: StyleSpecification = {
         version: 8,
         sources: {},
@@ -140,11 +204,18 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
         map = new maplibregl.Map({
           container: containerRef.current,
           style: basemap === false ? offlineStyle : basemap,
-          center: center ?? [
-            (header.minLon + header.maxLon) / 2,
-            (header.minLat + header.maxLat) / 2,
-          ],
-          zoom: zoom ?? 1,
+          // Open framed on the data (never the world) even before the precise
+          // fitBounds on load fires.
+          center:
+            center ??
+            (extent
+              ? [(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2]
+              : [0, 0]),
+          zoom:
+            zoom ??
+            (extent
+              ? zoomForSpan(extent[2] - extent[0], extent[3] - extent[1])
+              : 1),
           attributionControl: false,
         });
       } catch (e) {
@@ -154,6 +225,12 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
         return;
       }
       mapRef.current = map;
+
+      // Stock scale bar (bottom-left), styled by BASE_CSS above.
+      map.addControl(
+        new maplibregl.ScaleControl({ maxWidth: 90, unit: "metric" }),
+        "bottom-left"
+      );
 
       // A missing/unreachable basemap must never take the data layer down
       // with it: swap to the offline background and carry on. Match only
@@ -173,6 +250,8 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
         }
       });
 
+      // Clickable layers only — the heatmap layer is a density surface, not a
+      // per-feature layer, so it stays out of the inspect targets.
       const layerIds = [
         "portaljs-preview-fill",
         "portaljs-preview-line",
@@ -189,11 +268,12 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
             url: `pmtiles://${absoluteUrl}`,
           });
         }
+        // Each source-layer gets a geometry-aware stack; tippecanoe layers can
+        // mix types, so every layer is filtered by geometry and only paints
+        // what it actually contains.
         for (const layer of vectorLayers) {
           if (map.getLayer(`portaljs-preview-fill/${layer.id}`)) continue;
-          // Sensible defaults per geometry type; tippecanoe layers can mix
-          // types, so each source-layer gets a fill/line/point trio filtered
-          // by geometry.
+          // --- Polygons: semi-transparent fill + thin stroke ---
           map.addLayer({
             id: `portaljs-preview-fill/${layer.id}`,
             type: "fill",
@@ -202,6 +282,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
             filter: ["==", "$type", "Polygon"],
             paint: { "fill-color": color, "fill-opacity": 0.22 },
           });
+          // --- Lines (and polygon outlines): thin stroke, no fill ---
           map.addLayer({
             id: `portaljs-preview-line/${layer.id}`,
             type: "line",
@@ -210,18 +291,50 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
             filter: ["!=", "$type", "Point"],
             paint: { "line-color": color, "line-width": 1.1 },
           });
+          // --- Points, low zoom: heatmap so a large layer (e.g. 376k trees)
+          //     reads as density instead of a solid mass of dots. Fades out as
+          //     the circles fade in around z12. ---
+          map.addLayer({
+            id: `portaljs-preview-heat/${layer.id}`,
+            type: "heatmap",
+            source: "portaljs-preview",
+            "source-layer": layer.id,
+            filter: ["==", "$type", "Point"],
+            maxzoom: 13,
+            paint: {
+              "heatmap-weight": 0.6,
+              "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 0.6, 12, 1.4],
+              "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 2, 9, 12, 12, 22],
+              // Transparent → accent ramp so density reads on the light basemap.
+              "heatmap-color": [
+                "interpolate",
+                ["linear"],
+                ["heatmap-density"],
+                0, rgbaFromColor(color, 0),
+                0.2, rgbaFromColor(color, 0.25),
+                0.5, rgbaFromColor(color, 0.55),
+                1, rgbaFromColor(color, 0.85),
+              ],
+              // Fade the heatmap out over z11→13 as the circle layer fades in.
+              "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 11, 0.9, 13, 0],
+            },
+          });
+          // --- Points, high zoom: small graduated circles (never fixed-radius
+          //     dots at city extent). Radius + opacity grow with zoom. ---
           map.addLayer({
             id: `portaljs-preview-point/${layer.id}`,
             type: "circle",
             source: "portaljs-preview",
             "source-layer": layer.id,
             filter: ["==", "$type", "Point"],
+            minzoom: 11,
             paint: {
               "circle-color": color,
-              "circle-radius": 4,
-              "circle-opacity": 0.85,
+              "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 1.5, 14, 3, 17, 6],
+              "circle-opacity": ["interpolate", ["linear"], ["zoom"], 11, 0.5, 14, 0.85],
               "circle-stroke-color": "#ffffff",
-              "circle-stroke-width": 1,
+              // Hairline stroke only once circles are big enough to carry it.
+              "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 13, 0, 15, 1],
             },
           });
         }
@@ -234,16 +347,10 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
 
       map.once("load", () => {
         if (!map) return;
-        // Auto-fit the tileset bounds from the PMTiles header unless the
-        // caller pinned an explicit view.
-        if (!center && zoom === undefined && header.maxLon > header.minLon) {
-          map.fitBounds(
-            [
-              [header.minLon, header.minLat],
-              [header.maxLon, header.maxLat],
-            ],
-            { padding: 24, duration: 0 }
-          );
+        // Frame the resolved data extent precisely (bbox prop, else header)
+        // unless the caller pinned an explicit view.
+        if (!center && zoom === undefined && boundsRef.current) {
+          map.fitBounds(boundsRef.current, { padding: 24, duration: 0 });
         }
       });
 
@@ -280,10 +387,22 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
     return () => {
       cancelled = true;
       mapRef.current = null;
+      boundsRef.current = null;
       map?.remove();
     };
     // The map is fully rebuilt when the archive or view config changes.
-  }, [url, basemap, color, center?.[0], center?.[1], zoom]);
+  }, [
+    url,
+    basemap,
+    color,
+    center?.[0],
+    center?.[1],
+    zoom,
+    bbox?.[0],
+    bbox?.[1],
+    bbox?.[2],
+    bbox?.[3],
+  ]);
 
   // Keep the popup glued to its geographic anchor while the user pans/zooms.
   useEffect(() => {
@@ -306,7 +425,22 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
     map.zoomTo(map.getZoom() + delta, { duration: 200 });
   };
 
+  const resetExtent = () => {
+    const map = mapRef.current;
+    if (!map || !boundsRef.current) return;
+    map.fitBounds(boundsRef.current, { padding: 24, duration: 400 });
+  };
+
   const entries = inspected ? Object.entries(inspected.properties) : [];
+
+  // Basemap credit is only asserted for the default style (whose licence we
+  // know); a custom basemap's attribution is the consumer's to provide.
+  const attributionLine =
+    basemap === DEFAULT_BASEMAP
+      ? attribution
+        ? `${BASEMAP_ATTRIBUTION} · ${attribution}`
+        : BASEMAP_ATTRIBUTION
+      : attribution;
 
   return (
     <div
@@ -357,6 +491,27 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
             {b.label}
           </button>
         ))}
+        <button
+          type="button"
+          aria-label="Reset to data extent"
+          title="Reset to data extent"
+          onClick={resetExtent}
+          style={{
+            width: 28,
+            height: 28,
+            border: "1px solid rgba(0,0,0,0.25)",
+            background: "#fff",
+            color: "#222",
+            fontSize: 13,
+            lineHeight: "26px",
+            cursor: "pointer",
+            padding: 0,
+            marginTop: 1,
+          }}
+        >
+          {/* framing-corners glyph — "fit to extent" */}
+          ⤢
+        </button>
       </div>
 
       {/* Click-to-inspect popup. */}
@@ -435,7 +590,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
         </div>
       )}
 
-      {attribution && (
+      {attributionLine && (
         <div
           style={{
             position: "absolute",
@@ -450,7 +605,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
             color: "#333",
           }}
         >
-          {attribution}
+          {attributionLine}
         </div>
       )}
 
