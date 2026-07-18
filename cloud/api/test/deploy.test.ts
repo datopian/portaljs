@@ -102,6 +102,56 @@ describe('handleDeploy', () => {
     expect(new TextDecoder().decode(ctx.r2.store.get('sites/acme/index.html')!)).toBe('v2')
   })
 
+  it('prunes objects removed from a redeployed export (po-9gk)', async () => {
+    await handleDeploy(
+      await deployReq('acme', [
+        { name: 'index.html', data: 'v1' },
+        { name: '@lewisville/old-view/index.html', data: 'orphan-to-be' },
+        { name: 'data/keep.csv', data: 'a' },
+      ]),
+      ctx.env
+    )
+    const res = await handleDeploy(
+      await deployReq('acme', [
+        { name: 'index.html', data: 'v2' },
+        { name: 'data/keep.csv', data: 'a' },
+      ]),
+      ctx.env
+    )
+    expect(res.status).toBe(200)
+    expect(((await res.json()) as any).pruned).toBe(1)
+    expect(ctx.r2.store.has('sites/acme/@lewisville/old-view/index.html')).toBe(false)
+    expect(ctx.r2.store.has('sites/acme/data/keep.csv')).toBe(true)
+    expect(new TextDecoder().decode(ctx.r2.store.get('sites/acme/index.html')!)).toBe('v2')
+  })
+
+  it('prune is scoped to the slug prefix — never touches other sites', async () => {
+    ctx.r2.store.set('sites/other/index.html', new TextEncoder().encode('leave me'))
+    ctx.r2.store.set('sites/acme-two/index.html', new TextEncoder().encode('prefix cousin'))
+    const res = await handleDeploy(await deployReq('acme', [{ name: 'index.html', data: 'v1' }]), ctx.env)
+    expect(res.status).toBe(200)
+    expect(((await res.json()) as any).pruned).toBe(0)
+    expect(ctx.r2.store.has('sites/other/index.html')).toBe(true)
+    expect(ctx.r2.store.has('sites/acme-two/index.html')).toBe(true)
+  })
+
+  it('prunes across list pagination pages', async () => {
+    ctx.r2.pageSize = 2
+    await handleDeploy(
+      await deployReq('acme', [
+        { name: 'a.html', data: '1' },
+        { name: 'b.html', data: '2' },
+        { name: 'c.html', data: '3' },
+        { name: 'd.html', data: '4' },
+        { name: 'e.html', data: '5' },
+      ]),
+      ctx.env
+    )
+    const res = await handleDeploy(await deployReq('acme', [{ name: 'a.html', data: '1' }]), ctx.env)
+    expect(((await res.json()) as any).pruned).toBe(4)
+    expect([...ctx.r2.store.keys()].filter((k) => k.startsWith('sites/acme/'))).toEqual(['sites/acme/a.html'])
+  })
+
   it('drops path-traversal entries instead of writing them', async () => {
     const res = await handleDeploy(
       await deployReq('acme', [

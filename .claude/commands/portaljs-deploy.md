@@ -262,7 +262,7 @@ Handle the response:
 ```
 ✓ Deployed to PortalJS Arc
   - URL:   https://SLUG.arc.portaljs.com
-  - Files: <n>   (<bytes> uploaded)
+  - Files: <n>   (<bytes> uploaded, <pruned> stale file(s) removed)
   - Data:  <k> dataset(s) served from R2, <m> inline   (from the step 4 check)
   - Slug:  SLUG  (re-run /portaljs-deploy to update)
 
@@ -271,8 +271,11 @@ Open the URL to view your live portal.
 
 ## Notes
 
-- **Idempotent.** Deploying the same slug again replaces the site in place. Pick the slug once;
-  it's your portal's permanent address.
+- **Idempotent + convergent.** Deploying the same slug again replaces the site in place, and
+  the live site converges to EXACTLY the new export: files that existed in a previous
+  deployment but are absent from the new build are deleted (the API's `pruned` count in the
+  response). Removed or re-slugged dataset pages stop resolving instead of persisting as
+  orphans at their old URLs. Pick the slug once; it's your portal's permanent address.
 - **Auth lives outside the repo.** The token is read from `PORTALJS_TOKEN` or
   `~/.portaljs/credentials` — never commit it. `https://arc.portaljs.com` is where you sign in
   and manage tokens.

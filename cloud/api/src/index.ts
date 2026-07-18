@@ -110,6 +110,23 @@ export async function handleDeploy(request: Request, env: Env): Promise<Response
   const prefix = `sites/${slug}/`
   await Promise.all(files.map((f) => env.ASSETS.put(prefix + f.name, f.data)))
 
+  // Prune (po-9gk): a redeploy must converge the live site to EXACTLY the new
+  // export — objects from a previous deployment that are absent from this upload
+  // are deleted, so removed/re-slugged pages stop resolving instead of persisting
+  // as orphans. Upload first, then prune, so the site is never missing files
+  // mid-deploy. Deletion is scoped to this slug's prefix only.
+  const keep = new Set(files.map((f) => prefix + f.name))
+  const stale: string[] = []
+  let cursor: string | undefined
+  do {
+    const page = await env.ASSETS.list({ prefix, cursor })
+    for (const obj of page.objects) if (!keep.has(obj.key)) stale.push(obj.key)
+    cursor = page.truncated ? page.cursor : undefined
+  } while (cursor)
+  for (let i = 0; i < stale.length; i += 1000) {
+    await env.ASSETS.delete(stale.slice(i, i + 1000))
+  }
+
   const deploymentId = await recordDeployment(env.DB, project.projectId, 'ready', files.length, bytes)
   return json({
     url: `https://${slug}.${env.ARC_HOST}`,
@@ -117,6 +134,7 @@ export async function handleDeploy(request: Request, env: Env): Promise<Response
     status: 'ready',
     files: files.length,
     bytes,
+    pruned: stale.length,
   })
 }
 

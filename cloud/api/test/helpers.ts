@@ -65,8 +65,26 @@ export async function gzip(data: Uint8Array): Promise<Uint8Array> {
 // Minimal fakes for R2 + D1, just enough for the deploy handler.
 export class FakeR2 {
   store = new Map<string, Uint8Array>()
+  // Page size for list(); small default in tests exercises cursor pagination.
+  pageSize = 1000
   async put(key: string, value: Uint8Array) {
     this.store.set(key, value)
+  }
+  async delete(keys: string | string[]) {
+    for (const k of Array.isArray(keys) ? keys : [keys]) this.store.delete(k)
+  }
+  async list(opts: { prefix?: string; cursor?: string } = {}) {
+    const all = [...this.store.keys()]
+      .filter((k) => !opts.prefix || k.startsWith(opts.prefix))
+      .sort()
+    const start = opts.cursor ? Number(opts.cursor) : 0
+    const page = all.slice(start, start + this.pageSize)
+    const truncated = start + this.pageSize < all.length
+    return {
+      objects: page.map((key) => ({ key })),
+      truncated,
+      cursor: truncated ? String(start + this.pageSize) : undefined,
+    }
   }
 }
 
