@@ -156,297 +156,329 @@ function corsHeaders(origin: string, extra?: Headers): Headers {
   return h
 }
 
+// Top-level guard: an uncaught throw anywhere below must NOT escape as Cloudflare's bare
+// "error code: 1101" page — that answer carries status 500 but NO CORS headers, so a
+// cross-origin caller (the marketing site's /build sign-up form) has its response blocked by
+// the browser and sees only a TypeError, indistinguishable from being offline. po-a69's
+// triage rule could therefore never reach its http_error 5xx branch, and po-4nu — a missing
+// D1 column that 500'd every /build sign-up for four weeks — reported as network_error with
+// no detail the whole time. handle() holds the routing; failures come back readable.
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    const url = new URL(request.url)
-    const path = url.pathname
-
-    // Fire the signup-completion event to PostHog without blocking the auth response
-    // (po-zbx). ctx.waitUntil keeps the Worker alive for the fetch after the redirect is
-    // returned; captureServerEvent itself never throws, so this is fully fire-and-forget.
-    const trackSignup = (
-      distinctId: string,
-      properties: Record<string, unknown>
-    ): void => {
-      ctx.waitUntil(
-        captureServerEvent(env, {
-          event: 'arc_signup_completed',
-          distinctId,
-          properties,
-          timestamp: new Date(now() * 1000).toISOString(),
-        })
-      )
+    try {
+      return await handle(request, env, ctx)
+    } catch (err) {
+      return internalError(request, err)
     }
+  },
+}
 
-    if (path === '/healthz') return new Response('ok')
+// Readable 500 for an unhandled throw, with the CORS headers an allowed site origin needs to
+// read it. The message is included (truncated) because it is what names the actual fault —
+// e.g. "D1_ERROR: no such column: ph_distinct_id" pinpoints schema drift instantly. D1/Worker
+// error strings carry no secrets and no user data.
+function internalError(request: Request, err: unknown): Response {
+  const message = err instanceof Error ? err.message : String(err)
+  // Surfaces in `wrangler tail` even when the caller only ever sees the truncated body.
+  console.error('unhandled error', request.method, new URL(request.url).pathname, message)
+  const origin = request.headers.get('origin')
+  const h = isAllowedSiteOrigin(origin) ? corsHeaders(origin as string) : new Headers()
+  h.set('content-type', 'application/json; charset=utf-8')
+  return new Response(JSON.stringify({ error: 'internal_error', message: message.slice(0, 200) }), {
+    status: 500,
+    headers: h,
+  })
+}
 
-    // --- Dashboard / landing ---
-    if (path === '/' && request.method === 'GET') {
-      const uid = await currentUser(request, env)
-      if (!uid) return html(landingPage())
-      return html(dashboardPage(await displayNameFor(env, uid), await listTokens(env.DB, uid)))
-    }
+async function handle(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  const url = new URL(request.url)
+  const path = url.pathname
 
-    // --- Start GitHub OAuth ---
-    if (path === '/auth/login' && request.method === 'GET') {
-      const state = b64url(crypto.getRandomValues(new Uint8Array(16)))
-      const authorize = new URL('https://github.com/login/oauth/authorize')
-      authorize.searchParams.set('client_id', env.GITHUB_CLIENT_ID)
-      authorize.searchParams.set('redirect_uri', `${env.BASE_URL}/auth/callback`)
-      authorize.searchParams.set('scope', 'read:user')
-      authorize.searchParams.set('state', state)
-      const h = new Headers()
-      h.append('set-cookie', cookie(STATE_COOKIE, state, 600))
-      // Remember where to send the user after sign-in (e.g. back to /activate?code=…).
-      const ret = safeReturnPath(url.searchParams.get('return'))
-      if (ret !== '/') h.append('set-cookie', cookie(RETURN_COOKIE, ret, 600))
-      return redirect(authorize.toString(), h)
-    }
-
-    // --- OAuth callback ---
-    if (path === '/auth/callback' && request.method === 'GET') {
-      const code = url.searchParams.get('code') ?? ''
-      const state = url.searchParams.get('state') ?? ''
-      const expected = getCookie(request, STATE_COOKIE) ?? ''
-      if (!code || !state || !expected || !timingSafeEqual(state, expected)) {
-        return html(landingPage(), 400)
-      }
-      // Exchange code for an access token.
-      const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
-        method: 'POST',
-        headers: { accept: 'application/json', 'content-type': 'application/json' },
-        body: JSON.stringify({
-          client_id: env.GITHUB_CLIENT_ID,
-          client_secret: env.GITHUB_CLIENT_SECRET,
-          code,
-          redirect_uri: `${env.BASE_URL}/auth/callback`,
-        }),
+  // Fire the signup-completion event to PostHog without blocking the auth response
+  // (po-zbx). ctx.waitUntil keeps the Worker alive for the fetch after the redirect is
+  // returned; captureServerEvent itself never throws, so this is fully fire-and-forget.
+  const trackSignup = (
+    distinctId: string,
+    properties: Record<string, unknown>
+  ): void => {
+    ctx.waitUntil(
+      captureServerEvent(env, {
+        event: 'arc_signup_completed',
+        distinctId,
+        properties,
+        timestamp: new Date(now() * 1000).toISOString(),
       })
-      const accessToken = ((await tokenRes.json()) as { access_token?: string }).access_token
-      if (!accessToken) return html(landingPage(), 502)
-      // Identify the user.
-      const ghRes = await fetch('https://api.github.com/user', {
-        headers: { authorization: `Bearer ${accessToken}`, 'user-agent': 'portaljs-arc', accept: 'application/vnd.github+json' },
-      })
-      const gh = (await ghRes.json()) as { id?: number; login?: string }
-      if (!gh.id || !gh.login) return html(landingPage(), 502)
+    )
+  }
 
-      const { id: uid, isNew } = await upsertUser(env.DB, gh.id, gh.login)
-      // Signup completion (po-zbx). No client anon id crosses the OAuth redirect, so attribute
-      // by the new user id; has_org is always false (GitHub sign-in captures no org).
-      trackSignup(uid, { auth_provider: 'github', has_org: false, is_new_user: isNew, arc_user_id: uid })
-      const session = await signSession(uid, env.SESSION_SECRET, now())
-      const h = new Headers()
-      h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))
-      h.append('set-cookie', cookie(STATE_COOKIE, '', 0)) // clear state
-      const dest = safeReturnPath(getCookie(request, RETURN_COOKIE))
-      h.append('set-cookie', cookie(RETURN_COOKIE, '', 0)) // clear return
-      return redirect(dest, h)
+  if (path === '/healthz') return new Response('ok')
+
+  // --- Dashboard / landing ---
+  if (path === '/' && request.method === 'GET') {
+    const uid = await currentUser(request, env)
+    if (!uid) return html(landingPage())
+    return html(dashboardPage(await displayNameFor(env, uid), await listTokens(env.DB, uid)))
+  }
+
+  // --- Start GitHub OAuth ---
+  if (path === '/auth/login' && request.method === 'GET') {
+    const state = b64url(crypto.getRandomValues(new Uint8Array(16)))
+    const authorize = new URL('https://github.com/login/oauth/authorize')
+    authorize.searchParams.set('client_id', env.GITHUB_CLIENT_ID)
+    authorize.searchParams.set('redirect_uri', `${env.BASE_URL}/auth/callback`)
+    authorize.searchParams.set('scope', 'read:user')
+    authorize.searchParams.set('state', state)
+    const h = new Headers()
+    h.append('set-cookie', cookie(STATE_COOKIE, state, 600))
+    // Remember where to send the user after sign-in (e.g. back to /activate?code=…).
+    const ret = safeReturnPath(url.searchParams.get('return'))
+    if (ret !== '/') h.append('set-cookie', cookie(RETURN_COOKIE, ret, 600))
+    return redirect(authorize.toString(), h)
+  }
+
+  // --- OAuth callback ---
+  if (path === '/auth/callback' && request.method === 'GET') {
+    const code = url.searchParams.get('code') ?? ''
+    const state = url.searchParams.get('state') ?? ''
+    const expected = getCookie(request, STATE_COOKIE) ?? ''
+    if (!code || !state || !expected || !timingSafeEqual(state, expected)) {
+      return html(landingPage(), 400)
     }
+    // Exchange code for an access token.
+    const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
+      headers: { accept: 'application/json', 'content-type': 'application/json' },
+      body: JSON.stringify({
+        client_id: env.GITHUB_CLIENT_ID,
+        client_secret: env.GITHUB_CLIENT_SECRET,
+        code,
+        redirect_uri: `${env.BASE_URL}/auth/callback`,
+      }),
+    })
+    const accessToken = ((await tokenRes.json()) as { access_token?: string }).access_token
+    if (!accessToken) return html(landingPage(), 502)
+    // Identify the user.
+    const ghRes = await fetch('https://api.github.com/user', {
+      headers: { authorization: `Bearer ${accessToken}`, 'user-agent': 'portaljs-arc', accept: 'application/vnd.github+json' },
+    })
+    const gh = (await ghRes.json()) as { id?: number; login?: string }
+    if (!gh.id || !gh.login) return html(landingPage(), 502)
 
-    // --- Passwordless email sign-in (magic link; po-e6j) ---
-    // A GitHub-free front door for the /build audience. Lands in the SAME users table as
-    // OAuth and issues the SAME signed-cookie session.
+    const { id: uid, isNew } = await upsertUser(env.DB, gh.id, gh.login)
+    // Signup completion (po-zbx). No client anon id crosses the OAuth redirect, so attribute
+    // by the new user id; has_org is always false (GitHub sign-in captures no org).
+    trackSignup(uid, { auth_provider: 'github', has_org: false, is_new_user: isNew, arc_user_id: uid })
+    const session = await signSession(uid, env.SESSION_SECRET, now())
+    const h = new Headers()
+    h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))
+    h.append('set-cookie', cookie(STATE_COOKIE, '', 0)) // clear state
+    const dest = safeReturnPath(getCookie(request, RETURN_COOKIE))
+    h.append('set-cookie', cookie(RETURN_COOKIE, '', 0)) // clear return
+    return redirect(dest, h)
+  }
 
-    // CORS preflight for the cross-origin /build sign-up POST (po-76p). Only the marketing
-    // site origins are allowed; anything else gets a bare 403 with no CORS headers.
-    if (path === '/email/start' && request.method === 'OPTIONS') {
-      const origin = request.headers.get('origin')
-      if (isAllowedSiteOrigin(origin)) {
-        return new Response(null, { status: 204, headers: corsHeaders(origin as string) })
-      }
+  // --- Passwordless email sign-in (magic link; po-e6j) ---
+  // A GitHub-free front door for the /build audience. Lands in the SAME users table as
+  // OAuth and issues the SAME signed-cookie session.
+
+  // CORS preflight for the cross-origin /build sign-up POST (po-76p). Only the marketing
+  // site origins are allowed; anything else gets a bare 403 with no CORS headers.
+  if (path === '/email/start' && request.method === 'OPTIONS') {
+    const origin = request.headers.get('origin')
+    if (isAllowedSiteOrigin(origin)) {
+      return new Response(null, { status: 204, headers: corsHeaders(origin as string) })
+    }
+    return new Response('Forbidden', { status: 403 })
+  }
+
+  // Step 1: request a magic link. CSRF-guarded like the other state-changing POSTs, but
+  // ALSO reachable cross-origin from the marketing site's /build form (SITE_ORIGINS, CORS).
+  // The response is deliberately NEUTRAL (always "check your email") so it can't be used
+  // to probe which addresses have accounts.
+  if (path === '/email/start' && request.method === 'POST') {
+    const origin = request.headers.get('origin')
+    const fromSite = isAllowedSiteOrigin(origin)
+    if (!isAllowedOrigin(origin, env.BASE_URL) && !fromSite) {
       return new Response('Forbidden', { status: 403 })
     }
-
-    // Step 1: request a magic link. CSRF-guarded like the other state-changing POSTs, but
-    // ALSO reachable cross-origin from the marketing site's /build form (SITE_ORIGINS, CORS).
-    // The response is deliberately NEUTRAL (always "check your email") so it can't be used
-    // to probe which addresses have accounts.
-    if (path === '/email/start' && request.method === 'POST') {
-      const origin = request.headers.get('origin')
-      const fromSite = isAllowedSiteOrigin(origin)
-      if (!isAllowedOrigin(origin, env.BASE_URL) && !fromSite) {
-        return new Response('Forbidden', { status: 403 })
-      }
-      // Attach CORS headers to every cross-origin response below, else the browser blocks the
-      // site from reading it (and treats the send as failed).
-      const respHeaders = () => (fromSite ? corsHeaders(origin as string) : undefined)
-      const body = await readJsonOrForm(request)
-      const email = normalizeEmail(String(body.email ?? ''))
-      const fullName = typeof body.full_name === 'string' ? body.full_name : undefined
-      const org = typeof body.org === 'string' ? body.org : undefined
-      const ret = safeReturnPath(typeof body.return === 'string' ? body.return : null)
-      // Client PostHog anonymous id (po-zbx): the /build form forwards it so the server-side
-      // arc_signup_completed fired at verify time joins the client-side /build funnel.
-      const distinctId = typeof body.distinct_id === 'string' ? body.distinct_id : undefined
-      // Skip minting/sending for free/consumer domains (po-76p corporate-email gate). The
-      // /build page blocks these client-side with a friendly terminal-path message; this is
-      // the server-side backstop so a bypassed POST doesn't burn a send. Neutral either way.
-      if (isValidEmail(email) && !isFreeEmailDomain(email)) {
-        // Rate-limit accepted sends by target email + source IP (po-jwn) to prevent
-        // email-bombing a victim and burning Resend quota. gateEmailSend records the send
-        // when under the caps and returns false when over — in which case we silently skip
-        // minting/sending. Either way the response below is identical (see neutrality note).
-        const ip = request.headers.get('cf-connecting-ip') ?? ''
-        if (await gateEmailSend(env.DB, now(), email, ip)) {
-          const { token } = await createEmailLogin(env.DB, now(), email, { fullName, org }, ret === '/' ? undefined : ret, distinctId)
-          const link = `${env.BASE_URL}/email/verify?token=${encodeURIComponent(token)}`
-          // Fire the send but don't leak its success/failure into the response (neutrality).
-          await sendMagicLinkEmail(env, email, link)
-        }
-      }
-      // Echo back a best-effort address for the "check your email" copy; if it was invalid
-      // we still show the neutral page (with whatever the user typed, escaped).
-      return html(emailSentPage(email || String(body.email ?? '')), 200, respHeaders())
-    }
-
-    // Step 2: the emailed link lands here. A bare GET never signs in — it shows a
-    // confirmation page so an email scanner / prefetcher can't consume the token. This is
-    // the industry-standard mitigation for gov/enterprise mail security (Defender Safe
-    // Links, Proofpoint URL Defense, Mimecast, Barracuda), which GET-prefetch every link
-    // to scan it. peekEmailLogin is read-only (SELECT), so this route is fully IDEMPOTENT:
-    // any number of GETs leaves the token pending and issues no session cookie — only the
-    // explicit human POST below consumes it. Verified end-to-end in test/email.test.ts
-    // ("scanner/prefetch safety"). Residual risk: a JS-executing detonation sandbox that
-    // renders this page and auto-submits the form would post same-origin and pass the CSRF
-    // guard — but real scanners deliberately don't submit auth forms (it would break every
-    // sign-in on the web). If that ever proves untrue for the /build audience, the escape
-    // hatch is an OTP code the user types from the email (scanner-proof by construction).
-    if (path === '/email/verify' && request.method === 'GET') {
-      const token = url.searchParams.get('token') ?? ''
-      const peek = await peekEmailLogin(env.DB, now(), token)
-      if (peek.status === 'valid') return html(emailConfirmPage(token, peek.email ?? ''))
-      return html(emailResultPage(peek.status), 400)
-    }
-
-    // Step 3: consume the token exactly once and issue a session. CSRF-guarded.
-    if (path === '/email/verify' && request.method === 'POST') {
-      if (!isAllowedOrigin(request.headers.get('origin'), env.BASE_URL)) {
-        return new Response('Forbidden', { status: 403 })
-      }
-      const body = await readJsonOrForm(request)
-      const token = String(body.token ?? '')
-      const result = await verifyEmailLogin(env.DB, now(), token)
-      if (result.status !== 'verified') return html(emailResultPage(result.status), 400)
-      const { id: uid, isNew } = await upsertEmailUser(
-        env.DB,
-        result.email,
-        { fullName: result.fullName, org: result.org },
-        new Date(now() * 1000).toISOString()
-      )
-      // Signup completion (po-zbx) — the metric that matters. Attribute to the client anon id
-      // captured at /email/start (joins the /build funnel) when present, else the new user id.
-      // from_build is proxied by that anon id: only the /build page forwards a distinct_id.
-      trackSignup(result.distinctId || uid, {
-        auth_provider: 'email',
-        has_org: !!result.org,
-        is_new_user: isNew,
-        from_build: !!result.distinctId,
-        arc_user_id: uid,
-      })
-      const session = await signSession(uid, env.SESSION_SECRET, now())
-      const h = new Headers()
-      h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))
-      return redirect(safeReturnPath(result.returnPath), h)
-    }
-
-    // --- Device-authorization flow (CLI sign-in; po-j57) ---
-
-    // Step 1: the CLI requests a code pair. Public (no session) — the device_code is the
-    // bearer secret it polls with; approval still requires a signed-in human at /activate.
-    if (path === '/device/code' && request.method === 'POST') {
-      const label = await readLabel(request)
-      const { deviceCode, userCode, interval, expiresIn } = await createDeviceCode(env.DB, now(), label)
-      const verificationUri = `${env.BASE_URL}/activate`
-      return json(
-        {
-          device_code: deviceCode,
-          user_code: formatUserCode(userCode),
-          verification_uri: verificationUri,
-          verification_uri_complete: `${verificationUri}?code=${encodeURIComponent(formatUserCode(userCode))}`,
-          interval,
-          expires_in: expiresIn,
-        },
-        200
-      )
-    }
-
-    // Step 3: the CLI polls until the user approves, then gets the token exactly once.
-    if (path === '/device/token' && request.method === 'POST') {
-      const body = await readJsonOrForm(request)
-      const result = await claimDeviceToken(env.DB, now(), String(body.device_code ?? ''))
-      switch (result.status) {
-        case 'issued':
-          // One-time cleartext token — never cache.
-          return json({ token: result.token }, 200, { 'cache-control': 'no-store' })
-        case 'pending':
-          return json({ error: 'authorization_pending' }, 428)
-        case 'expired':
-          return json({ error: 'expired_token' }, 400)
-        case 'used':
-          return json({ error: 'token_already_issued' }, 410)
-        default:
-          return json({ error: 'invalid_device_code' }, 400)
+    // Attach CORS headers to every cross-origin response below, else the browser blocks the
+    // site from reading it (and treats the send as failed).
+    const respHeaders = () => (fromSite ? corsHeaders(origin as string) : undefined)
+    const body = await readJsonOrForm(request)
+    const email = normalizeEmail(String(body.email ?? ''))
+    const fullName = typeof body.full_name === 'string' ? body.full_name : undefined
+    const org = typeof body.org === 'string' ? body.org : undefined
+    const ret = safeReturnPath(typeof body.return === 'string' ? body.return : null)
+    // Client PostHog anonymous id (po-zbx): the /build form forwards it so the server-side
+    // arc_signup_completed fired at verify time joins the client-side /build funnel.
+    const distinctId = typeof body.distinct_id === 'string' ? body.distinct_id : undefined
+    // Skip minting/sending for free/consumer domains (po-76p corporate-email gate). The
+    // /build page blocks these client-side with a friendly terminal-path message; this is
+    // the server-side backstop so a bypassed POST doesn't burn a send. Neutral either way.
+    if (isValidEmail(email) && !isFreeEmailDomain(email)) {
+      // Rate-limit accepted sends by target email + source IP (po-jwn) to prevent
+      // email-bombing a victim and burning Resend quota. gateEmailSend records the send
+      // when under the caps and returns false when over — in which case we silently skip
+      // minting/sending. Either way the response below is identical (see neutrality note).
+      const ip = request.headers.get('cf-connecting-ip') ?? ''
+      if (await gateEmailSend(env.DB, now(), email, ip)) {
+        const { token } = await createEmailLogin(env.DB, now(), email, { fullName, org }, ret === '/' ? undefined : ret, distinctId)
+        const link = `${env.BASE_URL}/email/verify?token=${encodeURIComponent(token)}`
+        // Fire the send but don't leak its success/failure into the response (neutrality).
+        await sendMagicLinkEmail(env, email, link)
       }
     }
+    // Echo back a best-effort address for the "check your email" copy; if it was invalid
+    // we still show the neutral page (with whatever the user typed, escaped).
+    return html(emailSentPage(email || String(body.email ?? '')), 200, respHeaders())
+  }
 
-    // Step 2 (browser): the user enters the code. Requires a signed-in session; if absent,
-    // bounce through GitHub OAuth and come back here (return cookie carries the code).
-    if (path === '/activate' && request.method === 'GET') {
-      const uid = await currentUser(request, env)
-      const code = url.searchParams.get('code') ?? ''
-      if (!uid) {
-        const ret = `/activate${code ? `?code=${encodeURIComponent(code)}` : ''}`
-        return redirect(`/auth/login?return=${encodeURIComponent(ret)}`)
-      }
-      return html(activatePage(code))
+  // Step 2: the emailed link lands here. A bare GET never signs in — it shows a
+  // confirmation page so an email scanner / prefetcher can't consume the token. This is
+  // the industry-standard mitigation for gov/enterprise mail security (Defender Safe
+  // Links, Proofpoint URL Defense, Mimecast, Barracuda), which GET-prefetch every link
+  // to scan it. peekEmailLogin is read-only (SELECT), so this route is fully IDEMPOTENT:
+  // any number of GETs leaves the token pending and issues no session cookie — only the
+  // explicit human POST below consumes it. Verified end-to-end in test/email.test.ts
+  // ("scanner/prefetch safety"). Residual risk: a JS-executing detonation sandbox that
+  // renders this page and auto-submits the form would post same-origin and pass the CSRF
+  // guard — but real scanners deliberately don't submit auth forms (it would break every
+  // sign-in on the web). If that ever proves untrue for the /build audience, the escape
+  // hatch is an OTP code the user types from the email (scanner-proof by construction).
+  if (path === '/email/verify' && request.method === 'GET') {
+    const token = url.searchParams.get('token') ?? ''
+    const peek = await peekEmailLogin(env.DB, now(), token)
+    if (peek.status === 'valid') return html(emailConfirmPage(token, peek.email ?? ''))
+    return html(emailResultPage(peek.status), 400)
+  }
+
+  // Step 3: consume the token exactly once and issue a session. CSRF-guarded.
+  if (path === '/email/verify' && request.method === 'POST') {
+    if (!isAllowedOrigin(request.headers.get('origin'), env.BASE_URL)) {
+      return new Response('Forbidden', { status: 403 })
     }
+    const body = await readJsonOrForm(request)
+    const token = String(body.token ?? '')
+    const result = await verifyEmailLogin(env.DB, now(), token)
+    if (result.status !== 'verified') return html(emailResultPage(result.status), 400)
+    const { id: uid, isNew } = await upsertEmailUser(
+      env.DB,
+      result.email,
+      { fullName: result.fullName, org: result.org },
+      new Date(now() * 1000).toISOString()
+    )
+    // Signup completion (po-zbx) — the metric that matters. Attribute to the client anon id
+    // captured at /email/start (joins the /build funnel) when present, else the new user id.
+    // from_build is proxied by that anon id: only the /build page forwards a distinct_id.
+    trackSignup(result.distinctId || uid, {
+      auth_provider: 'email',
+      has_org: !!result.org,
+      is_new_user: isNew,
+      from_build: !!result.distinctId,
+      arc_user_id: uid,
+    })
+    const session = await signSession(uid, env.SESSION_SECRET, now())
+    const h = new Headers()
+    h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))
+    return redirect(safeReturnPath(result.returnPath), h)
+  }
 
-    if (path === '/activate' && request.method === 'POST') {
-      if (!isAllowedOrigin(request.headers.get('origin'), env.BASE_URL)) {
-        return new Response('Forbidden', { status: 403 })
-      }
-      const uid = await currentUser(request, env)
-      const form = await request.formData()
-      const code = String(form.get('code') ?? '')
-      if (!uid) return redirect(`/auth/login?return=${encodeURIComponent(`/activate?code=${encodeURIComponent(code)}`)}`)
-      const result = await approveDeviceCode(env.DB, now(), uid, code)
-      return html(activateResultPage(result, formatUserCode(code.toUpperCase().replace(/[^A-Z0-9]/gi, ''))), result === 'approved' ? 200 : 400)
+  // --- Device-authorization flow (CLI sign-in; po-j57) ---
+
+  // Step 1: the CLI requests a code pair. Public (no session) — the device_code is the
+  // bearer secret it polls with; approval still requires a signed-in human at /activate.
+  if (path === '/device/code' && request.method === 'POST') {
+    const label = await readLabel(request)
+    const { deviceCode, userCode, interval, expiresIn } = await createDeviceCode(env.DB, now(), label)
+    const verificationUri = `${env.BASE_URL}/activate`
+    return json(
+      {
+        device_code: deviceCode,
+        user_code: formatUserCode(userCode),
+        verification_uri: verificationUri,
+        verification_uri_complete: `${verificationUri}?code=${encodeURIComponent(formatUserCode(userCode))}`,
+        interval,
+        expires_in: expiresIn,
+      },
+      200
+    )
+  }
+
+  // Step 3: the CLI polls until the user approves, then gets the token exactly once.
+  if (path === '/device/token' && request.method === 'POST') {
+    const body = await readJsonOrForm(request)
+    const result = await claimDeviceToken(env.DB, now(), String(body.device_code ?? ''))
+    switch (result.status) {
+      case 'issued':
+        // One-time cleartext token — never cache.
+        return json({ token: result.token }, 200, { 'cache-control': 'no-store' })
+      case 'pending':
+        return json({ error: 'authorization_pending' }, 428)
+      case 'expired':
+        return json({ error: 'expired_token' }, 400)
+      case 'used':
+        return json({ error: 'token_already_issued' }, 410)
+      default:
+        return json({ error: 'invalid_device_code' }, 400)
     }
+  }
 
-    if (path === '/auth/logout') {
-      const h = new Headers()
-      h.append('set-cookie', cookie(SESSION_COOKIE, '', 0))
-      return redirect('/', h)
+  // Step 2 (browser): the user enters the code. Requires a signed-in session; if absent,
+  // bounce through GitHub OAuth and come back here (return cookie carries the code).
+  if (path === '/activate' && request.method === 'GET') {
+    const uid = await currentUser(request, env)
+    const code = url.searchParams.get('code') ?? ''
+    if (!uid) {
+      const ret = `/activate${code ? `?code=${encodeURIComponent(code)}` : ''}`
+      return redirect(`/auth/login?return=${encodeURIComponent(ret)}`)
     }
+    return html(activatePage(code))
+  }
 
-    // --- Token management (auth required) ---
-    // CSRF: state-changing POSTs must originate from the dashboard itself.
-    if ((path === '/tokens' || path === '/tokens/revoke') && request.method === 'POST') {
-      if (!isAllowedOrigin(request.headers.get('origin'), env.BASE_URL)) {
-        return new Response('Forbidden', { status: 403 })
-      }
+  if (path === '/activate' && request.method === 'POST') {
+    if (!isAllowedOrigin(request.headers.get('origin'), env.BASE_URL)) {
+      return new Response('Forbidden', { status: 403 })
     }
+    const uid = await currentUser(request, env)
+    const form = await request.formData()
+    const code = String(form.get('code') ?? '')
+    if (!uid) return redirect(`/auth/login?return=${encodeURIComponent(`/activate?code=${encodeURIComponent(code)}`)}`)
+    const result = await approveDeviceCode(env.DB, now(), uid, code)
+    return html(activateResultPage(result, formatUserCode(code.toUpperCase().replace(/[^A-Z0-9]/gi, ''))), result === 'approved' ? 200 : 400)
+  }
 
-    if (path === '/tokens' && request.method === 'POST') {
-      const uid = await currentUser(request, env)
-      if (!uid) return redirect('/')
-      const form = await request.formData()
-      const label = String(form.get('label') ?? 'token').slice(0, 60)
-      const token = await createToken(env.DB, uid, label)
-      // The response embeds the one-time cleartext token — never cache it.
-      const noStore = new Headers({ 'cache-control': 'no-store' })
-      return html(dashboardPage(await displayNameFor(env, uid), await listTokens(env.DB, uid), token), 200, noStore)
+  if (path === '/auth/logout') {
+    const h = new Headers()
+    h.append('set-cookie', cookie(SESSION_COOKIE, '', 0))
+    return redirect('/', h)
+  }
+
+  // --- Token management (auth required) ---
+  // CSRF: state-changing POSTs must originate from the dashboard itself.
+  if ((path === '/tokens' || path === '/tokens/revoke') && request.method === 'POST') {
+    if (!isAllowedOrigin(request.headers.get('origin'), env.BASE_URL)) {
+      return new Response('Forbidden', { status: 403 })
     }
+  }
 
-    if (path === '/tokens/revoke' && request.method === 'POST') {
-      const uid = await currentUser(request, env)
-      if (!uid) return redirect('/')
-      const form = await request.formData()
-      await revokeToken(env.DB, uid, String(form.get('id') ?? ''))
-      return redirect('/')
-    }
+  if (path === '/tokens' && request.method === 'POST') {
+    const uid = await currentUser(request, env)
+    if (!uid) return redirect('/')
+    const form = await request.formData()
+    const label = String(form.get('label') ?? 'token').slice(0, 60)
+    const token = await createToken(env.DB, uid, label)
+    // The response embeds the one-time cleartext token — never cache it.
+    const noStore = new Headers({ 'cache-control': 'no-store' })
+    return html(dashboardPage(await displayNameFor(env, uid), await listTokens(env.DB, uid), token), 200, noStore)
+  }
 
-    return new Response('Not found', { status: 404 })
-  },
+  if (path === '/tokens/revoke' && request.method === 'POST') {
+    const uid = await currentUser(request, env)
+    if (!uid) return redirect('/')
+    const form = await request.formData()
+    await revokeToken(env.DB, uid, String(form.get('id') ?? ''))
+    return redirect('/')
+  }
+
+  return new Response('Not found', { status: 404 })
 }

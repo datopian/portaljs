@@ -70,9 +70,25 @@ run_wrangler() {
   ( cd "$dir" && npx wrangler "$@" )
 }
 
+# The prod D1 binding is declared ONLY under [env.production] in every cloud/*/wrangler.toml,
+# so `d1 migrations list|apply portaljs-arc` without --env production cannot resolve the DB
+# ("Couldn't find a D1 DB with the name or binding 'portaljs-arc'"). That made this wrapper's
+# whole guarantee a no-op for production: step 1 always failed, so the only way anyone ever
+# got a prod worker out was a bare `wrangler deploy --env production` — shipping code ahead of
+# its schema, which is exactly the bug this script exists to prevent (it recurred as po-4nu:
+# 0005_ph_distinct_id was unapplied on portaljs-arc for four weeks while the code that reads
+# that column was live, 500ing every /build sign-up). Pass ENV_FLAG to the d1 commands too.
+#
+# ENV_FLAG is empty for staging, and `"${ENV_FLAG[@]}"` on an empty array trips `set -u` as an
+# unbound variable on bash 3.2 (what macOS ships) — so the ${arr[@]+…} guard is required at
+# every expansion, else every staging invocation dies before doing anything.
+run_d1() {
+  run_wrangler "$API_DIR" d1 "$@" "$DB" --remote ${ENV_FLAG[@]+"${ENV_FLAG[@]}"}
+}
+
 if [ "$MODE" = "--check" ]; then
   echo "▸ Checking for unapplied D1 migrations on $DB ($ENV)…"
-  out="$(run_wrangler "$API_DIR" d1 migrations list "$DB" --remote 2>&1)" || {
+  out="$(run_d1 migrations list 2>&1)" || {
     echo "$out" >&2
     echo "✗ Could not list migrations on $DB." >&2
     exit 1
@@ -93,10 +109,10 @@ echo "▸ Arc deploy — worker=$WORKER env=$ENV db=$DB"
 # 1. Migrations BEFORE deploy. Aborts (set -e) if apply fails, so code never ships ahead
 #    of its schema. Idempotent — a no-op when the DB is already current.
 echo "▸ Applying pending D1 migrations to $DB (shared by auth/api/worker)…"
-run_wrangler "$API_DIR" d1 migrations apply "$DB" --remote
+run_d1 migrations apply
 
 # 2. Deploy the worker only after the schema is guaranteed current.
 echo "▸ Deploying $WORKER worker ($ENV)…"
-run_wrangler "$WORKER_DIR" deploy "${ENV_FLAG[@]}"
+run_wrangler "$WORKER_DIR" deploy ${ENV_FLAG[@]+"${ENV_FLAG[@]}"}
 
 echo "✓ Deployed $WORKER to $ENV (migrations current on $DB)."
