@@ -11,6 +11,7 @@ import { useRouter } from 'next/dist/client/router';
 import { Noto_Sans as Roboto_Condensed } from 'next/font/google';
 import posthog from 'posthog-js';
 import { PostHogProvider } from 'posthog-js/react';
+import { createBotFilter } from '../lib/analyticsBotFilter';
 
 export interface CustomAppProps {
   meta: {
@@ -57,6 +58,8 @@ function MyApp({ Component, pageProps }) {
     posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
       api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
       defaults: '2025-11-30',
+      // Drop events from automated clients before they leave the browser (po-ywf).
+      before_send: createBotFilter(),
       loaded: (posthog) => {
         if (process.env.NODE_ENV === 'development') posthog.debug();
       },
