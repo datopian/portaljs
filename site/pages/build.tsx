@@ -1,5 +1,6 @@
 import Layout from '@/components/Layout'
 import { isValidEmail, isFreeEmailDomain, orgFromEmail } from '@/lib/freemail'
+import { errorProps, httpError } from '@/lib/signupError'
 import posthog from 'posthog-js'
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -117,11 +118,15 @@ export default function BuildPage() {
           distinct_id: distinctId,
         }),
       })
-      if (!res.ok) throw new Error(`arc responded ${res.status}`)
+      if (!res.ok) throw await httpError(res)
       track('build_email_sent')
       setStatus('sent')
     } catch (err) {
-      track('build_signup_error')
+      // Always report WHY (po-a69). Before this the event carried autocapture defaults only,
+      // so a failed signup was indistinguishable from any other — see po-4nu.
+      // arc_url matters: a CORS-blocked / wrong-origin Arc is indistinguishable from offline
+      // client-side (both are TypeErrors), and the endpoint identifies which one we hit.
+      track('build_signup_error', { ...errorProps(err), arc_url: ARC_URL, has_prompt: !!prompt })
       setStatus('idle')
       setError('Something went wrong sending your confirmation email. Please try again.')
     }
