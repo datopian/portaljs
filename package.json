@@ -12,7 +12,13 @@
     "changeset": "changeset",
     "release": "changeset publish",
     "gen:skills": "node scripts/gen-skills-docs.mjs",
-    "gen:skills:check": "node scripts/gen-skills-docs.mjs --check"
+    "gen:skills:check": "node scripts/gen-skills-docs.mjs --check",
+    "verify": "bash scripts/verify.sh",
+    "setup": "bash scripts/verify.sh setup",
+    "lint": "bash scripts/verify.sh lint",
+    "typecheck": "bash scripts/verify.sh typecheck",
+    "test": "bash scripts/verify.sh test",
+    "build": "bash scripts/verify.sh build"
   },
   "private": true,
   "devDependencies": {

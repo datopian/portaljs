@@ -1,0 +1,12 @@
+{
+  "type": "rig-settings",
+  "version": 1,
+  "merge_queue": {
+    "run_tests": true,
+    "setup_command": "npm run setup",
+    "lint_command": "npm run lint",
+    "typecheck_command": "npm run typecheck",
+    "test_command": "npm test",
+    "build_command": "npm run build"
+  }
+}
