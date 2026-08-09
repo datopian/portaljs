@@ -32,6 +32,33 @@ const RobotoCondensed = Roboto_Condensed({
   weight: ['300', '400', '600', '700'], // Include all desired weights
   variable: '--font-roco',
 });
+
+// PostHog is initialised at MODULE scope, not from _app's useEffect (po-6el).
+//
+// React runs effects bottom-up: a page's own useEffect fires BEFORE its parent
+// _app's. Initialising here from an effect therefore lost every capture a page
+// made on first commit. /build measured the damage: it captures build_viewed
+// from a useEffect gated on router.isReady, and on a cold load with no query
+// string isReady is already true at first commit, so the capture ran against an
+// uninitialised SDK and was dropped. In PostHog, 8 of 8 /build loads carrying
+// ?prompt= produced a build_viewed (the query string forces a second render, by
+// which time _app's effect had run) against 38 of 56 without one — a third of
+// the funnel's denominator, silently missing.
+//
+// Module scope runs at import, before any component renders, so the SDK is ready
+// for the first capture any page makes. This is also the pattern PostHog
+// documents for the Next.js pages router.
+if (typeof window !== 'undefined') {
+  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
+    api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    defaults: '2025-11-30',
+    // Drop events from automated clients before they leave the browser (po-ywf).
+    before_send: createBotFilter(),
+    loaded: (posthog) => {
+      if (process.env.NODE_ENV === 'development') posthog.debug();
+    },
+  });
+}
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
@@ -53,18 +80,6 @@ function MyApp({ Component, pageProps }) {
       };
     }
   }, [router.events]);
-
-  useEffect(() => {
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
-      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-      defaults: '2025-11-30',
-      // Drop events from automated clients before they leave the browser (po-ywf).
-      before_send: createBotFilter(),
-      loaded: (posthog) => {
-        if (process.env.NODE_ENV === 'development') posthog.debug();
-      },
-    });
-  }, []);
 
   return (
     <ThemeProvider

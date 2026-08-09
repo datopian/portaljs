@@ -89,6 +89,11 @@ stage_lint() {
   run "gen:skills:check" . npm run gen:skills:check
   # Asserts this script still fails an empty run — the property po-mz4 is about.
   run "verify.sh self-test" . bash scripts/verify-selftest.sh
+  # Asserts the nav + landing hero still lead to a page that can actually sign a
+  # visitor up (po-506 / po-6el). Zero-dependency node, so it runs on a cold tree
+  # even though site/ is otherwise out of this gate's scope.
+  run "signup path guard" . node site/scripts/check-signup-path.mjs
+  run "signup path guard self-test" . node site/scripts/check-signup-path-selftest.mjs
 }
 
 stage_typecheck() {
