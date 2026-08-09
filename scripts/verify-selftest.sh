@@ -12,6 +12,9 @@
 #   1. a normal stage list is accepted          (parses, does not error out early)
 #   2. an unknown stage exits 2                 (a typo in gate config is not a pass)
 #   3. a run that executes 0 commands exits 3   (the core guard)
+#   4. the install skip is decided by verifying the tree, not by comparing mtimes
+#      (po-agh — a skipped install must mean a checked one; behaviour of the check
+#      itself is covered by scripts/check-install-selftest.mjs)
 #
 # Case 3 needs a verify.sh that reaches the end having run nothing, which the real
 # script will never do. It is produced by stripping the stage-dispatch line — tagged
@@ -55,6 +58,16 @@ else
   # nothing else runs — so the run ends having executed 0 commands.
   bash "$stub" setup >/dev/null 2>&1
   check "a run that executes nothing FAILS" 3 "$?"
+fi
+
+if grep -q 'package-lock.json" -nt' "$VERIFY"; then
+  printf '  ✗ install() compares mtimes again — that cannot detect a pruned tree (po-agh)\n' >&2
+  fails=$((fails + 1))
+elif ! grep -q 'check-install.mjs' "$VERIFY"; then
+  printf '  ✗ install() no longer verifies the tree against the lockfile (po-agh)\n' >&2
+  fails=$((fails + 1))
+else
+  printf '  ✓ install skip is verified against the lockfile, not mtimes\n'
 fi
 
 if [ "$fails" -gt 0 ]; then

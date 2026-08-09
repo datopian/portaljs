@@ -17,7 +17,8 @@
 #   scripts/verify.sh --list              # show the stages
 #
 # Stages:
-#   setup       install root workspace + cloud service deps
+#   setup       install root workspace + cloud service deps, skipping an install
+#               only when the tree is verified against its lockfile (po-agh)
 #   lint        eslint (@portaljs/ckan) + generated-docs drift + this script's
 #               own self-test (scripts/verify-selftest.sh)
 #   typecheck   tsc --noEmit for each cloud service
@@ -62,17 +63,37 @@ run() {
   return 0
 }
 
-# install <dir> — npm ci, skipped only when node_modules is already newer than
-# the lockfile. Counts as a command either way: a skipped install is a satisfied
-# dependency, not an unverified one.
+# install <dir> — npm ci, skipped only when the installed tree is VERIFIED against
+# the lockfile by scripts/check-install.mjs. Counts as a command either way: a
+# skipped install is a satisfied dependency, not an unverified one — which is only
+# true if something checked.
+#
+# This used to compare mtimes (`package-lock.json -nt node_modules`). That answers
+# "was the lockfile edited after the install?", never "is the tree complete?", so a
+# PRUNED node_modules skipped its own repair and the gate failed every run with
+# code-shaped tsc errors (po-agh). The check now looks at what is actually on disk.
+#
+# It fails toward installing: cannot-verify and drift both reinstall.
 install() {
   local dir="$1" label="install ${1#./}"
-  if [ -d "$dir/node_modules" ] && [ ! "$dir/package-lock.json" -nt "$dir/node_modules" ]; then
-    printf '\033[2m$ (%s) npm ci  [skipped — node_modules current]\033[0m\n' "$dir"
+  local report
+  if [ -d "$dir/node_modules" ] && report="$(node "$ROOT/scripts/check-install.mjs" "$dir" 2>&1)"; then
+    printf '\033[2m$ (%s) npm ci  [skipped — tree verified against package-lock.json]\033[0m\n' "$dir"
     ran=$((ran + 1))
     return 0
   fi
-  run "$label" "$dir" npm ci
+  # Say why, so a reinstall in the gate log is self-explanatory rather than noise.
+  [ -n "${report:-}" ] && printf '\033[2m%s\033[0m\n' "$report"
+  run "$label" "$dir" npm ci || return 1
+
+  # npm ci reported success — if the tree still does not match, the stages about to
+  # run are standing on sand, and their failures will look like code defects. Warned
+  # rather than failed on purpose: a bug in the checker must not be able to block
+  # every merge, which is the same outage po-agh was.
+  if ! node "$ROOT/scripts/check-install.mjs" "$dir" --quiet >/dev/null 2>&1; then
+    warn "$dir: tree still does not match package-lock.json after npm ci — later failures here may be environmental, not code"
+  fi
+  return 0
 }
 
 stage_setup() {
@@ -94,6 +115,9 @@ stage_lint() {
   # even though site/ is otherwise out of this gate's scope.
   run "signup path guard" . node site/scripts/check-signup-path.mjs
   run "signup path guard self-test" . node site/scripts/check-signup-path-selftest.mjs
+  # Asserts the setup stage can still tell a pruned node_modules from a satisfied
+  # one (po-agh) — the check that decides whether npm ci may be skipped.
+  run "install check self-test" . node scripts/check-install-selftest.mjs
 }
 
 stage_typecheck() {
