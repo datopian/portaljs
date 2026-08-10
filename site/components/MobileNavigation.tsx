@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 
 import siteConfig from "@/config/siteConfig";
+import { track } from "@/lib/track";
 import { BaseLink } from "./BaseLink";
 import { SearchContext, SearchField } from "./search/index.jsx";
 
@@ -101,6 +102,18 @@ export function MobileNavigation({ navigation }) {
               {({ query }: any) => <SearchField mobile onOpen={query.toggle} />}
             </Search>
           )}
+          {/* Primary CTA first, before the 24 navigation links (po-80u). The menu
+              is the only full-height surface a mobile visitor opens deliberately;
+              burying the builder under Showcase/Integrations/Compare/Resources is
+              how the mobile funnel ends up with one entry point. */}
+          <Link
+            href="/build"
+            onClick={() => track("nav_cta_clicked", { target: "build", source: "mobile_menu" })}
+            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-br from-sky-400 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_-4px_rgba(37,99,235,0.5)]"
+          >
+            Get started
+            <span aria-hidden="true">→</span>
+          </Link>
           <ul className="mt-2 space-y-2 border-l-2 border-slate-100 dark:border-slate-800 lg:mt-4 lg:space-y-4 lg:border-slate-200">
             {navigation.map((link) => (
               <div key={link.name}>
@@ -158,6 +171,20 @@ export function MobileNavigation({ navigation }) {
                 )}
               </div>
             ))}
+            {/* The navbar's star counter is desktop-only now that the CTA holds
+                that slot below `lg`, so starring keeps a home here. */}
+            {siteConfig.github && (
+              <li>
+                <a
+                  href={siteConfig.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full pl-3.5 text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
+                >
+                  Star on GitHub
+                </a>
+              </li>
+            )}
           </ul>
         </Dialog.Panel>
       </Dialog>

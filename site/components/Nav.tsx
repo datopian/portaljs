@@ -8,6 +8,7 @@ import { ThemeSelector } from './ThemeSelector'
 import { SearchContext, SearchField } from './search/index.jsx'
 import GitHubButton from 'react-next-github-btn'
 import ButtonLink from './ButtonLink'
+import { track } from '@/lib/track'
 
 const Search = SearchContext(siteConfig?.search?.provider)
 
@@ -127,8 +128,11 @@ export default function Nav() {
 
           {/* <ThemeSelector /> */}
 
+          {/* The star counter is a vanity metric competing for the same row as the
+              only site-wide conversion CTA. Below `lg` the row cannot hold both, so
+              the CTA wins (po-80u) — starring is one tap away in the mobile menu. */}
           {siteConfig.github && (
-            <div className="mt-1">
+            <div className="mt-1 hidden lg:block">
               {/* @ts-ignore */}
               <GitHubButton
                 href={siteConfig.github}
@@ -141,10 +145,15 @@ export default function Nav() {
               </GitHubButton>
             </div>
           )}
+          {/* Visible at EVERY breakpoint. It used to be `hidden lg:inline-flex`,
+              which left mobile and tablet visitors — 11% of homepage traffic, 224
+              people over 2026-07-01..08-10 — with no route to /build anywhere on
+              the page except the hero itself (po-80u). */}
           <Link
             href="/build"
             title="Build a data portal — describe it and we'll scaffold it"
-            className="hidden lg:inline-flex items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_4px_14px_-4px_rgba(37,99,235,0.5)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_6px_20px_-6px_rgba(37,99,235,0.65)]"
+            onClick={() => track('nav_cta_clicked', { target: 'build' })}
+            className="inline-flex flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-blue-600 px-3 py-1.5 text-[13px] font-semibold text-white shadow-[0_4px_14px_-4px_rgba(37,99,235,0.5)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_6px_20px_-6px_rgba(37,99,235,0.65)] sm:px-4 sm:py-2 sm:text-sm"
           >
             Get started
           </Link>

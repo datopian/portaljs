@@ -1,18 +1,10 @@
 import { CSSProperties, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import posthog from 'posthog-js'
-
 // Named landing/hero analytics events. Prefer these over DOM autocapture: they
 // survive redesigns and give clean funnel/trend building blocks in PostHog.
 // See bead po-607 for the event contract + the "portaljs.com landing" dashboard.
-function track(event: string, props?: Record<string, unknown>) {
-  try {
-    posthog.capture(event, props)
-  } catch (_) {
-    // never let analytics break the hero
-  }
-}
+import { track } from '@/lib/track'
 
 // Dual-interface hero (imported from the Claude Design "PortalJS Hero" project,
 // iterated in po-pdq from the updated mockup). The site's <Nav> renders above

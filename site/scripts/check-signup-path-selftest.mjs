@@ -20,7 +20,13 @@ const HERE = path.dirname(fileURLToPath(import.meta.url))
 const SITE = path.resolve(HERE, '..')
 const GUARD = path.join(HERE, 'check-signup-path.mjs')
 
-const FILES = ['components/Nav.tsx', 'components/home/LandingHero.tsx', 'pages/build.tsx', 'pages/_app.tsx']
+const FILES = [
+  'components/Nav.tsx',
+  'components/home/LandingHero.tsx',
+  'components/home/CtaBand.tsx',
+  'pages/build.tsx',
+  'pages/_app.tsx',
+]
 
 function runGuard(root) {
   return spawnSync(process.execPath, [GUARD, '--root', root], { encoding: 'utf8' })
@@ -89,8 +95,41 @@ const cases = [
         s.replace("if (typeof window !== 'undefined') {", 'function MyApp() {\n  useEffect(() => {'),
       ),
   ],
-  // Deleting the entry point entirely must fail, not vacuously pass.
+  // po-80u: a CTA can keep its href and still be gone for most visitors.
+  [
+    'nav CTA hidden below the lg breakpoint',
+    (d) =>
+      edit(d, 'components/Nav.tsx', (s) =>
+        s.replace('className="inline-flex flex-shrink-0 items-center', 'className="hidden lg:inline-flex items-center'),
+      ),
+  ],
+  [
+    'nav CTA stops reporting itself',
+    (d) => edit(d, 'components/Nav.tsx', (s) => s.replace(/onClick=\{\(\) => track\('nav_cta_clicked'[^}]*\}\)\}\n\s*/, '')),
+  ],
+  // po-80u's headline defect: the closing CTA aimed at the docs.
+  [
+    'closing CTA repointed at the docs',
+    (d) =>
+      edit(d, 'components/home/CtaBand.tsx', (s) =>
+        s.replace("const BUILD_ROUTE = '/build'", "const BUILD_ROUTE = 'https://portaljs.com/docs'"),
+      ),
+  ],
+  [
+    'closing CTA demoted below a docs button',
+    (d) =>
+      edit(d, 'components/home/CtaBand.tsx', (s) =>
+        s.replace('<Link\n                href={BUILD_ROUTE}', '<a href={DOCS_URL} />\n              <Link\n                href={BUILD_ROUTE}'),
+      ),
+  ],
+  [
+    'closing CTA stops reporting itself',
+    (d) =>
+      edit(d, 'components/home/CtaBand.tsx', (s) => s.replaceAll("track('home_cta_band_clicked'", "noTrack('home_cta_band_clicked'")),
+  ],
+  // Deleting an entry point entirely must fail, not vacuously pass.
   ['the hero file is deleted', (d) => fs.rmSync(path.join(d, 'components/home/LandingHero.tsx'))],
+  ['the closing CTA file is deleted', (d) => fs.rmSync(path.join(d, 'components/home/CtaBand.tsx'))],
 ]
 
 let failed = 0
