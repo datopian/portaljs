@@ -18,24 +18,85 @@ export interface UpsertResult {
   isNew: boolean
 }
 
-export async function upsertUser(db: D1Database, githubId: number, login: string): Promise<UpsertResult> {
+// `email` is the account's primary VERIFIED GitHub address (po-rxf) — null when the user
+// didn't grant `user:email`, has no verified address, or the lookup failed. It is stored on
+// the row so GitHub signups are contactable like email signups are; a null simply leaves the
+// column as-is and the next sign-in tries again. `nowIso` stamps email_verified_at (GitHub
+// already verified the address, so it counts as verified here too).
+export async function upsertUser(
+  db: D1Database,
+  githubId: number,
+  login: string,
+  email?: string | null,
+  nowIso?: string
+): Promise<UpsertResult> {
   const find = () =>
     db.prepare('SELECT id FROM users WHERE github_id = ?').bind(githubId).first<{ id: string }>()
   const existing = await find()
+  // users.email is UNIQUE. If some OTHER row already holds this address (an email-provider
+  // signup that later came back via GitHub), writing it would violate the index and break
+  // sign-in. Account linking is a separate decision (po-5ai) — until then, drop the email and
+  // let the user sign in normally.
+  const claimable = email ? await emailIsFree(db, email, existing?.id) : false
+  const verifiedAt = nowIso ?? new Date().toISOString()
+
   if (existing) {
     await db.prepare('UPDATE users SET login = ? WHERE id = ?').bind(login, existing.id).run()
+    if (claimable) {
+      // Guarded by its own statement so a lost race on the unique index can't fail sign-in.
+      await tryRun(() =>
+        db
+          .prepare(
+            "UPDATE users SET email = ?, auth_provider = COALESCE(auth_provider, 'github'), email_verified_at = ? WHERE id = ?"
+          )
+          .bind(email, verifiedAt, existing.id)
+          .run()
+      )
+    }
     return { id: existing.id, isNew: false }
   }
   // Atomic under concurrent OAuth callbacks for the same github_id: the loser's INSERT
   // updates the login instead of failing the unique constraint. Re-read for the winner's id.
   const id = crypto.randomUUID()
-  await db
-    .prepare(
-      'INSERT INTO users (id, github_id, login) VALUES (?, ?, ?) ON CONFLICT(github_id) DO UPDATE SET login = excluded.login'
-    )
-    .bind(id, githubId, login)
-    .run()
+  const inserted = await tryRun(() =>
+    db
+      .prepare(
+        "INSERT INTO users (id, github_id, login, email, auth_provider, email_verified_at) VALUES (?, ?, ?, ?, 'github', ?) ON CONFLICT(github_id) DO UPDATE SET login = excluded.login"
+      )
+      .bind(id, githubId, login, claimable ? email : null, claimable ? verifiedAt : null)
+      .run()
+  )
+  if (!inserted) {
+    // Only the email index can fail here (github_id conflicts are absorbed above), and only
+    // if another row claimed the address between the check and the insert. Retry emailless.
+    await db
+      .prepare(
+        "INSERT INTO users (id, github_id, login, email, auth_provider, email_verified_at) VALUES (?, ?, ?, ?, 'github', ?) ON CONFLICT(github_id) DO UPDATE SET login = excluded.login"
+      )
+      .bind(id, githubId, login, null, null)
+      .run()
+  }
   return { id: (await find())?.id ?? id, isNew: true }
+}
+
+// True when no OTHER user row holds this address (self is fine — it's a refresh).
+async function emailIsFree(db: D1Database, email: string, selfId?: string): Promise<boolean> {
+  const owner = await db
+    .prepare('SELECT id FROM users WHERE email = ?')
+    .bind(email)
+    .first<{ id: string }>()
+  return !owner || owner.id === selfId
+}
+
+// Run a statement, reporting failure instead of throwing. Used only where the failure mode is
+// a unique-index race on users.email and the correct response is "sign in anyway".
+async function tryRun(run: () => Promise<unknown>): Promise<boolean> {
+  try {
+    await run()
+    return true
+  } catch {
+    return false
+  }
 }
 
 export interface EmailUserProfile {

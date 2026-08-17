@@ -23,6 +23,7 @@ import {
   verifyEmailLogin,
   sendMagicLinkEmail,
 } from './email'
+import { fetchGitHubUser, fetchVerifiedEmail } from './github'
 import { gateEmailSend } from './ratelimit'
 import { captureServerEvent } from './analytics'
 import { b64url, timingSafeEqual } from './util'
@@ -226,7 +227,10 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
     const authorize = new URL('https://github.com/login/oauth/authorize')
     authorize.searchParams.set('client_id', env.GITHUB_CLIENT_ID)
     authorize.searchParams.set('redirect_uri', `${env.BASE_URL}/auth/callback`)
-    authorize.searchParams.set('scope', 'read:user')
+    // `user:email` (po-rxf) is what makes a GitHub signup contactable: without it the
+    // callback can only see a PUBLIC profile email, which most accounts don't have — 6 of 8
+    // production users had a NULL email. Read-only, and GitHub shows it on the consent screen.
+    authorize.searchParams.set('scope', 'read:user user:email')
     authorize.searchParams.set('state', state)
     const h = new Headers()
     h.append('set-cookie', cookie(STATE_COOKIE, state, 600))
@@ -258,16 +262,30 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
     const accessToken = ((await tokenRes.json()) as { access_token?: string }).access_token
     if (!accessToken) return html(landingPage(), 502)
     // Identify the user.
-    const ghRes = await fetch('https://api.github.com/user', {
-      headers: { authorization: `Bearer ${accessToken}`, 'user-agent': 'portaljs-arc', accept: 'application/vnd.github+json' },
-    })
-    const gh = (await ghRes.json()) as { id?: number; login?: string }
-    if (!gh.id || !gh.login) return html(landingPage(), 502)
+    const gh = await fetchGitHubUser(accessToken)
+    if (!gh) return html(landingPage(), 502)
+    // Primary VERIFIED email (po-rxf). Best-effort: null when the user withheld `user:email`
+    // or has no usable verified address — sign-in proceeds, the column just stays NULL and
+    // the next login retries.
+    const email = await fetchVerifiedEmail(accessToken)
 
-    const { id: uid, isNew } = await upsertUser(env.DB, gh.id, gh.login)
+    const { id: uid, isNew } = await upsertUser(
+      env.DB,
+      gh.id,
+      gh.login,
+      email,
+      new Date(now() * 1000).toISOString()
+    )
     // Signup completion (po-zbx). No client anon id crosses the OAuth redirect, so attribute
     // by the new user id; has_org is always false (GitHub sign-in captures no org).
-    trackSignup(uid, { auth_provider: 'github', has_org: false, is_new_user: isNew, arc_user_id: uid })
+    // has_email surfaces the capture rate this bead exists to fix.
+    trackSignup(uid, {
+      auth_provider: 'github',
+      has_org: false,
+      is_new_user: isNew,
+      arc_user_id: uid,
+      has_email: !!email,
+    })
     const session = await signSession(uid, env.SESSION_SECRET, now())
     const h = new Headers()
     h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))

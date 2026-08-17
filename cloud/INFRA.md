@@ -62,7 +62,12 @@ complete the live sign-in. Create one (Settings → Developer settings → OAuth
 - Hand me the **client ID** — I set it as the `GITHUB_CLIENT_ID` var and the
   **client secret** + a `SESSION_SECRET` (auto-generated) via `wrangler secret put`
   (`SESSION_SECRET` is already set on staging).
-- Scope needed: `read:user` (just to identify the GitHub account).
+- Scopes needed: `read:user user:email` — identify the account **and** read its primary
+  verified email. Scopes are requested per authorize-request (in `cloud/auth/src/index.ts`),
+  not configured on the OAuth app, so no app-side change is required. `user:email` is what
+  makes GitHub signups contactable: without it the callback sees only a *public* profile
+  email, which most accounts don't set — that left 6 of 8 production users with a NULL
+  `users.email` (po-rxf). Existing users self-heal on their next sign-in.
 
 ## Config + secrets
 Naming matches what the workers actually read (`cloud/{auth,api,worker}/src`):

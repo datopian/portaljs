@@ -148,7 +148,12 @@ of the previous deployment.
 - **Local test:** `wrangler dev`; POST a sample `out/`; assert R2 contents + D1 row + URL.
 
 ### 3. Auth — `arc.portaljs.com` (`cloud/auth/`) — bead `po-5vk`
-- GitHub OAuth → create `users` row; UI to generate/revoke API tokens.
+- GitHub OAuth (`read:user user:email`) → create `users` row **with the account's primary
+  verified email**; UI to generate/revoke API tokens. The email matters downstream (contact,
+  enhanced conversions, domain-based ICP) and is stored the same way for both providers, so
+  `users.email` is populated regardless of how someone signed in (po-rxf). It stays NULL only
+  when a user withholds the scope or has no verified, non-`noreply` address; the next sign-in
+  retries. `cloud/scripts/audit-user-emails.mjs` reports the remaining gap.
 - Client login: folded into the `/portaljs-deploy` skill (device-code flow, run inline on first
   deploy) → write `~/.portaljs/credentials` (`{ token, api }`, where `api` defaults to
   `https://api.arc.portaljs.com`). `PORTALJS_TOKEN` env overrides (CI). Paste-token via the

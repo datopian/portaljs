@@ -22,7 +22,8 @@ Workers routes need a matching proxied DNS record. Add:
 Create a NEW OAuth app (separate from staging):
 - Homepage: `https://arc.portaljs.com`
 - Callback: `https://arc.portaljs.com/auth/callback`
-- Scope used: `read:user`
+- Scopes used: `read:user user:email` (requested by the worker at authorize time — nothing to
+  configure on the app itself; `user:email` captures the primary verified address, po-rxf)
 
 Put its **client ID** into `cloud/auth/wrangler.toml` → `[env.production.vars] GITHUB_CLIENT_ID`
 (replacing `REPLACE_WITH_PROD_OAUTH_CLIENT_ID`). Client ID is not a secret.
