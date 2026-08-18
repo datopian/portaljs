@@ -63,7 +63,7 @@ const steps = [
 
 export default function Partners() {
   const { resolvedTheme } = useTheme();
-  const calendarLink = "https://calendar.app.google/sn2PU7ZvzjCPo1ok6";
+  const calendarLink = "/book-a-demo?source=partners";
 
   return (
     <Layout isHomePage={true}>

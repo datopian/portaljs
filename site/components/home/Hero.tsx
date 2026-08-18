@@ -90,7 +90,7 @@ export default function Hero() {
                   Get started free
                 </ButtonLink>
                 <ButtonLink
-                  href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
+                  href="/book-a-demo?source=home_hero"
                   title="Book a demo"
                   style="secondary"
                   className="text-sm"

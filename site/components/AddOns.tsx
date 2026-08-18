@@ -64,7 +64,7 @@ const addOns = [
     subtitle: 'Make your datasets citable and FAIR.',
     description:
       'DOI/DataCite minting, ORCID integration, citation metadata, and data-access requests — everything a research institution needs to publish citable, FAIR datasets.',
-    href: 'https://calendar.app.google/sn2PU7ZvzjCPo1ok6',
+    href: '/book-a-demo?source=addons_research_pack',
     icon: AcademicCapIcon,
     iconForeground: 'text-rose-500',
     iconBackground: 'bg-rose-50 dark:bg-rose-900/20',
@@ -79,7 +79,7 @@ const addOns = [
         Need a specific feature or tailored support?{' '}
         <a
           className="underline"
-          href="https://calendar.app.google/sn2PU7ZvzjCPo1ok6"
+          href="/book-a-demo?source=addons_custom_request"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -88,7 +88,7 @@ const addOns = [
         to describe your requirements.
       </p>
     ),
-    href: 'https://calendar.app.google/sn2PU7ZvzjCPo1ok6',
+    href: '/book-a-demo?source=addons_custom_request',
     icon: ChatBubbleBottomCenterIcon,
     iconForeground: 'text-sky-500',
     iconBackground: 'bg-sky-50 dark:bg-sky-900/20',

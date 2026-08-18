@@ -26,7 +26,7 @@ export const questions = [
         question: 'How do I get started with PortalJS Cloud?',
         answer: `You can get started in **minutes** with a **free trial**, or schedule a demo to see how PortalJS Cloud can fit your needs.
 
- 🔥 [Start Free Trial](http://portaljs.com/pricing) | [Schedule a Demo](https://calendar.app.google/sn2PU7ZvzjCPo1ok6)`,
+ 🔥 [Start Free Trial](http://portaljs.com/pricing) | [Schedule a Demo](/book-a-demo?source=faq)`,
       },
       {
         question:
@@ -203,7 +203,7 @@ See what's shipping next on our [public roadmap](https://github.com/datopian/por
       },
       {
         question: 'Can we migrate from Socrata / OpenDataSoft / ArcGIS Hub?',
-        answer: `Yes. We provide full migration support and have done large-scale migrations before (including NASA and the City of Santa Monica). [See our case studies](https://www.portaljs.com/case-studies) or [talk to us](https://calendar.app.google/sn2PU7ZvzjCPo1ok6).`,
+        answer: `Yes. We provide full migration support and have done large-scale migrations before (including NASA and the City of Santa Monica). [See our case studies](https://www.portaljs.com/case-studies) or [talk to us](/book-a-demo?source=faq).`,
       },
       {
         question: 'Do you respond to RFPs and tenders?',
@@ -232,7 +232,7 @@ See more details on our [pricing page](https://portaljs.com/pricing).`,
       },
       {
         question: 'Are there any hidden fees?',
-        answer: `No. Our pricing is transparent, and you only pay for the plan that fits your needs. If you need add-ons or additional work, you can [contact us](https://calendar.app.google/sn2PU7ZvzjCPo1ok6) and we'll provide information.`,
+        answer: `No. Our pricing is transparent, and you only pay for the plan that fits your needs. If you need add-ons or additional work, you can [contact us](/book-a-demo?source=faq) and we'll provide information.`,
       },
       {
         question: 'Can I upgrade or downgrade my plan?',

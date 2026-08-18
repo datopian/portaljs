@@ -11,7 +11,7 @@ import { LiveExamples } from '@/components/git/LiveExamples'
 import { GitLFS } from '@/components/git/GitLFS'
 
 export default function Git() {
-  const calendarLink = "https://calendar.app.google/sn2PU7ZvzjCPo1ok6";
+  const calendarLink = "/book-a-demo?source=git";
   return (
     <Layout isHomePage={true}>
       <div className="flex justify-center">

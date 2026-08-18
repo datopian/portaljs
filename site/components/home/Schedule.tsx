@@ -10,7 +10,7 @@ interface ScheduleProps {
 }
 
 export default function Schedule({
-  calendar = "https://calendar.app.google/sn2PU7ZvzjCPo1ok6",
+  calendar = "/book-a-demo?source=schedule_cta",
   title = "Ready to Launch Your Data Portal?",
   subtitle = "Join hundreds of organizations worldwide that trust PortalJS Cloud for their data publishing needs.",
   primaryLabel = "Schedule a free call",

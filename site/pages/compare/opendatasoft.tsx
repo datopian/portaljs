@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 export default function PortalJSvsOpenDataSoft() {
   // Calendar link for all CTAs
-  const calendarLink = "https://calendar.app.google/sn2PU7ZvzjCPo1ok6";
+  const calendarLink = "/book-a-demo?source=compare_opendatasoft";
 
   const testimonials = [
     {

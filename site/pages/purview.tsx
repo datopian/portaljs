@@ -125,7 +125,7 @@ export default function Purview() {
               </p>
               <div className="mt-[30px] flex flex-wrap justify-center gap-3.5">
                 <a
-                  href="https://calendar.app.google/iQkon85iKURfdBtX7"
+                  href="/book-a-demo?to=partner&source=purview_cta"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
@@ -133,7 +133,7 @@ export default function Purview() {
                   Schedule a free call
                 </a>
                 <a
-                  href="https://calendar.app.google/iQkon85iKURfdBtX7"
+                  href="/book-a-demo?to=partner&source=purview_cta"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-[10px] border border-white/20 bg-white/[0.06] px-[18px] py-2.5 text-[14.5px] font-semibold text-white transition-all duration-150 hover:-translate-y-px hover:bg-white/[0.12]"

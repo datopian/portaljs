@@ -115,7 +115,7 @@ export const tiers: any[] = [
     toolTip:
       'Built for the public sector: compliance, procurement and data-residency requirements',
     id: 'tier-government',
-    href: 'https://calendar.app.google/sn2PU7ZvzjCPo1ok6',
+    href: '/book-a-demo?source=pricing_government',
     cta: 'Talk to us',
     kind: 'annual-only',
     featured: false,
@@ -155,7 +155,7 @@ export const tiers: any[] = [
     toolTip:
       'Custom solutions for multi-portal and national programs with complex requirements',
     id: 'tier-enterprise',
-    href: 'https://calendar.app.google/sn2PU7ZvzjCPo1ok6',
+    href: '/book-a-demo?source=pricing_enterprise',
     cta: "Let's talk",
     kind: 'contact',
     featured: false,

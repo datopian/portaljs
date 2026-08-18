@@ -56,6 +56,6 @@ export const homeFaqQuestions = [
   {
     question: 'How do I get started with PortalJS Cloud?',
     answer: `You can get started in minutes with a free trial, or schedule a demo to see how PortalJS Cloud can fit your needs.
-🔥   [Start Free Trial](https://portaljs.com/pricing) | [Schedule a Demo](https://calendar.app.google/sn2PU7ZvzjCPo1ok6)`,
+🔥   [Start Free Trial](https://portaljs.com/pricing) | [Schedule a Demo](/book-a-demo?source=home_faq)`,
   },
 ]

@@ -109,6 +109,6 @@ Curious what this would look like for your team? Start a pilot in minutes — no
 
 If you’d like to explore a PortalJS pilot on your CKAN instance — government, research institution, or enterprise — visit our [site](https://www.portaljs.com) and get started in minutes!
 
-📩 [Talk to us](https://calendar.app.google/sn2PU7ZvzjCPo1ok6) to discuss your use case.
+📩 [Talk to us](https://www.portaljs.com/book-a-demo?source=blog_cta) to discuss your use case.
 
 ---
