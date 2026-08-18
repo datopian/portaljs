@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { upsertCrmSignup } from '../src/crm'
 
-// upsertCrmSignup pipes a completed /build signup into Twenty as a `person` with
-// source=PORTALJS_BUILD (po-jdr). It must: respect the CRM_ENABLED switch at the call site,
-// look up before writing (idempotent), match on email when present and on login when not, and
-// NEVER throw — a CRM failure must not be able to fail sign-in.
-describe('upsertCrmSignup (po-jdr)', () => {
+// upsertCrmSignup pipes a completed signup into Twenty as a `person` tagged with the caller's
+// `source` (po-jdr /build, po-k6n phase 2 CLI). It must: respect the CRM_ENABLED switch at the
+// call site, look up before writing (idempotent), match on email when present and on
+// login+source when not, and NEVER throw — a CRM failure must not be able to fail sign-in.
+describe('upsertCrmSignup (po-jdr, po-k6n)', () => {
   const realFetch = globalThis.fetch
   let calls: Array<{ url: string; init: any }>
 
@@ -21,19 +21,22 @@ describe('upsertCrmSignup (po-jdr)', () => {
   })
 
   it('no-ops (no HTTP call) when CRM_ENABLED is unset — the staging default', async () => {
-    await upsertCrmSignup({ TWENTY_API_TOKEN: 'tok' }, { email: 'a@example.com' })
+    await upsertCrmSignup({ TWENTY_API_TOKEN: 'tok' }, { email: 'a@example.com', source: 'PORTALJS_BUILD' })
     expect(calls).toHaveLength(0)
   })
 
   it('no-ops when CRM_ENABLED is anything other than the literal "true"', async () => {
-    await upsertCrmSignup({ TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'yes' }, { email: 'a@example.com' })
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'yes' },
+      { email: 'a@example.com', source: 'PORTALJS_BUILD' }
+    )
     expect(calls).toHaveLength(0)
   })
 
   it('logs but never throws when enabled with no token configured', async () => {
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     await expect(
-      upsertCrmSignup({ CRM_ENABLED: 'true' }, { email: 'a@example.com' })
+      upsertCrmSignup({ CRM_ENABLED: 'true' }, { email: 'a@example.com', source: 'PORTALJS_BUILD' })
     ).resolves.toBeUndefined()
     expect(calls).toHaveLength(0)
     expect(errSpy).toHaveBeenCalled()
@@ -41,7 +44,10 @@ describe('upsertCrmSignup (po-jdr)', () => {
   })
 
   it('looks up by email, then POSTs a create when no match is found', async () => {
-    await upsertCrmSignup({ TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' }, { email: 'new@example.com' })
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { email: 'new@example.com', source: 'PORTALJS_BUILD' }
+    )
     expect(calls).toHaveLength(2)
     expect(calls[0].url).toContain('/rest/people?filter=')
     expect(decodeURIComponent(calls[0].url)).toContain('emails.primaryEmail[eq]:"new@example.com"')
@@ -60,14 +66,20 @@ describe('upsertCrmSignup (po-jdr)', () => {
       }
       return { ok: true } as any
     }) as any
-    await upsertCrmSignup({ TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' }, { email: 'existing@example.com' })
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { email: 'existing@example.com', source: 'PORTALJS_BUILD' }
+    )
     expect(calls).toHaveLength(2)
     expect(calls[1].url).toBe('https://crm.datopian.com/rest/people/person-1')
     expect(calls[1].init.method).toBe('PATCH')
   })
 
   it('matches on GitHub login + source when email is absent', async () => {
-    await upsertCrmSignup({ TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' }, { login: 'octocat' })
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { login: 'octocat', source: 'PORTALJS_BUILD' }
+    )
     expect(decodeURIComponent(calls[0].url)).toContain('name.firstName[eq]:"octocat"')
     expect(decodeURIComponent(calls[0].url)).toContain('source[eq]:"PORTALJS_BUILD"')
     const body = JSON.parse(calls[1].init.body)
@@ -75,9 +87,25 @@ describe('upsertCrmSignup (po-jdr)', () => {
     expect(body.source).toBe('PORTALJS_BUILD')
   })
 
+  // po-k6n: CLI device-flow sign-in shares the same GitHub OAuth callback as /build, so the
+  // same login can arrive with either source. The fallback match MUST key on source too, or a
+  // CLI sign-in from a contactless GitHub account would overwrite (or be shadowed by) a
+  // /build row for the same login instead of getting its own record.
+  it('keys the no-email fallback match on source, so /build and CLI rows for the same login stay separate', async () => {
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { login: 'octocat', source: 'PORTALJS_CLI' }
+    )
+    expect(decodeURIComponent(calls[0].url)).toContain('name.firstName[eq]:"octocat"')
+    expect(decodeURIComponent(calls[0].url)).toContain('source[eq]:"PORTALJS_CLI"')
+    expect(decodeURIComponent(calls[0].url)).not.toContain('PORTALJS_BUILD')
+    const body = JSON.parse(calls[1].init.body)
+    expect(body.source).toBe('PORTALJS_CLI')
+  })
+
   it('logs and skips when both email and login are absent', async () => {
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    await upsertCrmSignup({ TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' }, {})
+    await upsertCrmSignup({ TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' }, { source: 'PORTALJS_BUILD' })
     expect(calls).toHaveLength(0)
     expect(errSpy).toHaveBeenCalled()
     errSpy.mockRestore()
@@ -89,7 +117,10 @@ describe('upsertCrmSignup (po-jdr)', () => {
     }) as any
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     await expect(
-      upsertCrmSignup({ TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' }, { email: 'a@example.com' })
+      upsertCrmSignup(
+        { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+        { email: 'a@example.com', source: 'PORTALJS_BUILD' }
+      )
     ).resolves.toBeUndefined()
     errSpy.mockRestore()
   })
@@ -101,7 +132,10 @@ describe('upsertCrmSignup (po-jdr)', () => {
     }) as any
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     await expect(
-      upsertCrmSignup({ TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' }, { email: 'a@example.com' })
+      upsertCrmSignup(
+        { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+        { email: 'a@example.com', source: 'PORTALJS_BUILD' }
+      )
     ).resolves.toBeUndefined()
     expect(errSpy).toHaveBeenCalled()
     errSpy.mockRestore()

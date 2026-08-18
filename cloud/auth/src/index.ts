@@ -293,14 +293,20 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
       arc_user_id: uid,
       has_email: !!email,
     })
-    // CRM provenance pipe (po-jdr) — /build surface only. Fire-and-forget like trackSignup:
+    // This callback is shared by two surfaces (po-k6n): a direct GitHub sign-in from the Arc
+    // landing page (/build), and the CLI device-flow activation bounce (/activate redirects
+    // here via /auth/login?return=/activate... when the user isn't yet signed in). The return
+    // cookie set at /auth/login is what tells them apart — read it BEFORE the CRM pipe fires so
+    // the write carries the right source instead of always PORTALJS_BUILD.
+    const dest = safeReturnPath(getCookie(request, RETURN_COOKIE))
+    const source = dest.startsWith('/activate') ? 'PORTALJS_CLI' : 'PORTALJS_BUILD'
+    // CRM provenance pipe (po-jdr /build, po-k6n CLI). Fire-and-forget like trackSignup:
     // never blocks the redirect, never fails sign-in on a CRM hiccup.
-    ctx.waitUntil(upsertCrmSignup(env, { email, login: gh.login }))
+    ctx.waitUntil(upsertCrmSignup(env, { email, login: gh.login, source }))
     const session = await signSession(uid, env.SESSION_SECRET, now())
     const h = new Headers()
     h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))
     h.append('set-cookie', cookie(STATE_COOKIE, '', 0)) // clear state
-    const dest = safeReturnPath(getCookie(request, RETURN_COOKIE))
     h.append('set-cookie', cookie(RETURN_COOKIE, '', 0)) // clear return
     return redirect(dest, h)
   }
@@ -406,7 +412,7 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
       arc_user_id: uid,
     })
     // CRM provenance pipe (po-jdr) — /build surface only. Fire-and-forget like trackSignup.
-    ctx.waitUntil(upsertCrmSignup(env, { email: result.email }))
+    ctx.waitUntil(upsertCrmSignup(env, { email: result.email, source: 'PORTALJS_BUILD' }))
     const session = await signSession(uid, env.SESSION_SECRET, now())
     const h = new Headers()
     h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))

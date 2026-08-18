@@ -223,6 +223,41 @@ describe('GitHub OAuth route wiring (po-rxf)', () => {
     expect(db.users[0].email_verified_at).not.toBeNull()
   })
 
+  // po-k6n: CLI device-flow activation (/activate) bounces through this SAME callback when the
+  // user isn't signed in yet (see index.ts /activate GET → /auth/login?return=/activate...).
+  // The CRM write must tag those signups PORTALJS_CLI, not PORTALJS_BUILD, even though the
+  // code path is otherwise identical to a direct /build sign-in.
+  it('tags the CRM write PORTALJS_CLI when the callback is reached via the CLI /activate bounce', async () => {
+    const db = new FakeD1()
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const login = await worker.fetch(
+      new Request(`${BASE}/auth/login?return=${encodeURIComponent('/activate?code=ABCD-1234')}`),
+      envFor(db),
+      ctx
+    )
+    const state = new URL(login.headers.get('location') as string).searchParams.get('state') as string
+    const returnCookie = (login.headers.get('set-cookie') ?? '').match(/arc_return=([^;]+)/)?.[1] ?? ''
+    stubFetch({
+      'oauth/access_token': () => jsonRes({ access_token: 'gho_test' }),
+      '/user/emails': () => jsonRes({ message: 'Requires authentication' }, 403),
+      '/user': () => jsonRes({ id: 42, login: 'octocat' }),
+    })
+    const res = await worker.fetch(
+      new Request(`${BASE}/auth/callback?code=abc&state=${state}`, {
+        headers: { cookie: `arc_oauth=${encodeURIComponent(state)}; arc_return=${returnCookie}` },
+      }),
+      envFor(db),
+      ctx
+    )
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe('/activate?code=ABCD-1234')
+    const crmLog = logSpy.mock.calls.find((c) => String(c[0]).includes('crm write skipped'))
+    expect(crmLog).toBeDefined()
+    expect(String(crmLog?.[1])).toContain('PORTALJS_CLI')
+    expect(String(crmLog?.[1])).not.toContain('PORTALJS_BUILD')
+    logSpy.mockRestore()
+  })
+
   it('still signs the user in when the email lookup is refused (403)', async () => {
     const db = new FakeD1()
     const login = await worker.fetch(new Request(`${BASE}/auth/login`), envFor(db), ctx)
