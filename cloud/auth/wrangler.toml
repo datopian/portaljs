@@ -19,6 +19,10 @@ EMAIL_FROM = "PortalJS Arc <login@arc.portaljs.com>"
 # host. Must match the site's NEXT_PUBLIC_POSTHOG_KEY / NEXT_PUBLIC_POSTHOG_HOST.
 POSTHOG_KEY = "phc_P3zmWCCwtBk67JTTDVRHNRH0VMy8dZ10sn1pIfKyGTx"
 POSTHOG_HOST = "https://eu.i.posthog.com"
+# CRM provenance pipe (po-jdr). CRM_ENABLED is the write switch, checked at the call site in
+# crm.ts — deliberately absent here (off) because staging shares the SAME Twenty workspace as
+# production; only env.production below turns writes on. The full match/build path still runs
+# on staging, it just logs what it would have sent instead of sending it.
 
 [[d1_databases]]
 binding = "DB"
@@ -40,6 +44,8 @@ GITHUB_CLIENT_ID = "Ov23liIIMttPpNtaa9o7"
 EMAIL_FROM = "PortalJS Arc <login@arc.portaljs.com>"
 POSTHOG_KEY = "phc_P3zmWCCwtBk67JTTDVRHNRH0VMy8dZ10sn1pIfKyGTx"
 POSTHOG_HOST = "https://eu.i.posthog.com"
+# CRM writes are live only in production (see the staging comment above).
+CRM_ENABLED = "true"
 
 [[env.production.d1_databases]]
 binding = "DB"

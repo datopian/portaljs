@@ -26,6 +26,7 @@ import {
 import { fetchGitHubUser, fetchVerifiedEmail } from './github'
 import { gateEmailSend } from './ratelimit'
 import { captureServerEvent } from './analytics'
+import { upsertCrmSignup } from './crm'
 import { b64url, timingSafeEqual } from './util'
 
 export interface Env {
@@ -43,6 +44,12 @@ export interface Env {
   // when the key is unset, so dev/test deploys stay silent.
   POSTHOG_KEY?: string
   POSTHOG_HOST?: string
+  // /build signup → Twenty CRM provenance pipe (po-jdr). TWENTY_API_TOKEN is a secret
+  // (wrangler secret put), already provisioned on both envs. CRM_ENABLED is the write switch —
+  // "true" on production, unset/anything else on staging (see crm.ts for why the token alone
+  // isn't the boundary: both envs share one Twenty workspace).
+  TWENTY_API_TOKEN?: string
+  CRM_ENABLED?: string
 }
 
 const SESSION_COOKIE = 'arc_session'
@@ -286,6 +293,9 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
       arc_user_id: uid,
       has_email: !!email,
     })
+    // CRM provenance pipe (po-jdr) — /build surface only. Fire-and-forget like trackSignup:
+    // never blocks the redirect, never fails sign-in on a CRM hiccup.
+    ctx.waitUntil(upsertCrmSignup(env, { email, login: gh.login }))
     const session = await signSession(uid, env.SESSION_SECRET, now())
     const h = new Headers()
     h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))
@@ -395,6 +405,8 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
       from_build: !!result.distinctId,
       arc_user_id: uid,
     })
+    // CRM provenance pipe (po-jdr) — /build surface only. Fire-and-forget like trackSignup.
+    ctx.waitUntil(upsertCrmSignup(env, { email: result.email }))
     const session = await signSession(uid, env.SESSION_SECRET, now())
     const h = new Headers()
     h.append('set-cookie', cookie(SESSION_COOKIE, session, SESSION_MAX_AGE))
