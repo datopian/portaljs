@@ -6,6 +6,7 @@ import {
   createEmailLogin,
   peekEmailLogin,
   verifyEmailLogin,
+  generateEmailToken,
   EMAIL_TOKEN_TTL,
 } from '../src/email'
 import { upsertEmailUser } from '../src/tokens'
@@ -128,6 +129,21 @@ describe('email address helpers', () => {
     expect(isValidEmail('a@b')).toBe(false)
     expect(isValidEmail('a @b.co')).toBe(false)
     expect(isValidEmail('')).toBe(false)
+  })
+})
+
+// po-r80: a security gateway / QP transcoder somewhere in mail delivery can mistake a raw
+// '=' followed by two hex digits ("=2B") for a quoted-printable escape and mangle the link
+// ("?token=2Bxyz…" -> "?token+xyz…"). The magic link's only '=' is the fixed "?token="
+// separator, so the fix guarantees the character right after it is never a hex digit —
+// proven here across many random tokens, not just absent from one sample.
+describe('generateEmailToken (QP-escape-collision safety, po-r80)', () => {
+  it('never produces a token whose start forms a "=<hex><hex>" QP-escape-ambiguous link', () => {
+    for (let i = 0; i < 1000; i++) {
+      const token = generateEmailToken()
+      const link = `https://arc.portaljs.com/email/verify?token=${token}`
+      expect(link).not.toMatch(/=[0-9a-fA-F]{2}/)
+    }
   })
 })
 
