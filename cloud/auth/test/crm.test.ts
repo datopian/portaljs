@@ -75,6 +75,26 @@ describe('upsertCrmSignup (po-jdr, po-k6n)', () => {
     expect(calls[1].init.method).toBe('PATCH')
   })
 
+  // po-96l: source is first-touch attribution — a later signup on a different surface must
+  // not rewrite an existing row's source. Only POST (create) may carry source.
+  it('never includes source in the PATCH payload, so a second surface cannot overwrite first-touch attribution (po-96l)', async () => {
+    globalThis.fetch = vi.fn(async (url: any, init: any) => {
+      calls.push({ url: String(url), init })
+      if (String(url).includes('/people?filter=')) {
+        return { ok: true, json: async () => ({ data: { people: [{ id: 'person-1' }] } }) } as any
+      }
+      return { ok: true } as any
+    }) as any
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { email: 'existing@example.com', source: 'PORTALJS_CLI' }
+    )
+    const body = JSON.parse(calls[1].init.body)
+    expect(calls[1].init.method).toBe('PATCH')
+    expect(body.source).toBeUndefined()
+    expect('source' in body).toBe(false)
+  })
+
   it('matches on GitHub login + source when email is absent', async () => {
     await upsertCrmSignup(
       { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
