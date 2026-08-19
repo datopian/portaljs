@@ -112,13 +112,16 @@ export async function upsertCrmSignup(env: CrmEnv, signup: CrmSignup): Promise<v
   // on, so it keys off login exactly as before. When email is present but no full name was
   // captured, omit name entirely rather than writing an empty one over a human-edited value.
   const name = fullName ? splitFullName(fullName) : !email ? { firstName: login, lastName: '' } : undefined
-  const payload: Record<string, unknown> = { source: signup.source }
+  // source is first-touch attribution: how we acquired this person, set once at creation and
+  // never revised by a later signup on a different surface (po-96l). It is added to the
+  // payload below only for the POST (create) branch, never the PATCH (update) branch.
+  const payload: Record<string, unknown> = {}
   if (email) payload.emails = { primaryEmail: email }
   if (name) payload.name = name
   if (org) payload.organization = org
 
   if (env.CRM_ENABLED !== 'true') {
-    console.log('crm write skipped (CRM_ENABLED off)', JSON.stringify({ filter, payload }))
+    console.log('crm write skipped (CRM_ENABLED off)', JSON.stringify({ filter, payload: { ...payload, source: signup.source } }))
     return
   }
   const token = env.TWENTY_API_TOKEN
@@ -131,6 +134,7 @@ export async function upsertCrmSignup(env: CrmEnv, signup: CrmSignup): Promise<v
     const headers = crmHeaders(token)
     const personId = await findPersonId(headers, filter)
     const url = personId ? `${CRM_BASE}/people/${personId}` : `${CRM_BASE}/people`
+    if (!personId) payload.source = signup.source
     const res = await fetch(url, { method: personId ? 'PATCH' : 'POST', headers, body: JSON.stringify(payload) })
     if (!res.ok) {
       console.error('crm write failed', res.status, await res.text().catch(() => '<no body>'))
