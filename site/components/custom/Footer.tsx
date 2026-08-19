@@ -107,7 +107,7 @@ export default function Footer() {
             </div>
 
             <p className="text-sm leading-6 opacity-75 max-w-md xl:max-w-none">
-              PortalJS Cloud is the simplest way of getting started with Open
+              PortalJS Arc is the simplest way of getting started with Open
               Data for governments, non-profits, academics and companies of all
               sizes.
             </p>

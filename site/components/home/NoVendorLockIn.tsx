@@ -70,7 +70,7 @@ export default function NoVendorLockIn() {
           <div className="">
             <H2 className=" mb-4">No Vendor Lock-In</H2>
             <H3 className=" mb-4 max-w-2xl">
-              PortalJS Cloud is built on open standards and open-source
+              PortalJS Arc is built on open standards and open-source
               technology. Your data remains yours, and you can export it anytime
               or even self-host if your needs change.
             </H3>{' '}

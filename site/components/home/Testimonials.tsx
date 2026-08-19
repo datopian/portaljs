@@ -25,7 +25,7 @@ export const Testimonials = () => {
           Trusted by Data Publishers Worldwide
         </H2>
         <H3 className="opacity-75 text-center">
-          Real feedback from organizations using PortalJS Cloud
+          Real feedback from organizations using PortalJS
         </H3>
         <div className="mt-16 grid grid-cols-1 gap-y-12 sm:gap-x-12 lg:grid-cols-3 lg:gap-x-6">
           {items.map((t) => (

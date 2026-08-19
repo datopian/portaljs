@@ -12,7 +12,7 @@ export default function LaunchPortal() {
               Launch your data portal in minutes
             </H2>
             <H3 className=" mb-4 max-w-2xl">
-              Meet <b>PortalJS Cloud</b> — <b>the only solution on the market</b>{' '} 
+              Meet <b>PortalJS Arc</b> — <b>the only solution on the market</b>{' '}
               that combines full public-sector compliance, metadata backend compatibility,
               AI-powered features, and instant deployment — all in a fully
               managed package.
@@ -20,7 +20,7 @@ export default function LaunchPortal() {
             <div className="mt-6">
               <ButtonLink
                 href="https://cloud.portaljs.com/auth/signup"
-                title="Deploy your data portal with PortalJS Cloud"
+                title="Deploy your data portal with PortalJS Arc"
                 className="text-sm"
                 trackConversion={true}
               >

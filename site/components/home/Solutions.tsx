@@ -48,7 +48,7 @@ const solutions = [
   },
   {
     title: 'Trusted by 100+ Institutions',
-    description: 'Governments, universities, and nonprofits rely on PortalJS Cloud to manage and share data effectively.',
+    description: 'Governments, universities, and nonprofits rely on PortalJS Arc to manage and share data effectively.',
     icon: 'connection',
     iconStyle: 'dark:-rotate-[4deg]',
     style: 'lg:rounded-bl-[2rem]',

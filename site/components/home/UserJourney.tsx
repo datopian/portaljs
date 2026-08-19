@@ -11,7 +11,7 @@ export default function UserJourney() {
     {
       id: 1,
       title: 'Set up your portal',
-      description: 'Create your account to get started with PortalJS Cloud.',
+      description: 'Create your account to get started with PortalJS Arc.',
       image: '/static/img/home/skeleton0.webp',
       icon: `/static/icons/${theme}/settings2.json`,
       class: "w-28 h-28"

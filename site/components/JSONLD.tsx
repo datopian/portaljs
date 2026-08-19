@@ -45,7 +45,7 @@ export default function JSONLD({
         type="BlogPosting"
         url={pageUrl}
         datePublished={meta.date}
-        author={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
+        author={meta.authors?.map(a => a.name) || "Datopian"}
         image={images}
       />
     );
@@ -57,7 +57,7 @@ export default function JSONLD({
         image={images}
         datePublished={meta.date}
         dateModified={meta.date}
-        author={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
+        author={meta.authors?.map(a => a.name) || "Datopian"}
         description={meta.description}
       />
     );
@@ -69,7 +69,7 @@ export default function JSONLD({
         description={meta.metadescription || meta.description}
         url={pageUrl}
         datePublished={meta.date}
-        author={meta.authors?.map(a => a.name) || "PortalJS Cloud"}
+        author={meta.authors?.map(a => a.name) || "Datopian"}
         image={meta.images}
         type="Article"
       />
