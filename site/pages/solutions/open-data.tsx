@@ -24,19 +24,19 @@ export default function OpenDataSolutionsPage() {
     <Layout isHomePage={true}>
       <Head>
         {generateNextSeo({
-          title: "Open Data Portal Solutions | PortalJS Cloud for Governments & Nonprofits",
-          description: "PortalJS Cloud is the managed open data portal solution for governments, nonprofits, and research institutions. Launch in minutes, zero infrastructure overhead.",
+          title: "Open Data Portal Solutions | PortalJS Arc for Governments & Nonprofits",
+          description: "PortalJS Arc is the managed open data portal solution for governments, nonprofits, and research institutions. Launch in minutes, zero infrastructure overhead.",
           canonical: "https://www.portaljs.com/solutions/open-data",
           openGraph: {
             url: 'https://www.portaljs.com/solutions/open-data',
-            title: 'Open Data Portal Solutions | PortalJS Cloud for Governments & Nonprofits',
-            description: 'PortalJS Cloud is the managed open data portal solution for governments, nonprofits, and research institutions. Launch in minutes, zero infrastructure overhead.',
+            title: 'Open Data Portal Solutions | PortalJS Arc for Governments & Nonprofits',
+            description: 'PortalJS Arc is the managed open data portal solution for governments, nonprofits, and research institutions. Launch in minutes, zero infrastructure overhead.',
             site_name: 'PortalJS',
             type: 'website',
             images: [
               {
                 url: 'https://www.portaljs.com/static/img/seo.webp',
-                alt: 'PortalJS Cloud — Open Data Solutions',
+                alt: 'PortalJS Arc — Open Data Solutions',
                 width: 1280,
                 height: 720,
                 type: 'image/webp',
