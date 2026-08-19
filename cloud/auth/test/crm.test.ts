@@ -103,6 +103,43 @@ describe('upsertCrmSignup (po-jdr, po-k6n)', () => {
     expect(body.source).toBe('PORTALJS_CLI')
   })
 
+  it('splits a captured full name into Twenty\'s composite name.firstName/lastName (po-hvd)', async () => {
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { email: 'anuar@example.com', fullName: 'Anuar Ustayev', source: 'PORTALJS_BUILD' }
+    )
+    const body = JSON.parse(calls[1].init.body)
+    expect(body.name).toEqual({ firstName: 'Anuar', lastName: 'Ustayev' })
+  })
+
+  it('gives a single-word full name an empty lastName instead of dropping it (po-hvd)', async () => {
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { email: 'cher@example.com', fullName: 'Cher', source: 'PORTALJS_BUILD' }
+    )
+    const body = JSON.parse(calls[1].init.body)
+    expect(body.name).toEqual({ firstName: 'Cher', lastName: '' })
+  })
+
+  it('carries org through to the plain `organization` field (po-hvd)', async () => {
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { email: 'anuar@example.com', org: 'Datopian', source: 'PORTALJS_BUILD' }
+    )
+    const body = JSON.parse(calls[1].init.body)
+    expect(body.organization).toBe('Datopian')
+  })
+
+  it('omits name and organization when neither a full name nor an org was captured (po-hvd)', async () => {
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { email: 'noname@example.com', source: 'PORTALJS_BUILD' }
+    )
+    const body = JSON.parse(calls[1].init.body)
+    expect(body.name).toBeUndefined()
+    expect(body.organization).toBeUndefined()
+  })
+
   it('logs and skips when both email and login are absent', async () => {
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     await upsertCrmSignup({ TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' }, { source: 'PORTALJS_BUILD' })
