@@ -41,9 +41,9 @@ export const TargetAudiences = () => {
   return (
     <div className="py-24">
       <div className="">
-        <H2 className="text-center mb-4">Who Is PortalJS Cloud For?</H2>
+        <H2 className="text-center mb-4">Who Is PortalJS Arc For?</H2>
         <H3 className="opacity-75 text-center ">
-          PortalJS Cloud is designed for any organization that needs to publish
+          PortalJS Arc is designed for any organization that needs to publish
           and share data securely and efficiently.
         </H3>
         <div className="mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-12 lg:grid-cols-4 lg:gap-x-6">

@@ -45,7 +45,7 @@ export const WhatYouGet = () => {
   return (
     <div className="py-24">
       <div className="">
-        <H2 className="text-center mb-4">What You Get with PortalJS Cloud</H2>
+        <H2 className="text-center mb-4">What You Get with PortalJS Arc</H2>
         <H3 className="opacity-75 text-center mb-4">
           A complete solution for publishing and managing your data portal.
         </H3>

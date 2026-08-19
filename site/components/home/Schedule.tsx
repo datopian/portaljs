@@ -12,7 +12,7 @@ interface ScheduleProps {
 export default function Schedule({
   calendar = "/book-a-demo?source=schedule_cta",
   title = "Ready to Launch Your Data Portal?",
-  subtitle = "Join hundreds of organizations worldwide that trust PortalJS Cloud for their data publishing needs.",
+  subtitle = "Join hundreds of organizations worldwide that trust PortalJS Arc for their data publishing needs.",
   primaryLabel = "Schedule a free call",
   secondaryLabel = "Book a demo",
 }: ScheduleProps) {
