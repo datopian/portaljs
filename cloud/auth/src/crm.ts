@@ -52,9 +52,28 @@ export interface CrmSignup {
   email?: string | null
   // GitHub login — fallback match key used only when email is absent.
   login?: string | null
+  // Contact's full name, when Arc already captured one (currently only the email/magic-link
+  // path — GitHub OAuth captures no name). Split into Twenty's composite name.firstName/
+  // lastName shape below; never used as the match key.
+  fullName?: string | null
+  // Self-reported org/company (currently only the email/magic-link path — GitHub OAuth
+  // captures no org). Written to the plain `organization` TEXT field (po-hvd), not a Company
+  // association: an association would require resolving-or-creating a Company record against
+  // 1066 existing people/companies, a real duplicate-company risk a fire-and-forget signup
+  // pipe should not be taking on silently. A plain field is additive and reversible.
+  org?: string | null
   // Which surface produced this signup (po-k6n). Required: an unparameterised default would
   // silently mislabel every surface but the first one built.
   source: CrmSource
+}
+
+// Twenty's `name` field is a composite (firstName/lastName), not a single string — split on
+// the first space. "Anuar Ustayev" -> {firstName: "Anuar", lastName: "Ustayev"}; a single-word
+// name gets an empty lastName rather than being dropped.
+function splitFullName(fullName: string): { firstName: string; lastName: string } {
+  const trimmed = fullName.trim()
+  const i = trimmed.indexOf(' ')
+  return i === -1 ? { firstName: trimmed, lastName: '' } : { firstName: trimmed.slice(0, i), lastName: trimmed.slice(i + 1) }
 }
 
 const CRM_BASE = 'https://crm.datopian.com/rest'
@@ -79,6 +98,8 @@ async function findPersonId(headers: Record<string, string>, filter: string): Pr
 export async function upsertCrmSignup(env: CrmEnv, signup: CrmSignup): Promise<void> {
   const email = signup.email?.trim() || undefined
   const login = signup.login?.trim() || undefined
+  const fullName = signup.fullName?.trim() || undefined
+  const org = signup.org?.trim() || undefined
   if (!email && !login) {
     console.error('crm write skipped: neither email nor github login present')
     return
@@ -87,9 +108,14 @@ export async function upsertCrmSignup(env: CrmEnv, signup: CrmSignup): Promise<v
   const filter = email
     ? `emails.primaryEmail[eq]:"${email}"`
     : `and(name.firstName[eq]:"${login}",source[eq]:"${signup.source}")`
-  const payload = email
-    ? { emails: { primaryEmail: email }, source: signup.source }
-    : { name: { firstName: login, lastName: '' }, source: signup.source }
+  // name: prefer the captured full name; the no-email fallback still needs SOME name to match
+  // on, so it keys off login exactly as before. When email is present but no full name was
+  // captured, omit name entirely rather than writing an empty one over a human-edited value.
+  const name = fullName ? splitFullName(fullName) : !email ? { firstName: login, lastName: '' } : undefined
+  const payload: Record<string, unknown> = { source: signup.source }
+  if (email) payload.emails = { primaryEmail: email }
+  if (name) payload.name = name
+  if (org) payload.organization = org
 
   if (env.CRM_ENABLED !== 'true') {
     console.log('crm write skipped (CRM_ENABLED off)', JSON.stringify({ filter, payload }))
