@@ -58,6 +58,53 @@ describe('upsertCrmSignup (po-jdr, po-k6n)', () => {
     expect(body.source).toBe('PORTALJS_BUILD')
   })
 
+  // po-94q: `products` is multi-select, distinct from `source` — a new person starts their
+  // products array with just this write path's product.
+  it('seeds products with [PORTALJS] on create (po-94q)', async () => {
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { email: 'new@example.com', source: 'PORTALJS_BUILD' }
+    )
+    const body = JSON.parse(calls[1].init.body)
+    expect(body.products).toEqual(['PORTALJS'])
+  })
+
+  // po-94q: an existing person with no products yet (pre-dates the field, or their first
+  // product was never PortalJS) gets PORTALJS appended without disturbing other array entries.
+  it('appends PORTALJS to an existing person\'s products on update, preserving other entries (po-94q)', async () => {
+    globalThis.fetch = vi.fn(async (url: any, init: any) => {
+      calls.push({ url: String(url), init })
+      if (String(url).includes('/people?filter=')) {
+        return { ok: true, json: async () => ({ data: { people: [{ id: 'person-1', products: ['DATAHUB'] }] } }) } as any
+      }
+      return { ok: true } as any
+    }) as any
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { email: 'existing@example.com', source: 'PORTALJS_BUILD' }
+    )
+    const body = JSON.parse(calls[1].init.body)
+    expect(body.products).toEqual(['DATAHUB', 'PORTALJS'])
+  })
+
+  // po-94q: a repeat signup for a product the person already has must not resend/duplicate it —
+  // idempotency for `products` mirrors the idempotency already proven for the person match.
+  it('omits products from the PATCH payload when PORTALJS is already present (po-94q)', async () => {
+    globalThis.fetch = vi.fn(async (url: any, init: any) => {
+      calls.push({ url: String(url), init })
+      if (String(url).includes('/people?filter=')) {
+        return { ok: true, json: async () => ({ data: { people: [{ id: 'person-1', products: ['PORTALJS'] }] } }) } as any
+      }
+      return { ok: true } as any
+    }) as any
+    await upsertCrmSignup(
+      { TWENTY_API_TOKEN: 'tok', CRM_ENABLED: 'true' },
+      { email: 'existing@example.com', source: 'PORTALJS_BUILD' }
+    )
+    const body = JSON.parse(calls[1].init.body)
+    expect('products' in body).toBe(false)
+  })
+
   it('PATCHes the existing person id when the lookup finds a match (idempotent)', async () => {
     globalThis.fetch = vi.fn(async (url: any, init: any) => {
       calls.push({ url: String(url), init })

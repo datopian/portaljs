@@ -7,6 +7,13 @@
 // field metadata, not guessed): PORTALJS_BUILD, PORTALJS_DEMO, PORTALJS_CLOUD,
 // PORTALJS_NEWSLETTER, PORTALJS_CLI, STAGING_TEST.
 //
+// PRODUCTS (po-94q): `source` and `products` answer different questions and must not be
+// conflated. `source` is single-select, first-touch, immutable — HOW we acquired this person.
+// `products` is multi-select, additive, never revised downward — WHICH products they use. This
+// module is PortalJS's own copied write path (DataHub has its own, byte-identical on the
+// match/first-touch logic per po-drk's decision), so it only ever appends the constant
+// 'PORTALJS' — every PORTALJS_<SURFACE> source value funnels into the same product.
+//
 // NEVER throws and NEVER blocks the caller — a CRM failure must degrade exactly like the
 // GitHub email lookup does (github.ts): sign-in succeeds regardless, the write is just
 // logged as having failed (constraint: failures must be VISIBLE, not swallowed silently).
@@ -48,6 +55,10 @@ export type CrmSource =
   | 'PORTALJS_CLI'
   | 'STAGING_TEST'
 
+// The Twenty `products` field's option values (po-94q). This module only ever writes
+// 'PORTALJS' — DataHub's copied module writes 'DATAHUB' from its own copy of this constant.
+const PRODUCT = 'PORTALJS' as const
+
 export interface CrmSignup {
   email?: string | null
   // GitHub login — fallback match key used only when email is absent.
@@ -82,15 +93,21 @@ function crmHeaders(token: string): Record<string, string> {
   return { authorization: `Bearer ${token}`, 'content-type': 'application/json' }
 }
 
-interface PeopleListResponse {
-  data?: { people?: Array<{ id: string }> }
+interface PersonRecord {
+  id: string
+  // Absent on people created before po-94q; null/absent both mean "no products yet".
+  products?: string[] | null
 }
 
-async function findPersonId(headers: Record<string, string>, filter: string): Promise<string | null> {
+interface PeopleListResponse {
+  data?: { people?: PersonRecord[] }
+}
+
+async function findPerson(headers: Record<string, string>, filter: string): Promise<PersonRecord | null> {
   const res = await fetch(`${CRM_BASE}/people?filter=${encodeURIComponent(filter)}&limit=1`, { headers })
   if (!res.ok) throw new Error(`crm lookup failed: ${res.status}`)
   const body = (await res.json()) as PeopleListResponse
-  return body.data?.people?.[0]?.id ?? null
+  return body.data?.people?.[0] ?? null
 }
 
 // Fire from ctx.waitUntil. Never throws — every failure mode (missing config, network error,
@@ -121,7 +138,10 @@ export async function upsertCrmSignup(env: CrmEnv, signup: CrmSignup): Promise<v
   if (org) payload.organization = org
 
   if (env.CRM_ENABLED !== 'true') {
-    console.log('crm write skipped (CRM_ENABLED off)', JSON.stringify({ filter, payload: { ...payload, source: signup.source } }))
+    console.log(
+      'crm write skipped (CRM_ENABLED off)',
+      JSON.stringify({ filter, payload: { ...payload, source: signup.source, products: [PRODUCT] } })
+    )
     return
   }
   const token = env.TWENTY_API_TOKEN
@@ -132,9 +152,19 @@ export async function upsertCrmSignup(env: CrmEnv, signup: CrmSignup): Promise<v
 
   try {
     const headers = crmHeaders(token)
-    const personId = await findPersonId(headers, filter)
+    const existing = await findPerson(headers, filter)
+    const personId = existing?.id ?? null
     const url = personId ? `${CRM_BASE}/people/${personId}` : `${CRM_BASE}/people`
-    if (!personId) payload.source = signup.source
+    if (!personId) {
+      // Create: source is first-touch (set once, here only) and products starts with this one.
+      payload.source = signup.source
+      payload.products = [PRODUCT]
+    } else if (!existing?.products?.includes(PRODUCT)) {
+      // Update: NEVER touch source (first-touch, po-96l). Append PRODUCT only if this is its
+      // first signup for that product — Twenty's PATCH sets the field, it doesn't union it, so
+      // the existing array must be read and re-sent with PRODUCT appended, not replaced.
+      payload.products = [...(existing?.products ?? []), PRODUCT]
+    }
     const res = await fetch(url, { method: personId ? 'PATCH' : 'POST', headers, body: JSON.stringify(payload) })
     if (!res.ok) {
       console.error('crm write failed', res.status, await res.text().catch(() => '<no body>'))
