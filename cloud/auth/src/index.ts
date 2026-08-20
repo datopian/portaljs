@@ -24,7 +24,7 @@ import {
   sendMagicLinkEmail,
 } from './email'
 import { fetchGitHubUser, fetchVerifiedEmail } from './github'
-import { gateEmailSend } from './ratelimit'
+import { gateEmailSend, releaseEmailSend } from './ratelimit'
 import { captureServerEvent } from './analytics'
 import { upsertCrmSignup, type CrmSource } from './crm'
 import { b64url, timingSafeEqual } from './util'
@@ -365,11 +365,19 @@ async function handle(request: Request, env: Env, ctx: ExecutionContext): Promis
       // when under the caps and returns false when over — in which case we silently skip
       // minting/sending. Either way the response below is identical (see neutrality note).
       const ip = request.headers.get('cf-connecting-ip') ?? ''
-      if (await gateEmailSend(env.DB, now(), email, ip)) {
+      const gate = await gateEmailSend(env.DB, now(), email, ip)
+      if (gate.allowed) {
         const { token } = await createEmailLogin(env.DB, now(), email, { fullName, org }, ret === '/' ? undefined : ret, distinctId)
         const link = `${env.BASE_URL}/email/verify?token=${encodeURIComponent(token)}`
-        // Fire the send but don't leak its success/failure into the response (neutrality).
-        await sendMagicLinkEmail(env, email, link)
+        // Fire the send but don't leak its success/failure into the response (neutrality) —
+        // sendMagicLinkEmail logs failures server-side (wrangler tail) for the operator.
+        const sent = await sendMagicLinkEmail(env, email, link)
+        // A send that never arrived must not also burn the caller's quota (po-0k2): release
+        // the reservation gateEmailSend took so a Resend outage doesn't compound into a
+        // rate-limit lockout once it recovers.
+        if (!sent && gate.logId) {
+          await releaseEmailSend(env.DB, gate.logId)
+        }
       }
     }
     // Echo back a best-effort address for the "check your email" copy; if it was invalid

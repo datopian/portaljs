@@ -210,22 +210,35 @@ export interface EmailEnv {
   EMAIL_FROM: string // e.g. "PortalJS Arc <login@arc.portaljs.com>"
 }
 
+// po-0k2: the caller's response to the user stays NEUTRAL no matter what happens here (no
+// address-enumeration signal) — so this function is the ONLY place a Resend failure can be
+// observed at all. It must not throw and must not let a failure pass silently: every non-ok
+// response and every thrown fetch (e.g. the intermittent Resend timeouts) is logged with
+// enough detail (status + body, or the error) to diagnose from `wrangler tail` alone.
 export async function sendMagicLinkEmail(env: EmailEnv, to: string, link: string): Promise<boolean> {
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${env.RESEND_API_KEY}`,
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: env.EMAIL_FROM,
-      to,
-      subject: 'Sign in to PortalJS Arc',
-      text: `Sign in to PortalJS Arc:\n\n${link}\n\nThis link expires in 30 minutes. If you didn't request it, you can ignore this email.`,
-      html: magicLinkHtml(link),
-    }),
-  })
-  return res.ok
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${env.RESEND_API_KEY}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: env.EMAIL_FROM,
+        to,
+        subject: 'Sign in to PortalJS Arc',
+        text: `Sign in to PortalJS Arc:\n\n${link}\n\nThis link expires in 30 minutes. If you didn't request it, you can ignore this email.`,
+        html: magicLinkHtml(link),
+      }),
+    })
+    if (!res.ok) {
+      console.error('magic-link send failed', res.status, await res.text().catch(() => '<no body>'))
+    }
+    return res.ok
+  } catch (err) {
+    console.error('magic-link send threw', err instanceof Error ? err.message : String(err))
+    return false
+  }
 }
 
 function magicLinkHtml(link: string): string {
