@@ -70,6 +70,19 @@ export class FakeR2 {
   async put(key: string, value: Uint8Array) {
     this.store.set(key, value)
   }
+  async get(key: string) {
+    const value = this.store.get(key)
+    if (!value) return null
+    return {
+      key,
+      body: new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(value)
+          controller.close()
+        },
+      }),
+    }
+  }
   async delete(keys: string | string[]) {
     for (const k of Array.isArray(keys) ? keys : [keys]) this.store.delete(k)
   }

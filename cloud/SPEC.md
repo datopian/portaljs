@@ -147,6 +147,19 @@ of the previous deployment.
 - Limits: max bundle size, file count, per-user project cap (configurable).
 - **Local test:** `wrangler dev`; POST a sample `out/`; assert R2 contents + D1 row + URL.
 
+**Source snapshots (`po-ce7`, interim Artifacts workaround)** — Cloudflare Artifacts
+(`po-68u`) is the intended versioned-source backing for deploys but is closed-beta and not
+enrolled on the Datopian account. Until it lands, the skill additionally persists the
+pre-build source tree per deploy:
+- `POST /v1/deploy/:id/source` — upload a gzipped tar of the source tree for an already-recorded
+  deployment; stored at `sources/<slug>/<deployment_id>.tar.gz`. One snapshot per deployment
+  (409 on a second upload for the same id) — immutable, never overwritten.
+- `GET /v1/repos/:slug/sources` / `GET /v1/repos/:slug/sources/:id` — list/fetch a slug's
+  snapshot history. Gated to the deployment's owner or a `users.is_staff` account — reuses the
+  existing token/user model, no new auth infra.
+- Out of scope: git semantics (diff/branch/history graph) — snapshot storage only. Superseded
+  by Artifacts if/when access is granted.
+
 ### 3. Auth — `arc.portaljs.com` (`cloud/auth/`) — bead `po-5vk`
 - GitHub OAuth (`read:user user:email`) → create `users` row **with the account's primary
   verified email**; UI to generate/revoke API tokens. The email matters downstream (contact,

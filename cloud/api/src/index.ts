@@ -7,7 +7,19 @@
 // Served at api.arc.portaljs.com (api.staging.arc.portaljs.com on staging).
 
 import { untar } from './untar'
-import { userForToken, loginForToken, userRowForToken, ensureProject, getOwnedProject, recordDeployment, getDeployment } from './db'
+import {
+  userForToken,
+  loginForToken,
+  userRowForToken,
+  userAuthForToken,
+  ensureProject,
+  getOwnedProject,
+  recordDeployment,
+  getDeployment,
+  getDeploymentWithProject,
+  claimSourceSnapshot,
+  listSourceSnapshots,
+} from './db'
 import { mintLfsToken, normalizeActions, normalizeTtl, LFS_ORG } from './lfs'
 
 export interface Env {
@@ -16,6 +28,10 @@ export interface Env {
   ARC_HOST: string // e.g. "staging.arc.portaljs.com"
   MAX_FILES?: string
   MAX_BYTES?: string
+  // Cap on the pre-build SOURCE-tree tarball (po-ce7) — separate from MAX_BYTES (the
+  // built `out/` export) since a source tree (minus node_modules/.git) can legitimately
+  // run larger than its build output.
+  MAX_SOURCE_BYTES?: string
   // RS256 PKCS#8 PEM that signs Giftless LFS client tokens. Provisioned as a Worker
   // secret (NOT a [vars] entry) — see wrangler.toml. Absent ⇒ /v1/repos/:slug/lfs-token
   // returns 503. The matching public key is deployed on Giftless (GIFTLESS_JWT_PUBLIC_KEY).
@@ -138,6 +154,105 @@ export async function handleDeploy(request: Request, env: Env): Promise<Response
   })
 }
 
+// POST /v1/deploy/:id/source — upload the pre-build SOURCE tree for an already-recorded
+// deployment (po-ce7: an R2-backed workaround for Cloudflare Artifacts, which is
+// closed-beta and not yet enrolled on our account — see po-68u). The skill calls this
+// right after a successful /v1/deploy, tarring the source it just built FROM (excluding
+// node_modules/.git/out/.env*) and posting it here with the returned deployment_id.
+//
+// Immutable by construction: each deployment_id gets AT MOST one source snapshot —
+// claimSourceSnapshot's conditional UPDATE means a second POST for the same id 409s
+// rather than overwriting an earlier snapshot (the exact property that would have
+// prevented dpe-8qi). Never touches the existing built-output R2/D1 serving path.
+export async function handleUploadSource(request: Request, env: Env, deploymentId: string): Promise<Response> {
+  const auth = request.headers.get('authorization') ?? ''
+  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : ''
+  if (!token) return json({ error: 'missing bearer token' }, 401)
+  const user = await userAuthForToken(env.DB, token)
+  if (!user) return json({ error: 'invalid token' }, 401)
+
+  const dep = await getDeploymentWithProject(env.DB, deploymentId)
+  if (!dep) return json({ error: `deployment "${deploymentId}" not found` }, 404)
+  if (dep.user_id !== user.id && !user.isStaff) {
+    return json({ error: `deployment "${deploymentId}" belongs to another account` }, 403)
+  }
+  if (dep.source_key) return json({ error: 'a source snapshot is already recorded for this deployment' }, 409)
+
+  if (!request.body) return json({ error: 'empty body (expected a gzipped tar)' }, 400)
+  const bytes = new Uint8Array(await request.arrayBuffer())
+  const maxSourceBytes = intVar(env.MAX_SOURCE_BYTES, 200 * 1024 * 1024)
+  if (bytes.length === 0) return json({ error: 'empty body (expected a gzipped tar)' }, 400)
+  if (bytes.length > maxSourceBytes) {
+    return json({ error: `source upload too large (${bytes.length} > ${maxSourceBytes} bytes)` }, 413)
+  }
+
+  // Claim the slot in D1 BEFORE writing R2, so a concurrent duplicate POST for the same
+  // deployment_id 409s instead of racing to overwrite the same key with different bytes.
+  const key = `sources/${dep.slug}/${deploymentId}.tar.gz`
+  const claim = await claimSourceSnapshot(env.DB, deploymentId, key, bytes.length)
+  if (claim === 'already_recorded') {
+    return json({ error: 'a source snapshot is already recorded for this deployment' }, 409)
+  }
+  await env.ASSETS.put(key, bytes)
+
+  return json({ ok: true, deployment_id: deploymentId, slug: dep.slug, key, bytes: bytes.length })
+}
+
+// GET /v1/repos/:slug/sources — list a slug's source-snapshot history (deployment id,
+// R2 key, size, timestamp), newest first. Gated to the recorded owner or Datopian staff
+// (po-ce7 acceptance criteria: retrievable by owner + staff, not anonymous).
+export async function handleListSources(request: Request, env: Env, slug: string): Promise<Response> {
+  const auth = request.headers.get('authorization') ?? ''
+  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : ''
+  if (!token) return json({ error: 'missing bearer token' }, 401)
+  const user = await userAuthForToken(env.DB, token)
+  if (!user) return json({ error: 'invalid token' }, 401)
+  if (!validSlug(slug)) return json({ error: `invalid slug "${slug}"` }, 400)
+
+  const project = await getOwnedProject(env.DB, user.id, slug)
+  if (!project.ok) {
+    // 'not_found' means not found for EVERYONE, staff included — there's nothing to list.
+    if (project.reason === 'not_found') return json({ error: `repo "${slug}" not found` }, 404)
+    // 'conflict' (owned by someone else): staff may still inspect it.
+    if (!user.isStaff) return json({ error: `repo "${slug}" belongs to another account` }, 403)
+  }
+
+  const snapshots = await listSourceSnapshots(env.DB, slug)
+  return json({ slug, snapshots })
+}
+
+// GET /v1/repos/:slug/sources/:deploymentId — fetch one immutable source snapshot's
+// gzipped tar. Same owner-or-staff gate as the list endpoint.
+export async function handleGetSource(
+  request: Request,
+  env: Env,
+  slug: string,
+  deploymentId: string
+): Promise<Response> {
+  const auth = request.headers.get('authorization') ?? ''
+  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : ''
+  if (!token) return json({ error: 'missing bearer token' }, 401)
+  const user = await userAuthForToken(env.DB, token)
+  if (!user) return json({ error: 'invalid token' }, 401)
+  if (!validSlug(slug)) return json({ error: `invalid slug "${slug}"` }, 400)
+
+  const dep = await getDeploymentWithProject(env.DB, deploymentId)
+  if (!dep || dep.slug !== slug) return json({ error: `deployment "${deploymentId}" not found for "${slug}"` }, 404)
+  if (dep.user_id !== user.id && !user.isStaff) {
+    return json({ error: `deployment "${deploymentId}" belongs to another account` }, 403)
+  }
+  if (!dep.source_key) return json({ error: 'no source snapshot recorded for this deployment' }, 404)
+
+  const obj = await env.ASSETS.get(dep.source_key)
+  if (!obj) return json({ error: 'source snapshot missing from storage' }, 404)
+  return new Response(obj.body, {
+    headers: {
+      'content-type': 'application/gzip',
+      'content-disposition': `attachment; filename="${slug}-${deploymentId}.tar.gz"`,
+    },
+  })
+}
+
 // POST /v1/repos/:slug/lfs-token — mint a scoped RS256 Giftless LFS token for the
 // authenticated Arc user. Guarded by the Arc API bearer token (device-flow
 // PORTALJS_TOKEN); 401 otherwise. The slug must ALREADY exist and be owned by the
@@ -244,6 +359,13 @@ export default {
     if (claimM && request.method === 'POST') return handleClaim(request, env, claimM[1])
     const lfsM = url.pathname.match(/^\/v1\/repos\/([^/]+)\/lfs-token$/)
     if (lfsM && request.method === 'POST') return handleLfsToken(request, env, lfsM[1])
+    // po-ce7 — source-snapshot upload + retrieval (Artifacts workaround).
+    const sourceUploadM = url.pathname.match(/^\/v1\/deploy\/([\w-]+)\/source$/)
+    if (sourceUploadM && request.method === 'POST') return handleUploadSource(request, env, sourceUploadM[1])
+    const sourceListM = url.pathname.match(/^\/v1\/repos\/([^/]+)\/sources$/)
+    if (sourceListM && request.method === 'GET') return handleListSources(request, env, sourceListM[1])
+    const sourceGetM = url.pathname.match(/^\/v1\/repos\/([^/]+)\/sources\/([\w-]+)$/)
+    if (sourceGetM && request.method === 'GET') return handleGetSource(request, env, sourceGetM[1], sourceGetM[2])
     const m = url.pathname.match(/^\/v1\/deploy\/([\w-]+)$/)
     if (m && request.method === 'GET') {
       const row = await getDeployment(env.DB, m[1])

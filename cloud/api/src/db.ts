@@ -128,3 +128,95 @@ export async function getDeployment(db: D1Database, id: string) {
     .bind(id)
     .first()
 }
+
+// Resolve a bearer token to the owner's id, login, AND staff flag in one round-trip
+// (po-ce7 source-snapshot retrieval: staff may fetch ANY tenant's snapshot, not just
+// their own). null if the token is unknown/revoked.
+export async function userAuthForToken(
+  db: D1Database,
+  token: string
+): Promise<{ id: string; login: string; isStaff: boolean } | null> {
+  const hash = await sha256Hex(token)
+  const row = await db
+    .prepare(
+      'SELECT u.id AS id, COALESCE(u.login, u.email) AS login, u.is_staff AS is_staff FROM tokens t JOIN users u ON u.id = t.user_id WHERE t.hash = ? AND t.revoked_at IS NULL'
+    )
+    .bind(hash)
+    .first<{ id: string; login: string; is_staff: number }>()
+  return row ? { id: row.id, login: row.login, isStaff: !!row.is_staff } : null
+}
+
+export type DeploymentWithProject = {
+  id: string
+  project_id: string
+  slug: string
+  user_id: string
+  owner_login: string
+  status: string
+  files: number
+  bytes: number
+  source_key: string | null
+  source_bytes: number | null
+  created_at: string
+}
+
+// A deployment joined with its owning project — slug + owner in one round-trip, the
+// linkage po-ce7's ownership/retrieval checks need (deployment -> project -> owner).
+export async function getDeploymentWithProject(
+  db: D1Database,
+  deploymentId: string
+): Promise<DeploymentWithProject | null> {
+  return db
+    .prepare(
+      `SELECT d.id AS id, d.project_id AS project_id, p.slug AS slug, p.user_id AS user_id,
+              COALESCE(u.login, u.email) AS owner_login, d.status AS status, d.files AS files,
+              d.bytes AS bytes, d.source_key AS source_key, d.source_bytes AS source_bytes,
+              d.created_at AS created_at
+       FROM deployments d JOIN projects p ON p.id = d.project_id JOIN users u ON u.id = p.user_id
+       WHERE d.id = ?`
+    )
+    .bind(deploymentId)
+    .first<DeploymentWithProject>()
+}
+
+export type ClaimSnapshotResult = 'claimed' | 'already_recorded'
+
+// Atomically "claim" a deployment's source-snapshot slot: only the first caller for a
+// given deployment_id gets 'claimed' (the UPDATE's WHERE excludes rows that already have
+// a source_key), so a concurrent double-upload can't silently overwrite an earlier
+// snapshot — immutability the bead calls for. Callers write to R2 only after claiming.
+export async function claimSourceSnapshot(
+  db: D1Database,
+  deploymentId: string,
+  r2Key: string,
+  bytes: number
+): Promise<ClaimSnapshotResult> {
+  const res = await db
+    .prepare('UPDATE deployments SET source_key = ?, source_bytes = ? WHERE id = ? AND source_key IS NULL')
+    .bind(r2Key, bytes, deploymentId)
+    .run()
+  return (res.meta?.changes ?? 0) > 0 ? 'claimed' : 'already_recorded'
+}
+
+export type SourceSnapshot = {
+  deployment_id: string
+  source_key: string
+  source_bytes: number
+  created_at: string
+}
+
+// All source snapshots recorded for a slug, newest first — the "given a slug, find its
+// source history" linkage the bead's acceptance criteria ask for.
+export async function listSourceSnapshots(db: D1Database, slug: string): Promise<SourceSnapshot[]> {
+  const res = await db
+    .prepare(
+      `SELECT d.id AS deployment_id, d.source_key AS source_key, d.source_bytes AS source_bytes,
+              d.created_at AS created_at
+       FROM deployments d JOIN projects p ON p.id = d.project_id
+       WHERE p.slug = ? AND d.source_key IS NOT NULL
+       ORDER BY d.created_at DESC`
+    )
+    .bind(slug)
+    .all<SourceSnapshot>()
+  return res.results ?? []
+}

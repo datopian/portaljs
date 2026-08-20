@@ -9,6 +9,7 @@ workers_dev = true
 ARC_HOST = "staging.arc.portaljs.com"
 MAX_FILES = "5000"
 MAX_BYTES = "104857600"
+MAX_SOURCE_BYTES = "209715200"
 LFS_HOST = "lfs.portaljs.com"
 
 # SECRET (NOT a var — provision at land, never commit the key):
@@ -42,6 +43,7 @@ workers_dev = false
 ARC_HOST = "arc.portaljs.com"
 MAX_FILES = "5000"
 MAX_BYTES = "104857600"
+MAX_SOURCE_BYTES = "209715200"
 LFS_HOST = "lfs.portaljs.com"
 
 [[env.production.r2_buckets]]
