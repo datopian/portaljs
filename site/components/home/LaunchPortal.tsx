@@ -19,7 +19,7 @@ export default function LaunchPortal() {
             </H3>
             <div className="mt-6">
               <ButtonLink
-                href="https://cloud.portaljs.com/auth/signup"
+                href="/build"
                 title="Deploy your data portal with PortalJS Arc"
                 className="text-sm"
                 trackConversion={true}

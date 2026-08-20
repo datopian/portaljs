@@ -82,7 +82,7 @@ export default function Hero() {
             <div className="mt-5 mt-10 flex justify-center dark:xl:justify-start">
               <div className="mt-3 mt-0 flex gap-4">
                 <ButtonLink
-                  href="https://cloud.portaljs.com/auth/signup"
+                  href="/build"
                   title="Get started with PortalJS Arc"
                   className="text-sm"
                   trackConversion={true}
