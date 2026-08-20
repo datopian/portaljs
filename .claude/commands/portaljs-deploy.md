@@ -274,10 +274,25 @@ API="${PORTALJS_ARC_API:-https://api.arc.portaljs.com}"
 # TOKEN already resolved in step 5.
 
 cd "$PORTAL_DIR"
-COPYFILE_DISABLE=1 tar czf /tmp/arc-source.tgz \
-  --exclude='./node_modules' --exclude='./.git' --exclude='./out' --exclude='./.next' \
-  --exclude='./.env' --exclude='./.env.*' \
-  -C . .
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  # gitignore-respecting: tracked + untracked-but-not-ignored files, so a project's real
+  # .gitignore (dist/, coverage/, custom caches, etc.) is honored instead of a fixed list.
+  # A hardcoded safety floor is applied on top regardless of .gitignore content/absence.
+  FILELIST=$(mktemp)
+  git ls-files --cached --others --exclude-standard \
+    | grep -Ev '^(node_modules|\.git|out|\.next)(/|$)' \
+    | grep -Ev '^\.env($|\.)' \
+    > "$FILELIST"
+  COPYFILE_DISABLE=1 tar czf /tmp/arc-source.tgz -T "$FILELIST"
+  rm -f "$FILELIST"
+else
+  echo "Warning: $PORTAL_DIR is not a git repo — no .gitignore to consult." \
+       "Falling back to the fixed exclude list for the source snapshot."
+  COPYFILE_DISABLE=1 tar czf /tmp/arc-source.tgz \
+    --exclude='./node_modules' --exclude='./.git' --exclude='./out' --exclude='./.next' \
+    --exclude='./.env' --exclude='./.env.*' \
+    -C . .
+fi
 
 HDR=$(mktemp); chmod 600 "$HDR"
 printf 'header = "Authorization: Bearer %s"\n' "$TOKEN" > "$HDR"
@@ -303,7 +318,8 @@ snapshot history; `GET $API/v1/repos/<slug>/sources/<deployment_id>` downloads o
   - URL:   https://SLUG.arc.portaljs.com
   - Files: <n>   (<bytes> uploaded, <pruned> stale file(s) removed)
   - Data:  <k> dataset(s) served from R2, <m> inline   (from the step 4 check)
-  - Source: snapshot saved (or: "not saved — <reason>", from step 5.5; never blocks success)
+  - Source: snapshot saved (or: "not saved — <reason>", from step 5.5; never blocks success;
+    if PORTAL_DIR wasn't a git repo, note "saved via fixed exclude list — no .gitignore found")
   - Slug:  SLUG  (re-run /portaljs-deploy to update)
 
 Open the URL to view your live portal.
