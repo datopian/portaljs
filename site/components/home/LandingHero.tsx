@@ -300,7 +300,7 @@ export default function LandingHero() {
               <span style={{ width: 13, height: 12, border: '1.8px solid currentColor', borderRadius: 3, display: 'inline-block', position: 'relative', boxSizing: 'border-box' }}>
                 <span style={{ position: 'absolute', top: 3, left: 0, right: 0, height: 1.5, background: 'currentColor' }} />
               </span>{' '}
-              Visual builder
+              Studio
             </span>
             <span onClick={() => select('terminal', 'tab_click')} style={tab(isTerminal)}>
               <span style={{ fontFamily: 'ui-monospace, monospace', opacity: 0.7 }}>&gt;_</span> Terminal
