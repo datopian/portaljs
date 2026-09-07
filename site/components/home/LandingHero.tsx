@@ -166,7 +166,7 @@ export default function LandingHero() {
   function select(next: 'terminal' | 'gui', source: 'tab_click') {
     if (next !== mode) {
       setMode(next)
-      // Report the public-facing name: the "gui" mode is the "Visual builder" tab
+      // Report the public-facing name: the "gui" mode is the "Studio" tab
       // in the UI. The event value stays 'chat' for continuity with the po-607
       // funnel/dashboard (taxonomy stable across the display rename).
       track('hero_mode_switched', { mode: next === 'gui' ? 'chat' : 'terminal', source })
@@ -310,7 +310,7 @@ export default function LandingHero() {
           {/* One mode-switched card below the tabs. */}
           <div className="mt-5" style={{ border: '1px solid #e2e8f0', background: '#fff', borderRadius: 12, padding: '16px 18px', display: 'flex', flexDirection: 'column' }}>
             {!isTerminal ? (
-              /* Visual builder (primary) — functional input + Build → /build. */
+              /* Studio (primary) — functional input + Build → /build. */
               <>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: 0, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 9, padding: '10px 12px', fontSize: 12.5 }}>
                   <input
