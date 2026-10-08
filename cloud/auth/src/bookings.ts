@@ -151,8 +151,11 @@ export function bookingProperties(ev: CalendarEvent, schedule: string, booker: B
 }
 
 // Twenty REST filter: any configured schedule, and either booked recently or still upcoming.
+// The title pattern must not contain brackets. Twenty's filter parser counts "(" even
+// inside quoted values and rejects the whole query ("close brackets are missing"), so the
+// " (<booker>)" suffix is left to scheduleOf's exact check.
 export function eventsFilter(schedules: string[], sinceIso: string, nowIso: string): string {
-  const titles = schedules.map((s) => `title[ilike]:"${s.replace(/"/g, '')} (%"`)
+  const titles = schedules.map((s) => `title[ilike]:"${s.replace(/["()]/g, '')}%"`)
   const titleClause = titles.length === 1 ? titles[0] : `or(${titles.join(',')})`
   return `and(${titleClause},or(externalCreatedAt[gte]:"${sinceIso}",startsAt[gte]:"${nowIso}"))`
 }

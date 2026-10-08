@@ -89,10 +89,15 @@ describe('bookingProperties', () => {
 })
 
 describe('eventsFilter', () => {
+  it('never puts brackets inside a value (Twenty rejects the query)', () => {
+    const f = eventsFilter(['PortalJS (gov) meetings'], 'S', 'N')
+    expect(f).toContain('title[ilike]:"PortalJS gov meetings%"')
+  })
+
   it('ORs the schedules and keeps recent-or-upcoming events', () => {
     const f = eventsFilter(['PortalJS meetings', 'PortalJS Cloud meetings'], 'S', 'N')
     expect(f).toBe(
-      'and(or(title[ilike]:"PortalJS meetings (%",title[ilike]:"PortalJS Cloud meetings (%"),' +
+      'and(or(title[ilike]:"PortalJS meetings%",title[ilike]:"PortalJS Cloud meetings%"),' +
         'or(externalCreatedAt[gte]:"S",startsAt[gte]:"N"))'
     )
   })
