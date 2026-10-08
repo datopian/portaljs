@@ -27,6 +27,7 @@ import { fetchGitHubUser, fetchVerifiedEmail } from './github'
 import { gateEmailSend, releaseEmailSend } from './ratelimit'
 import { captureServerEvent } from './analytics'
 import { upsertCrmSignup, type CrmSource } from './crm'
+import { syncBookings } from './bookings'
 import { b64url, timingSafeEqual } from './util'
 
 export interface Env {
@@ -50,6 +51,11 @@ export interface Env {
   // isn't the boundary: both envs share one Twenty workspace).
   TWENTY_API_TOKEN?: string
   CRM_ENABLED?: string
+  // Calls-booked sync (da-55j.2, see bookings.ts). BOOKINGS_ENABLED is the send switch —
+  // "true" on production only (staging shares the PostHog project and the Twenty workspace).
+  // BOOKING_SCHEDULES optionally overrides which appointment schedules count.
+  BOOKINGS_ENABLED?: string
+  BOOKING_SCHEDULES?: string
 }
 
 const SESSION_COOKIE = 'arc_session'
@@ -186,6 +192,12 @@ export default {
     } catch (err) {
       return internalError(request, err)
     }
+  },
+  // Cron (wrangler.toml [triggers]): read new Google appointment bookings that Twenty has
+  // synced and send call_booked / call_cancelled to PostHog (da-55j.2). syncBookings never
+  // throws, so a failed tick just logs and the next one retries.
+  async scheduled(_controller: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
+    ctx.waitUntil(syncBookings(env))
   },
 }
 

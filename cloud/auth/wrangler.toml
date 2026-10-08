@@ -23,6 +23,13 @@ POSTHOG_HOST = "https://eu.i.posthog.com"
 # crm.ts — deliberately absent here (off) because staging shares the SAME Twenty workspace as
 # production; only env.production below turns writes on. The full match/build path still runs
 # on staging, it just logs what it would have sent instead of sending it.
+# Calls-booked sync (da-55j.2, src/bookings.ts) has the same shape: BOOKINGS_ENABLED is absent
+# here, so the staging cron reads Twenty and logs what it would send, but never sends. Staging
+# shares the PostHog project too, so a live staging cron would double-count every call.
+
+# Calls-booked sync: every 15 minutes, read new appointment bookings from Twenty.
+[triggers]
+crons = ["*/15 * * * *"]
 
 [[d1_databases]]
 binding = "DB"
@@ -46,6 +53,11 @@ POSTHOG_KEY = "phc_P3zmWCCwtBk67JTTDVRHNRH0VMy8dZ10sn1pIfKyGTx"
 POSTHOG_HOST = "https://eu.i.posthog.com"
 # CRM writes are live only in production (see the staging comment above).
 CRM_ENABLED = "true"
+# Calls-booked events are live only in production (see the staging comment above).
+BOOKINGS_ENABLED = "true"
+
+[env.production.triggers]
+crons = ["*/15 * * * *"]
 
 [[env.production.d1_databases]]
 binding = "DB"
