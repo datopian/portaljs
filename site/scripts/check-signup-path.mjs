@@ -32,9 +32,16 @@
 //     largest source of homepage -> /build arrivals and tracked nothing, so a
 //     month of funnel analysis credited the hero for clicks it never received.
 //
-// It deliberately does NOT assert WHICH destination is used. /build (AI-native, the
-// current strategy) and cloud/auth/signup (the older Cloud funnel) are both accepted.
-// Product direction is allowed to change; having no signup path at all is not.
+// It deliberately does NOT assert WHICH destination is used. /build (AI-native),
+// cloud/auth/signup (the older Cloud funnel), a booked call via /book-a-demo and the
+// /government landing page are all accepted. Product direction is allowed to change;
+// having no conversion path at all is not.
+//
+// da-55j.6 moved the site-wide CTAs from self-serve sign-up to booking a call: PortalJS's
+// buyers are governments, and they book calls rather than sign up. So the guard also pins
+// the call path: /book-a-demo must still redirect to the booking calendar and report the
+// redirect, and /government must offer the call, report its CTAs, and NOT carry a
+// self-serve sign-up (for that audience it is a dead end).
 //
 // Zero dependencies, so the merge gate can run it on a cold tree without installing
 // site/'s lockfile. Usage:  node site/scripts/check-signup-path.mjs
@@ -56,11 +63,16 @@ const HERO = 'components/home/LandingHero.tsx'
 const CTA_BAND = 'components/home/CtaBand.tsx'
 const BUILD = 'pages/build.tsx'
 const APP = 'pages/_app.tsx'
+const BOOK_DEMO = 'pages/book-a-demo.tsx'
+const GOVERNMENT = 'pages/government.tsx'
 
 // A destination counts as signup-capable if it is the /build page (verified below to
 // still carry a working signup form) or a Cloud auth signup URL.
 const BUILD_ROUTE = '/build'
 const CLOUD_SIGNUP = /cloud\.portaljs\.com\/auth\/signup/
+// Call-capable destinations (da-55j.6), each verified below to still lead to a booking.
+const CALL_ROUTE = '/book-a-demo'
+const GOVERNMENT_ROUTE = '/government'
 
 const failures = []
 const checks = []
@@ -92,13 +104,18 @@ function inlineConsts(src) {
   return out
 }
 
-function leadsToSignup(src) {
+function leadsToConversion(src) {
   const s = inlineConsts(src)
-  return {
-    build: s.includes(`href="${BUILD_ROUTE}"`) || s.includes(`href='${BUILD_ROUTE}'`) || s.includes(`'${BUILD_ROUTE}?`) || s.includes(`'${BUILD_ROUTE}'`),
-    cloud: CLOUD_SIGNUP.test(s),
-  }
+  const linksTo = (route) =>
+    s.includes(`href="${route}"`) || s.includes(`href="${route}?`) || s.includes(`'${route}?`) || s.includes(`'${route}'`)
+  const build = linksTo(BUILD_ROUTE)
+  const cloud = CLOUD_SIGNUP.test(s)
+  const call = linksTo(CALL_ROUTE)
+  const government = linksTo(GOVERNMENT_ROUTE)
+  return { build, cloud, call, government, any: build || cloud || call || government }
 }
+
+const DESTINATIONS = `${BUILD_ROUTE}, ${CALL_ROUTE}, ${GOVERNMENT_ROUTE} or a cloud/auth/signup URL`
 
 // Return the opening JSX tag that carries `needle`, e.g. the whole
 // `<Link href="/build" ... >` element start, so its props can be inspected.
@@ -137,16 +154,20 @@ function hiddenBelowBreakpoint(classNames) {
 
 const nav = read(NAV)
 if (nav) {
-  const dest = leadsToSignup(nav)
+  const dest = leadsToConversion(nav)
   check(
-    'navbar has a primary CTA to a signup-capable destination',
-    dest.build || dest.cloud,
-    `${NAV} links to neither ${BUILD_ROUTE} nor a cloud/auth/signup URL. The navbar CTA is the site-wide entry to the funnel; without it the only way in is /pricing (po-506).`,
+    'navbar has a primary CTA to a conversion destination',
+    dest.any,
+    `${NAV} links to none of ${DESTINATIONS}. The navbar CTA is the site-wide entry to the funnel; without it the only way in is /pricing (po-506).`,
   )
 
   // A CTA present only above `lg` is absent for every phone and most tablets —
   // 11% of homepage traffic, and for them the hero becomes the sole entry point.
-  const cta = openingTag(nav, `href="${BUILD_ROUTE}"`) ?? openingTag(nav, 'href="https://cloud.portaljs.com/auth/signup"')
+  const cta =
+    openingTag(nav, `href="${CALL_ROUTE}`) ??
+    openingTag(nav, `href="${GOVERNMENT_ROUTE}"`) ??
+    openingTag(nav, `href="${BUILD_ROUTE}"`) ??
+    openingTag(nav, 'href="https://cloud.portaljs.com/auth/signup"')
   check(
     'navbar CTA is visible at every breakpoint',
     !cta || !hiddenBelowBreakpoint(cta),
@@ -164,11 +185,11 @@ if (nav) {
 
 const hero = read(HERO)
 if (hero) {
-  const dest = leadsToSignup(hero)
+  const dest = leadsToConversion(hero)
   check(
-    'landing hero has a primary CTA to a signup-capable destination',
-    dest.build || dest.cloud,
-    `${HERO} links to neither ${BUILD_ROUTE} nor a cloud/auth/signup URL. This is exactly what po-oh0 did: a hero that reads well and converts nothing.`,
+    'landing hero has a primary CTA to a conversion destination',
+    dest.any,
+    `${HERO} links to none of ${DESTINATIONS}. This is exactly what po-oh0 did: a hero that reads well and converts nothing.`,
   )
   // The hero CTA must be reachable in the DEFAULT state, not parked behind a mode
   // toggle the visitor has to find first.
@@ -188,23 +209,23 @@ if (hero) {
 // homepage (po-80u).
 const band = read(CTA_BAND)
 if (band) {
-  const dest = leadsToSignup(band)
+  const dest = leadsToConversion(band)
   check(
-    'homepage closing CTA leads to a signup-capable destination',
-    dest.build || dest.cloud,
-    `${CTA_BAND} links to neither ${BUILD_ROUTE} nor a cloud/auth/signup URL. A closing CTA that sends a decided reader to documentation converts nothing (po-80u).`,
+    'homepage closing CTA leads to a conversion destination',
+    dest.any,
+    `${CTA_BAND} links to none of ${DESTINATIONS}. A closing CTA that sends a decided reader to documentation converts nothing (po-80u).`,
   )
 
   // Order in the source is order on the page, so "first link in the JSX" is the
   // primary button. Compared inside the JSX only — the consts at the top of the
   // file would otherwise decide the answer regardless of what is rendered.
   const jsx = inlineConsts(band).slice(inlineConsts(band).indexOf('return ('))
-  const buildAt = jsx.search(/href=["'{]?['"]?\/build/)
+  const convertAt = jsx.search(/href=["'{]?['"]?\/(build|book-a-demo|government)/)
   const docsAt = jsx.search(/portaljs\.com\/docs/)
   check(
-    'the closing CTA primary button is the builder, not the docs',
-    buildAt !== -1 && (docsAt === -1 || buildAt < docsAt),
-    `${CTA_BAND} renders a docs link ahead of its ${BUILD_ROUTE} link. Whichever comes first is the primary button, and docs is where a reader goes to postpone deciding (po-80u).`,
+    'the closing CTA primary button converts, not the docs',
+    convertAt !== -1 && (docsAt === -1 || convertAt < docsAt),
+    `${CTA_BAND} renders a docs link ahead of its conversion link. Whichever comes first is the primary button, and docs is where a reader goes to postpone deciding (po-80u).`,
   )
 
   check(
@@ -250,6 +271,47 @@ if (build) {
   )
 }
 
+// ----------------------------------------------- the call path really books calls
+
+// /book-a-demo is a redirect, not a page: it reports the click, then hands the visitor to
+// the Google appointment calendar. Lose either half and every "Book a call" CTA on the
+// site becomes a dead or invisible end (po-frh, da-55j.6).
+const bookDemo = read(BOOK_DEMO)
+if (bookDemo) {
+  check(
+    '/book-a-demo redirects to the booking calendar',
+    /calendar\.app\.google\//.test(bookDemo) && /window\.location\.replace\(/.test(bookDemo),
+    `${BOOK_DEMO} no longer redirects to a calendar.app.google booking link. Every "Book a call" CTA then ends on a page that books nothing.`,
+  )
+  check(
+    '/book-a-demo still emits book_a_demo_redirect',
+    /track\('book_a_demo_redirect'/.test(bookDemo),
+    `${BOOK_DEMO} no longer captures book_a_demo_redirect, so call intent disappears from PostHog and calls booked can't be traced back to a CTA (po-frh).`,
+  )
+}
+
+// /government is where government CTAs and outreach emails land (da-55j.5). It must
+// offer the call, report its CTAs, and carry no self-serve sign-up (da-55j.6).
+const gov = read(GOVERNMENT)
+if (gov) {
+  const g = leadsToConversion(gov)
+  check(
+    '/government offers a book-a-call link',
+    g.call,
+    `${GOVERNMENT} no longer links to ${CALL_ROUTE}. The government landing page then has no way to book the call it exists for.`,
+  )
+  check(
+    '/government CTAs report themselves to analytics',
+    /track\('government_cta_clicked'/.test(gov),
+    `${GOVERNMENT} emits no government_cta_clicked event, so the government path can't be measured (da-55j.2).`,
+  )
+  check(
+    '/government carries no self-serve sign-up',
+    !g.build && !g.cloud && !/\/email\/start/.test(gov),
+    `${GOVERNMENT} links to ${BUILD_ROUTE} or a sign-up flow. Government buyers book calls; a sign-up on this path is a dead end (da-55j.6).`,
+  )
+}
+
 // ------------------------------------------------- the events can actually leave
 
 // React runs a page's effects BEFORE _app's, so initialising PostHog from _app's
@@ -271,10 +333,10 @@ if (app) {
 if (failures.length) {
   console.error(`\n✖ signup path check FAILED — ${failures.length} of ${checks.length} assertion(s):\n`)
   for (const f of failures) console.error(`    - ${f}\n`)
-  console.error('  The primary conversion path is unhooked. See po-506 / po-6el before changing this.\n')
+  console.error('  The primary conversion path is unhooked. See po-506 / po-6el / da-55j.6 before changing this.\n')
   process.exit(1)
 }
 
 console.log(
-  `✓ signup path intact — ${checks.length} assertions (nav CTA, hero CTA, homepage closing CTA, /build signup + funnel events)`,
+  `✓ conversion path intact — ${checks.length} assertions (nav CTA, hero CTA, homepage closing CTA, /build signup + funnel events, /book-a-demo + /government call path)`,
 )

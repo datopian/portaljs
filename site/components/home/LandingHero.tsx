@@ -34,6 +34,8 @@ const DOCS_URL = 'https://portaljs.com/docs'
 // typed (or suggested) prompt so the funnel is: hero prompt → /build → email.
 const BUILD_ROUTE = '/build'
 const CMD = 'npm create portaljs@latest'
+// Government landing page: the demo-and-call path (da-55j.5).
+const GOVERNMENT_ROUTE = '/government'
 
 // Rotating placeholder examples that seed intent in the "Describe your portal"
 // input (AU/NZ municipalities). If the user hasn't typed anything, the visible
@@ -371,6 +373,15 @@ export default function LandingHero() {
               </>
             )}
           </div>
+          {/* Government buyers book a call rather than build it themselves (da-55j.6): route
+              them to the government landing page from the first screen. */}
+          <Link
+            href={GOVERNMENT_ROUTE}
+            onClick={() => track('hero_cta_link_clicked', { target: 'government' })}
+            className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-medium text-slate-600 transition-colors hover:text-blue-600 dark:text-slate-400 dark:hover:text-sky-400"
+          >
+            Run a public-sector data portal? <span className="font-semibold text-blue-600 dark:text-sky-400">PortalJS for government →</span>
+          </Link>
         </div>
 
         {/* RIGHT: animated showcase (no tab strip — the left tabs drive it) */}
