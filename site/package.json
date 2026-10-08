@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "engines": {
-    "node": ">=20 <21"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "npm run mddb && next dev",
@@ -69,7 +69,7 @@
     "typescript": "^6.0.3"
   },
   "volta": {
-    "node": "20.19.5"
+    "node": "24.11.0"
   },
   "allowScripts": {
     "puppeteer@18.2.1": true,
@@ -77,5 +77,8 @@
     "sqlite3@5.1.7": true,
     "@parcel/watcher@2.5.1": true,
     "core-js@3.39.0": true
+  },
+  "overrides": {
+    "prebuild-install": "^7.1.3"
   }
 }
