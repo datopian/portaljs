@@ -104,14 +104,14 @@ export function MobileNavigation({ navigation }) {
           )}
           {/* Primary CTA first, before the 24 navigation links (po-80u). The menu
               is the only full-height surface a mobile visitor opens deliberately;
-              burying the builder under Showcase/Integrations/Compare/Resources is
+              burying the primary CTA under Showcase/Integrations/Compare/Resources is
               how the mobile funnel ends up with one entry point. */}
           <Link
-            href="/build"
-            onClick={() => track("nav_cta_clicked", { target: "build", source: "mobile_menu" })}
+            href="/book-a-demo?source=mobile_menu"
+            onClick={() => track("nav_cta_clicked", { target: "book_call", source: "mobile_menu" })}
             className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-br from-sky-400 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_-4px_rgba(37,99,235,0.5)]"
           >
-            Get started
+            Book a call
             <span aria-hidden="true">→</span>
           </Link>
           <ul className="mt-2 space-y-2 border-l-2 border-slate-100 dark:border-slate-800 lg:mt-4 lg:space-y-4 lg:border-slate-200">

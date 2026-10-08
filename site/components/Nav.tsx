@@ -147,15 +147,17 @@ export default function Nav() {
           )}
           {/* Visible at EVERY breakpoint. It used to be `hidden lg:inline-flex`,
               which left mobile and tablet visitors — 11% of homepage traffic, 224
-              people over 2026-07-01..08-10 — with no route to /build anywhere on
-              the page except the hero itself (po-80u). */}
+              people over 2026-07-01..08-10 — with no route into the funnel anywhere
+              on the page except the hero itself (po-80u).
+              Points at a call, not self-serve sign-up (da-55j.6): PortalJS's buyers
+              are governments, and they book calls; they don't sign up. */}
           <Link
-            href="/build"
-            title="Build a data portal — describe it and we'll scaffold it"
-            onClick={() => track('nav_cta_clicked', { target: 'build' })}
+            href="/book-a-demo?source=nav"
+            title="Book a 30-minute call with the PortalJS team"
+            onClick={() => track('nav_cta_clicked', { target: 'book_call' })}
             className="inline-flex flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-blue-600 px-3 py-1.5 text-[13px] font-semibold text-white shadow-[0_4px_14px_-4px_rgba(37,99,235,0.5)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_6px_20px_-6px_rgba(37,99,235,0.65)] sm:px-4 sm:py-2 sm:text-sm"
           >
-            Get started
+            Book a call
           </Link>
         </div>
       </div>

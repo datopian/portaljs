@@ -26,6 +26,8 @@ const FILES = [
   'components/home/CtaBand.tsx',
   'pages/build.tsx',
   'pages/_app.tsx',
+  'pages/book-a-demo.tsx',
+  'pages/government.tsx',
 ]
 
 function runGuard(root) {
@@ -53,14 +55,17 @@ const cases = [
   // The original po-oh0 regression: nav CTA repointed away from any signup.
   [
     'nav CTA repointed at the app root',
-    (d) => edit(d, 'components/Nav.tsx', (s) => s.replace(/href="\/build"/g, 'href="https://cloud.portaljs.com"')),
+    (d) => edit(d, 'components/Nav.tsx', (s) => s.replace(/href="\/book-a-demo\?source=nav"/g, 'href="https://cloud.portaljs.com"')),
   ],
   // The other half of po-oh0: a hero that reads well and converts nothing.
   [
     'hero CTA removed',
     (d) =>
       edit(d, 'components/home/LandingHero.tsx', (s) =>
-        s.replace(/const BUILD_ROUTE = '\/build'/, "const BUILD_ROUTE = '/docs'").replace(/href="\/build"/g, 'href="/docs"'),
+        s
+          .replace(/const BUILD_ROUTE = '\/build'/, "const BUILD_ROUTE = '/docs'")
+          .replace(/const GOVERNMENT_ROUTE = '\/government'/, "const GOVERNMENT_ROUTE = '/docs'")
+          .replace(/href="\/build"/g, 'href="/docs"'),
       ),
   ],
   [
@@ -112,14 +117,20 @@ const cases = [
     'closing CTA repointed at the docs',
     (d) =>
       edit(d, 'components/home/CtaBand.tsx', (s) =>
-        s.replace("const BUILD_ROUTE = '/build'", "const BUILD_ROUTE = 'https://portaljs.com/docs'"),
+        s
+          .replace("const BOOK_CALL = '/book-a-demo?source=home_cta_band'", "const BOOK_CALL = 'https://portaljs.com/docs'")
+          .replace("const GOVERNMENT = '/government'", "const GOVERNMENT = 'https://portaljs.com/docs'")
+          .replace("const BUILD_ROUTE = '/build'", "const BUILD_ROUTE = 'https://portaljs.com/docs'"),
       ),
   ],
   [
     'closing CTA demoted below a docs button',
     (d) =>
       edit(d, 'components/home/CtaBand.tsx', (s) =>
-        s.replace('<Link\n                href={BUILD_ROUTE}', '<a href={DOCS_URL} />\n              <Link\n                href={BUILD_ROUTE}'),
+        s.replace(
+          '<Link\n                href={BOOK_CALL}',
+          '<a href="https://portaljs.com/docs" />\n              <Link\n                href={BOOK_CALL}',
+        ),
       ),
   ],
   [
@@ -130,6 +141,31 @@ const cases = [
   // Deleting an entry point entirely must fail, not vacuously pass.
   ['the hero file is deleted', (d) => fs.rmSync(path.join(d, 'components/home/LandingHero.tsx'))],
   ['the closing CTA file is deleted', (d) => fs.rmSync(path.join(d, 'components/home/CtaBand.tsx'))],
+  // da-55j.6: the call path. A "Book a call" CTA must still end in a booking calendar.
+  [
+    '/book-a-demo stops redirecting to the calendar',
+    (d) => edit(d, 'pages/book-a-demo.tsx', (s) => s.replace('window.location.replace(destination)', '')),
+  ],
+  [
+    '/book-a-demo stops emitting book_a_demo_redirect',
+    (d) => edit(d, 'pages/book-a-demo.tsx', (s) => s.replace("track('book_a_demo_redirect'", "noTrack('book_a_demo_redirect'")),
+  ],
+  [
+    '/government loses its book-a-call link',
+    (d) => edit(d, 'pages/government.tsx', (s) => s.replace("const BOOK_CALL = '/book-a-demo'", "const BOOK_CALL = '/contact'")),
+  ],
+  [
+    '/government grows a self-serve sign-up link',
+    (d) =>
+      edit(d, 'pages/government.tsx', (s) =>
+        s.replace('<BookCallButton position="footer" />', '<BookCallButton position="footer" />\n<Link href="/build">Build</Link>'),
+      ),
+  ],
+  [
+    '/government CTAs stop reporting themselves',
+    (d) => edit(d, 'pages/government.tsx', (s) => s.replaceAll("track('government_cta_clicked'", "noTrack('government_cta_clicked'")),
+  ],
+  ['the government page is deleted', (d) => fs.rmSync(path.join(d, 'pages/government.tsx'))],
 ]
 
 let failed = 0
