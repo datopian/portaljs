@@ -91,6 +91,33 @@ external validators**. Two real node-kind defects were found and fixed:
 
 Regression guards for all three live in `scripts/harvest-roundtrip.test.ts`.
 
+## Distributions for multi-resource datasets — #1669
+
+Every file a dataset publishes is its own `dcat:Distribution`. Before this, only the
+single-file `file` field produced one, so datasets that list their files in `resources`
+(multi-file bundles, remote Parquet / PMTiles / GeoParquet) had **no distribution in any
+feed** — 3 of the 7 reference datasets — tripping the DCAT-AP "distribution" check and any
+profile that makes `dcat:distribution` mandatory. The mapping (`toDCAT` in `dcat.ts`):
+
+| Source | Distribution |
+|---|---|
+| `file` (+ dataset `format`) | one distribution titled after the dataset — unchanged |
+| each `resources[]` entry | one distribution: `dct:title` ← `title` (else `name`), `dct:description` ← `description`, `dct:format` / `dcat:mediaType` ← `format` (EU file-type / IANA IRIs, as for `file`) |
+| `path` → `dcat:downloadURL` | absolute URL kept as-is (remote object storage); site-root `/x` → `<SITE_URL>/x`; bare filename → `<SITE_URL>/data/<path>` (served from `public/data/`) — the showcase's `resourceUrl()` rules (`resolveResourceUrl`) |
+| `dcat:accessURL` | the dataset landing page (else the download URL) — mandatory in DCAT-AP |
+| both `file` and `resources` | the file's distribution first, then the resources; a resource resolving to the file's URL is not listed twice |
+
+On harvest, `fromDCAT` maps one distribution to `file`/`format` (as before) and two or more
+to `resources[]` (full download URLs, titles, descriptions, formats), so a bundle no longer
+collapses to its first file and re-exports with the same distributions. Croissant
+`cr:FileObject`s resolve resource paths the same way, so a remote resource's `contentUrl` is
+its own URL rather than one nested under the site's `/data/`.
+
+Single-file datasets emit byte-identical JSON-LD (and the same RDF graph) as before.
+Regression guards: `scripts/harvest-roundtrip.test.ts` (per-dataset distribution counts,
+URLs and formats across every profile × serialization; `toDCAT`/`fromDCAT` unit checks) and
+`scripts/validate-dcat-roundtrip.ts` (distribution counts survive the harvest round-trip).
+
 ## GeoDCAT-AP (spatial extension of DCAT-AP) — po-da5
 
 GeoDCAT-AP IS DCAT-AP plus spatial coverage (`dct:spatial` → a `dct:Location` with
