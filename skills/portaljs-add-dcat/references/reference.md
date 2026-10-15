@@ -17,6 +17,7 @@ are config/data, not hardcoded, and multiple can be emitted at once.
 | `geodcat-ap` | GeoDCAT-AP (spatial / INSPIRE) | DCAT-AP + `dct:spatial` (bbox/geometry as `gsp:wktLiteral`) from a dataset's `dcat.spatial`. |
 | `croissant` | Croissant (MLCommons / schema.org) | ML-dataset metadata; JSON-LD only. |
 | `dcat-ap-se` / `dcat-ap-ch` / `dcat-ap-de` | National (Sweden / Switzerland / Germany) | DCAT-AP + national `conformsTo`. |
+| `dcat-ap-it` | DCAT-AP_IT (Italy — AgID / dati.gov.it) | DCAT-AP + `dcatapit:*` types, IPA-coded agents, `dct:rightsHolder` + `dct:accrualPeriodicity` per dataset, licence per distribution. Set `publisher.identifier` (IPA code); per dataset `dcat.rightsHolder` / `dcat.accrualPeriodicity`. |
 
 Register another national profile without code:
 `registerDcatProfile(makeNationalProfile({ id, label, conformsTo, context }))` in a
@@ -46,6 +47,11 @@ full `xsd:dateTime` timestamps.
 - **GeoDCAT-AP** — validates as DCAT-AP for the harvest gate; full spatial profile via the
   [GeoDCAT-AP 3.0.0 SHACL shapes](https://semiceu.github.io/GeoDCAT-AP/releases/3.0.0/shacl/geodcat-ap-SHACL.ttl)
   (run with `-i rdfs` to clear subclass-range warnings).
+- **DCAT-AP_IT** — the AgID SPARQL rules
+  ([italia/daf-semantic-validator](https://github.com/italia/daf-semantic-validator/tree/master/dist/data/ontologies/agid/DCAT-AP_IT/validators/sparql))
+  run with any SPARQL engine, or `dcat-ap-it validate` from
+  [ondata/dcat-ap-it-generator](https://github.com/ondata/dcat-ap-it-generator); the
+  official check is https://validatore.dati.gov.it (browser upload).
 - **Croissant** — `pip install mlcroissant`, then `mlcroissant validate --jsonld <file>` per
   dataset (extract each `dataset[i]` from the `DataCatalog` feed and re-attach the shared
   `@context` first).
@@ -66,6 +72,8 @@ validator URL rather than skipping the check silently.
   (RDF/XML), and `jsonld` → n-quads (JSON-LD) in a scratch directory and diff.
 - **`next build` fails after editing `dcat.config.json`** — almost always malformed
   JSON (trailing comma, unescaped quote); re-open the file, validate it parses, rebuild.
+- **DCAT-AP_IT agent missing `dct:identifier`** — set `publisher.identifier` (the IPA
+  code) in `dcat.config.json`, and `identifier` on any per-dataset `rightsHolder`/`publisher`.
 - **GeoDCAT-AP full-profile SHACL run shows range warnings** — expected when the
   validator can't dereference external vocabularies (publisher→`foaf:Agent`,
   theme→`skos:Concept`); these are advisory, not harvest-blocking.

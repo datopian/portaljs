@@ -46,10 +46,13 @@ profiles are config/data, not hardcoded, and multiple can be emitted at once.
 | `geodcat-ap` | GeoDCAT-AP (spatial / INSPIRE) | DCAT-AP + spatial coverage: `dct:spatial` (bbox/geometry as `gsp:wktLiteral`) + `dcat:spatialResolutionInMeters` from each dataset's `dcat.spatial` (or the catalog-wide `spatial` config). |
 | `croissant` | Croissant (MLCommons / schema.org) | ML-dataset metadata: a schema.org `DataCatalog` of Croissant `Dataset`s with `cr:FileObject` distributions + `cr:RecordSet`/`cr:Field` mapped from the Frictionless Table Schema. **JSON-LD only.** |
 | `dcat-ap-se` · `dcat-ap-ch` · `dcat-ap-de` | National (Sweden / Switzerland / Germany) | DCAT-AP + national `conformsTo`; examples of the plug mechanism. |
+| `dcat-ap-it` | DCAT-AP_IT (Italy — AgID / dati.gov.it) | DCAT-AP + `dcatapit:*` types, agents with `dct:identifier` (IPA code), `dct:rightsHolder` + `dct:accrualPeriodicity` on every dataset, licence on every distribution. Needs `publisher.identifier`. |
 
 **Add another national profile** without code: `registerDcatProfile(makeNationalProfile({ id, label, conformsTo, context }))` in a small module the app loads, then list its id in `dcat.config.json`. See `lib/metadata/README.md`.
 
 **GeoDCAT-AP spatial input.** Per dataset, add `"dcat": { "spatial": { "bbox": "POLYGON((…))" } }` (or `"geometry"`, `"uri"`, `"spatialResolutionInMeters"`) to `datasets.json`; or set a catalog-wide `"spatial"` in `dcat.config.json`. WKT strings are serialized as `gsp:wktLiteral`. A dataset with no spatial coverage is still GeoDCAT-AP-conformant.
+
+**DCAT-AP_IT input.** Set `publisher.identifier` in `dcat.config.json` to the IPA code (Indice della Pubblica Amministrazione) of the publishing administration — the VAT number for a private body — plus EU `themes` and a licence (dataset `licenses`, or `license` in config). Dataset identifiers become `<IPA code>:<namespace>/<slug>`. Per dataset, `datasets.json` can add `"dcat": { "rightsHolder": { "name": "Comune di Palermo", "identifier": "c_g273" }, "accrualPeriodicity": "ANNUAL" }` (an EU frequency token or IRI) and an explicit `"identifier"` (e.g. `"c_g273:D.12"`). Defaults: the rights holder is the dataset's publisher, else the catalog publisher; the frequency is `UNKNOWN` (AgID allows it); `dct:modified` falls back to the catalog's. Other profiles ignore these fields.
 
 **Croissant** describes datasets for ML tooling (schema.org JSON-LD). It reads the Frictionless Table Schema to emit `cr:RecordSet`/`cr:Field`, and stamps a `sha256` on each `cr:FileObject` from the local `public/data/<file>` bytes (mlcroissant requires a checksum on a hosted file; remote-only files are emitted without one). Because a Croissant document describes a single dataset, the feed is a `DataCatalog` whose `dataset[]` entries are each a standalone Croissant `Dataset`.
 
@@ -206,6 +209,13 @@ re-run these after changing the mapping:
   DCAT-AP `full`, expect advisory range violations (publisher→`foaf:Agent`,
   theme→`skos:Concept`, …) the validator can't confirm without dereferencing external
   vocabularies; run with `-i rdfs` to clear the subclass ones.
+- **DCAT-AP_IT** — run the AgID SPARQL rules
+  ([italia/daf-semantic-validator](https://github.com/italia/daf-semantic-validator/tree/master/dist/data/ontologies/agid/DCAT-AP_IT/validators/sparql))
+  over `public/catalog.dcat-ap-it.ttl` with any SPARQL engine, or `dcat-ap-it validate
+  public/catalog.dcat-ap-it.ttl` ([ondata/dcat-ap-it-generator](https://github.com/ondata/dcat-ap-it-generator)).
+  Errors are mandatory properties, warnings recommended ones. Before registering with
+  dati.gov.it, upload the Turtle to the official validator, https://validatore.dati.gov.it
+  (browser only).
 - **Croissant** — the MLCommons validator (Python 3.10+): `pip install mlcroissant`,
   then validate each dataset (the feed is a `DataCatalog`; extract each `dataset[i]`,
   re-attach the shared `@context`, and run `mlcroissant validate --jsonld <file>`).
@@ -256,7 +266,7 @@ to enrich the feed.
 ERROR: [add-dcat] NO_METADATA_CONTRACT lib/metadata/ not found — this portal predates the metadata-profile contract. Scaffold with /portaljs-new-portal or add lib/metadata first.
 ERROR: [add-dcat] NO_DCAT_CORE lib/metadata/dcat.ts not found — the DCAT-3 core is missing. Update the portal template before adding profiles.
 ERROR: [add-dcat] BAD_CONFIG dcat.config.json is not valid JSON — fix the syntax and re-run.
-ERROR: [add-dcat] UNKNOWN_PROFILE "<id>" is not a registered profile — use one of dcat-2, dcat-3, dcat-ap, dcat-us, geodcat-ap, croissant, dcat-ap-se, dcat-ap-ch, dcat-ap-de, or register a national profile first.
+ERROR: [add-dcat] UNKNOWN_PROFILE "<id>" is not a registered profile — use one of dcat-2, dcat-3, dcat-ap, dcat-us, geodcat-ap, croissant, dcat-ap-se, dcat-ap-ch, dcat-ap-de, dcat-ap-it, or register a national profile first.
 ```
 
 ## Notes

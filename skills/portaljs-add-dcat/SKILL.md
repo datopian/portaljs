@@ -86,7 +86,7 @@ the single source of truth. Read and follow it when executing. Summary:
 | `NO_METADATA_CONTRACT` | `lib/metadata/` not found | Portal predates the metadata-profile contract; scaffold with `portaljs-new-portal` or add `lib/metadata` first. |
 | `NO_DCAT_CORE` | `lib/metadata/dcat.ts` not found | The DCAT-3 core is missing; update the portal template before adding profiles. |
 | `BAD_CONFIG` | `dcat.config.json` is not valid JSON | Fix the syntax and re-run `npm run generate:dcat`. |
-| `UNKNOWN_PROFILE` | Profile id not in the registry | Use one of `dcat-2`, `dcat-3`, `dcat-ap`, `dcat-us`, `geodcat-ap`, `croissant`, `dcat-ap-se`, `dcat-ap-ch`, `dcat-ap-de`, or register a national profile first. |
+| `UNKNOWN_PROFILE` | Profile id not in the registry | Use one of `dcat-2`, `dcat-3`, `dcat-ap`, `dcat-us`, `geodcat-ap`, `croissant`, `dcat-ap-se`, `dcat-ap-ch`, `dcat-ap-de`, `dcat-ap-it`, or register a national profile first. |
 | Feed flagged non-conformant | `publisher`/`contactPoint` missing for DCAT-AP or DCAT-US | Ask the user for the publishing organization and contact, add to `dcat.config.json`, regenerate. |
 | DCAT-US SHACL rejects the publisher | Publisher has no IRI (blank node) | Set `publisher.uri` (or `homepage`) in `dcat.config.json`. |
 | `next build` fails after config change | Malformed JSON in `dcat.config.json` or `datasets.json` | Print the build log, fix the JSON, rebuild before reporting success. |

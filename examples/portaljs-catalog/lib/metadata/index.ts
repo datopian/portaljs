@@ -61,6 +61,7 @@ export {
   dcatApSeProfile,
   dcatApChProfile,
   dcatApDeProfile,
+  dcatApItProfile,
   type DcatProfile,
   type DcatConfig,
   type DcatAgent,

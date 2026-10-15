@@ -180,6 +180,26 @@ can emit several profiles at once. Which profiles + serializations to emit, and 
 catalog-level org/contact metadata they need, are authored in `dcat.config.json` and
 wired by the [`/portaljs-add-dcat`](/docs/skills/portaljs-add-dcat) skill.
 
+**DCAT-AP_IT (`dcat-ap-it`).** The Italian profile (AgID / dati.gov.it) is a full
+profile rather than a `makeNationalProfile` stamp: it adds the `dcatapit:*` types, agents
+with `dct:identifier` (the IPA code), `dct:rightsHolder` and `dct:accrualPeriodicity` on
+every dataset, and a licence on every distribution. It reads `publisher.identifier` from
+`dcat.config.json` and `dcat.rightsHolder` / `dcat.accrualPeriodicity` /
+`dcat.identifier` from a dataset's `dcat` block:
+
+```json
+{
+  "slug": "bilancio-2024",
+  "namespace": "finanze",
+  "dcat": {
+    "rightsHolder": { "name": "Comune di Palermo", "identifier": "c_g273" },
+    "accrualPeriodicity": "ANNUAL"
+  }
+}
+```
+
+See `DCAT-CONFORMANCE.md` for the mapping and its validation against the AgID rules.
+
 **What DCAT does not carry.** DCAT has no inline field schema — the Table Schema is
 referenced via a distribution's `dcat:describedBy`, not embedded. So `fromDCAT`
 recovers package metadata + the distributions (one → `file`/`format`; several →
