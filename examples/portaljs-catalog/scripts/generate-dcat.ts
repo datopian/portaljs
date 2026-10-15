@@ -17,13 +17,16 @@
 // Configuration: dcat.config.json in the portal root (see that file). Which profiles
 // to emit, which serializations, and the catalog-level org/contact metadata the
 // profiles require (publisher, contactPoint, themes). Env overrides: SITE_URL (the
-// absolute site origin), DCAT_PROFILES (comma list, overrides config.profiles).
+// absolute site URL, including the base path if any), DCAT_PROFILES (comma list,
+// overrides config.profiles). The site-relative paths in catalog-feeds.json are
+// prefixed with `basePath` from next.config.js (set via BASE_PATH).
 //
 // Run: `tsx scripts/generate-dcat.ts` (invoked automatically by npm pre-scripts).
 
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { join } from 'node:path'
+import nextConfig from '../next.config.js'
 import { provider } from '../lib/providers'
 import {
   toDCATCatalog,
@@ -147,7 +150,7 @@ async function main() {
         profile: profile.id,
         label: profile.label,
         format,
-        path: `/${file}`,
+        path: `${nextConfig.basePath ?? ''}/${file}`,
         conformsTo: profile.conformsTo,
       })
 

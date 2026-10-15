@@ -6,6 +6,7 @@
 // mode, and the canonical URL helper.
 
 import type { Dataset, Resource } from './providers'
+import { withBasePath } from './basePath'
 
 export type {
   Dataset,
@@ -64,10 +65,11 @@ export function getResources(d: Dataset): Resource[] {
 // Public URL of a resource's raw file. A relative `path` is served statically from
 // /public/data; an absolute path is returned as-is, so a resource can point at a remote
 // file (e.g. a CKAN/DCAT download URL harvested by /portaljs-migrate) or a site-root path without
-// copying bytes into the repo.
+// copying bytes into the repo. The bundled /data path carries the basePath (the preview,
+// download link and DuckDB/map loaders all fetch it raw, not via next/link).
 export function resourceUrl(r: Resource): string {
   if (/^(https?:)?\/\//.test(r.path) || r.path.startsWith('/')) return r.path
-  return `/data/${r.path}`
+  return withBasePath(`/data/${r.path}`)
 }
 
 // Human-readable label for a resource in the file list. `path` can be an R2/LFS
