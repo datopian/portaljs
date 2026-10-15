@@ -15,6 +15,10 @@ const config = {
   authorUrl: 'https://datopian.com/',
   navLinks: [
     {
+      name: 'Government',
+      href: '/government',
+    },
+    {
       name: 'Showcase',
       subItems: [
         {
