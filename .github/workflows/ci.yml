@@ -104,11 +104,14 @@ jobs:
         env:
           # Avoid unauthenticated GitHub API rate limits when giget fetches.
           GIGET_AUTH: ${{ secrets.GITHUB_TOKEN }}
+          # `github.head_ref` is an attacker-controlled PR branch name; pass it
+          # through the environment so the shell never parses it as code.
+          PORTALJS_REF: ${{ github.head_ref || github.ref_name }}
         run: |
           node packages/create-portaljs/index.mjs smoke-portal \
             --yes --no-git \
             --namespace theme \
             --name "Smoke Portal" \
-            --ref "${{ github.head_ref || github.ref_name }}"
+            --ref "$PORTALJS_REF"
           cd smoke-portal
           npm run build
