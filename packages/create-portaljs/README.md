@@ -41,5 +41,7 @@ Any option given on the CLI skips its prompt; `--yes` skips all prompts.
 The PortalJS agentic skills are bundled into the new project's `.claude/commands/`,
 so they work the moment you run `claude` in the portal directory — no separate
 install. Build it out with them (or by hand — it's just Next.js):
-`/portaljs-add-dataset`, `/portaljs-add-resource`, `/portaljs-add-chart`, `/portaljs-add-map`, `/portaljs-connect-ckan`, `/portaljs-deploy`.
+`/portaljs-add-dataset`, `/portaljs-add-resource`, `/portaljs-add-chart`, `/portaljs-add-map`, `/portaljs-add-geo`, `/portaljs-add-dcat`, `/portaljs-connect-ckan`, `/portaljs-deploy`, and more.
+The bundled set is exactly the `commands` list in the repo's
+[`.claude-plugin/plugin.json`](https://github.com/datopian/portaljs/blob/main/.claude-plugin/plugin.json), read at the same `--ref` as the template.
 See the [docs](https://www.portaljs.com/docs/quickstart).
