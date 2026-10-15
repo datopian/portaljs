@@ -13,6 +13,7 @@
     "release": "changeset publish",
     "gen:skills": "node scripts/gen-skills-docs.mjs",
     "gen:skills:check": "node scripts/gen-skills-docs.mjs --check",
+    "skills:check": "node scripts/check-skills-sync.mjs",
     "verify": "bash scripts/verify.sh",
     "setup": "bash scripts/verify.sh setup",
     "lint": "bash scripts/verify.sh lint",
