@@ -13,7 +13,6 @@ Structure:
 - **site**: the website for the project, with a landing page and the docs
 - **packages**:
   - **components** (`@portaljs/components`): the library of components for creating a data portal
-  - **core** (`@portaljs/core`): layout/UI components
   - **ckan** (`@portaljs/ckan`): CKAN backend integration
 
 ## How to contribute
@@ -43,7 +42,7 @@ If you have an idea for improvement, and it doesn't have a corresponding issue y
 This monorepo uses npm workspaces (see the `workspaces` field in the root `package.json`). Each publishable package lives under `packages/*` and defines its own `build`/`prepare` scripts:
 
 - `packages/components` and `packages/ckan` build with `tsc && vite build`.
-- `packages/ckan-api-client-js` and `packages/core` build with Rollup (`rollup -c`).
+- `packages/ckan-api-client-js` builds with Rollup (`rollup -c`).
 
 To install all dependencies (and build every package via their `prepare` scripts):
 
@@ -55,7 +54,7 @@ To build a single package:
 
 ```sh
 npm run build --workspace=packages/<package-name>
-# e.g. npm run build --workspace=packages/core
+# e.g. npm run build --workspace=packages/ckan
 ```
 
 Each package's `prepare` script runs its build, so packages are built automatically on `npm install` and on publish.

@@ -213,7 +213,6 @@ backends (OpenMetadata), a browser DuckDB query layer, and access control — ar
 .claude/commands/    the agentic skills (slash commands)
 examples/            portaljs-catalog — the canonical template
 packages/
-  core/              layout/UI components            (@portaljs/core)
   ckan/              CKAN catalog UI + React          (@portaljs/ckan)
   ckan-api-client-js/ pure CKAN API client            (@portaljs/ckan-api-client-js)
 site/                portaljs.com — the marketing site + docs
