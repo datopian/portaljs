@@ -19,7 +19,7 @@ packages/
   core/                — layout/UI components (@portaljs/core)
   ckan/                — CKAN catalog UI + React components (@portaljs/ckan)
   ckan-api-client-js/  — pure CKAN API client (@portaljs/ckan-api-client-js)
-examples/              — reference implementations (read these before building)
+examples/              — portaljs-catalog (canonical template; read it before building) + openspending
 .claude/
   commands/     — Claude Code slash commands (OSS skills)
   datopian/     — Datopian-internal skills (require API keys)

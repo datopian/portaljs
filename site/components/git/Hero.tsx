@@ -23,12 +23,12 @@ export default function Hero() {
                 Read the docs
               </a>
               <a
-                href="https://github.com/datopian/portaljs/tree/main/examples/github-backed-catalog"
+                href="https://github.com/datopian/portaljs/tree/main/examples/portaljs-catalog"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-[10px] border border-slate-300 bg-white px-[18px] py-2.5 text-[14.5px] font-semibold text-slate-700 transition-all duration-150 hover:-translate-y-px hover:border-blue-400 hover:text-blue-600"
               >
-                View Example
+                View Template
               </a>
             </div>
           </div>

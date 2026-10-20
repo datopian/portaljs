@@ -13,7 +13,7 @@ The PortalJS CKAN example intends to provide users with an easy way to bootstrap
 Navigate to the directory in which you want to create the project folder and run the following command:
 
 ```
-npx create-next-app <app-name> --example https://github.com/datopian/datahub/tree/main/examples/ckan
+npx create-next-app <app-name> --example https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/ckan
 cd <app-name>
 ```
 
@@ -43,7 +43,7 @@ If you navigate to any of the dataset pages by clicking on the dataset title you
 
 ## Deployment
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdatopian%2Fdatahub%2Ftree%2Fmain%2Fexamples%2Fckan&env=DMS&envDescription=URL%20For%20the%20CKAN%20Backend%20Ex%3A%20https%3A%2F%2Fdemo.dev.datopian.com)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdatopian%2Fportaljs%2Ftree%2F59d816c73aa3569733ce26cf6c471d24b155d760%2Fexamples%2Fckan&env=DMS&envDescription=URL%20For%20the%20CKAN%20Backend%20Ex%3A%20https%3A%2F%2Fdemo.dev.datopian.com)
 
 By clicking on this button, you will be redirected to a page which allows you to clone the base project into your own GitHub/GitLab/BitBucket account and automatically deploy it.
 
@@ -143,6 +143,6 @@ Thanks to TypeScript, you can get a list of all the API methods in `@portaljs/ck
 
 ## Links
 
-- [Repo](https://github.com/datopian/datahub/tree/main/examples/ckan)  
+- [Repo](https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/ckan)  
 - [Live Demo](http://ckan.portaljs.org/)  
 

@@ -25,7 +25,7 @@ And scaffolding is only the start. The same model — describe intent, get plain
 ### Now — agentic skills v1
 - [x] `/portaljs-new-portal` — scaffold a portal from a brief
 - [x] `/portaljs-add-dataset` — add CSV/TSV/JSON/GeoJSON datasets and register them
-- [x] Canonical lightweight template (`examples/portaljs-template`)
+- [x] Canonical template (`examples/portaljs-catalog`, scaffolded by `npm create portaljs`)
 - [x] AI development guide (`CLAUDE.md`) and skill authoring guide (`.claude/AUTHORING.md`)
 
 ### Next — make skills installable anywhere

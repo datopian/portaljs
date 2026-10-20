@@ -14,7 +14,7 @@ We have created a full data portal demo using DataHub PortalJS all backed by a C
 To create a Portal app, run the following command in your terminal:
 
 ```console
-npx create-next-app -e https://github.com/datopian/datahub/tree/main/examples/ckan
+npx create-next-app -e https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/ckan
 ```
 
 > NB: Under the hood, this uses the tool called create-next-app, which bootstraps an app for you based on our CKAN example.

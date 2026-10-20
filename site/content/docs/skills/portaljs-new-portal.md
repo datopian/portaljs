@@ -6,7 +6,7 @@ description: Scaffold a production-ready PortalJS portal from a brief — a real
 ---
 
 `/portaljs-new-portal` scaffolds a production-ready PortalJS data portal from a short
-brief. It copies the canonical lightweight template, substitutes your project
+brief. It copies the canonical template, substitutes your project
 tokens, installs dependencies, and verifies the build — so you start from a
 working project, not a blank page.
 
@@ -30,10 +30,9 @@ A short brief in natural language. From it the skill extracts:
 
 If no project name is found, the skill stops and asks for one.
 
-By default it copies `examples/portaljs-template`. For a portal with **many
-datasets** (dozens or more), it can use the `examples/portaljs-catalog` variant
-instead, which renders every dataset through one dynamic route from a
-`datasets.json` manifest.
+It copies the canonical template, `examples/portaljs-catalog` — the same one
+`npm create portaljs` scaffolds — which renders every dataset through one dynamic
+`/@<namespace>/<slug>` route from a `datasets.json` manifest.
 
 ## Example
 

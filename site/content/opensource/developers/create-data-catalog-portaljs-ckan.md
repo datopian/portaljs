@@ -25,7 +25,7 @@ Below are some screenshots:
 - Create a new app with `create-next-app`:
 
 ```
-npx create-next-app <app-name> --example https://github.com/datopian/datahub/tree/main/examples/ckan-example
+npx create-next-app <app-name> --example https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/ckan
 cd <app-name>
 ```
 
@@ -48,7 +48,7 @@ If yo go to any one of those pages by clicking on `More info` you will see somet
 
 ## Deployment
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdatopian%2Fdatahub%2Ftree%2Fmain%2Fexamples%2Fckan-example&env=DMS&envDescription=URL%20For%20the%20CKAN%20Backend%20Ex%3A%20https%3A%2F%2Fdemo.dev.datopian.com)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdatopian%2Fportaljs%2Ftree%2F59d816c73aa3569733ce26cf6c471d24b155d760%2Fexamples%2Fckan&env=DMS&envDescription=URL%20For%20the%20CKAN%20Backend%20Ex%3A%20https%3A%2F%2Fdemo.dev.datopian.com)
 
 By clicking on this button, you will be redirected to a page which will allow you to clone the content into your own github/gitlab/bitbucket account and automatically deploy everything.
 
@@ -69,6 +69,6 @@ npm run start
 
 ## Links
 
-- [Repo](https://github.com/datopian/datahub/tree/main/examples/ckan-example)  
+- [Repo](https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/ckan)  
 - [Live Demo](https://ckan-example.portaljs.org)  
 

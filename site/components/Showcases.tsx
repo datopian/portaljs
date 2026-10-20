@@ -165,41 +165,22 @@ export const dataPortals = [
       'Shares data on revenues, payments, and governance in the extractive industries.',
   },
   {
-    title: 'FiveThirtyEight',
-    subtitle: 'Data Journalism Portal',
-    image: '/static/img/showcases/fivethirty.webp',
-    href: 'https://fivethirtyeight.portaljs.org/',
-    repository:
-      'https://github.com/datopian/datahub/tree/main/examples/fivethirtyeight',
-    description:
-      'This is a replica of data.fivethirtyeight.com using PortalJS.',
-  },
-  {
     title: 'CO2 PPM',
     subtitle: 'Frictionless Data',
     href: 'https://datahub.io/core/co2-ppm',
     repository:
-      'https://github.com/datopian/datahub/tree/main/examples/dataset-frictionless',
+      'https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/dataset-frictionless',
     image: '/static/img/showcases/co2.webp',
     description:
       'Progressive open-source framework for building data infrastructure - data management, data integration, data flows, etc. It includes various data standards and provides software to work with data.',
-  },
-  {
-    title: 'Github Datasets',
-    subtitle: 'Data Catalog',
-    image: '/static/img/showcases/github.webp',
-    href: 'https://example.portaljs.org/',
-    repository:
-      'https://github.com/datopian/datahub/tree/main/examples/github-backed-catalog',
-    description:
-      'A simple data catalog that get its data from a list of GitHub repos that serve as datasets.',
   },
   {
     title: 'Hatespeech Data',
     subtitle: 'Social Research Data Portal',
     image: '/static/img/showcases/hatespeech.webp',
     href: 'https://hatespeechdata.com/',
-    repository: 'https://github.com/datopian/datahub/tree/main/examples/turing',
+    repository:
+      'https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/turing',
     description:
       'Datasets annotated for hate speech, online abuse, and offensive language which are useful for training a natural language processing system to detect this online abuse.',
   },
