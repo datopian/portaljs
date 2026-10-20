@@ -122,6 +122,13 @@ Datasets are `@`-namespaced so they never collide with content pages. Pick one m
 - Tailwind CSS everywhere. Always include `@tailwindcss/typography` for prose content.
 - Do not use inline styles. Do not use CSS modules unless the project already uses them.
 
+## UI strings (i18n)
+
+- Every user-facing string lives in `locales/en.json`, keyed by area (`search.*`, `dataset.*`, `map.*`…). Render it with `t('key', { vars })` from `lib/i18n.ts` (`tn()` for plurals, `formatNumber` / `formatDate` for numbers and dates) — never hardcode English in JSX.
+- New UI text: add the key to `locales/en.json` and to every other `locales/*.json` present (missing keys fall back to English), then run `npm run i18n:check`.
+- A portal's language is `DEFAULT_LOCALE` in `next.config.js` (committed; `NEXT_PUBLIC_LOCALE` overrides it for one build). To set one: copy `en.json` to `locales/<code>.json`, translate it (keep keys and `{placeholders}`, set `_intl`, e.g. `it-IT`), register it in `LOCALES` in `lib/i18n.ts`, set `DEFAULT_LOCALE`, and run `npm run i18n:check`.
+- Plurals are `key.one` / `key.other`; add `.few` / `.many` / … where the language's `Intl.PluralRules` uses them.
+
 Standard `tailwind.config.js`:
 ```js
 module.exports = {

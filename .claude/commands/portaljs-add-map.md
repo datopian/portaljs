@@ -221,6 +221,7 @@ Write `PORTAL_DIR/components/Map.tsx`:
 ```tsx
 import dynamic from 'next/dynamic'
 import type { MapProps } from './MapView'
+import { t } from '../lib/i18n'
 
 // ssr: false — Leaflet accesses window and cannot run during server rendering.
 const MapView = dynamic(() => import('./MapView'), {
@@ -230,7 +231,7 @@ const MapView = dynamic(() => import('./MapView'), {
       className="flex items-center justify-center rounded-lg border border-gray-200 bg-gray-50"
       style={{ height: 500 }}
     >
-      <span className="text-sm text-gray-400">Loading map…</span>
+      <span className="text-sm text-gray-400">{t('map.loading')}</span>
     </div>
   ),
 })
@@ -239,6 +240,9 @@ export default function Map(props: MapProps) {
   return <MapView {...props} />
 }
 ```
+
+`map.loading` ("Loading map…") already ships in the template's `locales/en.json`; add it
+there (and to any other `locales/*.json`) only if it is missing.
 
 ### 6. Render the map into the showcase's Views section
 
@@ -250,9 +254,9 @@ route already has a **Views placeholder**:
 {/* Views placeholder — charts and maps are added here by the
     /portaljs-add-chart and /portaljs-add-map skills. */}
 <section className="mt-10 border-t border-gray-200 pt-6">
-  <h2 className="text-lg font-semibold text-gray-900">Views</h2>
+  <h2 className="text-lg font-semibold text-gray-900">{t('dataset.views')}</h2>
   <p className="mt-2 text-sm text-gray-400">
-    No views yet. Charts and maps for this dataset are added here.
+    {t('dataset.viewsEmpty')} {t('dataset.viewsHint')}
   </p>
 </section>
 ```
@@ -270,14 +274,14 @@ which sidesteps the fact that `.geojson` imports are not covered by `resolveJson
 
    ```tsx
    <section className="mt-10 border-t border-gray-200 pt-6">
-     <h2 className="text-lg font-semibold text-gray-900">Views</h2>
+     <h2 className="text-lg font-semibold text-gray-900">{t('dataset.views')}</h2>
      {dataset.namespace === 'NAMESPACE' && dataset.slug === 'SLUG' ? (
        <div className="mt-4">
          <Map url={`/data/${dataset.file}`} />
        </div>
      ) : (
        <p className="mt-2 text-sm text-gray-400">
-         No views yet. Charts and maps for this dataset are added here.
+         {t('dataset.viewsEmpty')} {t('dataset.viewsHint')}
        </p>
      )}
    </section>
@@ -317,6 +321,14 @@ Next: run `npm run dev` and visit http://localhost:3000/@NAMESPACE/SLUG to verif
 ```
 
 ## Notes
+
+- **UI strings (i18n).** The template keeps every user-facing string in `locales/en.json`
+  and renders it with `t()` from `lib/i18n.ts`. Text this skill writes into JSX — headings,
+  labels, placeholders, aria-labels, loading/empty/error messages — follows the same rule:
+  add each key to `locales/en.json` **and** to every other `locales/*.json` the portal has
+  (translated into that file's language — `DEFAULT_LOCALE` in `next.config.js` is the one
+  that ships), render `t('<key>')`, then run `npm run i18n:check`. Don't hardcode English
+  in JSX. If the portal predates i18n (no `lib/i18n.ts`), use plain strings.
 
 - **One showcase route, many datasets:** `pages/[owner]/[slug].tsx` renders every dataset,
   so always gate the map on the dataset's `(namespace, slug)` — otherwise it would appear

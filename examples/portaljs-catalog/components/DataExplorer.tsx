@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import LoadingSpinner from './ui/LoadingSpinner'
 import { DuckDbQuery } from '../lib/query/duckdb'
 import { resourceUrl, type Resource } from '../lib/datasets'
+import { formatNumber, pluralKey, t, tn, tx } from '../lib/i18n'
 
 // A DuckDB-Wasm-backed data view for a single resource. Loads the file into an
 // in-browser DuckDB, previews it, and lets the visitor run SQL against the table
@@ -76,19 +77,22 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
     <div>
       <div className="mb-3.5 flex items-center gap-3">
         <span className="font-sans text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45">
-          Query this dataset (SQL)
+          {t('query.heading')}
         </span>
         {total !== null && (
           <span className="font-mono text-[11px] text-ink/40">
-            {total.toLocaleString()} rows in <code>data</code>
+            {tx(pluralKey('query.rowsInTable', total), {
+              count: formatNumber(total),
+              table: <code>data</code>,
+            })}
           </span>
         )}
         {ranged && (
           <span
-            title="Parquet queried in place over HTTP range requests — only the bytes a query touches are fetched, never the whole file."
+            title={t('query.rangedTooltip')}
             className="border border-accent/50 px-1.5 py-0.5 font-sans text-[10px] font-medium uppercase tracking-[0.06em] text-accent"
           >
-            queried in place · range requests
+            {t('query.rangedBadge')}
           </span>
         )}
       </div>
@@ -108,7 +112,7 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
         />
         <div className="flex items-center justify-between border-t border-ink/[0.15] px-4 py-2.5">
           <span className="font-mono text-[11px] text-ink/40">
-            DuckDB-Wasm · runs in your browser · ⌘/Ctrl + Enter
+            {t('query.engineHint')}
           </span>
           <button
             type="button"
@@ -116,15 +120,15 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
             disabled={loading}
             className="bg-accent px-[18px] py-2.5 font-sans text-xs font-semibold uppercase tracking-[0.06em] text-cream hover:opacity-90 disabled:opacity-50"
           >
-            {loading ? 'Running…' : 'Run ▶'}
+            {loading ? t('query.running') : t('query.run')}
           </button>
         </div>
       </div>
 
       <p className="mt-2 font-sans text-xs text-ink/45">
         {ranged
-          ? 'This Parquet file is queried directly on object storage; add a WHERE / column list so only the rows and columns you need are fetched.'
-          : 'Keep a LIMIT on exploratory queries so large results don’t overwhelm the browser.'}
+          ? t('query.rangedHint')
+          : t('query.limitHint')}
       </p>
 
       <div className="mt-[18px]">
@@ -135,7 +139,7 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
         ) : loading && rows.length === 0 ? (
           <LoadingSpinner />
         ) : rows.length === 0 ? (
-          <p className="font-serif text-[15px] italic text-ink/55">No rows.</p>
+          <p className="font-serif text-[15px] italic text-ink/55">{t('query.noRows')}</p>
         ) : (
           <>
             <div className="overflow-x-auto border border-ink/[0.18]">
@@ -169,7 +173,7 @@ export default function DataExplorer({ resource }: { resource: Resource }) {
               </table>
             </div>
             <div className="mt-2.5 font-mono text-[11px] text-ink/40">
-              {rows.length} rows returned
+              {tn('query.rowsReturned', rows.length, { count: formatNumber(rows.length) })}
             </div>
           </>
         )}

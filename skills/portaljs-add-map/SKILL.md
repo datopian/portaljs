@@ -64,6 +64,9 @@ single source of truth. Read and follow it when executing. Summary:
 - **Modified:** `pages/[owner]/[slug].tsx` (import + gated `<Map />` in Views);
   `datasets.json` (only when registering a new dataset); `package.json`
   (`react-leaflet`, `leaflet`, `@types/leaflet`).
+- **UI strings:** any text it adds to JSX renders through `t()` (`lib/i18n.ts`), with the
+  keys added to `locales/en.json` and every other `locales/*.json`; `npm run i18n:check`
+  passes.
 - **Verified:** `npx tsc --noEmit` passes.
 - **Result:** the map renders at `/@<namespace>/<slug>` under a "Views" heading.
 

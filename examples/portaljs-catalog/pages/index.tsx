@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { suggestedQueries } from '../lib/datasets'
 import { provider } from '../lib/providers'
+import { t } from '../lib/i18n'
 
 // Popular searches are derived from the portal's own datasets at build time (see
 // suggestedQueries) rather than hardcoded, so every portal surfaces its real
@@ -32,7 +33,7 @@ export default function Home({ suggested }: { suggested: string[] }) {
       </Head>
       <main className="mx-auto max-w-[660px] px-6 pb-24 pt-16 sm:px-16 sm:pt-[104px]">
         <div className="mb-6 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-accent">
-          Open Data Portal
+          {t('home.eyebrow')}
         </div>
         <h1 className="mb-7 font-serif text-[44px] font-semibold leading-[1.06] tracking-[-0.01em] text-ink sm:text-[62px]">
           __PROJECT_NAME__
@@ -54,8 +55,8 @@ export default function Home({ suggested }: { suggested: string[] }) {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search datasets…"
-            aria-label="Search datasets"
+            placeholder={t('search.placeholder')}
+            aria-label={t('search.ariaLabel')}
             className="w-full border-0 border-b border-ink/30 bg-transparent pb-3.5 font-serif text-lg italic text-ink placeholder:text-ink/40 focus:border-accent focus:outline-none"
           />
         </form>
@@ -63,7 +64,7 @@ export default function Home({ suggested }: { suggested: string[] }) {
         {suggested.length > 0 && (
           <>
             <div className="mb-3.5 font-sans text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45">
-              Popular searches
+              {t('home.popularSearches')}
             </div>
             <div className="flex flex-wrap gap-x-[22px] gap-y-2">
               {suggested.map((q) => (
@@ -84,7 +85,7 @@ export default function Home({ suggested }: { suggested: string[] }) {
             href="/search"
             className="border-b border-accent pb-[3px] font-serif text-[17px] font-medium italic text-ink no-underline hover:text-accent"
           >
-            Browse all datasets &rarr;
+            {t('home.browseAll')}
           </Link>
         </div>
       </main>

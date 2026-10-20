@@ -103,6 +103,7 @@ import {
   XAxis, YAxis, ZAxis,
   CartesianGrid, Tooltip, Legend,
 } from 'recharts'
+import { t } from '../lib/i18n'
 import { parseCsv } from './ui/parseCsv'
 
 type Row = Record<string, string | number>
@@ -160,9 +161,9 @@ export function Chart({ url = '', data: initialData = [], type = 'line', x, y, h
     [raw, x, yKeys]
   )
 
-  if (isLoading) return <div className="min-h-[200px] flex items-center justify-center text-gray-400">Loading chart…</div>
-  if (error) return <div className="p-4 text-sm text-red-700 bg-red-50 rounded-md">Failed to load chart data: {error}</div>
-  if (rows.length === 0) return <div className="p-4 text-sm text-gray-400">No data to chart.</div>
+  if (isLoading) return <div className="min-h-[200px] flex items-center justify-center text-gray-400">{t('chart.loading')}</div>
+  if (error) return <div className="p-4 text-sm text-red-700 bg-red-50 rounded-md">{t('chart.loadFailed', { error })}</div>
+  if (rows.length === 0) return <div className="p-4 text-sm text-gray-400">{t('chart.empty')}</div>
 
   const grid = <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
   const axes = (
@@ -217,6 +218,15 @@ Note: `Chart` reuses `components/ui/parseCsv.ts`, which ships with the template
 (the same parser `Table` uses). If that file is absent the portal predates the
 current template — copy `parseCsv.ts` from `examples/portaljs-catalog/components/ui/`.
 
+Then add the component's strings to `PORTAL_DIR/locales/en.json` (and to every other
+`locales/*.json` present, translated), unless the keys already exist:
+
+```json
+"chart.loading": "Loading chart…",
+"chart.loadFailed": "Failed to load chart data: {error}",
+"chart.empty": "No data to chart.",
+```
+
 ### 6. Render the chart into the showcase's Views section
 
 The showcase `pages/[owner]/[slug].tsx` renders **every** dataset, so a chart must be
@@ -227,9 +237,9 @@ other datasets' showcases are unaffected. The route already has a **Views placeh
 {/* Views placeholder — charts and maps are added here by the
     /portaljs-add-chart and /portaljs-add-map skills. */}
 <section className="mt-10 border-t border-gray-200 pt-6">
-  <h2 className="text-lg font-semibold text-gray-900">Views</h2>
+  <h2 className="text-lg font-semibold text-gray-900">{t('dataset.views')}</h2>
   <p className="mt-2 text-sm text-gray-400">
-    No views yet. Charts and maps for this dataset are added here.
+    {t('dataset.viewsEmpty')} {t('dataset.viewsHint')}
   </p>
 </section>
 ```
@@ -243,19 +253,21 @@ Edit `PORTAL_DIR/pages/[owner]/[slug].tsx`:
 2. Replace the Views placeholder `<section>` so it conditionally renders the chart for the
    target dataset and keeps the "no views yet" message for every other dataset. Build
    `Y_PROP` as a single string `y="col"` for one column, or `y={['a','b']}` for several.
-   The data URL is the dataset's file served statically (`/data/<file>`):
+   The data URL is the dataset's file served statically (`/data/<file>`). The chart TITLE
+   is UI text: add it to `locales/en.json` as `"views.SLUG.title": "TITLE"` and render it
+   with `t()`:
 
    ```tsx
    <section className="mt-10 border-t border-gray-200 pt-6">
-     <h2 className="text-lg font-semibold text-gray-900">Views</h2>
+     <h2 className="text-lg font-semibold text-gray-900">{t('dataset.views')}</h2>
      {dataset.namespace === 'NAMESPACE' && dataset.slug === 'SLUG' ? (
        <div className="mt-4">
-         <h3 className="text-base font-medium text-gray-800 mb-3">TITLE</h3>
+         <h3 className="text-base font-medium text-gray-800 mb-3">{t('views.SLUG.title')}</h3>
          <Chart url={`/data/${dataset.file}`} type="TYPE" x="X" Y_PROP />
        </div>
      ) : (
        <p className="mt-2 text-sm text-gray-400">
-         No views yet. Charts and maps for this dataset are added here.
+         {t('dataset.viewsEmpty')} {t('dataset.viewsHint')}
        </p>
      )}
    </section>
@@ -288,6 +300,14 @@ Next: run `npm run dev` and visit http://localhost:3000/@NAMESPACE/SLUG to verif
 ```
 
 ## Notes
+
+- **UI strings (i18n).** The template keeps every user-facing string in `locales/en.json`
+  and renders it with `t()` from `lib/i18n.ts`. Text this skill writes into JSX — headings,
+  labels, placeholders, aria-labels, loading/empty/error messages — follows the same rule:
+  add each key to `locales/en.json` **and** to every other `locales/*.json` the portal has
+  (translated into that file's language — `DEFAULT_LOCALE` in `next.config.js` is the one
+  that ships), render `t('<key>')`, then run `npm run i18n:check`. Don't hardcode English
+  in JSX. If the portal predates i18n (no `lib/i18n.ts`), use plain strings.
 
 - **Why recharts, not `@portaljs/components`:** the bundled package ships leaflet, vega,
   ag-grid, and pdf.js in one non-tree-shakeable 1.9 MB blob. `recharts` is ~100 KB

@@ -21,6 +21,7 @@ import {
 import DebouncedInput from './ui/DebouncedInput'
 import LoadingSpinner from './ui/LoadingSpinner'
 import { parseCsv } from './ui/parseCsv'
+import { t } from '../lib/i18n'
 
 type Row = Record<string, string | number>
 type Col = { key: string; name: string }
@@ -73,7 +74,7 @@ export function Table({ data: initialData = [], cols: initialCols = [], csv = ''
     setError(null)
     fetch(url)
       .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status} — ${r.statusText}`)
+        if (!r.ok) throw new Error(t('table.httpError', { status: r.status, statusText: r.statusText }))
         return r.text()
       })
       .then((text) => {
@@ -115,7 +116,7 @@ export function Table({ data: initialData = [], cols: initialCols = [], csv = ''
   if (error) {
     return (
       <div className="border border-red-300 bg-red-50 p-4 font-mono text-sm text-red-700">
-        Failed to load data: {error}
+        {t('table.loadFailed', { error })}
       </div>
     )
   }
@@ -129,7 +130,7 @@ export function Table({ data: initialData = [], cols: initialCols = [], csv = ''
           value={globalFilter}
           onChange={(v) => setGlobalFilter(String(v))}
           className="w-[190px] border-0 border-b border-ink/30 bg-transparent pb-1.5 font-serif text-sm italic text-ink placeholder:text-ink/40 focus:border-accent focus:outline-none"
-          placeholder="Search all columns…"
+          placeholder={t('table.searchPlaceholder')}
         />
       </div>
       <div className="overflow-x-auto border border-ink/[0.18]">
@@ -166,7 +167,7 @@ export function Table({ data: initialData = [], cols: initialCols = [], csv = ''
       </div>
       <div className="mt-2.5 flex items-center justify-between font-sans text-xs font-medium text-ink/45">
         <span>
-          Showing {table.getRowModel().rows.length} of {filteredRows} rows
+          {t('table.showing', { shown: table.getRowModel().rows.length, total: filteredRows })}
         </span>
         {table.getPageCount() > 1 && (
           <span className="flex items-center gap-2">
@@ -186,7 +187,10 @@ export function Table({ data: initialData = [], cols: initialCols = [], csv = ''
               </button>
             ))}
             <span className="ml-1">
-              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+              {t('table.page', {
+                page: table.getState().pagination.pageIndex + 1,
+                pages: table.getPageCount(),
+              })}
             </span>
           </span>
         )}

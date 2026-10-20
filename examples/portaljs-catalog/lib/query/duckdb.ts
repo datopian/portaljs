@@ -1,4 +1,5 @@
 import type { DataQuery, QueryResult, QuerySource } from './types'
+import { t } from '../i18n'
 
 // DuckDB-Wasm data-query engine: runs SQL over a dataset's CSV/TSV/Parquet
 // entirely in the browser — no server, no datastore. The wasm + worker bundles
@@ -114,7 +115,7 @@ export class DuckDbQuery implements DataQuery {
       // directly.
       const res = await fetch(source.url)
       if (!res.ok) {
-        throw new Error(`Failed to fetch ${source.url} (${res.status})`)
+        throw new Error(t('errors.fetchFailed', { url: source.url, status: res.status }))
       }
       const buf = new Uint8Array(await res.arrayBuffer())
       const fname = isParquet ? 'data.parquet' : 'data.csv'
@@ -141,7 +142,7 @@ export class DuckDbQuery implements DataQuery {
   }
 
   async query(sql: string): Promise<QueryResult> {
-    if (!this.conn) throw new Error('Query engine is not open')
+    if (!this.conn) throw new Error(t('errors.engineNotOpen'))
     const table = await this.conn.query(sql)
     const columns: string[] = table.schema.fields.map((f: any) => f.name)
     const rows = table.toArray().map((row: any) => {

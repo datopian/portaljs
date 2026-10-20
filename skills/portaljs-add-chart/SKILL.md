@@ -56,6 +56,9 @@ the single source of truth. Read and follow it when executing. Summary:
 - **Created:** `components/Chart.tsx` (recharts wrapper, if absent).
 - **Modified:** `pages/[owner]/[slug].tsx` (import + gated `<Chart />` in Views);
   `package.json` (`recharts@^2.15.0`).
+- **UI strings:** any text it adds to JSX renders through `t()` (`lib/i18n.ts`), with the
+  keys added to `locales/en.json` and every other `locales/*.json`; `npm run i18n:check`
+  passes.
 - **Verified:** `npx tsc --noEmit` passes.
 - **Result:** the chart renders at `/@<namespace>/<slug>` under a "Views" heading.
 

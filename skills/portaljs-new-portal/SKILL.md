@@ -23,8 +23,8 @@ Scaffold a production-ready PortalJS data portal from a brief. The skill is
 **interactive**: if the brief is thin it interviews the user in three short rounds
 (mapped to the template's three surfaces — Home, Catalog, Showcase), echoes a brief
 back for confirmation, then copies `examples/portaljs-catalog` (locally or via a
-remote `tiged` fetch), substitutes placeholder tokens, sets the namespace mode, seeds
-any datasets named in the interview, installs dependencies, and verifies the scaffold
+remote `tiged` fetch), substitutes placeholder tokens, sets the namespace mode and the
+UI language, seeds any datasets named in the interview, installs dependencies, and verifies the scaffold
 with a type check.
 
 ## Prerequisites
@@ -41,11 +41,12 @@ The canonical, full step-by-step workflow is
 [`.claude/commands/portaljs-new-portal.md`](https://github.com/datopian/portaljs/blob/main/.claude/commands/portaljs-new-portal.md) —
 the single source of truth. Read and follow it when executing. Summary:
 
-1. Interview the user in up to three rounds — Home/basics, Catalog & discovery
+1. Interview the user in up to three rounds — Home/basics (incl. the UI language,
+   default English), Catalog & discovery
    (datasets, namespace mode `theme` vs `owner`), Showcase/views — skipping any round
    already answered by the input brief. Accept "use defaults" at any point.
-2. Confirm a short brief (name, slug, description, namespace, datasets, views) before
-   building.
+2. Confirm a short brief (name, slug, description, language, namespace, datasets,
+   views) before building.
 3. Resolve the template source: prefer a remote `tiged` fetch of
    `examples/portaljs-catalog` at `main` (or `PORTALJS_TEMPLATE_REF`); use a local
    checkout only when it is current (has `pages/[owner]/[slug].tsx`) and the
@@ -56,20 +57,26 @@ the single source of truth. Read and follow it when executing. Summary:
    across all files with `perl -pi`, escaping `/`, `\`, and `&` in the values.
 6. Set `NAMESPACE_TYPE` (`'theme'` or `'owner'`) in `lib/datasets.ts` per the
    interview.
-7. Seed datasets captured in Round 2 (via `/portaljs-add-dataset` or by hand), or
+7. Set the UI language (skip for English): translate `locales/en.json` into
+   `locales/<code>.json` (every key, `{placeholders}` verbatim, the plural forms the
+   language uses, `_intl` BCP 47 tag such as `it-IT`), register it in `lib/i18n.ts`,
+   set `DEFAULT_LOCALE` in `next.config.js`, and run `npm run i18n:check`.
+8. Seed datasets captured in Round 2 (via `/portaljs-add-dataset` or by hand), or
    clear `datasets.json` to `[]` if none were named.
-8. Run `npm install` inside the scaffolded portal.
-9. Verify with `npx tsc --noEmit` (never `next build` here — it would corrupt a
-   running dev server's `.next/` directory).
-10. Report the scaffolded routes, namespace mode, and next steps.
+9. Run `npm install` inside the scaffolded portal.
+10. Verify with `npm run i18n:check` and `npx tsc --noEmit` (never `next build` here —
+    it would corrupt a running dev server's `.next/` directory).
+11. Report the scaffolded routes, namespace mode, language, and next steps.
 
 ## Output
 
 - **Created:** a new directory `./PROJECT_SLUG/` containing the full
   `examples/portaljs-catalog` template with tokens substituted.
 - **Modified:** `lib/datasets.ts` (`NAMESPACE_TYPE`); `datasets.json` (seeded
-  datasets or cleared to `[]`).
-- **Verified:** `npx tsc --noEmit` passes inside the scaffolded portal.
+  datasets or cleared to `[]`); for a non-English portal, `locales/<code>.json`
+  (created), `lib/i18n.ts` (registered) and `next.config.js` (`DEFAULT_LOCALE`).
+- **Verified:** `npm run i18n:check` and `npx tsc --noEmit` pass inside the scaffolded
+  portal.
 - **Result:** a runnable portal at `./PROJECT_SLUG` with Home (`/`), Catalog
   (`/search`), and Showcase (`/@<namespace>/<slug>`) surfaces wired up.
 

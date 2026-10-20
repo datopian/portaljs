@@ -206,6 +206,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import type { GetStaticProps } from 'next'
 import { ckan, datasetHref, ORG_FILTER, GROUP_FILTER, MAX_DATASETS, type DatasetCard } from '../lib/ckan'
+import { t, tn } from '../lib/i18n'
 
 export const getStaticProps: GetStaticProps<{ datasets: DatasetCard[]; count: number }> = async () => {
   const { datasets, count } = await ckan.packageSearch({
@@ -227,22 +228,22 @@ export const getStaticProps: GetStaticProps<{ datasets: DatasetCard[]; count: nu
 export default function Search({ datasets, count }: { datasets: DatasetCard[]; count: number }) {
   return (
     <>
-      <Head><title>Search — __PROJECT_NAME__</title></Head>
+      <Head><title>{t('search.pageTitle', { name: "__PROJECT_NAME__" })}</title></Head>
       <main className="max-w-5xl mx-auto px-4 py-12">
         <header className="mb-8">
           <nav className="mb-4 text-sm text-gray-500">
-            <Link href="/" className="hover:text-gray-700">Home</Link>
+            <Link href="/" className="hover:text-gray-700">{t('nav.home')}</Link>
             <span className="mx-2">/</span>
-            <span>Search</span>
+            <span>{t('nav.search')}</span>
           </nav>
-          <h1 className="text-3xl font-bold text-gray-900">Datasets</h1>
-          <p className="mt-1 text-sm text-gray-400">{count} datasets in catalog</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('search.heading')}</h1>
+          <p className="mt-1 text-sm text-gray-400">{tn('ckan.catalogCount', count)}</p>
         </header>
 
         {datasets.length === 0 ? (
           <div className="rounded-lg border-2 border-dashed border-gray-200 p-12 text-center text-gray-400">
-            <p className="text-lg font-medium">No datasets found</p>
-            <p className="mt-1 text-sm">Check the CKAN backend URL and any org/group filters in lib/ckan.ts.</p>
+            <p className="text-lg font-medium">{t('ckan.emptyTitle')}</p>
+            <p className="mt-1 text-sm">{t('ckan.emptyHint')}</p>
           </div>
         ) : (
           <div className="grid gap-4">
@@ -265,7 +266,21 @@ export default function Search({ datasets, count }: { datasets: DatasetCard[]; c
 }
 ```
 
-Substitute `__PROJECT_NAME__` if the existing file still has the token. The CKAN list is
+Substitute `__PROJECT_NAME__` if the existing file still has the token. Add the new strings
+this catalog and the showcase below use to `PORTAL_DIR/locales/en.json` (and to every other
+`locales/*.json` present, translated); the `nav.*`, `search.*`, `dataset.*` and `download.*` keys already
+ship with the template:
+
+```json
+"ckan.catalogCount.one": "{count} dataset in catalog",
+"ckan.catalogCount.other": "{count} datasets in catalog",
+"ckan.emptyTitle": "No datasets found",
+"ckan.emptyHint": "Check the CKAN backend URL and any org/group filters in lib/ckan.ts.",
+"ckan.noResources": "This dataset has no resources.",
+"ckan.noPreview": "Preview not available for this format.",
+"ckan.openResource": "Open resource",
+```
+ The CKAN list is
 pre-rendered server-side, so the template's client-side `useMemo` filter is replaced — if
 you want live text filtering over the CKAN results, keep a client-side filter over the
 `datasets` prop (same pattern the static `search.tsx` uses) or wire it to
@@ -287,6 +302,7 @@ import Link from 'next/link'
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import { Table } from '../../components/Table'
 import { ckan, ORG_FILTER, GROUP_FILTER, MAX_DATASETS } from '../../lib/ckan'
+import { t } from '../../lib/i18n'
 
 type ResourceView = { id: string; name: string; format: string; url: string; isTabular: boolean }
 type DatasetView = { slug: string; namespace: string; title: string; notes: string; org: string; resources: ResourceView[] }
@@ -346,9 +362,9 @@ export default function DatasetPage({ dataset }: { dataset: DatasetView }) {
       <Head><title>{dataset.title}</title></Head>
       <main className="max-w-5xl mx-auto px-4 py-8">
         <nav className="mb-6 text-sm text-gray-500">
-          <Link href="/" className="hover:text-gray-700">Home</Link>
+          <Link href="/" className="hover:text-gray-700">{t('nav.home')}</Link>
           <span className="mx-2">/</span>
-          <Link href="/search" className="hover:text-gray-700">Datasets</Link>
+          <Link href="/search" className="hover:text-gray-700">{t('search.heading')}</Link>
           <span className="mx-2">/</span>
           <span>{dataset.title}</span>
         </nav>
@@ -357,9 +373,9 @@ export default function DatasetPage({ dataset }: { dataset: DatasetView }) {
         {dataset.org && <p className="text-xs uppercase tracking-wide text-gray-400 mb-4">{dataset.org}</p>}
         {dataset.notes && <p className="text-gray-600 mb-8 whitespace-pre-line">{dataset.notes}</p>}
 
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Resources</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('dataset.resources')}</h2>
         {dataset.resources.length === 0 ? (
-          <p className="text-gray-400">This dataset has no resources.</p>
+          <p className="text-gray-400">{t('ckan.noResources')}</p>
         ) : (
           <div className="space-y-8">
             {dataset.resources.map((r) => (
@@ -369,14 +385,14 @@ export default function DatasetPage({ dataset }: { dataset: DatasetView }) {
                     {r.name}{' '}
                     {r.format && <span className="ml-1 text-xs uppercase text-gray-400">{r.format}</span>}
                   </h3>
-                  {r.url && <a href={r.url} className="text-sm text-blue-600 underline">Download</a>}
+                  {r.url && <a href={r.url} className="text-sm text-blue-600 underline">{t('download.download')}</a>}
                 </div>
                 {r.isTabular && r.url ? (
                   <Table url={r.url} />
                 ) : (
                   <p className="text-sm text-gray-400">
-                    Preview not available for this format.{' '}
-                    {r.url && <a href={r.url} className="underline">Open resource</a>}
+                    {t('ckan.noPreview')}{' '}
+                    {r.url && <a href={r.url} className="underline">{t('ckan.openResource')}</a>}
                   </p>
                 )}
               </section>
@@ -429,6 +445,14 @@ Next: run `npm run dev` and visit http://localhost:3000, or run /portaljs-deploy
 ```
 
 ## Notes
+
+- **UI strings (i18n).** The template keeps every user-facing string in `locales/en.json`
+  and renders it with `t()` from `lib/i18n.ts`. Text this skill writes into JSX — headings,
+  labels, placeholders, aria-labels, loading/empty/error messages — follows the same rule:
+  add each key to `locales/en.json` **and** to every other `locales/*.json` the portal has
+  (translated into that file's language — `DEFAULT_LOCALE` in `next.config.js` is the one
+  that ships), render `t('<key>')`, then run `npm run i18n:check`. Don't hardcode English
+  in JSX. If the portal predates i18n (no `lib/i18n.ts`), use plain strings.
 
 - **Data freshness vs. static deploy.** Default is SSG (`getStaticProps` + `fallback: false`):
   fast, statically hostable, but data is fixed at build time — rebuild to pick up new CKAN

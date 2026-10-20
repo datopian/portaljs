@@ -16,7 +16,7 @@ import {
 } from '../../lib/datasets'
 import { provider } from '../../lib/providers'
 import { withHistory } from '../../lib/history'
-import { formatDate } from '../../lib/format'
+import { formatDate, formatNumber, t, tn } from '../../lib/i18n'
 
 // DuckDB only runs in the browser, so load the query view client-side. The chunk
 // (and DuckDB-Wasm) is only fetched when a resource actually needs it — flat
@@ -75,7 +75,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 // portal activity feed and a Views slot — beside a metadata sidebar with the
 // primary download.
 export default function DatasetPage({ dataset, resources, activity }: PageProps) {
-  const namespaceLabel = NAMESPACE_TYPE === 'owner' ? 'Owner' : 'Theme'
+  const namespaceLabel = t(NAMESPACE_TYPE === 'owner' ? 'dataset.owner' : 'dataset.theme')
   const primary = resources[0]
   // The two serverless geo tiers render as ONE map (see MapPreview): the PMTiles
   // archive is the render layer, the GeoParquet twin is the query engine bound to
@@ -124,18 +124,18 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
       <main className="mx-auto max-w-[940px] px-6 pb-24 sm:px-16">
         <nav className="pt-7 font-sans text-[13px] font-medium text-ink/50">
           <Link href="/" className="text-inherit no-underline hover:text-accent">
-            Home
+            {t('nav.home')}
           </Link>{' '}
           /{' '}
           <Link href="/search" className="text-inherit no-underline hover:text-accent">
-            Search
+            {t('nav.search')}
           </Link>{' '}
           <span className="text-ink">/ {dataset.name}</span>
         </nav>
 
         <header className="max-w-[640px] pb-10 pt-8">
           <div className="mb-4 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-accent">
-            Dataset
+            {t('dataset.eyebrow')}
           </div>
           <h1 className="mb-[18px] font-serif text-[42px] font-semibold leading-tight text-ink">
             {dataset.name}
@@ -186,13 +186,13 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
 
             {/* Views placeholder — charts and maps are added here by the
                 /portaljs-add-chart and /portaljs-add-map skills. */}
-            <SectionLabel className="mt-11">Views</SectionLabel>
+            <SectionLabel className="mt-11">{t('dataset.views')}</SectionLabel>
             <div className="border border-ink/[0.15] p-11 text-center">
               <div className="mb-2 font-serif text-[17px] italic text-ink/55">
-                No views yet.
+                {t('dataset.viewsEmpty')}
               </div>
               <div className="font-sans text-xs text-ink/40">
-                Charts and maps for this dataset are added here.
+                {t('dataset.viewsHint')}
               </div>
             </div>
 
@@ -200,11 +200,11 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
             {((dataset.licenses && dataset.licenses.length > 0) ||
               (dataset.sources && dataset.sources.length > 0)) && (
               <section className="mt-11">
-                <SectionLabel>Sources &amp; license</SectionLabel>
+                <SectionLabel>{t('dataset.sourcesAndLicense')}</SectionLabel>
                 {dataset.sources && dataset.sources.length > 0 && (
                   <div className="mb-4">
                     <div className="mb-1 font-sans text-[11px] font-semibold uppercase tracking-[0.08em] text-ink/45">
-                      Sources
+                      {t('dataset.sources')}
                     </div>
                     <ul className="font-serif text-[15px] text-ink/80">
                       {dataset.sources.map((s) => (
@@ -224,7 +224,7 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
                 {dataset.licenses && dataset.licenses.length > 0 && (
                   <div>
                     <div className="mb-1 font-sans text-[11px] font-semibold uppercase tracking-[0.08em] text-ink/45">
-                      License
+                      {t('dataset.license')}
                     </div>
                     <ul className="font-serif text-[15px] text-ink/80">
                       {dataset.licenses.map((l) => (
@@ -249,23 +249,23 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
           <aside className="flex h-fit flex-col gap-[18px] rounded-sm border border-ink/[0.18] p-[26px]">
             <SidebarField label={namespaceLabel} value={`@${dataset.namespace}`} />
             <SidebarField
-              label="Resources"
-              value={`${resources.length} file${resources.length === 1 ? '' : 's'}`}
+              label={t('dataset.resources')}
+              value={tn('dataset.fileCount', resources.length)}
             />
             {typeof dataset.recordCount === 'number' && (
               <SidebarField
-                label="Records"
-                value={dataset.recordCount.toLocaleString('en-US')}
+                label={t('dataset.records')}
+                value={formatNumber(dataset.recordCount)}
               />
             )}
-            {dataset.version && <SidebarField label="Version" value={dataset.version} />}
-            {created && <SidebarField label="Created" value={created} />}
-            {lastUpdated && <SidebarField label="Last updated" value={lastUpdated} />}
-            {migratedAt && <SidebarField label="Migrated" value={migratedAt} />}
+            {dataset.version && <SidebarField label={t('dataset.version')} value={dataset.version} />}
+            {created && <SidebarField label={t('dataset.created')} value={created} />}
+            {lastUpdated && <SidebarField label={t('dataset.lastUpdated')} value={lastUpdated} />}
+            {migratedAt && <SidebarField label={t('dataset.migrated')} value={migratedAt} />}
             {dataset.keywords && dataset.keywords.length > 0 && (
               <div>
                 <div className="mb-2 font-sans text-[10px] font-semibold uppercase tracking-[0.08em] text-ink/45">
-                  Keywords
+                  {t('dataset.keywords')}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {dataset.keywords.map((kw) => (
@@ -285,7 +285,7 @@ export default function DatasetPage({ dataset, resources, activity }: PageProps)
                   href={resourceUrl(primary)}
                   className="block rounded-sm bg-ink px-3 py-3 text-center font-sans text-xs font-semibold uppercase tracking-[0.06em] text-cream no-underline"
                 >
-                  Download {primary.format}
+                  {t('dataset.downloadFormat', { format: primary.format })}
                 </a>
               </div>
             )}
@@ -348,7 +348,7 @@ function CopyButton({ text, label }: { text: string; label: string }) {
       }}
       className="whitespace-nowrap font-sans text-[11px] font-medium text-ink/55 underline underline-offset-2 hover:text-accent"
     >
-      {copied ? 'Copied' : label}
+      {copied ? t('download.copied') : label}
     </button>
   )
 }
@@ -368,7 +368,7 @@ function DownloadApiBlock({
   if (resources.length === 0) return null
   return (
     <section className="mt-11">
-      <SectionLabel>Download &amp; API</SectionLabel>
+      <SectionLabel>{t('download.heading')}</SectionLabel>
       <div>
         {resources.map((r, i) => (
           <ResourceDownloadRow key={r.name + i} resource={r} />
@@ -376,12 +376,12 @@ function DownloadApiBlock({
       </div>
       {dualTier && (
         <p className="mt-3 font-sans text-xs leading-relaxed text-ink/45">
-          Rendered from PMTiles, queried in-browser from GeoParquet — no server.{' '}
+          {t('download.dualTierNote')}{' '}
           <a
             href="https://portaljs.com"
             className="text-accent underline underline-offset-2"
           >
-            How this works
+            {t('download.howThisWorks')}
           </a>
         </p>
       )}
@@ -428,13 +428,13 @@ function ResourceDownloadRow({ resource }: { resource: Resource }) {
             href={url}
             className="whitespace-nowrap font-sans text-[11px] font-medium text-ink/55 underline underline-offset-2 hover:text-accent"
           >
-            Download
+            {t('download.download')}
           </a>
-          {isPublicUrl && <CopyButton text={url} label="Copy URL" />}
+          {isPublicUrl && <CopyButton text={url} label={t('download.copyUrl')} />}
           {isColumnar && isPublicUrl && (
             <CopyButton
               text={`SELECT * FROM read_parquet('${url}')`}
-              label="Copy DuckDB snippet"
+              label={t('download.copyDuckdbSnippet')}
             />
           )}
           {history.length > 0 && (
@@ -443,7 +443,7 @@ function ResourceDownloadRow({ resource }: { resource: Resource }) {
               onClick={() => setOpen((v) => !v)}
               className="whitespace-nowrap font-sans text-[11px] font-medium text-ink/55 hover:text-accent"
             >
-              {open ? 'Hide history' : `History (${history.length})`}
+              {open ? t('download.hideHistory') : t('download.history', { count: history.length })}
             </button>
           )}
         </div>
@@ -466,19 +466,19 @@ function ResourceDownloadRow({ resource }: { resource: Resource }) {
 function downloadCaption(format: string): string {
   switch (format) {
     case 'geoparquet':
-      return 'Columnar — query with DuckDB / SQL'
+      return t('download.caption.columnar')
     case 'pmtiles':
-      return 'Vector tiles — embed in a map'
+      return t('download.caption.pmtiles')
     case 'geojson':
-      return 'Original export (archive)'
+      return t('download.caption.geojson')
     case 'parquet':
-      return 'Columnar — query with DuckDB / SQL'
+      return t('download.caption.columnar')
     case 'gpkg':
     case 'geopackage':
-      return 'GeoPackage — GIS desktop (QGIS, ArcGIS)'
+      return t('download.caption.geopackage')
     case 'shp':
     case 'shapefile':
-      return 'Shapefile — legacy GIS interchange'
+      return t('download.caption.shapefile')
     default:
       return ''
   }
@@ -500,7 +500,7 @@ function VersionEntry({ version: v }: { version: ResourceVersion }) {
             href={v.downloadHref}
             className="whitespace-nowrap font-sans text-[11px] font-medium text-ink/55 underline underline-offset-2 hover:text-accent"
           >
-            Download {v.version}
+            {t('download.downloadVersion', { version: v.version })}
           </a>
         )}
       </div>
@@ -518,7 +518,7 @@ function VersionEntry({ version: v }: { version: ResourceVersion }) {
             onClick={() => setShowDiff((s) => !s)}
             className="mt-1.5 font-sans text-[11px] font-medium text-accent underline underline-offset-2"
           >
-            {showDiff ? 'Hide diff' : 'View diff'}
+            {showDiff ? t('history.hideDiff') : t('history.viewDiff')}
           </button>
           {showDiff && (
             <div className="mt-2 border border-ink/[0.12] bg-cream-panel px-3.5 py-3">
@@ -552,14 +552,14 @@ function ActivityFeed({ activity }: { activity: ActivityEntry[] }) {
   return (
     <div className="mb-11">
       <div className="mb-3.5 flex items-baseline justify-between">
-        <SectionLabel className="mb-0">Activity</SectionLabel>
+        <SectionLabel className="mb-0">{t('activity.heading')}</SectionLabel>
         {hasMore && (
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
             className="font-sans text-xs font-medium text-accent underline underline-offset-2"
           >
-            {expanded ? 'Show less' : 'Show all activity'}
+            {expanded ? t('activity.showLess') : t('activity.showAll')}
           </button>
         )}
       </div>
@@ -605,7 +605,7 @@ function GeoSection({
     <section className="mb-11">
       {showHeading && (
         <div className="mb-3 flex items-baseline gap-3">
-          <h2 className="font-serif text-xl font-semibold text-ink">Map</h2>
+          <h2 className="font-serif text-xl font-semibold text-ink">{t('map.heading')}</h2>
           <span className="border border-accent/50 px-2 py-0.5 font-sans text-[10px] font-semibold uppercase tracking-[0.06em] text-accent">
             {pmtilesResource && geoparquetResource
               ? 'pmtiles + geoparquet'
@@ -668,7 +668,7 @@ function ResourceSection({
         <DataExplorer resource={resource} />
       ) : (
         <>
-          <SectionLabel>Preview</SectionLabel>
+          <SectionLabel>{t('dataset.preview')}</SectionLabel>
           <Table url={url} />
         </>
       )}
@@ -683,24 +683,24 @@ function ResourceSchema({ resource }: { resource: Resource }) {
   if (!resource.schema?.fields || resource.schema.fields.length === 0) return null
   return (
     <div className="mt-6">
-      <SectionLabel>Schema</SectionLabel>
+      <SectionLabel>{t('schema.heading')}</SectionLabel>
       <div className="overflow-x-auto border border-ink/[0.18]">
         <table className="min-w-full border-collapse text-sm">
           <thead>
             <tr className="bg-cream-panel text-left font-sans text-[11px] uppercase tracking-[0.06em] text-ink/60">
-              <th className="px-4 py-3 font-semibold">Field</th>
-              <th className="px-4 py-3 font-semibold">Type</th>
-              <th className="px-4 py-3 font-semibold">Description</th>
-              <th className="px-4 py-3 font-semibold">Constraints</th>
+              <th className="px-4 py-3 font-semibold">{t('schema.field')}</th>
+              <th className="px-4 py-3 font-semibold">{t('schema.type')}</th>
+              <th className="px-4 py-3 font-semibold">{t('schema.description')}</th>
+              <th className="px-4 py-3 font-semibold">{t('schema.constraints')}</th>
             </tr>
           </thead>
           <tbody>
             {resource.schema.fields.map((f) => {
               const c = f.constraints
               const tags = [
-                c?.required && 'required',
-                c?.unique && 'unique',
-                c?.enum && `enum(${c.enum.length})`,
+                c?.required && t('schema.required'),
+                c?.unique && t('schema.unique'),
+                c?.enum && t('schema.enum', { count: c.enum.length }),
               ].filter(Boolean) as string[]
               // Prefer the human field label (Frictionless `title` — e.g. the
               // ArcGIS field alias "Property Type") as the header, keeping the raw
@@ -730,7 +730,7 @@ function ResourceSchema({ resource }: { resource: Resource }) {
       </div>
       {resource.schema.primaryKey && (
         <p className="mt-2 font-sans text-xs text-ink/45">
-          Primary key:{' '}
+          {t('schema.primaryKey')}{' '}
           <code className="font-mono text-ink/70">
             {Array.isArray(resource.schema.primaryKey)
               ? resource.schema.primaryKey.join(', ')

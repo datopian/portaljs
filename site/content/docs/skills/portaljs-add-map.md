@@ -56,6 +56,9 @@ From a public URL with a name:
   (`pages/[owner]/[slug].tsx`), rendered for the chosen dataset's `(namespace, slug)`
   and fetching the GeoJSON client-side. No separate page is created and nothing is
   registered on the home page.
+- Any UI text it adds (headings, loading/empty/error messages) rendered through `t()`,
+  with its keys added to `locales/en.json` (and any other locale files), so the view
+  follows the portal's build-time language.
 
 It runs the build before reporting success. When it finishes:
 
