@@ -1,4 +1,4 @@
-import { defaultConfig } from "@portaljs/core";
+import { defaultConfig } from "@/lib/core";
 import config from "../content/config";
 
 export default {

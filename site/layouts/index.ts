@@ -1,7 +1,6 @@
-import { SimpleLayout, UnstyledLayout } from '@portaljs/core'
+import { SimpleLayout, UnstyledLayout, DocsLayout } from '@/components/core'
 import { BlogLayout } from './blog'
 import DefaultLayout from './default'
-import { DocsLayout } from '@portaljs/core'
 import CaseStudyLayout from './casestudy'
 
 export default {

@@ -1,7 +1,7 @@
 import { MDXRemote } from 'next-mdx-remote'
 import layouts from '@/layouts'
 import DocsPagination from './DocsPagination'
-import { Hero } from '@portaljs/core'
+import { Hero } from '@/components/core'
 import Community from '@/components/home/community'
 import Features from '@/components/Features'
 

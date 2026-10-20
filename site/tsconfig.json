@@ -3,9 +3,6 @@
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@portaljs/core": [
-        "node_modules/@portaljs/core/dist/src"
-      ],
       "@portaljs/remark-callouts": [
         "node_modules/@portaljs/remark-callouts/dist/src"
       ],
