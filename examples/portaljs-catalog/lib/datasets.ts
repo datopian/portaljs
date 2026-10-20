@@ -65,11 +65,12 @@ export function getResources(d: Dataset): Resource[] {
 // Public URL of a resource's raw file. A relative `path` is served statically from
 // /public/data; an absolute path is returned as-is, so a resource can point at a remote
 // file (e.g. a CKAN/DCAT download URL harvested by /portaljs-migrate) or a site-root path without
-// copying bytes into the repo. The bundled /data path carries the basePath (the preview,
-// download link and DuckDB/map loaders all fetch it raw, not via next/link).
+// copying bytes into the repo. Site paths (bundled /data and site-root) carry the basePath
+// (the preview, download link and DuckDB/map loaders all fetch them raw, not via next/link),
+// matching the DCAT feeds, which resolve a site-root path against SITE_URL.
 export function resourceUrl(r: Resource): string {
-  if (/^(https?:)?\/\//.test(r.path) || r.path.startsWith('/')) return r.path
-  return withBasePath(`/data/${r.path}`)
+  if (/^(https?:)?\/\//.test(r.path)) return r.path
+  return withBasePath(r.path.startsWith('/') ? r.path : `/data/${r.path}`)
 }
 
 // Human-readable label for a resource in the file list. `path` can be an R2/LFS
