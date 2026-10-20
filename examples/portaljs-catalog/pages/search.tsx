@@ -6,6 +6,7 @@ import DebouncedInput from '../components/ui/DebouncedInput'
 import { withBasePath } from '../lib/basePath'
 import { NAMESPACE_TYPE, datasetHref, getResources, type Dataset } from '../lib/datasets'
 import { provider } from '../lib/providers'
+import { formatNumber, t, tn, tx } from '../lib/i18n'
 
 export async function getStaticProps() {
   return { props: { datasets: await provider.listDatasets() } }
@@ -34,10 +35,14 @@ function truncate(s: string, max = 150): string {
 
 // Compact record count for the data-shape tile (3149 → "3.1k").
 function compact(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`
-  if (n >= 1_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, '')}k`
+  const short = (v: number) => formatNumber(v, { maximumFractionDigits: 1, useGrouping: false })
+  if (n >= 1_000_000) return t('search.compactMillions', { n: short(n / 1_000_000) })
+  if (n >= 1_000) return t('search.compactThousands', { n: short(n / 1_000) })
   return String(n)
 }
+
+// Facet bucket for datasets without a category; always sorted last.
+const OTHER = t('search.categoryOther')
 
 // Field names for the "what's inside" chips, from the dataset-level schema or
 // the first resource that carries one.
@@ -81,7 +86,7 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
     )
   }, [datasets, query])
 
-  const catOf = (d: Dataset) => d.category ?? 'Other'
+  const catOf = (d: Dataset) => d.category ?? OTHER
   const matchesCats = (d: Dataset) => activeCats.size === 0 || activeCats.has(catOf(d))
   const matchesNs = (d: Dataset) => activeNs.size === 0 || activeNs.has(d.namespace)
 
@@ -102,7 +107,7 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
     for (const d of searched.filter(matchesNs))
       counts.set(catOf(d), (counts.get(catOf(d)) ?? 0) + 1)
     return Array.from(counts.entries()).sort(([a], [b]) =>
-      a === 'Other' ? 1 : b === 'Other' ? -1 : a.localeCompare(b)
+      a === OTHER ? 1 : b === OTHER ? -1 : a.localeCompare(b)
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datasets, searched, activeNs])
@@ -128,32 +133,33 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
   return (
     <>
       <Head>
-        <title>Search — __PROJECT_NAME__</title>
+        <title>{t('search.pageTitle', { name: "__PROJECT_NAME__" })}</title>
       </Head>
       <main
         className={`mx-auto px-6 pb-24 sm:px-16 ${hasFacets ? 'max-w-[1100px]' : 'max-w-[720px]'}`}
       >
         <nav className="pt-7 font-sans text-[13px] font-medium text-ink/50">
           <Link href="/" className="text-inherit no-underline hover:text-accent">
-            Home
+            {t('nav.home')}
           </Link>
-          <span className="text-ink"> / Search</span>
+          <span className="text-ink">{` / ${t('nav.search')}`}</span>
         </nav>
 
         <div className="flex items-baseline gap-4 pb-6 pt-9">
-          <h1 className="font-serif text-[42px] font-semibold text-ink">Datasets</h1>
+          <h1 className="font-serif text-[42px] font-semibold text-ink">{t('search.heading')}</h1>
           {datasets.length > 0 && (
             <span className="font-sans text-[13px] font-medium text-ink/50">
-              {filtered.length} {filtered.length === 1 ? 'result' : 'results'}
+              {tn('search.resultCount', filtered.length)}
             </span>
           )}
         </div>
 
         {datasets.length === 0 ? (
           <div className="py-10 font-serif text-[17px] italic text-ink/55">
-            No datasets yet — add an entry to{' '}
-            <code className="font-mono not-italic">datasets.json</code> and drop the
-            file in <code className="font-mono not-italic">public/data</code>.
+            {tx('search.emptyCatalog', {
+              manifest: <code className="font-mono not-italic">datasets.json</code>,
+              dataDir: <code className="font-mono not-italic">public/data</code>,
+            })}
           </div>
         ) : (
           <div className={hasFacets ? 'lg:grid lg:grid-cols-[230px_minmax(0,1fr)] lg:gap-12' : ''}>
@@ -161,7 +167,7 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
               <aside className="pt-4">
                 {catFacets && (
                   <FacetGroup
-                    title="Categories"
+                    title={t('search.facets.categories')}
                     options={catFacets}
                     active={activeCats}
                     onToggle={(v) => toggle(activeCats, v, setActiveCats)}
@@ -170,7 +176,7 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
                 )}
                 {nsFacets && (
                   <FacetGroup
-                    title={NAMESPACE_TYPE === 'owner' ? 'Publishers' : 'Themes'}
+                    title={t(NAMESPACE_TYPE === 'owner' ? 'search.facets.publishers' : 'search.facets.themes')}
                     options={nsFacets}
                     active={activeNs}
                     onToggle={(v) => toggle(activeNs, v, setActiveNs)}
@@ -184,13 +190,15 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
               <DebouncedInput
                 value={query}
                 onChange={(v) => setQuery(String(v))}
-                placeholder="Search datasets…"
-                aria-label="Search datasets"
+                placeholder={t('search.placeholder')}
+                aria-label={t('search.ariaLabel')}
                 className="w-full border-0 border-b border-ink/30 bg-transparent pb-3.5 font-serif text-lg italic text-ink placeholder:text-ink/40 focus:border-accent focus:outline-none"
               />
               {filtered.length === 0 ? (
                 <div className="py-10 font-serif text-[17px] italic text-ink/55">
-                  No datasets found{query ? ` for “${query}”` : ' for the selected filters'}.
+                  {query
+                    ? t('search.noResultsForQuery', { query })
+                    : t('search.noResultsForFilters')}
                 </div>
               ) : (
                 <div className="pt-2">
@@ -234,7 +242,7 @@ function FacetGroup({
             onClick={onClear}
             className="cursor-pointer border-0 bg-transparent p-0 font-sans text-[11px] font-medium text-accent hover:underline"
           >
-            Clear
+            {t('search.facets.clear')}
           </button>
         )}
       </div>
@@ -269,7 +277,7 @@ function FacetGroup({
 // data shape instead. A geo dataset that lacks a snapshot gets a plain "geo"
 // label rather than an implementation format name like "pmtiles".
 function ShapeTile({ ds }: { ds: Dataset }) {
-  const format = isGeo(ds) ? 'geo' : getResources(ds)[0]?.format
+  const format = isGeo(ds) ? t('search.geoFormat') : getResources(ds)[0]?.format
   return (
     <div className="flex h-14 w-14 flex-shrink-0 flex-col items-center justify-center self-center border border-ink/[0.15] bg-cream-panel">
       {format && (
@@ -323,7 +331,9 @@ function DatasetRow({ ds }: { ds: Dataset }) {
           <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1 font-sans text-[11px] text-ink/45">
             {typeof ds.recordCount === 'number' && (
               <span className="font-medium tabular-nums">
-                {ds.recordCount.toLocaleString('en-US')} {geo ? 'features' : 'records'}
+                {tn(geo ? 'search.featureCount' : 'search.recordCount', ds.recordCount, {
+                  count: formatNumber(ds.recordCount),
+                })}
               </span>
             )}
             {fields.slice(0, 3).map((f) => (
@@ -334,7 +344,9 @@ function DatasetRow({ ds }: { ds: Dataset }) {
                 {f}
               </span>
             ))}
-            {fields.length > 3 && <span>+{fields.length - 3} more</span>}
+            {fields.length > 3 && (
+              <span>{t('search.moreFields', { count: fields.length - 3 })}</span>
+            )}
           </div>
         )}
       </div>

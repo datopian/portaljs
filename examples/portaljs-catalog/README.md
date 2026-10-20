@@ -205,6 +205,41 @@ Picking one mode keeps every `(@namespace, slug)` pair unique. The URL shape is
 `/@<namespace>/<slug>` regardless of which mode is chosen — `NAMESPACE_TYPE` only changes
 the metadata label on the showcase.
 
+## Language (UI strings)
+
+Every user-facing string in the template — navigation, search, facets, the showcase,
+the table, the SQL and map panels, error messages, placeholders, aria-labels — lives in
+`locales/en.json`, keyed by a dotted id grouped by area (`nav.*`, `search.*`,
+`dataset.*`, `download.*`, `query.*`, `map.*`, `errors.*`…). Pages and components read
+them through `lib/i18n.ts`:
+
+```tsx
+import { t, tn, formatNumber, formatDate } from '../lib/i18n'
+
+t('search.placeholder')                          // "Search datasets…"
+t('search.pageTitle', { name: 'My Portal' })     // "Search — My Portal"
+tn('dataset.fileCount', n)                       // "1 file" / "3 files" (Intl.PluralRules)
+formatNumber(3149)                               // "3,149"
+formatDate('2021-08-25')                         // "Aug 25, 2021"
+```
+
+The language is picked **at build time**, one per build — the portal is a static export,
+which Next.js's built-in i18n routing does not support:
+
+```bash
+NEXT_PUBLIC_LOCALE=it npm run build   # unset → English
+```
+
+`<html lang>`, dates and numbers follow the locale. A key missing from a translation
+falls back to English (then to the key itself), with a console warning in development.
+
+**Add a language:** copy `locales/en.json` to `locales/<code>.json` (e.g. `it.json`),
+translate the values (keep the keys and `{placeholders}`), set `_intl` to its BCP 47 tag
+(e.g. `"it-IT"`), and register it in `LOCALES` in `lib/i18n.ts`. See `locales/README.md`.
+
+When you add UI to the template, put its strings in `locales/en.json` (and any other
+locale files present) and render them with `t()` — never hardcode English in JSX.
+
 ## Placeholder tokens
 
 `/portaljs-new-portal` replaces these at scaffold time:
@@ -243,7 +278,9 @@ pages/index.tsx            — landing page: hero + search CTA + suggested chips
 pages/search.tsx           — searchable dataset list, reads manifest via getStaticProps
 pages/[owner]/[slug].tsx   — dynamic dataset showcase (/@<namespace>/<slug>)
 pages/_app.tsx             — renders the Navbar on every page
-pages/_document.tsx        — favicon / icon links + default meta description
+pages/_document.tsx        — favicon / icon links + default meta description + <html lang>
+lib/i18n.ts                — t() / tn() / formatNumber / formatDate; locale picked by NEXT_PUBLIC_LOCALE
+locales/en.json            — every UI string, keyed by id (add <code>.json files for other languages)
 public/data/               — bundled sample CSVs (inline); Parquet/PMTiles samples live on R2 (data.portaljs.com)
 public/{icon.svg,favicon.ico,apple-touch-icon.png,icon-512.png} — branding (placeholder)
 components/Navbar.tsx       — site navbar: logo (hover-spin) + name + link to /search

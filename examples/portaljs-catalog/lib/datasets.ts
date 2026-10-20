@@ -7,6 +7,7 @@
 
 import type { Dataset, Resource } from './providers'
 import { withBasePath } from './basePath'
+import { t } from './i18n'
 
 export type {
   Dataset,
@@ -19,7 +20,8 @@ export type {
 // A portal uses exactly ONE namespace mode. Set to 'theme' for a single-publisher
 // portal (datasets grouped by subject) or 'owner' for a multi-publisher portal
 // (datasets grouped by who published them). This only changes the showcase
-// metadata label ("Theme" vs "Owner") — the URL is always /@<namespace>/<slug>.
+// metadata label ("Theme" vs "Owner") and the catalog's namespace facet title
+// ("Themes" vs "Publishers") — the URL is always /@<namespace>/<slug>.
 export const NAMESPACE_TYPE: 'theme' | 'owner' = 'theme'
 
 // The compute engine for a dataset's data on its showcase page:
@@ -77,13 +79,13 @@ export function resourceUrl(r: Resource): string {
 // URL whose basename is a 64-hex content id (data.portaljs.com/lfs/<org>/<slug>/<oid>)
 // — meaningless and very long, so never render it raw. Prefer the resource title,
 // then a real-looking filename basename, then the resource name, and only fall
-// back to a generic "Download <format>" label.
+// back to a generic "Download <format>" label (dataset.downloadFormat).
 export function resourceLabel(r: Resource): string {
   if (r.title) return r.title
   const base = (r.path.split(/[?#]/)[0].split('/').pop() ?? '').trim()
   const isOid = /^[0-9a-f]{64}$/i.test(base)
   if (base && !isOid && /\.[a-z0-9]{1,6}$/i.test(base)) return base
-  return r.name || `Download ${r.format}`
+  return r.name || t('dataset.downloadFormat', { format: r.format })
 }
 
 // Words too generic to make useful suggested searches. Only applied when mining

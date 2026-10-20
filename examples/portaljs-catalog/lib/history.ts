@@ -16,7 +16,7 @@
 import { execFileSync } from 'child_process'
 import type { Dataset, Resource, ResourceVersion, ActivityEntry } from './providers'
 import { getResources } from './datasets'
-import { formatDate } from './format'
+import { formatDate, formatNumber, t, tn } from './i18n'
 
 // Run git, returning stdout — or null if git isn't available / the command fails (not a
 // repo, path untracked, etc.). Never throws: history is a progressive enhancement.
@@ -46,11 +46,20 @@ function parseLfsPointer(blob: string): { oid: string; size: number } | null {
 }
 
 function humanSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
+  // Fixed decimals (1 under 10, else 0), locale decimal separator, no grouping.
+  const fixed = (v: number) => {
+    const digits = v < 10 ? 1 : 0
+    return formatNumber(v, {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+      useGrouping: false,
+    })
+  }
+  if (bytes < 1024) return t('size.bytes', { n: bytes })
   const kb = bytes / 1024
-  if (kb < 1024) return `${kb.toFixed(kb < 10 ? 1 : 0)} KB`
+  if (kb < 1024) return t('size.kb', { n: fixed(kb) })
   const mb = kb / 1024
-  return `${mb.toFixed(mb < 10 ? 1 : 0)} MB`
+  return t('size.mb', { n: fixed(mb) })
 }
 
 // Map every tracked Git LFS pointer to its repo-relative path, keyed by oid. A resource
@@ -124,13 +133,13 @@ function textDiff(
   const removed = prevLines.slice(header).filter((l) => l.trim() && !curSet.has(l))
   if (added.length === 0 && removed.length === 0) return null
 
-  const summary =
-    [
-      added.length ? `+${added.length}` : '',
-      removed.length ? `−${removed.length}` : '',
-    ]
-      .filter(Boolean)
-      .join(' ') + (added.length + removed.length === 1 ? ' row' : ' rows')
+  const changes = [
+    added.length ? `+${added.length}` : '',
+    removed.length ? `−${removed.length}` : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+  const summary = tn('history.diffSummary', added.length + removed.length, { changes })
 
   // Interleave a capped, readable preview: removals then additions.
   const CAP = 6
@@ -138,7 +147,7 @@ function textDiff(
   for (const text of removed.slice(0, CAP)) lines.push({ type: 'remove', text: `− ${text}` })
   for (const text of added.slice(0, CAP - lines.length)) lines.push({ type: 'add', text: `+ ${text}` })
   const hidden = added.length + removed.length - lines.length
-  if (hidden > 0) lines.push({ type: 'add', text: `+ ${hidden} more row${hidden === 1 ? '' : 's'}…` })
+  if (hidden > 0) lines.push({ type: 'add', text: tn('history.moreRows', hidden) })
   return { summary, lines }
 }
 

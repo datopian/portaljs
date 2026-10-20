@@ -1,11 +1,12 @@
 import { Html, Head, Main, NextScript } from 'next/document'
 import { withBasePath } from '../lib/basePath'
+import { LOCALE, t } from '../lib/i18n'
 
 // Raw <link> hrefs are not basePath-aware, so site-root paths below go through
 // withBasePath — otherwise they 404 when the portal is served under a sub-path.
 export default function Document() {
   return (
-    <Html lang="en">
+    <Html lang={LOCALE}>
       <Head>
         {/* Default PortalJS branding — PLACEHOLDER. Replace the files in `public/`
             (favicon.ico, icon.svg, apple-touch-icon.png, icon-512.png) with your
@@ -24,7 +25,7 @@ export default function Document() {
           rel="alternate"
           type="application/ld+json"
           href={withBasePath('/catalog.jsonld')}
-          title="DCAT catalog feed"
+          title={t('document.dcatFeedTitle')}
         />
         {/* Editorial type system (Claude Design import): Newsreader (serif),
             Work Sans (sans), IBM Plex Mono (SQL editor). Loaded via <link> — no

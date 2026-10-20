@@ -19,6 +19,7 @@ import {
 } from '../lib/query/logical'
 import MapQueryPanel from './MapQueryPanel'
 import { resourceUrl, type Resource } from '../lib/datasets'
+import { t } from '../lib/i18n'
 
 // The dataset-page map — ONE MapLibre instance that carries both serverless geo
 // tiers of a dataset:
@@ -375,7 +376,7 @@ export default function MapPreview({
           }
         } catch {
           if (!cancelled) {
-            setError(`Could not read the PMTiles archive at ${url}.`)
+            setError(t('map.errors.pmtiles', { url }))
             setLoading(false)
           }
           return
@@ -417,7 +418,7 @@ export default function MapPreview({
         // Most commonly WebGL being unavailable (old hardware, disabled in
         // the browser) — say so instead of a generic failure.
         if (!cancelled) {
-          setError(e instanceof Error ? e.message : 'Could not initialize the map.')
+          setError(e instanceof Error ? e.message : t('map.errors.init'))
           setLoading(false)
         }
         return
@@ -591,7 +592,7 @@ export default function MapPreview({
       })
     })().catch(() => {
       if (!cancelled) {
-        setError('Failed to load the map libraries.')
+        setError(t('map.errors.libraries'))
         setLoading(false)
       }
     })
@@ -643,22 +644,22 @@ export default function MapPreview({
     <div>
       <div className="mb-3.5 flex flex-wrap items-center gap-3">
         <span className="font-sans text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45">
-          Map
+          {t('map.heading')}
         </span>
         {url && (
           <span
-            title="Vector tiles read from a single PMTiles archive over HTTP range requests — only the tiles in view are fetched, never the whole file."
+            title={t('map.pmtilesTooltip')}
             className="border border-accent/50 px-1.5 py-0.5 font-sans text-[10px] font-medium uppercase tracking-[0.06em] text-accent"
           >
-            pmtiles · range requests
+            {t('map.pmtilesBadge')}
           </span>
         )}
         {queryResource && ranged && (
           <span
-            title="GeoParquet queried in place over HTTP range requests — the bbox pre-filter prunes row groups, so only the bytes a query touches are fetched, never the whole file."
+            title={t('map.geoparquetTooltip')}
             className="border border-[#1d4ed8]/50 px-1.5 py-0.5 font-sans text-[10px] font-medium uppercase tracking-[0.06em] text-[#1d4ed8]"
           >
-            geoparquet · queried in place
+            {t('map.geoparquetBadge')}
           </span>
         )}
       </div>
@@ -675,7 +676,7 @@ export default function MapPreview({
         <div className="absolute right-2.5 top-2.5 z-[2] flex flex-col gap-px">
           <button
             type="button"
-            aria-label="Zoom in"
+            aria-label={t('map.zoomIn')}
             onClick={() => zoomBy(1)}
             className="h-7 w-7 border border-ink/25 bg-cream text-center font-sans text-base leading-none text-ink hover:text-accent"
           >
@@ -683,7 +684,7 @@ export default function MapPreview({
           </button>
           <button
             type="button"
-            aria-label="Zoom out"
+            aria-label={t('map.zoomOut')}
             onClick={() => zoomBy(-1)}
             className="h-7 w-7 border border-ink/25 bg-cream text-center font-sans text-base leading-none text-ink hover:text-accent"
           >
@@ -691,8 +692,8 @@ export default function MapPreview({
           </button>
           <button
             type="button"
-            aria-label="Reset to data extent"
-            title="Reset to data extent"
+            aria-label={t('map.resetExtent')}
+            title={t('map.resetExtent')}
             onClick={resetExtent}
             className="mt-px flex h-7 w-7 items-center justify-center border border-ink/25 bg-cream font-sans text-[13px] leading-none text-ink hover:text-accent"
           >
@@ -704,7 +705,7 @@ export default function MapPreview({
         {/* Query-in-progress indicator (top-left, out of the way of controls). */}
         {querying && (
           <div className="pointer-events-none absolute left-3 top-3 z-[2] bg-cream/80 px-2 py-1 font-mono text-[11px] text-ink/60">
-            querying…
+            {t('map.querying')}
           </div>
         )}
 
@@ -716,11 +717,11 @@ export default function MapPreview({
           >
             <div className="mb-1 flex items-baseline justify-between gap-2">
               <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.08em] text-ink/45">
-                {inspected.sourceLayer || 'Feature'}
+                {inspected.sourceLayer || t('map.feature')}
               </span>
               <button
                 type="button"
-                aria-label="Close"
+                aria-label={t('common.close')}
                 onClick={() => setInspected(null)}
                 className="font-sans text-sm leading-none text-ink/50 hover:text-accent"
               >
@@ -728,7 +729,7 @@ export default function MapPreview({
               </button>
             </div>
             {entries.length === 0 ? (
-              <div className="font-serif text-xs italic text-ink/55">No properties</div>
+              <div className="font-serif text-xs italic text-ink/55">{t('map.noProperties')}</div>
             ) : (
               <table className="w-full border-collapse">
                 <tbody>
@@ -756,7 +757,7 @@ export default function MapPreview({
 
         {loading && !error && (
           <div className="absolute inset-0 z-[4] flex items-center justify-center bg-cream-panel/80">
-            <span className="font-serif text-sm italic text-ink/55">Loading map…</span>
+            <span className="font-serif text-sm italic text-ink/55">{t('map.loading')}</span>
           </div>
         )}
         {error && (
@@ -774,7 +775,7 @@ export default function MapPreview({
         <MapQueryPanel columns={logicalColumns} totalRows={totalRows} run={runLogical} clear={clearOverlay} />
       ) : (
         <div className="mt-2 font-mono text-[11px] text-ink/40">
-          Click a feature to inspect its properties · pan and zoom fetch only the tiles in view
+          {t('map.inspectHint')}
         </div>
       )}
     </div>

@@ -1,3 +1,5 @@
+import { t } from '../../lib/i18n'
+
 export default function LoadingSpinner() {
   return (
     <div role="status" className="w-fit mx-auto">
@@ -17,7 +19,7 @@ export default function LoadingSpinner() {
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only">Loading...</span>
+      <span className="sr-only">{t('common.loading')}</span>
     </div>
   )
 }
