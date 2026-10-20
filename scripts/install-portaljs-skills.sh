@@ -17,23 +17,54 @@ set -euo pipefail
 
 REF="${PORTALJS_SKILLS_REF:-main}"
 DEST="${CLAUDE_COMMANDS_DIR:-$HOME/.claude/commands}"
-RAW_BASE="https://raw.githubusercontent.com/datopian/portaljs/${REF}/.claude/commands"
+RAW_REPO="https://raw.githubusercontent.com/datopian/portaljs/${REF}"
+RAW_BASE="$RAW_REPO/.claude/commands"
 
 # OSS skills only — excludes Gas Town internal commands (done/handoff/review).
-# Keep in sync with the `commands` list in .claude-plugin/plugin.json.
-# All skills carry a uniform `portaljs-` prefix. The bare old names are thin alias
-# stubs kept for one minor release (back-compat) — installed too so existing
-# `/deploy`-style invocations keep working this release. (`login` was removed.)
-SKILLS="portaljs-architect portaljs-new-portal portaljs-add-dataset portaljs-add-resource portaljs-add-chart portaljs-add-map portaljs-connect-ckan portaljs-migrate arcgis-to-portaljs portaljs-define-schema portaljs-deploy portaljs-check-data-quality architect new-portal add-dataset add-resource add-chart add-map connect-ckan migrate define-schema deploy check-data-quality"
+# The canonical skill names are read from the `commands` array of
+# .claude-plugin/plugin.json, the single source of truth (create-portaljs reads
+# it too), so this installer can't drift from the plugin.
+# The bare old names below are thin alias stubs kept for one minor release
+# (back-compat) — installed too so existing `/deploy`-style invocations keep
+# working this release. (`login` was removed.)
+ALIASES="architect new-portal add-dataset add-resource add-chart add-map connect-ckan migrate define-schema deploy check-data-quality"
+
+# `"./.claude/commands/<name>.md"` entries of plugin.json -> `<name>`, one per line.
+# Plain grep/sed so the installer doesn't need jq.
+skill_names() {
+  { grep -o '\.claude/commands/[a-z0-9-]*\.md' || true; } |
+    sed -e 's#^\.claude/commands/##' -e 's#\.md$##'
+}
 
 # Detect a local checkout: this script lives in <repo>/scripts/, so the commands
 # dir is ../.claude/commands relative to the script.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd)"
 LOCAL_COMMANDS="$SCRIPT_DIR/../.claude/commands"
+LOCAL_PLUGIN="$SCRIPT_DIR/../.claude-plugin/plugin.json"
+
+if [ -f "$LOCAL_COMMANDS/portaljs-new-portal.md" ] && [ -f "$LOCAL_PLUGIN" ]; then
+  MODE=local
+  CANONICAL="$(skill_names < "$LOCAL_PLUGIN")"
+else
+  MODE=remote
+  if ! MANIFEST="$(curl -fsSL "$RAW_REPO/.claude-plugin/plugin.json")"; then
+    echo "error: could not download .claude-plugin/plugin.json from github.com/datopian/portaljs@$REF" >&2
+    exit 1
+  fi
+  CANONICAL="$(printf '%s\n' "$MANIFEST" | skill_names)"
+fi
+
+if [ -z "$CANONICAL" ]; then
+  echo "error: no skills found in the 'commands' list of .claude-plugin/plugin.json" >&2
+  exit 1
+fi
+
+# Word-split on whitespace: names are [a-z0-9-] only.
+SKILLS="$(echo $CANONICAL $ALIASES)"
 
 mkdir -p "$DEST"
 
-if [ -f "$LOCAL_COMMANDS/portaljs-new-portal.md" ]; then
+if [ "$MODE" = local ]; then
   echo "Installing PortalJS skills from local checkout -> $DEST"
   for s in $SKILLS; do
     cp "$LOCAL_COMMANDS/$s.md" "$DEST/$s.md"

@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import DebouncedInput from '../components/ui/DebouncedInput'
-import { datasetHref, getResources, type Dataset } from '../lib/datasets'
+import { withBasePath } from '../lib/basePath'
+import { NAMESPACE_TYPE, datasetHref, getResources, type Dataset } from '../lib/datasets'
 import { provider } from '../lib/providers'
 
 export async function getStaticProps() {
@@ -46,7 +47,7 @@ function fieldNames(d: Dataset): string[] {
 }
 
 // Catalog surface: a borderless search line over a faceted result list.
-// Categories (and publishers, when the portal has more than one) live in a
+// Categories (and namespaces, when the portal has more than one) live in a
 // left sidebar as clickable filters with per-facet counts — filter without
 // scrolling — and every card leads with a data preview: a map snapshot for
 // geo datasets, a format + record-count shape tile for tabular ones.
@@ -93,7 +94,7 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
   // Facet options with counts. Each group's counts are taken over the list
   // filtered by the query AND the OTHER group (standard faceted counting), so
   // a selection never zeroes out its own alternatives. Categories only appear
-  // when the catalog uses them; the publisher group only when there are
+  // when the catalog uses them; the namespace group only when there are
   // several namespaces to choose between.
   const catFacets = useMemo(() => {
     if (!datasets.some((d) => d.category)) return null
@@ -169,7 +170,7 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
                 )}
                 {nsFacets && (
                   <FacetGroup
-                    title="Publishers"
+                    title={NAMESPACE_TYPE === 'owner' ? 'Publishers' : 'Themes'}
                     options={nsFacets}
                     active={activeNs}
                     onToggle={(v) => toggle(activeNs, v, setActiveNs)}
@@ -299,10 +300,11 @@ function DatasetRow({ ds }: { ds: Dataset }) {
     >
       {geo && ds.thumbnail ? (
         // Plain <img>: the portal builds to a static export, so next/image has
-        // no optimizer to run through — and the thumbnail is already tiny.
+        // no optimizer to run through — and the thumbnail is already tiny. A
+        // plain <img> doesn't add the basePath to a site path, so we do.
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={ds.thumbnail}
+          src={withBasePath(ds.thumbnail)}
           alt=""
           loading="lazy"
           className="h-14 w-14 flex-shrink-0 self-center border border-ink/[0.15] object-cover"
