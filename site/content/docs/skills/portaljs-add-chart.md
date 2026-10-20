@@ -55,6 +55,9 @@ In natural language:
   (`pages/[owner]/[slug].tsx`), rendered only for the chosen dataset's
   `(namespace, slug)`. No separate page is created and nothing is registered on the
   home page.
+- Any UI text it adds (headings, loading/empty/error messages) rendered through `t()`,
+  with its keys added to `locales/en.json` (and any other locale files), so the view
+  follows the portal's build-time language.
 
 It type-checks the project (`tsc --noEmit`) before reporting success. When it
 finishes:

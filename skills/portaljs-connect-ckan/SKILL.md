@@ -67,6 +67,8 @@ the single source of truth. Read and follow it when executing. Summary:
 - **Modified:** `pages/search.tsx` (catalog reads `package_search`); `pages/[owner]/[slug].tsx`
   (showcase reads `package_show`, overwritten to drop the `datasets.json` source).
 - **Unchanged:** `pages/index.tsx` (still the static search-first landing page).
+- **UI strings:** any text it adds to JSX renders through `t()` (`lib/i18n.ts`), with the
+  keys added to `locales/en.json` and any other `locales/*.json`.
 - **Verified:** `npx next build` succeeds and prints the static page count.
 - **Result:** `/search` and `/@namespace/slug` are served from the CKAN backend; the
   `DMS` env var can override the base URL at deploy time without editing code.

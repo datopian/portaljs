@@ -54,6 +54,9 @@ Restricted to specific organizations:
 - `pages/[owner]/[slug].tsx` — the showcase route, repointed to pre-render one
   showcase per dataset at `/@<namespace>/<slug>` via `package_show`, previewing
   CSV/TSV resources through the template's `Table`.
+- Any UI text it adds (headings, loading/empty/error messages) rendered through `t()`,
+  with its keys added to `locales/en.json` (and any other locale files), so the view
+  follows the portal's build-time language.
 
 It verifies the build before reporting success. When it finishes:
 

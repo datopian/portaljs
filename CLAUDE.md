@@ -122,6 +122,12 @@ Datasets are `@`-namespaced so they never collide with content pages. Pick one m
 - Tailwind CSS everywhere. Always include `@tailwindcss/typography` for prose content.
 - Do not use inline styles. Do not use CSS modules unless the project already uses them.
 
+## UI strings (i18n)
+
+- Every user-facing string lives in `locales/en.json`, keyed by area (`search.*`, `dataset.*`, `map.*`…). Render it with `t('key', { vars })` from `lib/i18n.ts` (`tn()` for plurals, `formatNumber` / `formatDate` for numbers and dates) — never hardcode English in JSX.
+- New UI text: add the key to `locales/en.json` and to every other `locales/*.json` present (missing keys fall back to English).
+- One language per build: `NEXT_PUBLIC_LOCALE=it npm run build` (unset → `en`). Add a language by copying `en.json` to `locales/<code>.json` and registering it in `lib/i18n.ts`.
+
 Standard `tailwind.config.js`:
 ```js
 module.exports = {
