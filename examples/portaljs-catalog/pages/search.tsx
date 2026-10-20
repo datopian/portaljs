@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import DebouncedInput from '../components/ui/DebouncedInput'
 import { withBasePath } from '../lib/basePath'
-import { datasetHref, getResources, type Dataset } from '../lib/datasets'
+import { NAMESPACE_TYPE, datasetHref, getResources, type Dataset } from '../lib/datasets'
 import { provider } from '../lib/providers'
 
 export async function getStaticProps() {
@@ -47,7 +47,7 @@ function fieldNames(d: Dataset): string[] {
 }
 
 // Catalog surface: a borderless search line over a faceted result list.
-// Categories (and publishers, when the portal has more than one) live in a
+// Categories (and namespaces, when the portal has more than one) live in a
 // left sidebar as clickable filters with per-facet counts — filter without
 // scrolling — and every card leads with a data preview: a map snapshot for
 // geo datasets, a format + record-count shape tile for tabular ones.
@@ -94,7 +94,7 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
   // Facet options with counts. Each group's counts are taken over the list
   // filtered by the query AND the OTHER group (standard faceted counting), so
   // a selection never zeroes out its own alternatives. Categories only appear
-  // when the catalog uses them; the publisher group only when there are
+  // when the catalog uses them; the namespace group only when there are
   // several namespaces to choose between.
   const catFacets = useMemo(() => {
     if (!datasets.some((d) => d.category)) return null
@@ -170,7 +170,7 @@ export default function Search({ datasets }: { datasets: Dataset[] }) {
                 )}
                 {nsFacets && (
                   <FacetGroup
-                    title="Publishers"
+                    title={NAMESPACE_TYPE === 'owner' ? 'Publishers' : 'Themes'}
                     options={nsFacets}
                     active={activeNs}
                     onToggle={(v) => toggle(activeNs, v, setActiveNs)}
