@@ -20,7 +20,7 @@
 // harvestTriples() instead; the extraction layer is the reusable part.
 //
 // Profiles read (mirror what dcat-profiles.ts exposes): DCAT 2/3, DCAT-AP + the
-// national profiles (SE/CH/DE), and GeoDCAT-AP spatial fields. Croissant (schema.org
+// national profiles (SE/CH/DE/IT), and GeoDCAT-AP spatial fields. Croissant (schema.org
 // / MLCommons ML-dataset JSON-LD) is read best-effort through the JSON-LD path.
 //
 // Specs: DCAT-2 https://www.w3.org/TR/vocab-dcat-2/ · DCAT-3
@@ -67,6 +67,7 @@ const WELL_KNOWN: Record<string, string> = {
   gsp: 'http://www.opengis.net/ont/geosparql#',
   dcatap: 'http://data.europa.eu/r5r/',
   dcatde: 'http://dcat-ap.de/def/dcatde/',
+  dcatapit: 'http://dati.gov.it/onto/dcatapit#',
   schema: SCHEMA,
   spdx: 'http://spdx.org/rdf/terms#',
   hydra: 'http://www.w3.org/ns/hydra/core#',

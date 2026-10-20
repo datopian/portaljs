@@ -28,7 +28,8 @@ const SER: RdfFormat[] = ['jsonld', 'ttl', 'rdf']
 const CFG: DcatConfig = {
   title: 'PortalJS Reference Data Catalog',
   description: 'A catalog of reference datasets published via PortalJS, for DCAT harvest conformance testing.',
-  publisher: { name: 'Datopian', homepage: 'https://www.datopian.com', type: 'foaf:Organization' },
+  // `identifier` stands in for an IPA code — only the dcat-ap-it profile emits it.
+  publisher: { name: 'Datopian', homepage: 'https://www.datopian.com', type: 'foaf:Organization', identifier: 'datopian' },
   contactPoint: { fn: 'Datopian Data Team', email: 'info@datopian.com' },
   license: 'http://publications.europa.eu/resource/authority/licence/CC_BY_4_0',
   themes: ['http://publications.europa.eu/resource/authority/data-theme/GOVE'],

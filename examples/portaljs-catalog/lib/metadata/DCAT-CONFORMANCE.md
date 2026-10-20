@@ -160,6 +160,49 @@ path (schema.org `@vocab`), recovering name / description / FileObject resources
 Reproduce: `pip install mlcroissant` (Python 3.10+), then for each dataset in
 `croissant.jsonld` re-attach the `@context` and run `mlcroissant validate --jsonld <file>`.
 
+## DCAT-AP_IT (Italy, AgID / dati.gov.it) — #1668
+
+The opt-in `dcat-ap-it` profile emits the Italian national profile
+([AgID guidelines](https://docs.italia.it/italia/daf/linee-guida-cataloghi-dati-dcat-ap-it/it/stabile/dcat-ap_it.html),
+ontology `http://dati.gov.it/onto/dcatapit`). It builds on the DCAT-AP augmentation and
+adds what AgID makes mandatory:
+
+| Class | What the profile emits |
+|---|---|
+| Catalog | `dcat:Catalog` + `dcatapit:Catalog`; `dct:publisher` as a `dcatapit:Agent`; `foaf:homepage` typed `foaf:Document`; `dcat:themeTaxonomy` = the EU data-theme scheme when datasets use it |
+| Dataset | `dcat:Dataset` + `dcatapit:Dataset`, with its own IRI (`<landing page>#dataset`) so the landing page can be a `foaf:Document`; `dct:identifier` = `<IPA code>:<namespace>/<slug>` (or the dataset's `dcat.identifier`); `dct:rightsHolder` (`dcat.rightsHolder`, else the dataset/catalog publisher); `dct:accrualPeriodicity` (`dcat.accrualPeriodicity`, else `accrualPeriodicity` in config, else EU frequency `UNKNOWN`, which AgID allows); `dct:modified` (the dataset's, else its issue date, else the catalog's); contact point as `dcatapit:Organization` |
+| Distribution | `dcat:Distribution` + `dcatapit:Distribution`; `dct:license` on every distribution as a `dcatapit:LicenseDocument` (+ `foaf:name` and ADMS `dct:type` for recognised licences); `dct:format` mapped to an EU file-type term (PMTiles has none → `BIN`) |
+| Agent | `foaf:Agent` + `dcatapit:Agent` with `dct:identifier` (from `identifier`) and `foaf:name`; identified by `uri` when set, else a blank node (never by its homepage, so the agent and the homepage document keep distinct identities) |
+
+Inputs: `publisher.identifier` (IPA code) and EU `themes` in `dcat.config.json`; per dataset
+in `datasets.json`, `dcat.rightsHolder` (`name`, `identifier`, `homepage`),
+`dcat.accrualPeriodicity` and optionally `dcat.identifier`. Other profiles ignore all of
+these. Enabling `dcat-ap-it` adds `catalog.dcat-ap-it.{jsonld,ttl,rdf}` and an entry in
+`catalog-feeds.json`; every other feed is byte-identical with and without it.
+
+**Validation.** Against the reference catalog with the fully populated harness config
+(`scripts/validate-dcat-external.ts`, `publisher.identifier` set):
+
+| Check | Result |
+|---|---|
+| AgID SPARQL rules ([italia/daf-semantic-validator](https://github.com/italia/daf-semantic-validator/tree/master/dist/data/ontologies/agid/DCAT-AP_IT/validators/sparql), 157 rules, run locally with rdflib) — Turtle, RDF/XML, JSON-LD | ✅ 0 errors; 14 warnings, all recommended properties: `dct:subject` ×7, distribution `dct:description` ×5, catalog `dct:issued` ×1, licence `dct:type` ×1 (the Natural Earth terms page is not a recognised licence) |
+| [`dcat-ap-it validate`](https://github.com/ondata/dcat-ap-it-generator) (MIT, 122 rules derived from the AgID ones) — Turtle | ✅ 0 errors, 14 warnings (the same) |
+| Three serializations | ✅ isomorphic graphs (364 triples each) |
+| ITB DCAT-AP 3.0.1 base | the same 5 `foaf:name` violations the plain `dcat-ap` feed already reports, on the same nodes — the profile adds none |
+| Round-trip (`harvest-roundtrip.test.ts`, `validate-dcat-roundtrip.ts`) | ✅ 7/7 datasets, no metadata loss on shared fields; profile detected via `dct:conformsTo` |
+
+With the template's empty `dcat.config.json` the same rules report what a portal must
+fill in (publisher with IPA code, themes, licences), matching the generator's warnings.
+
+The hosted AgID validator (https://validatore.dati.gov.it) uploads to a session triple
+store and queries it from the browser, so it was not scripted here; it runs the same
+SPARQL rule set. Run it by hand on `catalog.dcat-ap-it.ttl` before registering with
+dati.gov.it.
+
+Reproduce: `tsx scripts/validate-dcat-external.ts /tmp/dcat-validation`, then run each
+`.rq` file of the AgID rule directory against `/tmp/dcat-validation/dcat-ap-it.ttl` with
+any SPARQL engine (e.g. `rdflib`), or `dcat-ap-it validate /tmp/dcat-validation/dcat-ap-it.ttl`.
+
 ## Still out of scope
 
 `CKAN harvest compatibility` and `CSW` (named as epic candidates) are not implemented — the

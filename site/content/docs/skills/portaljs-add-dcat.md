@@ -53,6 +53,7 @@ profiles are config, not hardcoded, and a portal can emit several at once.
 | `geodcat-ap` | GeoDCAT-AP — DCAT-AP + spatial coverage (INSPIRE / geospatial catalogs) |
 | `croissant` | Croissant — MLCommons schema.org ML-dataset metadata (JSON-LD only) |
 | `dcat-ap-se` · `dcat-ap-ch` · `dcat-ap-de` | National profiles (Sweden / Switzerland / Germany) |
+| `dcat-ap-it` | DCAT-AP_IT — the Italian profile (AgID / dati.gov.it): set the publisher's IPA code; per dataset a rights holder and update frequency |
 
 Add another national profile without touching skill code:
 `registerDcatProfile(makeNationalProfile({ id, label, conformsTo, context }))`, then list

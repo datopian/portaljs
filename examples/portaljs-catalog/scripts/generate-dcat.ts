@@ -135,7 +135,7 @@ async function main() {
     if (result.errors.length) {
       console.warn(`⚠ DCAT ${profile.label}: ${result.errors.length} conformance error(s):`)
       for (const e of result.errors.slice(0, 10)) console.warn(`    - ${e.message}`)
-      console.warn(`  Fix in dcat.config.json (publisher/contactPoint) — see /portaljs-add-dcat.`)
+      console.warn(`  Fix in dcat.config.json (publisher/contactPoint) or the dataset's \`dcat\` block in datasets.json — see /portaljs-add-dcat.`)
     }
 
     // A profile may restrict which serializations are meaningful (Croissant → JSON-LD).
