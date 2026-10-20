@@ -90,10 +90,16 @@ const fallback = /const FALLBACK_SKILLS = \[([\s\S]*?)\]/.exec(read('packages/cr
 if (!fallback) errors.push('packages/create-portaljs/index.mjs: no FALLBACK_SKILLS array')
 else sameSet('create-portaljs FALLBACK_SKILLS', [...fallback[1].matchAll(/'([a-z0-9-]+)'/g)].map((m) => m[1]), names)
 
-// 6. The repo-root CLAUDE.md skills list.
+// 6. The repo-root CLAUDE.md skills list ("- `/<name>` — …" bullets), both ways: every
+// shipped skill is listed, and no listed skill has stopped shipping.
 const claudeMd = read('CLAUDE.md')
 const undocumented = names.filter((n) => !claudeMd.includes(`/${n}\``))
 if (undocumented.length) errors.push(`CLAUDE.md does not mention: ${undocumented.map((n) => '/' + n).join(', ')}`)
+const skillsSection = /^## Skills\b[\s\S]*?(?=^## |(?![\s\S]))/m.exec(claudeMd)?.[0] ?? ''
+if (!skillsSection) errors.push('CLAUDE.md: no "## Skills" section')
+const listed = [...skillsSection.matchAll(/^- `\/([a-z0-9-]+)`/gm)].map((m) => m[1])
+const stale = listed.filter((n) => !names.includes(n))
+if (stale.length) errors.push(`CLAUDE.md lists skills not in plugin.json: ${stale.map((n) => '/' + n).join(', ')}`)
 
 if (errors.length) {
   console.error('Shipped-skill lists are out of sync with .claude-plugin/plugin.json:\n  ' + errors.join('\n  '))

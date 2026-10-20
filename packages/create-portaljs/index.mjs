@@ -354,13 +354,18 @@ async function main() {
       dir: skillsDir,
       force: true,
     })
-    let bundled = 0
+    const bundled = []
     for (const entry of readdirSync(skillsDir)) {
       const keep = entry.endsWith('.md') && skills.includes(entry.slice(0, -3))
-      if (keep) bundled++
+      if (keep) bundled.push(entry.slice(0, -3))
       else rmSync(join(skillsDir, entry), { recursive: true, force: true })
     }
-    console.log(`Bundled ${bundled} PortalJS skills into .claude/commands/`)
+    console.log(`Bundled ${bundled.length} PortalJS skills into .claude/commands/`)
+    // A listed skill missing from the download (e.g. an older --ref) isn't fatal, but
+    // say which ones so the scaffold doesn't silently ship fewer than expected.
+    const missing = skills.filter((s) => !bundled.includes(s))
+    if (missing.length)
+      console.log(`\x1b[33m⚠\x1b[0m  Not found at ${opts.ref}: ${missing.map((s) => '/' + s).join(', ')}`)
   } catch (e) {
     console.log(
       `\x1b[33m⚠\x1b[0m  Could not bundle skills (${e?.message || e}). Install them with:\n` +
