@@ -1,5 +1,17 @@
 # create-portaljs
 
+## 0.7.0
+
+### Minor Changes
+
+- [#1682](https://github.com/datopian/portaljs/pull/1682) [`2d1d2865a06d3eee398f58ab0ba206ca117dbd59`](https://github.com/datopian/portaljs/commit/2d1d2865a06d3eee398f58ab0ba206ca117dbd59) Thanks [@anuveyatsu](https://github.com/anuveyatsu)! - **Requires Node.js 22 or newer.** Node 18 reached end of life on 2025-04-30, and the CLI and the scaffolded portal are now tested on Node 22 and 24 only (`engines.node` is `>=22`). On older Node, npm prints an `EBADENGINE` warning; upgrade Node to scaffold reliably.
+
+  Scaffolding now also names any skill from `.claude-plugin/plugin.json` that wasn't found at the chosen `--ref` (e.g. an older ref), instead of only reporting a smaller "Bundled N" count.
+
+### Patch Changes
+
+- [#1676](https://github.com/datopian/portaljs/pull/1676) [`06c9a8f5fac1dd23f2ca04a8d7578647189a84ae`](https://github.com/datopian/portaljs/commit/06c9a8f5fac1dd23f2ca04a8d7578647189a84ae) Thanks [@anuveyatsu](https://github.com/anuveyatsu)! - Bundle every shipped skill into scaffolds, including `/portaljs-add-geo`, `/portaljs-add-dcat`, and `/arcgis-to-portaljs`, which were missing from the hard-coded allowlist. The list of skills to bundle is now read from the repo's `.claude-plugin/plugin.json` at the same `--ref` as the template, so the scaffold always ships exactly what the plugin ships. A built-in list (now complete) is used only if that file can't be fetched.
+
 ## 0.6.0
 
 ### Minor Changes
