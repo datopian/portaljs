@@ -1,7 +1,7 @@
 ---
 title: "A clearer, faster home for research data"
 description: "Discover what changed in the PortalJS research data portal demo: clearer navigation, data-driven charts, richer dataset pages, an honest AI assistant, and a move to Next.js 15, React 19, and the App Router."
-created: 2026-10-16
+created: 2026-10-20
 authors: ['williamlima']
 tags:
   - PortalJS
