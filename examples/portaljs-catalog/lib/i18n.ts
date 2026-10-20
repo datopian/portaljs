@@ -16,13 +16,14 @@
 
 import { Fragment, createElement, type ReactNode } from 'react'
 import en from '../locales/en.json'
+import it from '../locales/it.json'
 
 type Messages = Record<string, string>
 type Vars = Record<string, string | number>
 
 // Registered locales. Add one import + one entry per language (quote a code with
 // a hyphen: { en, 'pt-BR': ptBR }). scripts/check-locales.mjs reads this line.
-const LOCALES: Record<string, Messages> = { en }
+const LOCALES: Record<string, Messages> = { en, it }
 
 // The active locale code — also the <html lang> value (pages/_document.tsx).
 // next.config.js always sets it (DEFAULT_LOCALE, or the NEXT_PUBLIC_LOCALE
