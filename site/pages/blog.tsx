@@ -50,6 +50,7 @@ const LABEL_OVERRIDES: Record<string, string[]> = {
   'rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code': ['PortalJS'],
   'scaling-portaljs-data-with-giftless-and-r2':                         ['PortalJS'],
   'civic-data-portal-examples':                                         ['PortalJS Cloud', 'Civic Data'],
+  'research-data-portal-ui-improvements':                               ['PortalJS', 'Research Data'],
   'portaljs-skills-launch':                                             ['PortalJS', 'AI Integration'],
   // PortalJS Cloud + Tutorial
   'keep-your-portal-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api': ['PortalJS Cloud', 'Tutorial'],
@@ -100,6 +101,7 @@ const CATEGORY_MAP: Record<string, string[]> = {
   'portaljs-is-now-ai-native': ['ai', 'dev'],
   'portaljs-skills-launch': ['ai', 'dev'],
   'rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code': ['ai', 'dev'],
+  'research-data-portal-ui-improvements': ['dev', 'ckan'],
   'scaling-portaljs-data-with-giftless-and-r2': ['dev'],
   'summer-updates-2023': ['dev'],
   'supercharging-data-portals-with-the-portaljs-mcp-server': ['ai', 'dev'],
