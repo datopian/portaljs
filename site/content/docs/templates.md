@@ -6,8 +6,7 @@ description: The canonical catalog template — a manifest-driven catalog with a
 ---
 
 PortalJS ships one canonical starting point: the catalog template. It is a real
-Next.js project with a lightweight `components/Table.tsx`, Tailwind setup, and Next 14
-config. [`/portaljs-new-portal`](/docs/skills/portaljs-new-portal) and
+Next.js 16 project with a lightweight `components/Table.tsx` and a Tailwind setup. [`/portaljs-new-portal`](/docs/skills/portaljs-new-portal) and
 `npm create portaljs` both scaffold it; you can also clone it by hand. For the surfaces
 it builds — Home, Catalog, Showcase — see [Core concepts](/docs/core-concepts).
 
