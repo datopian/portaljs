@@ -1,16 +1,18 @@
 // UI strings, plurals, and number/date formatting — a tiny i18n layer built on
-// Intl, with no i18n library. Every user-facing string in the template lives in locales/<code>.json,
-// keyed by a dotted id grouped by area (nav.*, search.*, dataset.*, query.*…);
-// pages and components call t('key') instead of hardcoding English.
+// Intl, with no i18n library. Every user-facing string in the template lives in
+// locales/<code>.json, keyed by a dotted id grouped by area (nav.*, search.*,
+// dataset.*, query.*…); pages and components call t('key') instead of
+// hardcoding English.
 //
 // ONE LOCALE PER BUILD. The template builds to a static export, which Next.js's
-// built-in i18n routing does not support, so the language is picked at build time:
-//
-//   NEXT_PUBLIC_LOCALE=it npm run build     # unset → en (next.config.js)
+// built-in i18n routing does not support, so the language is fixed at build time.
+// The portal's language is DEFAULT_LOCALE in next.config.js (committed, so every
+// build and deploy uses it); NEXT_PUBLIC_LOCALE=<code> overrides it for one build.
 //
 // Locale files are imported statically (bundled), never fetched. To add a
 // language: copy locales/en.json to locales/<code>.json, translate the values
-// (keep the keys), and register it in LOCALES below. See locales/README.md.
+// (keep the keys and {placeholders}), register it in LOCALES below, set
+// DEFAULT_LOCALE, and run `npm run i18n:check`. See locales/README.md.
 
 import { Fragment, createElement, type ReactNode } from 'react'
 import en from '../locales/en.json'
@@ -18,16 +20,19 @@ import en from '../locales/en.json'
 type Messages = Record<string, string>
 type Vars = Record<string, string | number>
 
-// Registered locales. Add one import + one entry per language.
+// Registered locales. Add one import + one entry per language (quote a code with
+// a hyphen: { en, 'pt-BR': ptBR }). scripts/check-locales.mjs reads this line.
 const LOCALES: Record<string, Messages> = { en }
 
 // The active locale code — also the <html lang> value (pages/_document.tsx).
+// next.config.js always sets it (DEFAULT_LOCALE, or the NEXT_PUBLIC_LOCALE
+// override); 'en' only applies to plain node scripts such as generate:dcat.
 export const LOCALE = process.env.NEXT_PUBLIC_LOCALE || 'en'
 
 if (!LOCALES[LOCALE]) {
   // Fail the build loudly rather than silently ship English for a typo'd locale.
   throw new Error(
-    `Unknown NEXT_PUBLIC_LOCALE "${LOCALE}": add locales/${LOCALE}.json and register it in lib/i18n.ts`
+    `Unknown locale "${LOCALE}" (DEFAULT_LOCALE / NEXT_PUBLIC_LOCALE): add locales/${LOCALE}.json and register it in lib/i18n.ts`
   )
 }
 
@@ -75,11 +80,14 @@ export function t(key: string, vars?: Vars): string {
 const pluralRules = new Intl.PluralRules(INTL_LOCALE)
 
 // The plural form of `key` for `count`: `<key>.<category>` by Intl.PluralRules
-// (one, other — and few/many/… for languages that have them), falling back to
-// `<key>.other` when the locale has no entry for that category.
+// (one, other — and few/many/… for languages that have them). A category the
+// locale doesn't define uses the locale's own `<key>.other`; English is used only
+// when the locale lacks the key entirely.
 export function pluralKey(key: string, count: number): string {
   const k = `${key}.${pluralRules.select(count)}`
-  return messages[k] !== undefined || fallback[k] !== undefined ? k : `${key}.other`
+  if (messages[k] !== undefined) return k
+  if (messages[`${key}.other`] !== undefined) return `${key}.other`
+  return fallback[k] !== undefined ? k : `${key}.other`
 }
 
 // Singular/plural translation. {count} is the raw count unless `vars.count` is

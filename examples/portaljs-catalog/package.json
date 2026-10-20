@@ -12,6 +12,7 @@
     "prebuild": "npm run generate:dcat",
     "build": "next build",
     "check-export": "node scripts/check-export.mjs",
+    "i18n:check": "node scripts/check-locales.mjs",
     "start": "next start"
   },
   "dependencies": {

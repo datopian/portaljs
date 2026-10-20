@@ -223,22 +223,29 @@ formatNumber(3149)                               // "3,149"
 formatDate('2021-08-25')                         // "Aug 25, 2021"
 ```
 
-The language is picked **at build time**, one per build — the portal is a static export,
-which Next.js's built-in i18n routing does not support:
-
-```bash
-NEXT_PUBLIC_LOCALE=it npm run build   # unset → English
-```
+The portal's language is a committed setting, **`DEFAULT_LOCALE` in `next.config.js`**
+(`'en'` by default), so every build and deploy uses it. It is one language per build:
+the portal is a static export, which Next.js's built-in i18n routing does not support.
+`NEXT_PUBLIC_LOCALE=<code> npm run build` overrides it for a single build.
 
 `<html lang>`, dates and numbers follow the locale. A key missing from a translation
 falls back to English (then to the key itself), with a console warning in development.
 
-**Add a language:** copy `locales/en.json` to `locales/<code>.json` (e.g. `it.json`),
-translate the values (keep the keys and `{placeholders}`), set `_intl` to its BCP 47 tag
-(e.g. `"it-IT"`), and register it in `LOCALES` in `lib/i18n.ts`. See `locales/README.md`.
+**Set the portal's language** (e.g. Italian):
 
-When you add UI to the template, put its strings in `locales/en.json` (and any other
-locale files present) and render them with `t()` — never hardcode English in JSX.
+1. Copy `locales/en.json` to `locales/it.json` and translate the values. Keep the keys and
+   `{placeholders}` verbatim, add the plural forms the language needs (`.one`/`.other`,
+   plus `.few`/`.many`… where `Intl.PluralRules` uses them), and set `_intl` to its BCP 47
+   tag (`"it-IT"`).
+2. Register it in `LOCALES` in `lib/i18n.ts` (one import + one entry).
+3. Set `const DEFAULT_LOCALE = 'it'` in `next.config.js`.
+4. Run `npm run i18n:check` (keys, placeholders, `_intl`, registration, `DEFAULT_LOCALE`).
+
+See `locales/README.md`.
+
+When you add UI to the template, put its strings in `locales/en.json` and every other
+`locales/*.json`, render them with `t()` — never hardcode English in JSX — and run
+`npm run i18n:check`.
 
 ## Placeholder tokens
 
@@ -279,8 +286,10 @@ pages/search.tsx           — searchable dataset list, reads manifest via getSt
 pages/[owner]/[slug].tsx   — dynamic dataset showcase (/@<namespace>/<slug>)
 pages/_app.tsx             — renders the Navbar on every page
 pages/_document.tsx        — favicon / icon links + default meta description + <html lang>
-lib/i18n.ts                — t() / tn() / formatNumber / formatDate; locale picked by NEXT_PUBLIC_LOCALE
+lib/i18n.ts                — t() / tn() / formatNumber / formatDate; registered locales (LOCALES)
 locales/en.json            — every UI string, keyed by id (add <code>.json files for other languages)
+scripts/check-locales.mjs  — npm run i18n:check — validates locales/*.json against en.json
+next.config.js             — basePath (BASE_PATH) + DEFAULT_LOCALE, the portal's UI language
 public/data/               — bundled sample CSVs (inline); Parquet/PMTiles samples live on R2 (data.portaljs.com)
 public/{icon.svg,favicon.ico,apple-touch-icon.png,icon-512.png} — branding (placeholder)
 components/Navbar.tsx       — site navbar: logo (hover-spin) + name + link to /search
