@@ -151,8 +151,7 @@ export const dataPortals = [
     subtitle: 'Public Financial Data Portal',
     image: '/static/img/showcases/openspending.webp',
     href: 'https://www.openspending.org',
-    repository:
-      'https://github.com/datopian/datahub/tree/main/examples/openspending',
+    repository: 'https://github.com/datopian/openspending.org',
     description:
       'OpenSpending is a free, open and global platform to search, visualise and analyse fiscal data in the public sphere.',
   },

@@ -10,7 +10,6 @@ Structure:
 
 - **examples**
   - **portaljs-catalog**: the canonical template (Home + Catalog + Showcase) scaffolded by `npm create portaljs` and the skills
-  - **openspending**: the OpenSpending portal (moving to its own repo)
 - **site**: the website for the project, with a landing page and the docs
 - **packages**:
   - **components** (`@portaljs/components`): the library of components for creating a data portal

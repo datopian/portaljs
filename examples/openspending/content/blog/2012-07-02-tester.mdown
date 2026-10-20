@@ -1,9 +1,0 @@
----
-author: $authornamehere
-redirect_from: /2012/07/tester/
-title: Test
----
-
-Tester
-=======
-Tester

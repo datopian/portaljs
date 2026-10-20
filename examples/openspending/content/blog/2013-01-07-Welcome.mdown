@@ -1,8 +1,0 @@
----
-author: $authornamehere
-redirect_from: /2013/01/Welcome/
-title: Welcome Anders
----
-
-Welcome, Anders!
-

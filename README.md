@@ -211,7 +211,7 @@ backends (OpenMetadata), a browser DuckDB query layer, and access control — ar
 
 ```text
 .claude/commands/    the agentic skills (slash commands)
-examples/            portaljs-catalog (the canonical template) + openspending
+examples/            portaljs-catalog — the canonical template
 packages/
   core/              layout/UI components            (@portaljs/core)
   ckan/              CKAN catalog UI + React          (@portaljs/ckan)
@@ -234,12 +234,12 @@ the three surfaces and the `DataProvider` seam live — read it before building.
 
 ## Examples
 
-Reference implementations live in [`examples/`](examples/):
+The canonical template lives in [`examples/`](examples/); OpenSpending, built on PortalJS, has its own repo:
 
 | Example | What it is |
 |---------|------------|
 | [`portaljs-catalog`](examples/portaljs-catalog/) | **Canonical template** — Home + Catalog + Showcase over a static manifest. Scaffold it with `npm create portaljs` or `/portaljs-new-portal`. |
-| [`openspending`](examples/openspending/) | Real-world portal behind [OpenSpending](https://www.openspending.org/) (moving to its own repo) |
+| [`openspending.org`](https://github.com/datopian/openspending.org) | Real-world portal behind [OpenSpending](https://www.openspending.org/) — now in its own repo |
 
 The earlier 2023-era examples (`portaljs-template`, `ckan`, `ckan-ssg`,
 `github-backed-catalog`, `dataset-frictionless`, `fivethirtyeight`, `turing`, `learn`)
