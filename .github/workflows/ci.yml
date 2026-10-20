@@ -54,6 +54,12 @@ jobs:
           node --check packages/create-portaljs/index.mjs
           node packages/create-portaljs/index.mjs --help
 
+      # .claude-plugin/plugin.json is the source of truth for the shipped skills;
+      # fail if any other list of them (docs manifest, scaffold fallback, installer
+      # aliases, CLAUDE.md) or the files on disk disagree with it (#1671).
+      - name: Check shipped-skill lists are in sync
+        run: node scripts/check-skills-sync.mjs
+
       - name: Build catalog template
         working-directory: examples/portaljs-catalog
         run: |

@@ -3,34 +3,69 @@
 //   npm create portaljs@latest my-portal
 // See SPEC.md. Plain ESM, Node >= 22, deps: giget + prompts.
 
-import { existsSync, readdirSync, readFileSync, writeFileSync, statSync, rmSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, writeFileSync, statSync, rmSync, mkdtempSync } from 'node:fs'
 import { join, basename, resolve } from 'node:path'
+import { tmpdir } from 'node:os'
 import { spawn, spawnSync } from 'node:child_process'
 
 const TEMPLATE = 'examples/portaljs-catalog'
 const TEXT_EXT = new Set(['.ts', '.tsx', '.js', '.mjs', '.json', '.css', '.md', '.html'])
 
-// Where the agentic skills live in the repo, and the OSS allowlist we bundle into
-// the scaffold's project-local .claude/commands/ (so `claude` in the new portal
-// sees /portaljs-add-dataset, /portaljs-connect-ckan, … with no separate install step). Kept in sync
-// with .claude-plugin/plugin.json and scripts/install-portaljs-skills.sh.
+// Where the agentic skills live in the repo. We bundle them into the scaffold's
+// project-local .claude/commands/ (so `claude` in the new portal sees
+// /portaljs-add-dataset, /portaljs-connect-ckan, … with no separate install step).
 const SKILLS_SRC = '.claude/commands'
-// Uniform `portaljs-` prefix across the whole suite. Fresh scaffolds bundle only the
-// canonical prefixed names — the bare alias stubs (kept one release for existing installs)
-// are intentionally pruned so new projects start clean.
-const SKILLS = [
+// The allowlist of skills to bundle comes from the `commands` array of
+// .claude-plugin/plugin.json, fetched at the same ref as the template — that file
+// is the single source of truth (scripts/install-portaljs-skills.sh reads it too).
+// Only canonical names are listed there, so the bare alias stubs (kept one release
+// for existing installs) are pruned and new projects start clean.
+const PLUGIN_MANIFEST_SRC = '.claude-plugin'
+// Used only if plugin.json can't be fetched. Must match plugin.json's `commands`
+// exactly — `npm run skills:check` (CI) fails if it drifts.
+const FALLBACK_SKILLS = [
   'portaljs-architect',
   'portaljs-new-portal',
   'portaljs-add-dataset',
   'portaljs-add-resource',
   'portaljs-add-chart',
   'portaljs-add-map',
+  'portaljs-add-geo',
   'portaljs-connect-ckan',
   'portaljs-migrate',
+  'arcgis-to-portaljs',
   'portaljs-define-schema',
   'portaljs-deploy',
   'portaljs-check-data-quality',
+  'portaljs-add-dcat',
 ]
+
+// `./.claude/commands/<name>.md` entries of a plugin.json `commands` array → names.
+function skillNamesFromPlugin(manifest) {
+  const names = []
+  for (const entry of manifest?.commands ?? []) {
+    const m = /^(?:\.\/)?\.claude\/commands\/([a-z0-9-]+)\.md$/.exec(entry)
+    if (m) names.push(m[1])
+  }
+  return names
+}
+
+// Fetch plugin.json at `ref` and return its skill names, or null on any failure.
+async function fetchSkillAllowlist(downloadTemplate, ref) {
+  const tmp = mkdtempSync(join(tmpdir(), 'create-portaljs-'))
+  try {
+    await downloadTemplate(`github:datopian/portaljs/${PLUGIN_MANIFEST_SRC}#${ref}`, {
+      dir: tmp,
+      force: true,
+    })
+    const names = skillNamesFromPlugin(JSON.parse(readFileSync(join(tmp, 'plugin.json'), 'utf8')))
+    return names.length ? names : null
+  } catch {
+    return null
+  } finally {
+    rmSync(tmp, { recursive: true, force: true })
+  }
+}
 
 function parseArgs(argv) {
   const o = { install: true, git: true, yes: false, ref: 'main' }
@@ -310,15 +345,27 @@ async function main() {
   // Non-fatal: a fetch failure just prints the manual install one-liner.
   const skillsDir = join(target, '.claude', 'commands')
   try {
+    let skills = await fetchSkillAllowlist(downloadTemplate, opts.ref)
+    if (!skills) {
+      console.log('\x1b[2mCould not read .claude-plugin/plugin.json; using the built-in skill list.\x1b[0m')
+      skills = FALLBACK_SKILLS
+    }
     await downloadTemplate(`github:datopian/portaljs/${SKILLS_SRC}#${opts.ref}`, {
       dir: skillsDir,
       force: true,
     })
+    const bundled = []
     for (const entry of readdirSync(skillsDir)) {
-      const keep = entry.endsWith('.md') && SKILLS.includes(entry.slice(0, -3))
-      if (!keep) rmSync(join(skillsDir, entry), { recursive: true, force: true })
+      const keep = entry.endsWith('.md') && skills.includes(entry.slice(0, -3))
+      if (keep) bundled.push(entry.slice(0, -3))
+      else rmSync(join(skillsDir, entry), { recursive: true, force: true })
     }
-    console.log(`Bundled ${SKILLS.length} PortalJS skills into .claude/commands/`)
+    console.log(`Bundled ${bundled.length} PortalJS skills into .claude/commands/`)
+    // A listed skill missing from the download (e.g. an older --ref) isn't fatal, but
+    // say which ones so the scaffold doesn't silently ship fewer than expected.
+    const missing = skills.filter((s) => !bundled.includes(s))
+    if (missing.length)
+      console.log(`\x1b[33m⚠\x1b[0m  Not found at ${opts.ref}: ${missing.map((s) => '/' + s).join(', ')}`)
   } catch (e) {
     console.log(
       `\x1b[33m⚠\x1b[0m  Could not bundle skills (${e?.message || e}). Install them with:\n` +

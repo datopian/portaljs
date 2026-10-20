@@ -108,6 +108,9 @@ stage_lint() {
   run "lint @portaljs/ckan" . npm run lint -w @portaljs/ckan
   # Fails when README / site docs / sidebar have drifted from skills-manifest.mjs.
   run "gen:skills:check" . npm run gen:skills:check
+  # Fails when a shipped-skill list (manifest, scaffold fallback, installer
+  # aliases, CLAUDE.md) disagrees with .claude-plugin/plugin.json (#1671).
+  run "skills:check" . npm run skills:check
   # Asserts this script still fails an empty run — the property po-mz4 is about.
   run "verify.sh self-test" . bash scripts/verify-selftest.sh
   # Asserts the nav + landing hero still lead to a page that can actually sign a
