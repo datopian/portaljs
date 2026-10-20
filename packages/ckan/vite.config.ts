@@ -23,6 +23,8 @@ export default defineConfig({
                 'react-dom',
                 'styled-components',
                 '@portaljs/ckan-api-client-js',
+                // Never bundle Next.js: <Link> must share the host app's router.
+                /^next(\/.*)?$/,
             ],
             output: {
                 globals: {
