@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import DebouncedInput from '../components/ui/DebouncedInput'
+import { withBasePath } from '../lib/basePath'
 import { NAMESPACE_TYPE, datasetHref, getResources, type Dataset } from '../lib/datasets'
 import { provider } from '../lib/providers'
 
@@ -299,10 +300,11 @@ function DatasetRow({ ds }: { ds: Dataset }) {
     >
       {geo && ds.thumbnail ? (
         // Plain <img>: the portal builds to a static export, so next/image has
-        // no optimizer to run through — and the thumbnail is already tiny.
+        // no optimizer to run through — and the thumbnail is already tiny. A
+        // plain <img> doesn't add the basePath to a site path, so we do.
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={ds.thumbnail}
+          src={withBasePath(ds.thumbnail)}
           alt=""
           loading="lazy"
           className="h-14 w-14 flex-shrink-0 self-center border border-ink/[0.15] object-cover"

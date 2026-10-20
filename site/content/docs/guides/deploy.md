@@ -59,8 +59,10 @@ static export, and set env vars like `DMS` in the Vercel dashboard.)
   entry, so `/portaljs-add-dataset` and `/portaljs-migrate` portals export cleanly.
 - **Environment variables:** for static export, inline client-side values at build time with
   `NEXT_PUBLIC_*`; for a Vercel/SSR deploy, set them in the Vercel dashboard.
-- **GitHub Pages subpath:** if deploying to `https://user.github.io/repo/`, also set
-  `basePath` and `assetPrefix` in `next.config.js`.
+- **Sub-path hosting (e.g. GitHub Pages):** if deploying to `https://user.github.io/repo/`,
+  build the catalog template with `BASE_PATH=/repo` (and `SITE_URL=https://user.github.io/repo`
+  for the DCAT feeds). Its `next.config.js` sets `basePath` from it, and the head links, data
+  URLs and feed index follow. Other portals: set `basePath` in `next.config.js` directly.
 
 ## Where to go next
 

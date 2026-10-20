@@ -34,6 +34,15 @@ npm install
 npm run dev
 ```
 
+To serve the portal under a sub-path (e.g. `https://example.org/portal`), build with
+`BASE_PATH=/portal` — `next.config.js` sets Next's `basePath` from it, and the head links,
+bundled data URLs and `catalog-feeds.json` paths pick it up too. Set `SITE_URL` to the
+full URL including the sub-path so the DCAT feeds' absolute links match:
+
+```bash
+BASE_PATH=/portal SITE_URL=https://example.org/portal npm run build
+```
+
 ## Adding a dataset
 
 1. Drop the file in `public/data/` (e.g. `public/data/my-data.csv`).
