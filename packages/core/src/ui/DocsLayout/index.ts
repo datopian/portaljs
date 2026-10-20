@@ -1,1 +1,0 @@
-export { DocsLayout } from "./Docs";
