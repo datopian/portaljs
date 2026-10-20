@@ -24,10 +24,8 @@ generates a tiny server-side `fetch` client (no dependency), lists datasets from
 `package_search`, and renders each from `package_show`, with CSV/TSV resources previewed
 through the template's `<Table />`. Calls run server-side, so the catalog is pre-rendered
 and statically deployable. See the
-[CKAN integration page](/ckan) and the
-[`examples/ckan`](https://github.com/datopian/portaljs/tree/main/examples/ckan) and
-[`examples/ckan-ssg`](https://github.com/datopian/portaljs/tree/main/examples/ckan-ssg)
-examples.
+[CKAN integration page](/ckan). (The older `@portaljs/ckan`-based
+[`ckan`](https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/ckan) and [`ckan-ssg`](https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/ckan-ssg) examples are archived for reference.)
 
 ## DKAN
 
@@ -61,14 +59,17 @@ every backend, keep the client lean by querying only in
 
 Treat a GitHub repo as the catalog: data files (CSV/JSON/GeoJSON) live in the repo, and
 the portal reads them at build time. This is the simplest "backend" — no service to run.
-See [`examples/github-backed-catalog`](https://github.com/datopian/portaljs/tree/main/examples/github-backed-catalog).
+The canonical template ([`examples/portaljs-catalog`](https://github.com/datopian/portaljs/tree/main/examples/portaljs-catalog))
+already works this way — a `datasets.json` manifest plus files in `public/data/`. (The
+older [`github-backed-catalog`](https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/github-backed-catalog) example, which read other
+repos via the GitHub API, is archived for reference.)
 
 ## Frictionless
 
 [Frictionless Data](https://frictionlessdata.io) packages (a `datapackage.json` plus
 data files) describe datasets in a portable, validated way. Read the package descriptor
-to drive dataset metadata and resource lists. See
-[`examples/dataset-frictionless`](https://github.com/datopian/portaljs/tree/main/examples/dataset-frictionless).
+to drive dataset metadata and resource lists. (The older
+[`dataset-frictionless`](https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/dataset-frictionless) example is archived for reference.)
 
 ## Custom backend
 

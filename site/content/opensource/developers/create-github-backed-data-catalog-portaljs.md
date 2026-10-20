@@ -32,7 +32,7 @@ Run the following commands:
 
 
 ```bash
-npx create-next-app <app-name> --example https://github.com/datopian/datahub/tree/main/examples/github-backed-catalog
+npx create-next-app <app-name> --example https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/github-backed-catalog
 cd <app-name>
 ```
 
@@ -60,7 +60,7 @@ Congratulations, your new app is now running at http://localhost:3000.
 
 ## Deployment
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdatopian%2Fdatahub%2Ftree%2Fmain%2Fexamples%2Fgithub-backed-catalog)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdatopian%2Fportaljs%2Ftree%2F59d816c73aa3569733ce26cf6c471d24b155d760%2Fexamples%2Fgithub-backed-catalog)
 
 By clicking on this button, you will be redirected to a page which will allow you to clone the example into your own GitHub/GitLab/BitBucket account and automatically deploy it.
 
@@ -118,5 +118,5 @@ npm run start
 
 ## Links
 
-- [Repo](https://github.com/datopian/datahub/tree/main/examples/github-backed-catalog)  
+- [Repo](https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples/github-backed-catalog)  
 - [Live Demo](https://example.portaljs.org)  

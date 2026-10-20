@@ -45,7 +45,7 @@ When it’s done, you’ll get deployment URLs. Click on one of the URLs and you
 
 You can instantly deploy our example app to your Vercel account by clicking the button below:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdatopian%2Fportaljs%2Ftree%2Fmain%2Fexamples%2Flearn-example&project-name=my-data-portal&repository-name=my-data-portal&demo-title=PortalJS%20Learn%20Example&demo-description=PortalJS%20Learn%20Example%20-%20https%3A%2F%2Fportaljs.org%2Fdocs&demo-url=learn-example.portaljs.org&demo-image=https%3A%2F%2Fportaljs.org%2Fassets%2Fexamples%2Fbasic-example.png)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdatopian%2Fportaljs%2Ftree%2F59d816c73aa3569733ce26cf6c471d24b155d760%2Fexamples%2Flearn&project-name=my-data-portal&repository-name=my-data-portal&demo-title=PortalJS%20Learn%20Example&demo-description=PortalJS%20Learn%20Example%20-%20https%3A%2F%2Fportaljs.org%2Fdocs&demo-url=learn-example.portaljs.org&demo-image=https%3A%2F%2Fportaljs.org%2Fassets%2Fexamples%2Fbasic-example.png)
 
 This will create a new repository on your GitHub account and deploy it to Vercel. If you are following the tutorial, you can replicate the changes done on your local app to this new repository.
 

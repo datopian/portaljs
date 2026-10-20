@@ -211,7 +211,7 @@ backends (OpenMetadata), a browser DuckDB query layer, and access control — ar
 
 ```text
 .claude/commands/    the agentic skills (slash commands)
-examples/            reference portals — portaljs-catalog is the canonical template
+examples/            portaljs-catalog — the canonical template
 packages/
   core/              layout/UI components            (@portaljs/core)
   ckan/              CKAN catalog UI + React          (@portaljs/ckan)
@@ -234,16 +234,17 @@ the three surfaces and the `DataProvider` seam live — read it before building.
 
 ## Examples
 
-Reference implementations live in [`examples/`](examples/):
+The canonical template lives in [`examples/`](examples/); OpenSpending, built on PortalJS, has its own repo:
 
-| Example | Backend |
-|---------|---------|
-| [`portaljs-catalog`](examples/portaljs-catalog/) | **Canonical template** — Home + Catalog + Showcase over a static manifest |
-| [`portaljs-template`](examples/portaljs-template/) | Minimal single-page starter |
-| [`ckan`](examples/ckan/) · [`ckan-ssg`](examples/ckan-ssg/) | CKAN |
-| [`github-backed-catalog`](examples/github-backed-catalog/) | GitHub |
-| [`dataset-frictionless`](examples/dataset-frictionless/) | Frictionless Data Package |
-| [`fivethirtyeight`](examples/fivethirtyeight/) · [`openspending`](examples/openspending/) · [`turing`](examples/turing/) | Real-world portals |
+| Example | What it is |
+|---------|------------|
+| [`portaljs-catalog`](examples/portaljs-catalog/) | **Canonical template** — Home + Catalog + Showcase over a static manifest. Scaffold it with `npm create portaljs` or `/portaljs-new-portal`. |
+| [`openspending.org`](https://github.com/datopian/openspending.org) | Real-world portal behind [OpenSpending](https://www.openspending.org/) — now in its own repo |
+
+The earlier 2023-era examples (`portaljs-template`, `ckan`, `ckan-ssg`,
+`github-backed-catalog`, `dataset-frictionless`, `fivethirtyeight`, `turing`, `learn`)
+were retired; their source is preserved at
+[`59d816c`](https://github.com/datopian/portaljs/tree/59d816c73aa3569733ce26cf6c471d24b155d760/examples).
 
 ## Community & support
 

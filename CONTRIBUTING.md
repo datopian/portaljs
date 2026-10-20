@@ -9,8 +9,7 @@ https://github.com/datopian/datahub
 Structure:
 
 - **examples**
-  - **ckan**: Example utilizing CKAN as a backend
-  - **dataset-frictionless**: Example utilizing a frictionless dataset as an example
+  - **portaljs-catalog**: the canonical template (Home + Catalog + Showcase) scaffolded by `npm create portaljs` and the skills
 - **site**: the website for the project, with a landing page and the docs
 - **packages**:
   - **components** (`@portaljs/components`): the library of components for creating a data portal

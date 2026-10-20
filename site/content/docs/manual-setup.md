@@ -36,11 +36,6 @@ a few sample datasets.
 > [tiged](https://github.com/tiged/tiged) (a maintained `degit` fork that reliably
 > extracts the subdirectory): `npx tiged datopian/portaljs/examples/portaljs-catalog my-portal`.
 
-> [!note] Just a landing page?
-> If you only want a single home page with no catalog or dataset pages, use the
-> minimal variant `examples/portaljs-template` instead and build up from there. See
-> [Templates](/docs/templates).
-
 ## 2. Add a dataset
 
 Datasets are driven by a `datasets.json` manifest — there's no per-dataset page file

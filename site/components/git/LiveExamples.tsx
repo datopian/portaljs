@@ -16,16 +16,9 @@ export const LiveExamples = () => {
       style: 'dark:-rotate-[4deg]',
     },
     {
-      title: 'FiveThirtyEight Data',
-      description: 'Replica of FiveThirtyEight\'s data portal showcasing journalism datasets with full GitHub integration.',
-      url: 'https://fivethirtyeight.portaljs.org/',
-      icon: `/static/icons/${theme}/analytical-skill.json`,
-      style: 'dark:-rotate-[3deg]',
-    },
-    {
       title: 'Hate Speech Research',
       description: 'Alan Turing Institute\'s curated catalog of hate speech datasets for academic research.',
-      url: 'https://turing.portaljs.org/',
+      url: 'https://hatespeechdata.com/',
       icon: `/static/icons/${theme}/data-catalog.json`,
       style: 'dark:-rotate-[2deg]',
     },
@@ -38,7 +31,7 @@ export const LiveExamples = () => {
         <H3 className="text-center !opacity-100 text-slate-600 dark:text-slate-400">
           Real-world data portals built with PortalJS and Git as the backend.
         </H3>
-        <div className="mt-16 grid grid-cols-1 gap-y-12 sm:gap-x-12 lg:grid-cols-3 lg:gap-x-6">
+        <div className="mt-16 grid grid-cols-1 gap-y-12 sm:gap-x-12 lg:grid-cols-2 lg:gap-x-6">
           {examples.map((example) => (
             <div
               key={example.title}
@@ -84,12 +77,12 @@ export const LiveExamples = () => {
           <H3 className="!opacity-100 text-slate-600 dark:text-slate-400">
             Want to build your own? Start with our{' '}
             <a
-              href="https://github.com/datopian/portaljs/tree/main/examples/github-backed-catalog"
+              href="https://github.com/datopian/portaljs/tree/main/examples/portaljs-catalog"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-500 hover:text-blue-400 font-medium"
             >
-              GitHub-backed catalog example
+              catalog template
             </a>
           </H3>
         </div>

@@ -1,9 +1,9 @@
 # PortalJS Catalog Template (dynamic routes)
 
-A template variant for portals with **many datasets**. Instead of one page file per
-dataset, the catalog is driven by a single manifest (`datasets.json`) and rendered by a
-dynamic route (`pages/[owner]/[slug].tsx` + `getStaticPaths`). Adding a dataset is one
-JSON entry plus a data file — no new page.
+The canonical PortalJS template — what `npm create portaljs` and `/portaljs-new-portal`
+scaffold. Instead of one page file per dataset, the catalog is driven by a single
+manifest (`datasets.json`) and rendered by a dynamic route (`pages/[owner]/[slug].tsx` +
+`getStaticPaths`). Adding a dataset is one JSON entry plus a data file — no new page.
 
 ## The three surfaces
 
@@ -15,16 +15,6 @@ JSON entry plus a data file — no new page.
 
 The home page's search box and chips navigate to `/search?q=…`; each search result links
 to its showcase at `/@<namespace>/<slug>`.
-
-## When to use this vs `portaljs-template`
-
-| | `portaljs-template` | `portaljs-catalog` (this) |
-|---|---|---|
-| Dataset pages | one `.tsx` file per dataset | one dynamic `[owner]/[slug].tsx` for all |
-| Registration | hardcoded array in `index.tsx` | `datasets.json` manifest |
-| Best for | a handful of datasets | dozens to hundreds |
-
-Both ship the same lightweight `components/Table.tsx`, Tailwind setup, and Next 14 config.
 
 ## Running
 

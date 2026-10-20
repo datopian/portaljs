@@ -14,7 +14,11 @@
 // slipped past every check here, since `navigator.webdriver` can be patched and its user agent
 // was a plain `Chrome/149.0.0.0`. The authoritative control is the query-time exclusion in the
 // PostHog project's "internal and test users" filters, which is retroactive and can be
-// retargeted when a fingerprint shifts. See docs/analytics-bot-filtering.md.
+// retargeted when a fingerprint shifts. That control lives in PostHog project "PortalJS LP"
+// (id 123619) `test_account_filters`: flat `$viewport_width is_not 1919` and
+// `$screen_width is_not 800` entries next to the localhost `$host` rule (do not use a `hogql`
+// filter there — it zeroes the Web Analytics scene), and when verifying a change query a
+// never-before-used date range, because PostHog serves cached pre-change results otherwise.
 //
 // Every rule below must be a signal no real visitor can produce. A false positive here is
 // silent, permanent data loss, so prefer under-blocking over clever heuristics.
