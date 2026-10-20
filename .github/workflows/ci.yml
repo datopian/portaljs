@@ -9,6 +9,10 @@ on:
       - main
   pull_request:
 
+# No job writes to the repo; cap GITHUB_TOKEN to read-only for all of them.
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -104,9 +108,11 @@ jobs:
         env:
           # Avoid unauthenticated GitHub API rate limits when giget fetches.
           GIGET_AUTH: ${{ secrets.GITHUB_TOKEN }}
-          # `github.head_ref` is an attacker-controlled PR branch name; pass it
-          # through the environment so the shell never parses it as code.
-          PORTALJS_REF: ${{ github.head_ref || github.ref_name }}
+          # Fetch the template at the commit under test. On pull_request this is
+          # the refs/pull/N/merge commit, which lives in this repo even for fork
+          # PRs (a fork's branch name does not, so giget 404s on it). Passed via
+          # env so the shell never parses an expression value as code.
+          PORTALJS_REF: ${{ github.sha }}
         run: |
           node packages/create-portaljs/index.mjs smoke-portal \
             --yes --no-git \
