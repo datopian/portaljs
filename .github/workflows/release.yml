@@ -11,6 +11,15 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    # npm trusted publishing (OIDC): npm exchanges the job's GitHub identity
+    # token for a short-lived publish credential, so there is no NPM_TOKEN to
+    # expire. Each published package must list this repo + release.yml as its
+    # Trusted Publisher on npmjs.com. contents/pull-requests: the release PR,
+    # version commits, tags and GitHub releases.
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -20,9 +29,15 @@ jobs:
         with:
           node-version: 22.x
 
+      # Trusted publishing needs npm >= 11.5.1; Node 22 ships npm 10.
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@^11.5.1
+
       - name: Install Dependencies
         run: npm ci
 
+      # No NPM_TOKEN: without it changesets/action writes no .npmrc auth line,
+      # so `npm publish` authenticates via OIDC (and adds provenance).
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
@@ -30,7 +45,6 @@ jobs:
           publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Send a Discord notification if a publish happens
         if: steps.changesets.outputs.published == 'true'
