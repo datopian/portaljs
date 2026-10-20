@@ -54,7 +54,7 @@ nothing to parallelise.
 | `lint` | `eslint` for `@portaljs/ckan`, `gen:skills:check` (generated-docs drift), `scripts/verify-selftest.sh` |
 | `typecheck` | `tsc --noEmit` in each `cloud/*` service |
 | `test` | `vitest run` in each `cloud/*` service |
-| `build` | `@portaljs/ckan-api-client-js`, `@portaljs/core`, `@portaljs/ckan` |
+| `build` | `@portaljs/ckan-api-client-js`, `@portaljs/ckan` |
 
 Deliberately **not** gated, each for a stated reason:
 

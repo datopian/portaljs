@@ -23,7 +23,7 @@
 #               own self-test (scripts/verify-selftest.sh)
 #   typecheck   tsc --noEmit for each cloud service
 #   test        vitest for each cloud service
-#   build       build the three published @portaljs/* packages
+#   build       build the @portaljs/ckan-api-client-js and @portaljs/ckan packages
 #
 # Deliberately NOT gated here (each needs something the gate cannot assume):
 #   packages/ckan-api-client-js `npm test`  — mocha against a live CKAN instance
@@ -39,7 +39,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT" || exit 1
 
 CLOUD_SERVICES=(api auth worker)
-PACKAGES=(ckan-api-client-js core ckan)
+PACKAGES=(ckan-api-client-js ckan)
 ALL_STAGES=(setup lint typecheck test build)
 
 ran=0        # commands actually executed across this whole run

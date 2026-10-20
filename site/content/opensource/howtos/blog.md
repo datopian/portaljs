@@ -5,6 +5,9 @@ title: How to add a simple blog?
 description: Learn how to add a simple blog on a PortalJS data portal
 ---
 
+> [!note]
+> `@portaljs/core` is no longer maintained or published from the PortalJS repo. Its last npm release is 1.0.9 (January 2024). The steps below were written for that release. New portals should use the plain Tailwind components that ship with the [`create-portaljs`](https://www.npmjs.com/package/create-portaljs) template.
+
 ## Setup
 
 The following example uses components imported from the [`@portaljs/core` package](https://www.npmjs.com/package/@portaljs/core). If you want to follow along install it too:

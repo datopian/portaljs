@@ -79,6 +79,9 @@ NEXT_PUBLIC_DISQUS_SHORTNAME=
 
 ## Add comments to your page layout
 
+> [!note]
+> `@portaljs/core` is no longer maintained or published from the PortalJS repo. Its last npm release is 1.0.9 (January 2024). The steps below were written for that release. New portals should use the plain Tailwind components that ship with the [`create-portaljs`](https://www.npmjs.com/package/create-portaljs) template.
+
 You can use `@portaljs/core` to import the comments section component. Install it with:
 
 ```sh

@@ -20,7 +20,6 @@
     "@headlessui/react": "^2.2.10",
     "@heroicons/react": "^2.0.18",
     "@lottiefiles/react-lottie-player": "^3.6.0",
-    "@portaljs/core": "^1.0.6",
     "@portaljs/remark-callouts": "^1.0.5",
     "@portaljs/remark-embed": "^1.0.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",

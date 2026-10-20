@@ -16,7 +16,6 @@ Datasets are `@`-namespaced so they never collide with content pages. See `docs/
 
 ```
 packages/
-  core/                — layout/UI components (@portaljs/core)
   ckan/                — CKAN catalog UI + React components (@portaljs/ckan)
   ckan-api-client-js/  — pure CKAN API client (@portaljs/ckan-api-client-js)
 examples/              — portaljs-catalog, the canonical template (read it before building)

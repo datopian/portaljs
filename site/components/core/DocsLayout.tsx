@@ -1,5 +1,5 @@
 /* eslint import/no-default-export: off */
-import { formatDate } from "../../utils/formatDate";
+import { formatDate } from "@/lib/core/formatDate";
 
 // TODO types
 export const DocsLayout: React.FC<any> = ({ children, ...frontMatter }) => {

@@ -41,7 +41,6 @@ jobs:
       - name: Build packages
         run: |
           npm run build -w @portaljs/ckan-api-client-js
-          npm run build -w @portaljs/core
           npm run build -w @portaljs/ckan
 
       - name: Lint @portaljs/ckan

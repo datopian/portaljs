@@ -4,3 +4,9 @@
 declare module "*.css";
 declare module "*.scss";
 declare module "*.sass";
+
+// Google Analytics' gtag, loaded by the script in pages/_app.tsx. This global
+// used to come from @portaljs/core's type declarations.
+interface Window {
+  gtag?: (...args: any[]) => void;
+}
