@@ -51,6 +51,12 @@ async function roundTrip(fmt: 'ttl' | 'jsonld') {
       if (norm(gotFormat) !== norm(s.format))
         problems.push(`${title}: format "${gotFormat}" != "${s.format}"`)
     }
+    // Every file/resource round-trips as its own distribution (#1669) — a
+    // multi-resource dataset must not collapse to one or fall back to its landing page.
+    const wantDists = new Set([...(s.file ? [s.file] : []), ...(s.resources ?? []).map((r) => r.path)]).size
+    const gotDists = h.resources.filter((r) => r.name !== 'landing page').length
+    if (gotDists !== wantDists)
+      problems.push(`${title}: ${gotDists} distribution(s) harvested, want ${wantDists}`)
     // sources
     const srcSources = (s.sources ?? []).map((x) => x.path ?? x.title).filter(Boolean).length
     if (srcSources && !(h.sources?.length)) problems.push(`${title}: sources lost`)

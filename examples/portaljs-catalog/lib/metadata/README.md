@@ -137,7 +137,9 @@ getProfile('nope')                   // unknown -> falls back to L0 default
 DCAT/DCAT-AP is how a portal **exposes** its catalog for harvest and **ingests**
 from external catalogs. The Frictionless fields map onto DCAT-3 JSON-LD
 (`title→dct:title`, `keywords→dcat:keyword`, `licenses→dct:license`,
-`sources→dct:source`, `file/format→dcat:distribution`).
+`sources→dct:source`, and one `dcat:distribution` per file: the single `file`/`format`
+plus each `resources[]` entry — absolute resource URLs kept as-is, bare filenames under
+`<SITE_URL>/data/`).
 
 ```ts
 import { toDCAT, fromDCAT, toDCATCatalog, fromDCATCatalog } from './lib/metadata'
@@ -180,8 +182,8 @@ wired by the [`/portaljs-add-dcat`](/docs/skills/portaljs-add-dcat) skill.
 
 **What DCAT does not carry.** DCAT has no inline field schema — the Table Schema is
 referenced via a distribution's `dcat:describedBy`, not embedded. So `fromDCAT`
-recovers package metadata + the distribution (file/format), **not** the field-level
-schema. That asymmetry is intrinsic to DCAT.
+recovers package metadata + the distributions (one → `file`/`format`; several →
+`resources[]`), **not** the field-level schema. That asymmetry is intrinsic to DCAT.
 
 ## Out of scope here
 

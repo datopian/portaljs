@@ -26,9 +26,9 @@
 // https://semiceu.github.io/DCAT-AP/ · DCAT-US
 // https://doi-do.github.io/dcat-us/ (aligns Project Open Data v1.1).
 
-import type { CatalogEntry, DcatCatalog } from './dcat'
+import { resolveResourceUrl, type CatalogEntry, type DcatCatalog } from './dcat'
 import type { RdfFormat } from './dcat-rdf'
-import type { Field } from './types'
+import type { ResourceDescriptor } from './types'
 
 // A JSON-LD node with prefixed keys ('dct:title', '@type', …). Loose on purpose:
 // profiles add properties beyond dcat.ts's typed DcatDataset shape.
@@ -436,11 +436,9 @@ const CROISSANT_DATATYPE: Record<string, string> = {
   any: 'sc:Text',
 }
 
-// A dataset's resource, uniformly whether it's a single-file dataset or a bundle.
-type CroissantResource = { path: string; format?: string; title?: string; description?: string; schema?: { fields?: Field[] } }
-
-function resourcesOf(entry: CroissantEntry): CroissantResource[] {
-  if (Array.isArray(entry.resources)) return entry.resources as CroissantResource[]
+// A dataset's resources, uniformly whether it's a single-file dataset or a bundle.
+function resourcesOf(entry: CroissantEntry): ResourceDescriptor[] {
+  if (Array.isArray(entry.resources)) return entry.resources
   if (entry.file) return [{ path: entry.file, format: entry.format, title: entry.title, schema: entry.schema }]
   return []
 }
@@ -448,8 +446,17 @@ function resourcesOf(entry: CroissantEntry): CroissantResource[] {
 // The subset of a manifest entry Croissant reads (plus the build-time file hashes the
 // generator attaches). Kept structural — the provider Dataset is assignable.
 type CroissantEntry = CatalogEntry & {
-  resources?: CroissantResource[]
   _hashes?: Record<string, string>
+}
+
+// The site base URL (SITE_URL) toDCATCatalog resolved this dataset's links against.
+// Profiles don't receive it, but the landing page is `<base>/@<namespace>/<slug>`, so
+// strip that suffix ('' for a root-relative feed). Undefined when the dataset has no
+// such landing page (e.g. no namespace/slug).
+function siteBaseOf(entry: CroissantEntry, url?: string): string | undefined {
+  if (!url || !entry.namespace || !entry.slug) return undefined
+  const suffix = `/@${entry.namespace}/${entry.slug}`
+  return url.endsWith(suffix) ? url.slice(0, -suffix.length) : undefined
 }
 
 // A valid Croissant/schema.org `name` token: [a-zA-Z0-9\-_\.]+
@@ -473,19 +480,17 @@ function croissantDataset(entry: CroissantEntry, baseDs: JsonLdNode): JsonLdNode
   const url = (baseDs['@id'] ?? baseDs['dcat:landingPage']) as string | undefined
   const origin = originOf(url) || originOf((baseDs['dcat:distribution'] as JsonLdNode[])?.[0]?.['dcat:downloadURL'])
   const name = croissantName((entry.namespace && entry.slug ? `${entry.namespace}_${entry.slug}` : entry.slug ?? entry.name ?? 'dataset'))
-  const baseDist = (baseDs['dcat:distribution'] as JsonLdNode[] | undefined) ?? []
+  // Resolve resource paths exactly as toDCAT resolved the base distributions'
+  // downloadURLs (absolute URLs as-is, bare filenames under <site>/data/).
+  const siteBase = siteBaseOf(entry, url) ?? origin
 
   const resources = resourcesOf(entry)
   const distribution: JsonLdNode[] = []
   const recordSet: JsonLdNode[] = []
 
-  resources.forEach((res, i) => {
+  resources.forEach((res) => {
     const foId = `${name}/${croissantName(res.path)}`
-    // Prefer the base distribution's resolved downloadURL (single-file datasets);
-    // else build from the dataset origin + /data/<path> (bundles).
-    const contentUrl =
-      (baseDist[i]?.['dcat:downloadURL'] as string | undefined) ??
-      (origin ? `${origin}/data/${res.path}` : `/data/${res.path}`)
+    const contentUrl = resolveResourceUrl(res.path, siteBase)
     const fo: JsonLdNode = {
       '@type': 'cr:FileObject',
       '@id': foId,

@@ -12,18 +12,23 @@
 // package-level descriptor fields + distributions that round-trip cleanly. DCAT
 // does not carry a full Table Schema inline — the field-level schema is linked via
 // a distribution's `dcat:describedBy` (a Frictionless resource descriptor) rather
-// than embedded, so `fromDCAT` recovers package metadata + distribution, not the
+// than embedded, so `fromDCAT` recovers package metadata + distributions, not the
 // field schema. That asymmetry is intrinsic to DCAT, not a shortcut here.
+//
+// Distributions: one dcat:Distribution per file. A single-file dataset (`file`)
+// yields one; a multi-file dataset (`resources`) yields one per resource. See
+// toDCAT for the exact rules (URL resolution, file + resources together).
 //
 // Spec: https://www.w3.org/TR/vocab-dcat-3/ · DCAT-AP for EU data portals.
 
-import type { License, PackageMetadata, TableSchema } from './types'
+import type { License, PackageMetadata, ResourceDescriptor, TableSchema } from './types'
 
 // --- JSON-LD shapes (DCAT-3) ---------------------------------------------------
 
 export type DcatDistribution = {
   '@type': 'dcat:Distribution'
   'dct:title'?: string
+  'dct:description'?: string
   // Where to get the bytes (the raw file) and where to land (the showcase page).
   'dcat:downloadURL'?: string
   'dcat:accessURL'?: string
@@ -68,9 +73,13 @@ export type DcatCatalog = {
 // other way).
 export type FrictionlessLike = PackageMetadata & {
   name?: string
+  // Single-file sugar: one data file served from /public/data (+ its format).
   file?: string
   format?: string
   schema?: TableSchema
+  // Multi-file dataset (Frictionless Data Package resources) — each becomes its own
+  // dcat:Distribution.
+  resources?: ResourceDescriptor[]
 }
 
 // A catalog entry adds the routing identity (namespace/slug) the catalog uses to
@@ -179,6 +188,23 @@ function joinUrl(base: string | undefined, path: string): string {
   return `${base.replace(/\/+$/, '')}/${p}`
 }
 
+// Resolve a resource `path` to the URL its bytes are served at — the same rules the
+// showcase uses (lib/datasets.ts resourceUrl), made absolute against `baseUrl`:
+//   absolute URL (https://…, s3://…)   → as-is (remote Parquet/PMTiles/GeoParquet)
+//   protocol-relative (//host/x)       → given the base URL's scheme (https: if none)
+//   site-root path (/x/y.csv)          → <baseUrl>/x/y.csv
+//   bare filename / relative (y.csv)   → <baseUrl>/data/y.csv  (served from /public/data)
+// An empty base yields root-relative URLs, like joinUrl.
+export function resolveResourceUrl(path: string, baseUrl?: string): string {
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(path)) return path
+  if (path.startsWith('//')) {
+    const scheme = /^([a-z][a-z0-9+.-]*:)\/\//i.exec(baseUrl ?? '')?.[1] ?? 'https:'
+    return `${scheme}${path}`
+  }
+  if (path.startsWith('/')) return joinUrl(baseUrl, path)
+  return joinUrl(baseUrl, `data/${path}`)
+}
+
 // First license as a single URI/id (DCAT dct:license is one value).
 function licenseUri(licenses?: License[]): string | undefined {
   const l = licenses?.[0]
@@ -203,18 +229,35 @@ export type ToDcatOptions = {
   landingPage?: string
   // Stable identifier (e.g. "<namespace>/<slug>").
   identifier?: string
-  // Explicit download URL for the data file (defaults to `${baseUrl}/data/<file>`).
+  // Explicit download URL for the single `file` (defaults to resolving `file` with
+  // resolveResourceUrl, i.e. `${baseUrl}/data/<file>`). Does not apply to `resources`.
   downloadUrl?: string
 }
 
 // Serialize a dataset's Frictionless-native metadata to a DCAT Dataset node.
+//
+// Distributions (dcat:distribution), in order:
+//   1. `file` (single-file dataset) → one distribution titled after the dataset, with
+//      the dataset-level `format`. Unchanged for a bare filename (<baseUrl>/data/<file>);
+//      an absolute `file` URL is now kept as-is rather than nested under /data/.
+//   2. each entry of `resources` → one distribution: dct:title from the resource's
+//      title (else name), dct:description, format/media type from its `format`, and
+//      dcat:downloadURL from its `path` via resolveResourceUrl (absolute URLs as-is,
+//      bare filenames under <baseUrl>/data/).
+// Every distribution's dcat:accessURL is the dataset landing page (else its own
+// download URL) — DCAT-AP makes accessURL mandatory on a distribution.
+// When a dataset sets BOTH `file` and `resources`, the file's distribution comes
+// first and a resource that resolves to the same download URL is skipped, so the
+// same bytes are never listed twice. (The showcase lists only `resources` in that
+// case — see getResources() — but the feed keeps the file it has always exposed.)
 export function toDCAT(input: FrictionlessLike, opts: ToDcatOptions = {}): DcatDataset {
-  const downloadURL =
-    opts.downloadUrl ?? (input.file ? joinUrl(opts.baseUrl, `data/${input.file}`) : undefined)
   const landingPage = opts.landingPage
+  const distributions: DcatDistribution[] = []
 
-  const distribution: DcatDistribution | undefined = input.file
-    ? compact({
+  if (input.file) {
+    const downloadURL = opts.downloadUrl ?? resolveResourceUrl(input.file, opts.baseUrl)
+    distributions.push(
+      compact({
         '@type': 'dcat:Distribution',
         'dct:title': input.title ?? input.name,
         'dcat:downloadURL': downloadURL,
@@ -222,7 +265,25 @@ export function toDCAT(input: FrictionlessLike, opts: ToDcatOptions = {}): DcatD
         'dct:format': formatIri(input.format),
         'dcat:mediaType': mediaTypeIri(input.format),
       } as DcatDistribution)
-    : undefined
+    )
+  }
+
+  for (const res of input.resources ?? []) {
+    if (!res?.path) continue
+    const downloadURL = resolveResourceUrl(res.path, opts.baseUrl)
+    if (distributions.some((d) => d['dcat:downloadURL'] === downloadURL)) continue
+    distributions.push(
+      compact({
+        '@type': 'dcat:Distribution',
+        'dct:title': res.title ?? res.name,
+        'dct:description': res.description,
+        'dcat:downloadURL': downloadURL,
+        'dcat:accessURL': landingPage ?? downloadURL,
+        'dct:format': formatIri(res.format),
+        'dcat:mediaType': mediaTypeIri(res.format),
+      } as DcatDistribution)
+    )
+  }
 
   return compact({
     '@id': landingPage ?? (opts.identifier ? joinUrl(opts.baseUrl, opts.identifier) : undefined),
@@ -239,19 +300,27 @@ export function toDCAT(input: FrictionlessLike, opts: ToDcatOptions = {}): DcatD
     'dct:modified': input.modified,
     'dcat:version': input.version,
     'dcat:landingPage': landingPage,
-    'dcat:distribution': distribution ? [distribution] : undefined,
+    'dcat:distribution': distributions,
   } as DcatDataset)
 }
 
 // Parse a DCAT Dataset node into the Frictionless-native shape (harvest / import).
-// Recovers package metadata + the first distribution's file/format. The field-level
-// Table Schema is NOT recovered (DCAT links it via describedBy rather than carrying
-// it inline) — re-author or fetch the linked schema separately if needed.
+// Recovers package metadata + distributions:
+//   - exactly one distribution → the single-file shape: `file` (the download URL's
+//     basename) + `format`, as before;
+//   - two or more → `resources`, one per distribution that has a URL (path = the
+//     full downloadURL, else accessURL; title/description; format from mediaType or
+//     dct:format; a unique slug `name`). No `file`/`format` then — a dataset authors
+//     one shape or the other, and toDCAT re-emits the same distributions from it.
+// The field-level Table Schema is NOT recovered (DCAT links it via describedBy rather
+// than carrying it inline) — re-author or fetch the linked schema separately if needed.
 export function fromDCAT(node: DcatDataset): FrictionlessLike {
-  const dist = node['dcat:distribution']?.[0]
-  const downloadURL = dist?.['dcat:downloadURL']
+  const dists = node['dcat:distribution'] ?? []
+  const single = dists.length === 1 ? dists[0] : undefined
+  const downloadURL = single?.['dcat:downloadURL']
   const file = downloadURL ? downloadURL.split('/').pop() || undefined : undefined
-  const format = formatFromMedia(dist?.['dcat:mediaType']) ?? formatFromFormat(dist?.['dct:format'])
+  const format = single ? distFormat(single) : undefined
+  const resources = dists.length > 1 ? distResources(dists) : undefined
 
   const license = node['dct:license']
   return compact({
@@ -268,7 +337,49 @@ export function fromDCAT(node: DcatDataset): FrictionlessLike {
     version: node['dcat:version'],
     file,
     format,
+    resources,
   } as FrictionlessLike)
+}
+
+function distFormat(dist: DcatDistribution): string | undefined {
+  return formatFromMedia(dist['dcat:mediaType']) ?? formatFromFormat(dist['dct:format'])
+}
+
+// Frictionless resource names are lowercase [a-z0-9._/-]; derive one from the title
+// (else the URL's last segment) and keep it unique within the dataset.
+function resourceName(seed: string | undefined, used: Set<string>, i: number): string {
+  const base =
+    (seed ?? '')
+      .normalize('NFKD') // "CO₂" → "CO2", "é" → "e" + a combining accent…
+      .replace(/[\u0300-\u036f]/g, '') // …which is dropped
+      .toLowerCase()
+      .replace(/[^a-z0-9._-]+/g, '-')
+      .replace(/^-+|-+$/g, '') || `resource-${i + 1}`
+  let name = base
+  for (let n = 2; used.has(name); n++) name = `${base}-${n}`
+  used.add(name)
+  return name
+}
+
+function distResources(dists: DcatDistribution[]): ResourceDescriptor[] {
+  const used = new Set<string>()
+  const out: ResourceDescriptor[] = []
+  dists.forEach((dist, i) => {
+    const path = dist['dcat:downloadURL'] ?? dist['dcat:accessURL']
+    if (!path) return
+    const title = dist['dct:title']
+    const tail = path.split(/[?#]/)[0].split('/').filter(Boolean).pop()
+    out.push(
+      compact({
+        name: resourceName(title ?? tail, used, i),
+        path,
+        title,
+        description: dist['dct:description'],
+        format: distFormat(dist),
+      } as ResourceDescriptor)
+    )
+  })
+  return out
 }
 
 export type ToDcatCatalogOptions = {

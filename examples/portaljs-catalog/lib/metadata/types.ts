@@ -73,6 +73,24 @@ export type TableSchema = {
 export type License = { name?: string; path?: string; title?: string }
 export type Source = { title: string; path?: string; email?: string }
 
+// One file of a multi-file dataset — the subset of a Frictionless Data Resource
+// descriptor (https://specs.frictionlessdata.io/data-resource/) the metadata layer
+// reads. Structural on purpose: the providers' Resource (lib/providers/types.ts) is
+// assignable to it, so lib/metadata keeps no dependency on lib/providers.
+export type ResourceDescriptor = {
+  // Frictionless makes `name` required; it's optional here so harvested/hand-written
+  // manifests without one still map (the title or path is used instead).
+  name?: string
+  // A bare filename served from /public/data, a site-root path ("/x.csv"), or an
+  // absolute URL (remote Parquet/PMTiles/GeoParquet on object storage, etc.).
+  path: string
+  format?: string
+  title?: string
+  description?: string
+  // Per-resource Table Schema.
+  schema?: TableSchema
+}
+
 export type PackageMetadata = {
   title?: string
   description?: string
