@@ -219,7 +219,7 @@ Note: `Chart` reuses `components/ui/parseCsv.ts`, which ships with the template
 current template — copy `parseCsv.ts` from `examples/portaljs-catalog/components/ui/`.
 
 Then add the component's strings to `PORTAL_DIR/locales/en.json` (and to every other
-`locales/*.json` present), unless the keys already exist:
+`locales/*.json` present, translated), unless the keys already exist:
 
 ```json
 "chart.loading": "Loading chart…",
@@ -304,9 +304,10 @@ Next: run `npm run dev` and visit http://localhost:3000/@NAMESPACE/SLUG to verif
 - **UI strings (i18n).** The template keeps every user-facing string in `locales/en.json`
   and renders it with `t()` from `lib/i18n.ts`. Text this skill writes into JSX — headings,
   labels, placeholders, aria-labels, loading/empty/error messages — follows the same rule:
-  add each key to `locales/en.json` (and to every other `locales/*.json` the portal has; a
-  key missing there falls back to English), then render `t('<key>')`. Don't hardcode
-  English in JSX. If the portal predates i18n (no `lib/i18n.ts`), use plain strings.
+  add each key to `locales/en.json` **and** to every other `locales/*.json` the portal has
+  (translated into that file's language — `DEFAULT_LOCALE` in `next.config.js` is the one
+  that ships), render `t('<key>')`, then run `npm run i18n:check`. Don't hardcode English
+  in JSX. If the portal predates i18n (no `lib/i18n.ts`), use plain strings.
 
 - **Why recharts, not `@portaljs/components`:** the bundled package ships leaflet, vega,
   ag-grid, and pdf.js in one non-tree-shakeable 1.9 MB blob. `recharts` is ~100 KB

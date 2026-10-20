@@ -268,7 +268,7 @@ export default function Search({ datasets, count }: { datasets: DatasetCard[]; c
 
 Substitute `__PROJECT_NAME__` if the existing file still has the token. Add the new strings
 this catalog and the showcase below use to `PORTAL_DIR/locales/en.json` (and to every other
-`locales/*.json` present); the `nav.*`, `search.*`, `dataset.*` and `download.*` keys already
+`locales/*.json` present, translated); the `nav.*`, `search.*`, `dataset.*` and `download.*` keys already
 ship with the template:
 
 ```json
@@ -449,9 +449,10 @@ Next: run `npm run dev` and visit http://localhost:3000, or run /portaljs-deploy
 - **UI strings (i18n).** The template keeps every user-facing string in `locales/en.json`
   and renders it with `t()` from `lib/i18n.ts`. Text this skill writes into JSX — headings,
   labels, placeholders, aria-labels, loading/empty/error messages — follows the same rule:
-  add each key to `locales/en.json` (and to every other `locales/*.json` the portal has; a
-  key missing there falls back to English), then render `t('<key>')`. Don't hardcode
-  English in JSX. If the portal predates i18n (no `lib/i18n.ts`), use plain strings.
+  add each key to `locales/en.json` **and** to every other `locales/*.json` the portal has
+  (translated into that file's language — `DEFAULT_LOCALE` in `next.config.js` is the one
+  that ships), render `t('<key>')`, then run `npm run i18n:check`. Don't hardcode English
+  in JSX. If the portal predates i18n (no `lib/i18n.ts`), use plain strings.
 
 - **Data freshness vs. static deploy.** Default is SSG (`getStaticProps` + `fallback: false`):
   fast, statically hostable, but data is fixed at build time — rebuild to pick up new CKAN

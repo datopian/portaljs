@@ -162,6 +162,11 @@ narrow:
 **Namespace mode (for the `/portaljs-new-portal` handoff):** single publisher → `theme`
 (group by subject); multiple publishers → `owner` (group by who published).
 
+**Language (for the `/portaljs-new-portal` handoff):** if the audience or the brief is not
+English (e.g. an Italian municipality), recommend setting the UI language at scaffold time —
+`/portaljs-new-portal` translates the template's strings and commits it as `DEFAULT_LOCALE`.
+Default: English.
+
 When genuinely unsure, recommend the opinionated default and say so — never present a
 blank page.
 
@@ -182,6 +187,7 @@ Architecture brief — say "go" to proceed, or correct anything:
     • Hosting:   <slot>      — <why>
     • Metadata:  <slot>      — <why>
     • Namespace: <theme|owner>
+    • Language:  <English | Italian (it) | …>
     • Data tier: <inline|LFS|external>   — default for added data; <why>
     • Query:     DATA_QUERY=<flat|duckdb> — <why>
 
@@ -202,7 +208,7 @@ Map the brief to concrete next commands and offer to run the first one:
 
 | Decision | Next skill |
 |----------|-----------|
-| Scaffold the portal (always) | `/portaljs-new-portal` — pass the name, description, the chosen **namespace mode**, and the **`DATA_QUERY` mode** |
+| Scaffold the portal (always) | `/portaljs-new-portal` — pass the name, description, the chosen **namespace mode**, the **`DATA_QUERY` mode**, and the **UI language** |
 | Load the datasets | `/portaljs-add-dataset` (per dataset) — applies the chosen **data tier** (LFS default; external for remote URLs) |
 | Charts / maps on a showcase | `/portaljs-add-chart` · `/portaljs-add-map` |
 | Backend with RBAC / existing CKAN | `/portaljs-connect-ckan` |
@@ -221,7 +227,7 @@ Leave it at the `duckdb` default otherwise — a Parquet resource renders the qu
 
 End by recommending the exact sequence, e.g.:
 ```
-Next: 1) /portaljs-new-portal "<name>" (namespace: <mode>, DATA_QUERY: <flat|duckdb>)
+Next: 1) /portaljs-new-portal "<name>" (namespace: <mode>, DATA_QUERY: <flat|duckdb>, language: <lang>)
       2) /portaljs-add-dataset for each source (tier: <LFS|external|inline>)
       3) /portaljs-deploy to Cloudflare Pages
 ```

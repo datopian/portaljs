@@ -9,7 +9,7 @@ Scaffold a production-ready PortalJS data portal. The skill is **interactive**: 
 brief is thin, it interviews the user in three short rounds (mapped to the template's
 three surfaces — Home, Catalog, Showcase), echoes a brief back for confirmation, then
 copies `examples/portaljs-catalog`, substitutes placeholder tokens, sets the namespace
-mode, seeds any datasets, installs dependencies, and verifies the build.
+mode and the UI language, seeds any datasets, installs dependencies, and verifies the build.
 
 ## The template you are scaffolding
 
@@ -35,11 +35,18 @@ A portal uses **exactly one** namespace mode:
 Search is a **static client-side list** for now. A live backend (e.g. CKAN, via
 `/portaljs-connect-ckan`) can replace `datasets.json` later without changing the URL structure.
 
+Every UI string (navigation, search, showcase, SQL/map panels, errors) lives in
+`locales/en.json` and renders through `t()` from `lib/i18n.ts`. A portal has **one** UI
+language, committed as `DEFAULT_LOCALE` in `next.config.js` (default `'en'`); another
+language is a sibling `locales/<code>.json` with the same keys, registered in `lib/i18n.ts`.
+`npm run i18n:check` validates the locale files.
+
 ## Required input — interview, don't error
 
 You need a **project name** and **one-line description**. Datasets are optional at
-scaffold time. **Never dead-end with a missing-input error.** If `$ARGUMENTS` is empty or
-thin, run the structured interview in Step 1 to gather what's missing. The user can say
+scaffold time, and the UI language defaults to English. **Never dead-end with a
+missing-input error.** If `$ARGUMENTS` is empty or thin, run the structured interview in
+Step 1 to gather what's missing. The user can say
 **"use defaults"** at any point to skip a round and accept the defaults below.
 
 ## Steps
@@ -57,7 +64,12 @@ Round 1 of 3 — the home page.
 1. What's the portal called? (e.g. "Auckland Open Data Portal")
 2. One-line description for the hero? (default: "An open data portal.")
 3. Who is it for / what's it about? (helps pick suggested-search chips)
+4. Which language should the interface be in? (default: English — a name or a code,
+   e.g. "Italian" or "it", "Brazilian Portuguese" or "pt-BR")
 ```
+Infer the language when the brief already says it (e.g. "build an Italian data portal",
+or a name/description written in Italian) and confirm it in Step 2 instead of asking.
+Write the name and description in the portal's language — they are shown as-is.
 
 **Round 2 — Catalog & discovery:**
 ```
@@ -83,8 +95,9 @@ For the dataset(s) above, do any need an extra view?
 (Press Enter / "use defaults" for metadata + preview + download only.)
 ```
 
-**Defaults if a round is skipped:** description `"An open data portal."`; no datasets;
-`NAMESPACE_TYPE = 'theme'` with namespace value `reference`; no extra views.
+**Defaults if a round is skipped:** description `"An open data portal."`; language English
+(`en`); no datasets; `NAMESPACE_TYPE = 'theme'` with namespace value `reference`; no extra
+views.
 
 ### 2. Confirm the brief before building
 
@@ -93,13 +106,17 @@ Echo a short brief back and wait for a yes:
 Here's the plan — say "go" to build, or correct anything:
   • Name:        PROJECT_NAME  (slug: PROJECT_SLUG)
   • Description: DESCRIPTION
+  • Language:    LANGUAGE  (locale LOCALE_CODE, formats INTL_TAG — e.g. Italian: it, it-IT)
   • Namespace:   NAMESPACE_TYPE — value(s): NS_VALUES
   • Datasets:    <list, or "none — add later with /portaljs-add-dataset">
   • Views to add after scaffold: <charts/maps per dataset, or "none">
 ```
 
 Derive `PROJECT_SLUG` from `PROJECT_NAME` (lowercase, hyphenated, no special chars, e.g.
-`auckland-open-data`).
+`auckland-open-data`). Derive `LOCALE_CODE` from the language as a lowercase ISO 639-1 code
+(`it`, `de`, `fr`), adding a region only when the variant matters (`pt-BR`); `INTL_TAG` is the
+full BCP 47 tag for number/date formatting (`it-IT`, `de-DE`, `pt-BR`). English is `en` /
+`en-US`.
 
 ### 3. Resolve the template source
 
@@ -227,7 +244,50 @@ publishers (datasets grouped by who published them). The default in the template
 perl -pi -e "s/export const NAMESPACE_TYPE: 'theme' \\| 'owner' = '[a-z]+'/export const NAMESPACE_TYPE: 'theme' | 'owner' = 'owner'/" "./$PROJECT_SLUG/lib/datasets.ts"
 ```
 
-### 7. Seed datasets captured in the interview
+### 7. Set the UI language
+
+**English (`en`): skip this step** — the template already ships `locales/en.json` and
+`DEFAULT_LOCALE = 'en'`. (For another English variant, only change `_intl` in
+`locales/en.json`, e.g. `"en-GB"` for day-month dates.)
+
+For any other language, in `./$PROJECT_SLUG`:
+
+1. **Translate** `locales/en.json` into `locales/LOCALE_CODE.json`:
+   - Translate **every** value; keep every key, in the same order.
+   - Keep `{placeholders}` verbatim (never translate the name inside the braces). You may
+     move them within the sentence. `{manifest}`, `{dataDir}` and `{table}` stand for inline
+     `<code>` markup — keep them too.
+   - Keep technical terms and identifiers as they are: DuckDB, DuckDB-Wasm, SQL, Parquet,
+     GeoParquet, PMTiles, GeoJSON, CSV, `data`, `WHERE`, `LIMIT`, `⌘/Ctrl + Enter`, and the
+     symbols `→ ▶ ▾ ▸ ·`. Use the language's own punctuation and quotation marks.
+   - **Plurals:** for each `key.one` / `key.other` pair, write every category the
+     language uses. List them with
+     `node -e "console.log(new Intl.PluralRules('INTL_TAG').resolvedOptions().pluralCategories)"`
+     (Italian: `one`, `many`, `other`; Polish: `one`, `few`, `many`, `other`).
+   - Set `"_intl": "INTL_TAG"`.
+2. **Register** it in `lib/i18n.ts` — one import and one `LOCALES` entry (quote a hyphenated
+   code, using an identifier without the hyphen: `'pt-BR': ptBR`):
+   ```ts
+   import en from '../locales/en.json'
+   import it from '../locales/it.json'
+   // …
+   const LOCALES: Record<string, Messages> = { en, it }
+   ```
+3. **Set the portal's language** in `next.config.js`, so every build and deploy uses it:
+   ```bash
+   perl -pi -e "s/^const DEFAULT_LOCALE = '[\w-]+'/const DEFAULT_LOCALE = 'LOCALE_CODE'/" "./$PROJECT_SLUG/next.config.js"
+   ```
+4. **Check** the translation (plain Node, no install needed):
+   ```bash
+   cd "./$PROJECT_SLUG" && npm run i18n:check
+   ```
+   It must exit 0. Fix every reported problem (missing or unknown key, dropped or invented
+   `{placeholder}`, `_intl`, registration, `DEFAULT_LOCALE`) and re-run. If it warns that a
+   plural category is missing, add that form.
+
+Keep `locales/en.json` — it is the fallback and the reference for future keys.
+
+### 8. Seed datasets captured in the interview
 
 The template ships with three sample entries in `datasets.json` (under namespace
 `reference`). If the user named real datasets in Round 2, **replace the samples** with
@@ -253,7 +313,7 @@ Use the namespace value(s) from Round 2 (the portal's `NAMESPACE_TYPE` mode). No
 per-dataset page is needed — `pages/[owner]/[slug].tsx` renders every entry at
 `/@<namespace>/<slug>` automatically.
 
-### 8. Install dependencies
+### 9. Install dependencies
 
 ```bash
 cd "./$PROJECT_SLUG" && npm install
@@ -264,7 +324,7 @@ Tell the user first: `Installing dependencies (2–5 min on cold cache)...`
 If `npm install` fails, report the error plainly and ask the user to check Node.js >=22
 and network access before retrying.
 
-### 9. Verify scaffold-ready
+### 10. Verify scaffold-ready
 
 Type-check (do NOT run `next build` here). `next build` writes to `.next/`, the same
 directory a running `npm run dev` uses — building over a live dev server corrupts it
@@ -273,16 +333,18 @@ watch it → keep adding datasets," so verify with `tsc`, which writes nothing t
 
 ```bash
 cd "./$PROJECT_SLUG"
-npx tsc --noEmit > /tmp/portaljs-new-portal-verify.log 2>&1
+npm run i18n:check > /tmp/portaljs-new-portal-verify.log 2>&1 \
+  && npx tsc --noEmit >> /tmp/portaljs-new-portal-verify.log 2>&1
 VERIFY_EXIT=$?
 tail -20 /tmp/portaljs-new-portal-verify.log
 ```
 
+`npm run i18n:check` validates the locale files and that `DEFAULT_LOCALE` is registered.
 If `VERIFY_EXIT` is non-zero, print the log and fix the error before reporting success.
 Do not report success while type-checking still fails. (A full `next build` happens in
 `/portaljs-deploy`, which guards against a running dev server.)
 
-### 10. Report success
+### 11. Report success
 
 ```
 ✓ Portal scaffolded at ./PROJECT_SLUG
@@ -290,6 +352,8 @@ Do not report success while type-checking still fails. (A full `next build` happ
   - Catalog:  /search                 (pages/search.tsx — filters datasets.json)
   - Showcase: /@<namespace>/<slug>    (pages/[owner]/[slug].tsx)
   - Namespace mode: NAMESPACE_TYPE
+✓ Language: LANGUAGE (LOCALE_CODE, INTL_TAG) — locales/LOCALE_CODE.json, DEFAULT_LOCALE in
+  next.config.js; npm run i18n:check passes
 ✓ Branding: PortalJS placeholder mark (favicon + navbar logo) — swap the files in
   public/ (icon.svg, favicon.ico, apple-touch-icon.png, icon-512.png) for your own.
 ✓ Run: cd PROJECT_SLUG && npm run dev  →  http://localhost:3000
@@ -315,3 +379,12 @@ publishers), asks for the namespace values (e.g. `parks-dept`, `finance`), confi
 brief, scaffolds `examples/portaljs-catalog`, and seeds the two datasets so they render at
 `/@parks-dept/parks` and `/@finance/budget`. With no arguments at all, the skill simply
 runs the three-round interview first.
+
+```
+/portaljs-new-portal Build an Italian open data portal for the Comune di Palermo
+```
+The skill infers the language (Italian → `it`, `it-IT`), writes the name and description
+in Italian, scaffolds the template, translates `locales/en.json` into `locales/it.json`
+(with Italian plural forms), registers it in `lib/i18n.ts`, sets `DEFAULT_LOCALE = 'it'`,
+and verifies with `npm run i18n:check` + `tsc`. The portal builds and deploys in Italian
+with `<html lang="it">`, no environment variable needed.

@@ -153,7 +153,8 @@ Ensure `PORTAL_DIR/pages/_document.tsx` `<Head>` contains:
 ```tsx
 <link rel="alternate" type="application/ld+json" href="/catalog.jsonld" title="DCAT catalog feed" />
 ```
-Add it if missing. This is how harvesters discover the feed from any page.
+Add it if missing. This is how harvesters discover the feed from any page. (Current templates
+already ship it, with the title as `title={t('document.dcatFeedTitle')}` — leave that as is.)
 
 ### 7. Generate the feeds and check conformance
 

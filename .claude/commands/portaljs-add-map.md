@@ -325,9 +325,10 @@ Next: run `npm run dev` and visit http://localhost:3000/@NAMESPACE/SLUG to verif
 - **UI strings (i18n).** The template keeps every user-facing string in `locales/en.json`
   and renders it with `t()` from `lib/i18n.ts`. Text this skill writes into JSX — headings,
   labels, placeholders, aria-labels, loading/empty/error messages — follows the same rule:
-  add each key to `locales/en.json` (and to every other `locales/*.json` the portal has; a
-  key missing there falls back to English), then render `t('<key>')`. Don't hardcode
-  English in JSX. If the portal predates i18n (no `lib/i18n.ts`), use plain strings.
+  add each key to `locales/en.json` **and** to every other `locales/*.json` the portal has
+  (translated into that file's language — `DEFAULT_LOCALE` in `next.config.js` is the one
+  that ships), render `t('<key>')`, then run `npm run i18n:check`. Don't hardcode English
+  in JSX. If the portal predates i18n (no `lib/i18n.ts`), use plain strings.
 
 - **One showcase route, many datasets:** `pages/[owner]/[slug].tsx` renders every dataset,
   so always gate the map on the dataset's `(namespace, slug)` — otherwise it would appear

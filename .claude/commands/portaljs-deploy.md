@@ -169,6 +169,9 @@ tail -30 /tmp/arc-build.log
 If `BUILD_EXIT` is non-zero, print the log and fix the error before continuing — never deploy
 a failing build. Confirm the export landed: `PORTAL_DIR/out/index.html` must exist.
 
+The UI language is baked in from `DEFAULT_LOCALE` in `next.config.js` — there is nothing to
+pass, and don't set `NEXT_PUBLIC_LOCALE` (it would override the portal's language).
+
 > Static export pre-renders every page at build time. A CKAN/`getStaticPaths` portal must use
 > `fallback: false` (the templates do). If the build complains about a dynamic route, that's
 > the cause.

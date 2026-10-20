@@ -30,6 +30,20 @@ the description don't break the `perl` replacement.
 (`'theme'` — single publisher, grouped by subject — or `'owner'` — multiple
 publishers, grouped by who published).
 
+## UI language
+
+Every UI string lives in `locales/en.json` and renders through `t()` (`lib/i18n.ts`).
+The portal's language is `DEFAULT_LOCALE` in `next.config.js` — committed, so every build
+and deploy uses it (`NEXT_PUBLIC_LOCALE` only overrides it for one build). For a
+non-English portal the skill:
+
+| Step | What |
+| --- | --- |
+| Translate | `locales/en.json` → `locales/<code>.json`: every key, `{placeholders}` verbatim, technical terms kept, the plural categories `Intl.PluralRules` lists for the language (Italian `one`/`many`/`other`), `_intl` set (`it-IT`) |
+| Register | `import it from '../locales/it.json'` + `{ en, it }` in `LOCALES` (`lib/i18n.ts`) |
+| Select | `const DEFAULT_LOCALE = 'it'` in `next.config.js` |
+| Check | `npm run i18n:check` — keys, placeholders, `_intl`, registration, `DEFAULT_LOCALE` |
+
 ## Template source resolution
 
 The skill defaults to a **remote** fetch (`npx tiged "datopian/portaljs/examples/portaljs-catalog#main"`)
@@ -48,6 +62,9 @@ monorepo into the target; `tiged` extracts the subdirectory correctly.
   target the current Next.js 14 / React 18 baseline.
 - **`.next/` corruption / 404s after scaffolding** — never run `next build` right after
   scaffolding while `npm run dev` is active; verify with `npx tsc --noEmit` instead.
+- **Portal builds in English although it was translated** — `DEFAULT_LOCALE` in
+  `next.config.js` is still `'en'`, or the locale isn't registered in `lib/i18n.ts`;
+  `npm run i18n:check` reports both.
 - **Portal still shows the PortalJS logo in production** — branding is a placeholder;
   swap `public/icon.svg`, `public/favicon.ico`, `public/apple-touch-icon.png`, and
   `public/icon-512.png` for the client's own marks.
