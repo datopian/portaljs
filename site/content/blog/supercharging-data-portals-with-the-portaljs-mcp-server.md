@@ -8,6 +8,9 @@ tags:
   - PortalJS Cloud
   - AI
   - data portals
+categories:
+  - PortalJS
+  - AI Integration
 image: "/static/img/blog/supercharging-data-portals-with-the-portaljs-mcp-server/hero.png"
 filetype: 'blog'
 ---

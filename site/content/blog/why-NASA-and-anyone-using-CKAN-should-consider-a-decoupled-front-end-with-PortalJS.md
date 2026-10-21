@@ -5,6 +5,7 @@ description: "NASA’s open data portal is powered by CKAN—but what if its use
 authors: ['anuveyatsu', 'popovayoana']
 filetype: 'blog'
 image: /static/img/blog/2025-05-19-why-anyone-should-consider-decoupled-frontend/image2.webp
+categories: ['PortalJS', 'CKAN']
 ---
 
 ## **Imagine a Faster, Smarter NASA Data Portal**

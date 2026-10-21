@@ -3,6 +3,7 @@ title: 'Adding Maps to PortalJS: Enhancing Geospatial Data Visualization with Po
 created: 2023-07-18
 authors: ['João Demenech', 'Luccas Mateus', 'Yoana Popova']
 filetype: 'blog'
+categories: ['PortalJS', 'Tutorial']
 ---
 
 This post walks you though adding maps and geospatial visualizations to PortalJS.

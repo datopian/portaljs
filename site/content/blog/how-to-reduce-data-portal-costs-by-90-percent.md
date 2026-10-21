@@ -3,6 +3,7 @@ title: 'How to Reduce Data Portal Costs by 90% or More'
 created: 2025-03-14
 authors: ['Yoana Popova']
 filetype: 'blog'
+categories: ['PortalJS Cloud']
 ---
 
 What if the key to smarter, more transparent governance wasn’t spending more—but spending less? Too often, data portals are seen as unavoidable financial burdens, rather than an opportunity. But they don’t have to be. Your data portal can be a cornerstone of transparency, innovation, and better decision-making without draining your budget.

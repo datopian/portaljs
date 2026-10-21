@@ -4,6 +4,7 @@ description: 'Let’s take a look at how PortalJS based decoupled frontend can i
 created: 2024-12-06
 authors: ['Anuar Ustayev']
 filetype: 'blog'
+categories: ['PortalJS']
 ---
 
 ## Introduction

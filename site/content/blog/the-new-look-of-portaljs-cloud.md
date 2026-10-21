@@ -4,6 +4,7 @@ created: 2025-04-01
 description: "Discover how the redesigned PortalJS Cloud helps you launch a modern, WCAG 2.1/2.2-compliant open data portal—fully responsive, customizable, and optimized for lightning-fast search and data sharing. Built for governments, non-profits, academic institutions, and private organizations, it's the easiest way to deploy a user-friendly data platform in minutes."
 authors: ['williamlima', 'popovayoana']
 filetype: 'blog'
+categories: ['PortalJS Cloud']
 ---
 
 At PortalJS Cloud, we believe that managing and sharing open data should be effortless, beautiful, and accessible. That’s why we’ve launched a complete redesign of the PortalJS Cloud frontend—combining performance upgrades with a sleek, modern interface designed for everyone, from governments and non-profits to academic institutions and private organizations.

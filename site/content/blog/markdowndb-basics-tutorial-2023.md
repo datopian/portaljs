@@ -4,6 +4,7 @@ description: We've just released our first tutorial that covers the fundamentals
 created: 2023-05-26
 authors: ['Ola Rubaj']
 filetype: 'blog'
+categories: ['PortalJS']
 ---
 
 We've just released our first tutorial that covers the fundamentals of [MarkdownDB](https://github.com/datopian/markdowndb) - our new package for treating markdown files as a database. If you've been curious about how to manage your markdown files more effectively, this tutorial is an excellent starting point!

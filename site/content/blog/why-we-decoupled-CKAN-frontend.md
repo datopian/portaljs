@@ -7,6 +7,7 @@ metadescription: 'Discover how decoupling CKAN’s frontend with PortalJS unlock
 authors: ['popovayoana','anuveyatsu']
 filetype: 'blog'
 image: /static/img/blog/2025-05-28-Why-we-decoupled-CKAN’s-frontend/image1.png
+categories: ['PortalJS', 'CKAN']
 ---
 
 ![CKAN](/static/img/blog/2025-05-28-Why-we-decoupled-CKAN’s-frontend/image1.png)  

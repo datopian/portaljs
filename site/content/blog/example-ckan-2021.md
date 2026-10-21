@@ -2,6 +2,7 @@
 title: "Setup Guide: How to create a full-featured custom data portal frontend for CKAN with PortalJS"
 authors: ['Luccas Mateus']
 created: 2021-04-20
+categories: ['PortalJS', 'CKAN', 'Tutorial']
 ---
 
 We have created a full data portal demo using DataHub PortalJS all backed by a CKAN instance storing data and metadata, you can see below a screenshot of the homepage and of an individual dataset page.

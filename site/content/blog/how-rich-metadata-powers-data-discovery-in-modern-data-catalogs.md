@@ -14,6 +14,7 @@ faqs:
     answer: Start with title, description, tags, and category—these four fields dramatically improve discoverability. Add temporal (dates), spatial (geography), and provenance (source) metadata based on your users' needs. The key is consistency across all datasets rather than perfect completeness.
   - question: Can I improve discovery without changing my existing data catalog software?
     answer: Often yes! Most catalog systems allow you to enrich existing datasets with better metadata. Focus on improving titles, descriptions, and tags for your most important datasets first. The search improvements will be immediate and noticeable.
+categories: ['Open Data']
 ---
 
 ## Introduction

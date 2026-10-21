@@ -16,6 +16,7 @@ faqs:
     answer: Ideally, keep metadata files alongside your data files with a clear naming convention (e.g., `data.csv` and `data.csv.meta.yaml`). This makes it easier to maintain the connection between data and its metadata as both evolve.
   - question: How detailed should my metadata be?
     answer: Start with the essentials, title, description, and licensing information. Then add more detail based on your users' needs—technical users might need schema information, while researchers might need methodology details and citations.
+categories: ['Open Data', 'Tutorial']
 ---
 
 ## Introduction

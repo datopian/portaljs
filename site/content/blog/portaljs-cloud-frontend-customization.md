@@ -8,6 +8,8 @@ tags:
   - development
   - github
   - vercel
+categories:
+  - PortalJS Cloud
 keywords: PortalJS Cloud customization, data portal frontend custom code, PortalJS custom development
 description: "Can you customize PortalJS Cloud independently? Here's how GitHub contributor access works, what the Vercel deployment constraint means in practice, and when to involve the Datopian team."
 authors: ['Yoana Popova']

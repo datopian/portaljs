@@ -3,6 +3,7 @@ title: 'The OpenSpending Revamp: Behind the Scenes'
 created: 2023-10-13
 authors: ['Luccas Mateus', 'João Demenech']
 filetype: 'blog'
+categories: ['PortalJS', 'Case Study']
 ---
 
 _This post was originally published on [the Datopian blog](http://datopian.com/blog/the-open-spending-revamp-behind-the-scenes)._

@@ -4,6 +4,7 @@ description: 'The latest PortalJS user management update makes this process more
 created: 2025-01-28
 authors: ['popovayoana', 'lucasbispo']
 filetype: 'blog'
+categories: ['PortalJS Cloud']
 ---
 
 

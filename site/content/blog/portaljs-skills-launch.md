@@ -9,6 +9,9 @@ tags:
   - agents
   - skills
   - data portals
+categories:
+  - PortalJS
+  - AI Integration
 filetype: 'blog'
 ---
 

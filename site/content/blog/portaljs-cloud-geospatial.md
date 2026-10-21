@@ -7,6 +7,8 @@ tags:
   - maps
   - geojson
   - data-visualization
+categories:
+  - PortalJS Cloud
 keywords: PortalJS Cloud geospatial, open data portal map visualization, GeoJSON data portal
 description: "Does PortalJS Cloud support geospatial visualizations? A clear breakdown of what works out of the box, what requires extension, and how to handle complex mapping requirements."
 authors: ['Yoana Popova']

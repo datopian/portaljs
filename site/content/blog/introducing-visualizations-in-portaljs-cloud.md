@@ -4,6 +4,7 @@ description: 'Empower your data portal with an insights catalog — a new way to
 created: 2025-10-13
 authors: ['João Demenech']
 filetype: 'blog'
+categories: ['PortalJS Cloud']
 ---
 
 ## Introduction

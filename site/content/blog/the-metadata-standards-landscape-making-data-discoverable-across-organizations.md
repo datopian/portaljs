@@ -14,6 +14,7 @@ faqs:
     answer: Plan for a gradual migration with field mapping between standards. Most standards share common elements (title, description, keywords), making core migration straightforward. Focus on high-value datasets first, and consider using tools like Frictionless Data that can bridge multiple standards.
   - question: What's the difference between metadata standards and metadata schemas?
     answer: Standards define the conceptual framework and rules (like DCAT or Dublin Core), while schemas are the technical implementation (like JSON schemas or XML schemas). You can implement the same standard using different technical schemas depending on your platform needs.
+categories: ['Open Data']
 ---
 
 ## Introduction
