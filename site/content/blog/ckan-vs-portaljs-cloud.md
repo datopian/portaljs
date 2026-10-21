@@ -7,6 +7,9 @@ tags:
   - migration
   - open-data
   - comparison
+categories:
+  - PortalJS Cloud
+  - CKAN
 keywords: CKAN vs PortalJS Cloud, migrate from CKAN, CKAN alternative, PortalJS Cloud comparison
 description: "We built CKAN. We're not going to tell you PortalJS Cloud is right for everyone. Here's an honest breakdown of what you gain, what you give up, and when to stay on CKAN."
 authors: ['Yoana Popova']

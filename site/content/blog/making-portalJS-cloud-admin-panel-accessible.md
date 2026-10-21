@@ -4,6 +4,7 @@ description: 'Learn how PortalJS Cloud’s commitment to accessibility enhances 
 created: 2025-01-26
 authors: ['popovayoana', 'shreyas']
 filetype: 'blog'
+categories: ['PortalJS Cloud']
 ---
 
 ## The Need for Accessibility: Building a Digital City for All

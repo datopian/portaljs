@@ -7,6 +7,7 @@ import { BlogStructuredData } from '@/components/schema/BlogStructuredData'
 import FeaturedBlogPost from '@/components/blog/FeaturedBlogPost'
 import MiniCard from '@/components/blog/MiniCard'
 import BlogCard from '@/components/blog/BlogCard'
+import { BLOG_CATEGORIES, parseBlogCategories } from '@/lib/blogCategories'
 
 const GRID_PAGE_SIZE = 9
 
@@ -31,115 +32,29 @@ const FEATURED_SLUGS = [
   'talk-to-your-data-portal-in-plain-english-introducing-queryless-ai',   // Position 4 — mini bottom
 ]
 
-// Human-readable label for each segment ID (no hyphens, proper casing)
-const SEGMENT_DISPLAY: Record<string, string> = {
-  dev: 'Open Source',
-  cloud: 'PortalJS Cloud',
-  ckan: 'CKAN',
-  ai: 'AI Integration',
-  data: 'Open Data',
-}
-
-// Per-post label overrides — full curated list
-const LABEL_OVERRIDES: Record<string, string[]> = {
-  // AI Integration
-  'talk-to-your-data-portal-in-plain-english-introducing-queryless-ai': ['PortalJS Cloud', 'AI Integration'],
-  'mcp-server-ai-assistants-to-improve-data-portals':                  ['PortalJS', 'AI Integration'],
-  'supercharging-data-portals-with-the-portaljs-mcp-server':           ['PortalJS', 'AI Integration'],
-  'portaljs-is-now-ai-native':                                         ['PortalJS', 'AI Integration'],
-  'rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code': ['PortalJS'],
-  'scaling-portaljs-data-with-giftless-and-r2':                         ['PortalJS'],
-  'civic-data-portal-examples':                                         ['PortalJS Cloud', 'Civic Data'],
-  'research-data-portal-ui-improvements':                               ['PortalJS', 'Research Data'],
-  'portaljs-skills-launch':                                             ['PortalJS', 'AI Integration'],
-  // PortalJS Cloud + Tutorial
-  'keep-your-portal-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api': ['PortalJS Cloud', 'Tutorial'],
-  // PortalJS open-source
-  'turning-openmetadata-into-a-user-friendly-data-portal-with-portaljs': ['PortalJS', 'Tutorial'],
-  'enhancing-geospatial-data-visualization-with-portaljs':              ['PortalJS', 'Tutorial'],
-  'the-open-spending-revamp-behind-the-scenes':                         ['PortalJS', 'Case Study'],
-  'why-portaljs-is-the-future-of-decoupled-frontend-for-data-portals':  ['PortalJS'],
-  // CKAN
-  'why-we-decoupled-CKAN-frontend':                                     ['PortalJS', 'CKAN'],
-  'why-NASA-and-anyone-using-CKAN-should-consider-a-decoupled-front-end-with-PortalJS': ['CKAN'],
-  'how-we-rebuilt-a-legacy-ckan-portal-into-a-static-read-only-site-with-portaljs': ['CKAN', 'PortalJS', 'Tutorial'],
-  'ckan-resource-uploads-via-api':                                      ['CKAN', 'Tutorial'],
-  'example-ckan-2021':                                                  ['CKAN', 'PortalJS', 'Tutorial'],
-  // Open Data
-  'basics-of-metadata-how-it-helps-to-understand-your-data':           ['Open Data', 'Tutorial'],
-  'frictionless-specs-european-commission':                             ['Open Data', 'Case Study'],
-  // Misc
-  'summer-updates-2023':                                                ['Open Source'],
-}
-
-// Curated segment map: post slug → segment IDs
-// Slug = last part of urlPath (e.g. "blog/portaljs-cloud-apis" → "portaljs-cloud-apis")
-const CATEGORY_MAP: Record<string, string[]> = {
-  'basics-of-metadata-how-it-helps-to-understand-your-data': ['data'],
-  'ckan-resource-uploads-via-api': ['dev', 'ckan'],
-  'ckan-vs-portaljs-cloud': ['ckan', 'cloud'],
-  'civic-data-portal-examples': ['cloud'],
-  'create-a-simple-catalog-of-anything-using-markdown': ['dev'],
-  'effortless-user-management-portaljs': ['cloud'],
-  'enhancing-geospatial-data-visualization-with-portaljs': ['dev'],
-  'example-ckan-2021': ['ckan', 'dev'],
-  'frictionless-specs-european-commission': ['data'],
-  'generate-an-interactive-webpage-from-csv-data-and-markdown': ['dev'],
-  'how-rich-metadata-powers-data-discovery-in-modern-data-catalogs': ['data'],
-  'how-to-reduce-data-portal-costs-by-90-percent': ['cloud'],
-  'how-we-rebuilt-a-legacy-ckan-portal-into-a-static-read-only-site-with-portaljs': ['dev', 'ckan'],
-  'introducing-visualizations-in-portaljs-cloud': ['cloud'],
-  'keep-your-portal-data-fresh-a-hands-on-guide-to-the-portaljs-cloud-api': ['cloud'],
-  'making-portalJS-cloud-admin-panel-accessible': ['cloud'],
-  'markdowndb-basics-tutorial-2023': ['dev'],
-  'markdowndb-launch': ['dev'],
-  'mcp-server-ai-assistants-to-improve-data-portals': ['ai'],
-  'portaljs-cloud-apis': ['cloud'],
-  'portaljs-cloud-frontend-customization': ['cloud'],
-  'portaljs-cloud-geospatial': ['cloud'],
-  'portaljs-cloud-private-datasets': ['cloud'],
-  'portaljs-is-now-ai-native': ['ai', 'dev'],
-  'portaljs-skills-launch': ['ai', 'dev'],
-  'rebuilt-city-of-kyle-open-data-portal-in-30-minutes-with-claude-code': ['ai', 'dev'],
-  'research-data-portal-ui-improvements': ['dev', 'ckan'],
-  'scaling-portaljs-data-with-giftless-and-r2': ['dev'],
-  'summer-updates-2023': ['dev'],
-  'supercharging-data-portals-with-the-portaljs-mcp-server': ['ai', 'dev'],
-  'talk-to-your-data-portal-in-plain-english-introducing-queryless-ai': ['ai', 'cloud'],
-  'the-metadata-standards-landscape-making-data-discoverable-across-organizations': ['data'],
-  'the-new-look-of-portaljs-cloud': ['cloud'],
-  'the-open-spending-revamp-behind-the-scenes': ['dev'],
-  'turning-openmetadata-into-a-user-friendly-data-portal-with-portaljs': ['dev'],
-  'why-NASA-and-anyone-using-CKAN-should-consider-a-decoupled-front-end-with-PortalJS': ['ckan', 'dev'],
-  'why-portaljs-is-the-future-of-decoupled-frontend-for-data-portals': ['dev'],
-  'why-we-decoupled-CKAN-frontend': ['ckan', 'dev'],
-}
-
-const SEGMENTS = [
+// Filter buttons: "All" plus the category vocabulary. Chips and filters read
+// the same list (site/lib/blogCategories.ts), so they can never drift apart.
+// To categorize a post, set `categories:` in its frontmatter (see site/CLAUDE.md).
+const FILTERS: Array<{ id: string; label: string; icon?: string }> = [
   { id: 'all', label: 'All' },
-  { id: 'dev', label: 'PortalJS', icon: 'dev' },
-  { id: 'cloud', label: 'PortalJS Cloud', icon: 'cloud' },
-  { id: 'ckan', label: 'CKAN' },
-  { id: 'ai', label: 'AI Integration' },
-  { id: 'data', label: 'Open Data' },
+  ...BLOG_CATEGORIES.map((c) => ({
+    id: c.label,
+    label: c.label,
+    icon: 'icon' in c ? c.icon : undefined,
+  })),
 ]
 
 function getPostSlug(post: any): string {
   return post.urlPath?.split('/').pop() ?? ''
 }
 
-function getPostSegments(post: any): string[] {
-  return CATEGORY_MAP[getPostSlug(post)] ?? []
+// A post's categories from its frontmatter `categories:`, already validated and
+// put in vocabulary order by getStaticProps. No categories → no chips/filters.
+function getPostCategories(post: any): string[] {
+  return post.categories ?? []
 }
 
-function getBlogLabels(post: any): string[] {
-  const slug = getPostSlug(post)
-  if (LABEL_OVERRIDES[slug]) return LABEL_OVERRIDES[slug]
-  const segments = CATEGORY_MAP[slug] ?? []
-  return segments.map((s) => SEGMENT_DISPLAY[s]).filter(Boolean)
-}
-
-function SegmentIcon({ id }: { id: string }) {
+function CategoryIcon({ id }: { id: string }) {
   if (id === 'dev') {
     return (
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5" aria-hidden="true">
@@ -158,11 +73,11 @@ function SegmentIcon({ id }: { id: string }) {
 }
 
 export default function Blog({ blogs }) {
-  const [activeSegment, setActiveSegment] = useState('all')
+  const [activeCategory, setActiveCategory] = useState('all')
   const [visibleCount, setVisibleCount] = useState(GRID_PAGE_SIZE)
 
-  const handleSegmentChange = (id: string) => {
-    setActiveSegment(id)
+  const handleCategoryChange = (id: string) => {
+    setActiveCategory(id)
     setVisibleCount(GRID_PAGE_SIZE)
   }
 
@@ -173,12 +88,12 @@ export default function Blog({ blogs }) {
   ).filter(Boolean)
   const [featured, ...miniPosts] = featuredPosts
 
-  // Grid: all posts NOT in the hero cluster (filtered by segment when active)
+  // Grid: all posts NOT in the hero cluster (filtered by category when active)
   const nonFeatured = blogs.filter((b) => !featuredSet.has(getPostSlug(b)))
   const gridSource =
-    activeSegment === 'all'
+    activeCategory === 'all'
       ? nonFeatured
-      : blogs.filter((b) => getPostSegments(b).includes(activeSegment))
+      : blogs.filter((b) => getPostCategories(b).includes(activeCategory))
 
   const gridPosts = gridSource.slice(0, visibleCount)
   const hasMore = gridSource.length > visibleCount
@@ -204,37 +119,37 @@ export default function Blog({ blogs }) {
           {/* Hero cluster: 1 big + 3 mini */}
           {featured && (
             <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[3fr_2fr] lg:gap-5">
-              <FeaturedBlogPost blog={featured} labels={getBlogLabels(featured)} />
+              <FeaturedBlogPost blog={featured} labels={getPostCategories(featured)} />
               {miniPosts.length > 0 && (
                 <div className="grid gap-3 sm:grid-cols-3 lg:flex lg:h-full lg:flex-col lg:gap-3">
                   {miniPosts.map((blog) => (
-                    <MiniCard key={blog.urlPath} blog={blog} labels={getBlogLabels(blog)} />
+                    <MiniCard key={blog.urlPath} blog={blog} labels={getPostCategories(blog)} />
                   ))}
                 </div>
               )}
             </div>
           )}
 
-          {/* Segment filter */}
+          {/* Category filter */}
           <div className="mt-14">
             <p className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
               Browse by topic
             </p>
             <div className="flex flex-wrap gap-2">
-              {SEGMENTS.map((seg) => {
-                const active = activeSegment === seg.id
+              {FILTERS.map((filter) => {
+                const active = activeCategory === filter.id
                 return (
                   <button
-                    key={seg.id}
-                    onClick={() => handleSegmentChange(seg.id)}
+                    key={filter.id}
+                    onClick={() => handleCategoryChange(filter.id)}
                     className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-150 ${
                       active
                         ? 'bg-blue-600 text-white shadow-sm'
                         : 'border border-slate-200 text-slate-600 hover:border-blue-400 hover:text-blue-600 dark:border-slate-700 dark:text-slate-300 dark:hover:border-blue-500 dark:hover:text-blue-400'
                     }`}
                   >
-                    {seg.icon && <SegmentIcon id={seg.icon} />}
-                    {seg.label}
+                    {filter.icon && <CategoryIcon id={filter.icon} />}
+                    {filter.label}
                   </button>
                 )
               })}
@@ -245,7 +160,7 @@ export default function Blog({ blogs }) {
           {gridPosts.length > 0 ? (
             <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {gridPosts.map((blog) => (
-                <BlogCard key={blog.urlPath} blog={blog} labels={getBlogLabels(blog)} />
+                <BlogCard key={blog.urlPath} blog={blog} labels={getPostCategories(blog)} />
               ))}
             </div>
           ) : (
@@ -292,12 +207,18 @@ export async function getStaticProps() {
   const blogsWithComputedFields = blogs.map(async (blog) => {
     const source = fs.readFileSync(blog.file_path, { encoding: 'utf-8' })
 
-    return await computeFields({
+    const fields = await computeFields({
       frontMatter: blog.metadata,
       urlPath: blog.url_path,
       filePath: blog.file_path,
       source,
     })
+
+    // Throws (failing the build) on a category outside lib/blogCategories.ts
+    return {
+      ...fields,
+      categories: parseBlogCategories(blog.metadata.categories, blog.file_path),
+    }
   })
 
   const blogList = await Promise.all(blogsWithComputedFields)

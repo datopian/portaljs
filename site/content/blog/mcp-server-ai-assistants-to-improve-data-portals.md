@@ -4,6 +4,7 @@ description: 'How an MCP server bridges AI assistants and data portals, enabling
 created: 2025-09-17
 authors: ['Theo Bertol']
 filetype: 'blog'
+categories: ['PortalJS', 'AI Integration']
 ---
 
 ## Introduction

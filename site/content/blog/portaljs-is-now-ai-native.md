@@ -9,6 +9,9 @@ tags:
   - agents
   - skills
   - data portals
+categories:
+  - PortalJS
+  - AI Integration
 image: "/static/img/blog/portaljs-is-now-ai-native/hero.png"
 filetype: 'blog'
 ---

@@ -2,6 +2,7 @@
 title: "Generate an interactive webpage from CSV data and markdown"
 created: 2022-03-14
 authors: ["Rising Odegua"]
+categories: ['PortalJS']
 ---
 
 ## Getting Started

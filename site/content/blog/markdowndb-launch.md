@@ -4,6 +4,7 @@ description: MarkdownDB - an open source library to transform markdown content i
 created: 2023-10-11
 authors: ['Ola Rubaj']
 filetype: blog
+categories: ['PortalJS']
 ---
 
 Hello, dear readers!

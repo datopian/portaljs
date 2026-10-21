@@ -9,6 +9,10 @@ tags:
   - data portals
   - Next.js
   - accessibility
+categories:
+  - PortalJS
+  - CKAN
+  - Research Data
 image: "/static/img/blog/research-data-portal-ui-improvements/hero.png"
 filetype: 'blog'
 ---

@@ -7,6 +7,8 @@ tags:
   - authentication
   - access-control
   - open-data
+categories:
+  - PortalJS Cloud
 keywords: PortalJS Cloud private datasets, open data portal private access, data portal authentication
 description: "Can PortalJS Cloud users access private datasets? A clear breakdown of publisher previewing, authenticated end-user access, and role-based access control, and what each actually requires."
 authors: ['Yoana Popova']

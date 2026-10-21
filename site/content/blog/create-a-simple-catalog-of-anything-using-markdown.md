@@ -3,6 +3,7 @@ title: Create a catalog of anything using Markdown files in Obsidian
 created: 2023-05-30
 authors: ['Ola Rubaj']
 filetype: 'blog'
+categories: ['PortalJS']
 ---
 
 ![[/static/img/blog/2023-05-30-Create-a-catalog-of-anything-using-markdown-files/dataview.gif]]

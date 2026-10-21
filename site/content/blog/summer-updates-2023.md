@@ -3,6 +3,7 @@ title: What We Shipped in Jul-Aug 2023
 authors: ['ola-rubaj']
 created: 2023-09-2
 filetype: blog
+categories: ['PortalJS']
 ---
 
 Hey everyone! 👋 Summer has been in full swing, and while I've managed to catch some vacation vibes, I've also been deep into code. I'm super excited to share some of the latest updates and features we've rolled out over the past two months. Let's dive in:

@@ -17,6 +17,7 @@ faqs:
     answer: "The site loads in milliseconds, infrastructure costs are nearly eliminated, maintenance is reduced to GitHub workflows, and it's served entirely via CDN."
   - question: "What features were intentionally removed?"
     answer: "We removed CKAN's web UI, admin panel, Solr search engine, and all user authentication features, focusing purely on data access and discovery."
+categories: ['PortalJS', 'CKAN', 'Tutorial']
 ---
 
 ## Background

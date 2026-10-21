@@ -4,6 +4,7 @@ description: 'Integrating Cloudflare R2 with CKAN revolutionizes resource upload
 created: 2025-02-26
 authors: ['shreyas']
 filetype: 'blog'
+categories: ['PortalJS', 'CKAN', 'Tutorial']
 ---
 
 ### Introduction
