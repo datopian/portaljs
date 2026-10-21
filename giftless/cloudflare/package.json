@@ -2,6 +2,9 @@
   "name": "giftless-cloudflare",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "description": "Cloudflare Containers deploy of the Giftless LFS-on-R2 host (production)",
   "scripts": {
     "deploy": "./scripts/deploy.sh",
