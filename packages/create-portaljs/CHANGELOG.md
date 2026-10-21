@@ -1,5 +1,11 @@
 # create-portaljs
 
+## 0.7.1
+
+### Patch Changes
+
+- [#1693](https://github.com/datopian/portaljs/pull/1693) [`86cca861782c579cab7c3b40e9f42af6c6e0e1f0`](https://github.com/datopian/portaljs/commit/86cca861782c579cab7c3b40e9f42af6c6e0e1f0) Thanks [@anuveyatsu](https://github.com/anuveyatsu)! - Upgrade `giget` from 1.x to ^3.3.1. giget 1.x extracts the template with `tar@6`, which has unpatched path-traversal / symlink advisories (including a critical one); giget 3.3.1 bundles a patched `tar@7`. The `downloadTemplate` API used by the CLI is unchanged and the scaffolded project is byte-identical.
+
 ## 0.7.0
 
 ### Minor Changes
