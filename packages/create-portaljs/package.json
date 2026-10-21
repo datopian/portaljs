@@ -32,7 +32,7 @@
     "access": "public"
   },
   "dependencies": {
-    "giget": "^1.2.3",
+    "giget": "^3.3.1",
     "prompts": "^2.4.2"
   }
 }

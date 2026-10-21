@@ -1,4 +1,5 @@
 import typescript from "rollup-plugin-typescript2";
+import ts from "typescript";
 import commonjs from "@rollup/plugin-commonjs";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 
@@ -14,5 +15,8 @@ export default {
       format: "cjs",
     },
   ],
-  plugins: [nodeResolve(), commonjs(), typescript()],
+  // Pass this package's own TypeScript explicitly: rpt2 is hoisted to the
+  // workspace root, where a bare require("typescript") resolves the root's
+  // older TypeScript instead of the version declared here.
+  plugins: [nodeResolve(), commonjs(), typescript({ typescript: ts })],
 };

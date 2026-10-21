@@ -22,6 +22,21 @@
     "build": "bash scripts/verify.sh build"
   },
   "private": true,
+  "overrides": {
+    "next": {
+      "postcss": "^8.5.31"
+    },
+    "mocha": {
+      "serialize-javascript": "^7.0.5"
+    },
+    "postcss-selector-parser": "^7.1.6",
+    "vite-plugin-dts": {
+      "@microsoft/api-extractor": "~7.56.3"
+    },
+    "lodash": "^4.18.1",
+    "minimatch@10": "^10.2.3",
+    "ajv@8": "^8.18.0"
+  },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.1",
