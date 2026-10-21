@@ -8,6 +8,10 @@ tmp
 
 # dependencies
 node_modules
+# packages/* are npm workspaces: the root package-lock.json is the only lockfile
+# npm reads for them. A nested one is ignored by `npm ci`, goes stale, and is
+# still scanned by Dependabot, so never commit one.
+packages/*/package-lock.json
 
 # IDEs and editors
 /.idea
