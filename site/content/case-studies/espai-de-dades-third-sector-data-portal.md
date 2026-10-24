@@ -7,7 +7,7 @@ metaDescription: "How Datopian and OneTandem delivered Espai de Dades — a full
 description: OneTandem, a Catalan data studio, chose PortalJS Cloud to build Espai de Dades for Taula d'entitats del Tercer Sector de Catalunya — the umbrella organisation for Catalonia's civil society. Datopian delivered a managed portal in Catalan, with a custom data taxonomy built around the sector's own concepts, and 139 datasets live from day one.
 image: /images/casestudies/espai-de-dades-featured.webp
 images: ['/images/casestudies/espai-de-dades-homepage.webp', '/images/casestudies/espai-de-dades-search.webp', '/images/casestudies/espai-de-dades-dataset.webp']
-authors: ['joao-demenech']
+authors: ['joaodemenech']
 keystats:
   [
     '139/n datasets live',
