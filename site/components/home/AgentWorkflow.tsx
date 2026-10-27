@@ -1,3 +1,5 @@
+import SectionHeader from './SectionHeader'
+
 const steps = [
   {
     n: '01',
@@ -23,18 +25,11 @@ export default function AgentWorkflow() {
   return (
     <section id="how" className="w-full scroll-mt-32 py-20 sm:py-[88px]">
       <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-12">
-        <div className="max-w-[680px]">
-          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
-            How it works
-          </span>
-          <h2 className="mt-3.5 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-            Describe → Scaffold → Publish
-          </h2>
-          <p className="mt-3.5 text-[17px] text-slate-600 dark:text-slate-300">
-            Three steps from an idea to a live portal — skills do the assembly,
-            and the output is plain, editable code.
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="How it works"
+          title="Describe → Scaffold → Publish"
+          lede="Three steps from an idea to a live portal — skills do the assembly, and the output is plain, editable code."
+        />
 
         <div className="mt-11 grid gap-[22px] md:grid-cols-3">
           {steps.map((step, i) => (

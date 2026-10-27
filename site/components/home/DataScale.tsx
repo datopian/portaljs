@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react'
+import IconCard from './IconCard'
+import SectionHeader from './SectionHeader'
 
 // The three "the framework scales" pillars shipped in the AI-native rework:
 // large-file storage (Git LFS → R2 via Giftless), in-browser query
@@ -58,52 +60,28 @@ export default function DataScale() {
       className="w-full scroll-mt-32 border-y border-slate-200 bg-slate-50 py-20 dark:border-slate-800 dark:bg-slate-900/40 sm:py-[88px]"
     >
       <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-12">
-        <div className="max-w-[680px]">
-          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
-            Scale &amp; deploy
-          </span>
-          <h2 className="mt-3.5 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-            From a KB of CSV to multi-GB datasets.
-          </h2>
-          <p className="mt-3.5 text-[17px] text-slate-600 dark:text-slate-300">
-            The same portal grows with your data — big files on object storage,
-            queried in the browser, shipped with one command.
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="Scale & deploy"
+          title="From a KB of CSV to multi-GB datasets."
+          lede="The same portal grows with your data — big files on object storage, queried in the browser, shipped with one command."
+        />
 
         <div className="mt-11 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {pillars.map((p) => (
-            <div
+            <IconCard
               key={p.title}
-              className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:-translate-y-[3px] hover:border-slate-300 hover:shadow-[0_16px_36px_-20px_rgba(15,23,42,0.28)] dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700"
-            >
-              <div className="mb-4 grid h-[42px] w-[42px] place-items-center rounded-[11px] bg-gradient-to-br from-sky-400/20 to-blue-600/15 text-blue-800 dark:text-blue-300">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-[22px] w-[22px]"
-                  aria-hidden="true"
+              icon={p.icon}
+              title={p.title}
+              body={p.body}
+              footer={
+                <a
+                  href={p.href}
+                  className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                 >
-                  {p.icon}
-                </svg>
-              </div>
-              <h3 className="mb-[7px] text-[17.5px] font-semibold text-slate-900 dark:text-white">
-                {p.title}
-              </h3>
-              <p className="text-[14.5px] text-slate-600 dark:text-slate-300">
-                {p.body}
-              </p>
-              <a
-                href={p.href}
-                className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-              >
-                {p.cta} <span aria-hidden="true">→</span>
-              </a>
-            </div>
+                  {p.cta} <span aria-hidden="true">→</span>
+                </a>
+              }
+            />
           ))}
         </div>
       </div>

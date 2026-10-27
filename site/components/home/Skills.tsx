@@ -1,3 +1,5 @@
+import SectionHeader from './SectionHeader'
+
 const skills = [
   { cmd: '/portaljs-new-portal', desc: 'Scaffold a portal from a brief' },
   { cmd: '/portaljs-add-dataset', desc: 'Add a CSV, TSV, JSON, or GeoJSON dataset' },
@@ -10,18 +12,11 @@ export default function Skills() {
   return (
     <section id="skills" className="w-full scroll-mt-32 py-20 sm:py-[88px]">
       <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-12">
-        <div className="max-w-[680px]">
-          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
-            Extensibility
-          </span>
-          <h2 className="mt-3.5 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-            Skills are first-class.
-          </h2>
-          <p className="mt-3.5 text-[17px] text-slate-600 dark:text-slate-300">
-            Every capability is a documented skill — composable, inspectable,
-            and yours to extend. Author your own and the assistant picks them up.
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="Extensibility"
+          title="Skills are first-class."
+          lede="Every capability is a documented skill — composable, inspectable, and yours to extend. Author your own and the assistant picks them up."
+        />
 
         <div className="mt-11 grid items-stretch gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           {/* built-in skills */}
