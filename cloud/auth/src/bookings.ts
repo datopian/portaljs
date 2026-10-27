@@ -15,8 +15,15 @@
 //   call_booked     once per booking, timestamped when the booking was made
 //   call_cancelled  once, if the booking is later cancelled
 //
-// Both are sent under the booker's email as distinct_id, so a booker who also signs up for
-// Arc or Cloud can be merged in PostHog by email.
+// The booking form is PUBLIC and its email is unverified: anyone can book a call with
+// someone else's address. So the booker's email is never used as a PostHog identity.
+// Both events are sent under a per-booking distinct_id, "booking:<calendar_event_id>", with
+// $process_person_profile: false, so they never create, merge into or update a person
+// profile (no $set / $set_once). Otherwise a stranger could attach fake conversions to a real
+// Arc/Cloud user's profile or overwrite its properties. The raw email is not sent at all;
+// booker_email_sha256 (SHA-256 of the normalised email) is an event property only, for an
+// optional later join with sign-ups. Any link to a real user must be an explicit, verified
+// join made at analysis time, never automatic identity.
 //
 // Idempotency lives in D1 (booked_calls, migration 0007): a booking is recorded only
 // after PostHog accepted its event, so a failed send is retried on the next run and a
@@ -30,6 +37,7 @@
 
 import { captureServerEvent, type AnalyticsEnv } from './analytics'
 import { isFreeEmailDomain, isValidEmail, normalizeEmail } from './email'
+import { sha256Hex } from './util'
 
 export interface BookingsEnv extends AnalyticsEnv {
   DB: D1Database
@@ -128,25 +136,46 @@ function hoursBetween(fromIso: string, toIso: string): number | null {
   return Number.isFinite(ms) ? Math.round(ms / 36e5) : null
 }
 
+// Per-booking PostHog distinct_id. Stable (the Twenty calendarEvent id, also booked_calls'
+// key), so call_booked and call_cancelled land on the same id. Deliberately NOT the booker's
+// email: that comes from a public, unverified form (see the header).
+export function bookingDistinctId(calendarEventId: string): string {
+  return `booking:${calendarEventId}`
+}
+
+// Form answers are free text from the public internet: cap what goes into an event.
+const MAX_PROP_CHARS = 200
+function capped(s: string | undefined | null): string | null {
+  return s ? s.slice(0, MAX_PROP_CHARS) : null
+}
+
 // Event properties for PostHog. Free-text project descriptions stay in the CRM. We only
 // send whether one was given, plus the answer to a "how did you hear about us" style
 // question if the form has one: the only attribution a Google-hosted booking can carry.
-export function bookingProperties(ev: CalendarEvent, schedule: string, booker: Booker): Record<string, unknown> {
+// Everything here is an EVENT property. There is no $set / $set_once and
+// $process_person_profile is false, so a booking never writes to a person profile.
+export async function bookingProperties(
+  ev: CalendarEvent,
+  schedule: string,
+  booker: Booker
+): Promise<Record<string, unknown>> {
   const heardLabel = Object.keys(booker.answers).find((l) => /hear about|find us|referr/i.test(l))
   const otherAnswers = Object.keys(booker.answers).filter((l) => !ORG_LABELS.test(l) && l !== heardLabel)
   return {
     schedule,
     booking_channel: 'google_appointment_schedule',
     calendar_event_id: ev.id,
-    organization: booker.organization ?? null,
-    email_domain: booker.email.split('@')[1],
+    organization: capped(booker.organization),
+    email_domain: capped(booker.email.split('@')[1]),
     is_freemail: isFreeEmailDomain(booker.email),
-    heard_from: heardLabel ? booker.answers[heardLabel] : null,
+    // For an optional, explicit join with sign-ups later. Not an identity. booker.email is
+    // already normalised (trimmed + lowercased) by parseBooker.
+    booker_email_sha256: await sha256Hex(booker.email),
+    heard_from: heardLabel ? capped(booker.answers[heardLabel]) : null,
     has_project_description: otherAnswers.length > 0,
     starts_at: ev.startsAt ?? null,
     lead_time_hours: ev.externalCreatedAt && ev.startsAt ? hoursBetween(ev.externalCreatedAt, ev.startsAt) : null,
-    $set: { email: booker.email, ...(booker.name ? { name: booker.name } : {}) },
-    ...(booker.organization ? { $set_once: { organization: booker.organization } } : {}),
+    $process_person_profile: false,
   }
 }
 
@@ -209,6 +238,7 @@ export async function syncBookings(env: BookingsEnv, nowMs: number = Date.now())
         continue
       }
       const bookedAt = ev.externalCreatedAt ?? nowIso
+      const distinctId = bookingDistinctId(ev.id)
       const row = await env.DB.prepare(
         'SELECT calendar_event_id, distinct_id, cancelled_at FROM booked_calls WHERE calendar_event_id = ?'
       )
@@ -216,13 +246,13 @@ export async function syncBookings(env: BookingsEnv, nowMs: number = Date.now())
         .first<BookedRow>()
 
       if (!row) {
-        const properties = bookingProperties(ev, schedule, booker)
+        const properties = await bookingProperties(ev, schedule, booker)
         if (dryRun) {
           console.log('bookings dry run: would capture call_booked', JSON.stringify({ id: ev.id, schedule }))
         } else {
           const ok = await captureServerEvent(env, {
             event: 'call_booked',
-            distinctId: booker.email,
+            distinctId,
             properties,
             timestamp: bookedAt,
           })
@@ -233,7 +263,7 @@ export async function syncBookings(env: BookingsEnv, nowMs: number = Date.now())
           await env.DB.prepare(
             'INSERT INTO booked_calls (calendar_event_id, schedule, distinct_id, booked_at, starts_at, captured_at) VALUES (?, ?, ?, ?, ?, ?)'
           )
-            .bind(ev.id, schedule, booker.email, bookedAt, ev.startsAt ?? null, nowSec)
+            .bind(ev.id, schedule, distinctId, bookedAt, ev.startsAt ?? null, nowSec)
             .run()
         }
         result.booked++
@@ -245,8 +275,15 @@ export async function syncBookings(env: BookingsEnv, nowMs: number = Date.now())
         } else {
           const ok = await captureServerEvent(env, {
             event: 'call_cancelled',
-            distinctId: row?.distinct_id ?? booker.email,
-            properties: { schedule, calendar_event_id: ev.id, starts_at: ev.startsAt ?? null },
+            // Always the per-booking id, which is also what booked_calls stores. A stored
+            // value is never trusted as an identity, so no row can redirect this to a person.
+            distinctId,
+            properties: {
+              schedule,
+              calendar_event_id: ev.id,
+              starts_at: ev.startsAt ?? null,
+              $process_person_profile: false,
+            },
             timestamp: nowIso,
           })
           if (!ok) {

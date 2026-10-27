@@ -9,7 +9,8 @@
 CREATE TABLE IF NOT EXISTS booked_calls (
   calendar_event_id TEXT PRIMARY KEY, -- Twenty calendarEvent id
   schedule TEXT NOT NULL,             -- appointment schedule name, e.g. "PortalJS meetings"
-  distinct_id TEXT NOT NULL,          -- PostHog distinct id the events were sent under (booker email)
+  distinct_id TEXT NOT NULL,          -- PostHog distinct id the events were sent under: "booking:<calendar_event_id>",
+                                      -- never the booker's (unverified) email
   booked_at TEXT NOT NULL,            -- ISO time the booking was made (calendar event created)
   starts_at TEXT,                     -- ISO time the call is scheduled for
   captured_at INTEGER NOT NULL,       -- unix seconds call_booked was sent

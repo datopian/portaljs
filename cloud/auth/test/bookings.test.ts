@@ -4,6 +4,7 @@ import {
   scheduleOf,
   configuredSchedules,
   bookingProperties,
+  bookingDistinctId,
   eventsFilter,
   syncBookings,
   DEFAULT_SCHEDULES,
@@ -73,8 +74,8 @@ describe('scheduleOf / configuredSchedules', () => {
 })
 
 describe('bookingProperties', () => {
-  it('sends attribution and shape, never the free-text project description', () => {
-    const p = bookingProperties(event(), 'PortalJS meetings', parseBooker(DESC)!)
+  it('sends attribution and shape, never the free-text project description', async () => {
+    const p = await bookingProperties(event(), 'PortalJS meetings', parseBooker(DESC)!)
     expect(p).toMatchObject({
       schedule: 'PortalJS meetings',
       organization: 'City of Example',
@@ -85,6 +86,39 @@ describe('bookingProperties', () => {
       lead_time_hours: 48,
     })
     expect(JSON.stringify(p)).not.toMatch(/Socrata/)
+  })
+
+  // The booking form is public and unverified, so nothing in it may act as an identity.
+  it('never writes a person profile and never sends the raw email or name', async () => {
+    const p = await bookingProperties(event(), 'PortalJS meetings', parseBooker(DESC)!)
+    expect(p.$process_person_profile).toBe(false)
+    expect(p).not.toHaveProperty('$set')
+    expect(p).not.toHaveProperty('$set_once')
+    const json = JSON.stringify(p).toLowerCase()
+    expect(json).not.toContain('jane.doe@city.gov.example')
+    expect(json).not.toContain('jane doe')
+  })
+
+  it('carries a SHA-256 of the normalised email for an explicit join later', async () => {
+    const p = await bookingProperties(event(), 'PortalJS meetings', parseBooker(DESC)!)
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('jane.doe@city.gov.example'))
+    const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('')
+    expect(p.booker_email_sha256).toBe(hex)
+    expect(p.booker_email_sha256).toMatch(/^[0-9a-f]{64}$/)
+  })
+
+  it('caps free-text form answers', async () => {
+    const long = 'x'.repeat(5000)
+    const d = `<b>Booked by</b>\nA B\na@b.org\n<br><b>Organization</b>\n${long}\n<br><b>How did you hear about us?</b>\n${long}\n<br>`
+    const p = await bookingProperties(event(), 'PortalJS meetings', parseBooker(d)!)
+    expect((p.organization as string).length).toBe(200)
+    expect((p.heard_from as string).length).toBe(200)
+  })
+})
+
+describe('bookingDistinctId', () => {
+  it('is per booking, not per person', () => {
+    expect(bookingDistinctId('ev-1')).toBe('booking:ev-1')
   })
 })
 
@@ -172,7 +206,7 @@ describe('syncBookings', () => {
 
   const NOW = Date.parse('2026-10-02T00:00:00.000Z')
 
-  it('captures call_booked once, at the booking time, under the booker email', async () => {
+  it('captures call_booked once, at the booking time, under a per-booking id', async () => {
     const r1 = await syncBookings(env(), NOW)
     const r2 = await syncBookings(env(), NOW)
     expect(r1.booked).toBe(1)
@@ -180,9 +214,16 @@ describe('syncBookings', () => {
     expect(captured).toHaveLength(1)
     expect(captured[0]).toMatchObject({
       event: 'call_booked',
-      distinct_id: 'jane.doe@city.gov.example',
+      distinct_id: 'booking:ev-1',
       timestamp: '2026-10-01T09:00:00.000Z',
     })
+    expect(captured[0].properties.$process_person_profile).toBe(false)
+    expect(captured[0].properties).not.toHaveProperty('$set')
+    expect(captured[0].properties).not.toHaveProperty('$set_once')
+    expect(captured[0].properties.booker_email_sha256).toMatch(/^[0-9a-f]{64}$/)
+    // The raw (unverified) email appears nowhere in what PostHog receives, nor in D1.
+    expect(JSON.stringify(captured).toLowerCase()).not.toContain('jane.doe@city.gov.example')
+    expect(db.rows.get('ev-1')!.distinct_id).toBe('booking:ev-1')
   })
 
   it('backfills further back on the first run, then uses the short window', async () => {
@@ -199,6 +240,18 @@ describe('syncBookings', () => {
     await syncBookings(env(), NOW)
     await syncBookings(env(), NOW)
     expect(captured.map((c) => c.event)).toEqual(['call_booked', 'call_cancelled'])
+    // Same per-booking id as call_booked, and no person profile either.
+    expect(captured[1].distinct_id).toBe('booking:ev-1')
+    expect(captured[1].properties.$process_person_profile).toBe(false)
+    expect(captured[1].properties).not.toHaveProperty('$set')
+  })
+
+  it('cancels under the per-booking id even if a stored row carries something else', async () => {
+    db.rows.set('ev-1', { calendar_event_id: 'ev-1', distinct_id: 'victim@example.com', cancelled_at: null })
+    events = [event({ isCanceled: true })]
+    await syncBookings(env(), NOW)
+    expect(captured).toHaveLength(1)
+    expect(captured[0]).toMatchObject({ event: 'call_cancelled', distinct_id: 'booking:ev-1' })
   })
 
   it('does not record a booking PostHog rejected, so the next run retries it', async () => {
