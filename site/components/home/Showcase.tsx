@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import SectionHeader from './SectionHeader'
 
 const portals = [
   {
@@ -36,18 +37,11 @@ export default function Showcase() {
     >
       <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-12">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-[680px]">
-            <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
-              In production
-            </span>
-            <h2 className="mt-3.5 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-              Real portals, built with PortalJS.
-            </h2>
-            <p className="mt-3.5 text-[17px] text-slate-600 dark:text-slate-300">
-              From national open-data programs to city governments and research
-              networks.
-            </p>
-          </div>
+          <SectionHeader
+            eyebrow="In production"
+            title="Real portals, built with PortalJS."
+            lede="From national open-data programs to city governments and research networks."
+          />
           <Link
             href="/data-portals"
             className="whitespace-nowrap font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
