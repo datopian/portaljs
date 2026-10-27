@@ -272,6 +272,13 @@ if (bookDemo) {
     /track\('book_a_demo_redirect'/.test(bookDemo),
     `${BOOK_DEMO} no longer captures book_a_demo_redirect, so call intent disappears from PostHog and calls booked can't be traced back to a CTA (po-frh).`,
   )
+  // Its query params (prospect, utm_*, source) come from whoever crafted the link. They may
+  // ride along as event properties, but must never become an identity or profile write.
+  check(
+    '/book-a-demo never identifies or writes a person profile',
+    !/posthog\.(identify|alias|setPersonProperties|register)\b|\$set/.test(bookDemo),
+    `${BOOK_DEMO} calls identify/alias/register or sends $set. Its inputs are attacker-controlled URL params, so that lets anyone write to another visitor's PostHog profile.`,
+  )
 }
 
 // ------------------------------------------------- the events can actually leave

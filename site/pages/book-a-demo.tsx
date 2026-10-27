@@ -15,6 +15,11 @@ const CALENDAR_LINKS: Record<string, string> = {
   partner: 'https://calendar.app.google/iQkon85iKURfdBtX7',
 }
 
+// Query params recorded on the redirect event: a fixed allow-list, so a crafted URL can't
+// smuggle in arbitrary (or $-prefixed) property names.
+const ATTRIBUTION_PARAMS = ['prospect', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as const
+const MAX_PARAM_CHARS = 200
+
 function track(event: string, props?: Record<string, unknown>) {
   try {
     posthog.capture(event, props)
@@ -25,15 +30,22 @@ function track(event: string, props?: Record<string, unknown>) {
 
 export default function BookADemo() {
   const router = useRouter()
-  const to = typeof router.query.to === 'string' ? router.query.to : 'default'
-  const source = typeof router.query.source === 'string' ? router.query.source : undefined
-  const destination = CALENDAR_LINKS[to] ?? CALENDAR_LINKS.default
+  // Every query param here is attacker-controlled: they are only ever sent as capped event
+  // properties, never used to identify/alias a person or write person-profile properties
+  // (check-signup-path.mjs enforces this).
+  const to = typeof router.query.to === 'string' ? router.query.to.slice(0, MAX_PARAM_CHARS) : 'default'
+  const source = typeof router.query.source === 'string' ? router.query.source.slice(0, MAX_PARAM_CHARS) : undefined
+  // Own keys only, so ?to=__proto__ or ?to=constructor can't pick a non-URL destination.
+  const destination = Object.prototype.hasOwnProperty.call(CALENDAR_LINKS, to)
+    ? CALENDAR_LINKS[to]
+    : CALENDAR_LINKS.default
   // Outreach attribution (da-55j.7): ?prospect=<slug> and utm_* from outreach links, or
   // passed on by a landing page that links here, ride along on the redirect event.
   const attribution = Object.fromEntries(
-    Object.entries(router.query).filter(
-      ([k, v]) => typeof v === 'string' && (k === 'prospect' || k.startsWith('utm_'))
-    )
+    ATTRIBUTION_PARAMS.flatMap((k) => {
+      const v = router.query[k]
+      return typeof v === 'string' && v ? [[k, v.slice(0, MAX_PARAM_CHARS)]] : []
+    })
   )
 
   useEffect(() => {

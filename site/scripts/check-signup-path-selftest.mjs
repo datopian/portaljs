@@ -140,6 +140,13 @@ const cases = [
     '/book-a-demo stops emitting book_a_demo_redirect',
     (d) => edit(d, 'pages/book-a-demo.tsx', (s) => s.replace("track('book_a_demo_redirect'", "noTrack('book_a_demo_redirect'")),
   ],
+  [
+    '/book-a-demo identifies the visitor from a URL param',
+    (d) =>
+      edit(d, 'pages/book-a-demo.tsx', (s) =>
+        s.replace('window.location.replace(destination)', "posthog.identify(String(router.query.prospect))\n    window.location.replace(destination)"),
+      ),
+  ],
   ['the book-a-demo page is deleted', (d) => fs.rmSync(path.join(d, 'pages/book-a-demo.tsx'))],
 ]
 
