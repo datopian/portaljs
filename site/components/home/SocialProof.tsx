@@ -133,9 +133,12 @@ export default function SocialProof() {
         </div>
       </div>
 
-      {/* Infinite single-line logo carousel. Edges fade out via mask. */}
+      {/* Infinite single-line logo carousel. Edges fade out via mask. Tighter
+          gap and smaller logos below `sm` so a phone shows three logos, not one
+          and a half. The trailing padding must equal the gap for the -50% loop
+          to land seamlessly. */}
       <div className="marquee mt-12 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
-        <div className="marquee-track flex w-max items-center gap-16 pr-16">
+        <div className="marquee-track flex w-max items-center gap-8 pr-8 sm:gap-16 sm:pr-16">
           {track.map((logo, index) => (
             <Link
               className="flex flex-none items-center justify-center opacity-70 transition hover:opacity-100"
@@ -150,7 +153,7 @@ export default function SocialProof() {
                   oversized logos and the trailing whitespace). */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                className={`h-8 w-auto max-w-[140px] object-contain ${logo.style}`}
+                className={`h-7 w-auto max-w-[108px] object-contain sm:h-8 sm:max-w-[140px] ${logo.style}`}
                 src={logo.srcLight}
                 alt={`${logo.name} logo`}
                 title={logo.name}

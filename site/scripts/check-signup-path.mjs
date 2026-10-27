@@ -32,6 +32,12 @@
 //     largest source of homepage -> /build arrivals and tracked nothing, so a
 //     month of funnel analysis credited the hero for clicks it never received.
 //
+// It also pins the government landing page (da-55j.5), whose one action is a call:
+//
+//   5. /government must offer the call (link to /book-a-demo), report its CTAs as
+//      government_cta_clicked, and carry NO self-serve sign-up — for public-sector
+//      buyers a sign-up form is a dead end, so it must not creep back in.
+//
 // It deliberately does NOT assert WHICH destination is used. /build (AI-native, the
 // current strategy) and cloud/auth/signup (the older Cloud funnel) are both accepted.
 // Product direction is allowed to change; having no signup path at all is not.
@@ -56,11 +62,14 @@ const HERO = 'components/home/LandingHero.tsx'
 const CTA_BAND = 'components/home/CtaBand.tsx'
 const BUILD = 'pages/build.tsx'
 const APP = 'pages/_app.tsx'
+const GOVERNMENT = 'pages/government.tsx'
 
 // A destination counts as signup-capable if it is the /build page (verified below to
 // still carry a working signup form) or a Cloud auth signup URL.
 const BUILD_ROUTE = '/build'
 const CLOUD_SIGNUP = /cloud\.portaljs\.com\/auth\/signup/
+// The government page's single action: a booked call, via the /book-a-demo redirect.
+const CALL_ROUTE = '/book-a-demo'
 
 const failures = []
 const checks = []
@@ -250,6 +259,31 @@ if (build) {
   )
 }
 
+// ------------------------------------------------- /government books calls, nothing else
+
+// /government is where government CTAs and outreach emails land (da-55j.5). It has one
+// action, booking a call, and it must stay measurable and free of sign-up paths.
+const gov = read(GOVERNMENT)
+if (gov) {
+  const g = inlineConsts(gov)
+  const dest = leadsToSignup(gov)
+  check(
+    '/government offers a book-a-call link',
+    g.includes(`'${CALL_ROUTE}'`) || g.includes(`href="${CALL_ROUTE}`) || g.includes(`'${CALL_ROUTE}?`),
+    `${GOVERNMENT} no longer links to ${CALL_ROUTE}. The government landing page then has no way to book the call it exists for.`,
+  )
+  check(
+    '/government CTAs report themselves to analytics',
+    /track\('government_cta_clicked'/.test(gov),
+    `${GOVERNMENT} emits no government_cta_clicked event, so the government path can't be measured or attributed.`,
+  )
+  check(
+    '/government carries no self-serve sign-up',
+    !dest.build && !dest.cloud && !/\/email\/start/.test(gov),
+    `${GOVERNMENT} links to ${BUILD_ROUTE} or a sign-up flow. Government buyers book calls; a sign-up on this path is a dead end (da-55j.5).`,
+  )
+}
+
 // ------------------------------------------------- the events can actually leave
 
 // React runs a page's effects BEFORE _app's, so initialising PostHog from _app's
@@ -276,5 +310,5 @@ if (failures.length) {
 }
 
 console.log(
-  `✓ signup path intact — ${checks.length} assertions (nav CTA, hero CTA, homepage closing CTA, /build signup + funnel events)`,
+  `✓ signup path intact — ${checks.length} assertions (nav CTA, hero CTA, homepage closing CTA, /build signup + funnel events, /government call path)`,
 )
