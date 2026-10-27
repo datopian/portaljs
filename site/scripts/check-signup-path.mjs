@@ -36,6 +36,10 @@
 // current strategy) and cloud/auth/signup (the older Cloud funnel) are both accepted.
 // Product direction is allowed to change; having no signup path at all is not.
 //
+// It also pins the call path. /book-a-demo must still redirect to the booking calendar
+// and report the redirect: calls booked are counted from there (po-frh, da-55j.2), and
+// losing either half turns every "Book a demo" CTA into a dead or invisible end.
+//
 // Zero dependencies, so the merge gate can run it on a cold tree without installing
 // site/'s lockfile. Usage:  node site/scripts/check-signup-path.mjs
 
@@ -56,6 +60,7 @@ const HERO = 'components/home/LandingHero.tsx'
 const CTA_BAND = 'components/home/CtaBand.tsx'
 const BUILD = 'pages/build.tsx'
 const APP = 'pages/_app.tsx'
+const BOOK_DEMO = 'pages/book-a-demo.tsx'
 
 // A destination counts as signup-capable if it is the /build page (verified below to
 // still carry a working signup form) or a Cloud auth signup URL.
@@ -250,6 +255,25 @@ if (build) {
   )
 }
 
+// ----------------------------------------------- the call path really books calls
+
+// /book-a-demo is a redirect, not a page: it reports the click, then hands the visitor to
+// the Google appointment calendar. Lose either half and every "Book a demo" CTA on the
+// site becomes a dead or invisible end (po-frh, da-55j.2).
+const bookDemo = read(BOOK_DEMO)
+if (bookDemo) {
+  check(
+    '/book-a-demo redirects to the booking calendar',
+    /calendar\.app\.google\//.test(bookDemo) && /window\.location\.replace\(/.test(bookDemo),
+    `${BOOK_DEMO} no longer redirects to a calendar.app.google booking link. Every "Book a demo" CTA then ends on a page that books nothing.`,
+  )
+  check(
+    '/book-a-demo still emits book_a_demo_redirect',
+    /track\('book_a_demo_redirect'/.test(bookDemo),
+    `${BOOK_DEMO} no longer captures book_a_demo_redirect, so call intent disappears from PostHog and calls booked can't be traced back to a CTA (po-frh).`,
+  )
+}
+
 // ------------------------------------------------- the events can actually leave
 
 // React runs a page's effects BEFORE _app's, so initialising PostHog from _app's
@@ -276,5 +300,5 @@ if (failures.length) {
 }
 
 console.log(
-  `✓ signup path intact — ${checks.length} assertions (nav CTA, hero CTA, homepage closing CTA, /build signup + funnel events)`,
+  `✓ signup path intact — ${checks.length} assertions (nav CTA, hero CTA, homepage closing CTA, /build signup + funnel events, /book-a-demo redirect)`,
 )
