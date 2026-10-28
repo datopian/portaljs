@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import GitHubIcon from '../icons/GitHubIcon'
 import CtaBandShell from './CtaBandShell'
+import BookCallButton from '../BookCallButton'
 import { track } from '@/lib/track'
 
 // The homepage's closing CTA — the last thing a visitor who read the whole page
@@ -17,7 +18,6 @@ import { track } from '@/lib/track'
 // "Book a call" is the SECONDARY action (da-55j.5): for public bodies that would
 // rather talk to someone than build it themselves. The builder stays primary.
 const BUILD_ROUTE = '/build'
-const BOOK_CALL = '/book-a-demo?source=home_cta_band'
 const DOCS_URL = 'https://portaljs.com/docs'
 const GITHUB_URL = 'https://github.com/datopian/portaljs'
 
@@ -45,13 +45,11 @@ export default function CtaBand() {
             →
           </span>
         </Link>
-        <Link
-          href={BOOK_CALL}
-          onClick={() => track('home_cta_band_clicked', { target: 'book_call' })}
-          className={SECONDARY}
-        >
-          Book a call
-        </Link>
+        <BookCallButton
+          source="home_cta_band"
+          variant="on-dark"
+          event={{ name: 'home_cta_band_clicked', props: { target: 'book_call' } }}
+        />
         <a
           href={GITHUB_URL}
           target="_blank"

@@ -28,6 +28,7 @@ const FILES = [
   'pages/_app.tsx',
   'pages/government.tsx',
   'pages/book-a-demo.tsx',
+  'components/BookCallButton.tsx',
 ]
 
 function runGuard(root) {
@@ -135,13 +136,17 @@ const cases = [
   // da-55j.5: the government page's one action is a call, and it must stay that way.
   [
     '/government loses its book-a-call link',
-    (d) => edit(d, 'pages/government.tsx', (s) => s.replace("const BOOK_CALL = '/book-a-demo'", "const BOOK_CALL = '/contact'")),
+    (d) => edit(d, 'components/BookCallButton.tsx', (s) => s.replace("const BOOK_CALL = '/book-a-demo'", "const BOOK_CALL = '/contact'")),
+  ],
+  [
+    '/government stops using the shared call link',
+    (d) => edit(d, 'pages/government.tsx', (s) => s.replaceAll('useBookCallHref(', 'contactHref(')),
   ],
   [
     '/government grows a self-serve sign-up link',
     (d) =>
       edit(d, 'pages/government.tsx', (s) =>
-        s.replace('<BookCallButton position="footer" />', '<BookCallButton position="footer" />\n<Link href="/build">Build</Link>'),
+        s.replace('<GovBookCall position="footer" />', '<GovBookCall position="footer" />\n<Link href="/build">Build</Link>'),
       ),
   ],
   [

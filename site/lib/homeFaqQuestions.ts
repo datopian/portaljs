@@ -51,6 +51,6 @@ export const homeFaqQuestions = [
   {
     question: 'How do I get started with PortalJS Arc?',
     answer: `You can get started in minutes with a free trial, or schedule a demo to see how PortalJS Arc can fit your needs.
-🔥   [Start Free Trial](https://portaljs.com/pricing) | [Schedule a Demo](/book-a-demo?source=home_faq)`,
+🔥   [Start Free Trial](https://portaljs.com/pricing) | [Book a call](/book-a-demo?source=home_faq)`,
   },
 ]
