@@ -4,6 +4,7 @@ import { OrganizationJsonLd } from 'next-seo';
 import { generateNextSeo } from 'next-seo/pages';
 import Head from 'next/head';
 import { useTheme } from 'next-themes';
+import BookCallButton from '@/components/BookCallButton'
 
 // Lottie Player class types predate React 19; cast the module, keep props typed via the generic.
 const Player = dynamic<import('@lottiefiles/react-lottie-player').IPlayerProps>(
@@ -63,7 +64,7 @@ const steps = [
 
 export default function Partners() {
   const { resolvedTheme } = useTheme();
-  const calendarLink = "/book-a-demo?source=partners";
+  const bookCallSource = "partners";
 
   return (
     <Layout isHomePage={true}>
@@ -106,15 +107,7 @@ export default function Partners() {
                 across governments, non-profits, academia, and businesses.
               </p>
               <div className="mt-9 flex flex-wrap justify-center gap-3.5">
-                <a
-                  href={calendarLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Book a Partnership Meeting"
-                  className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
-                >
-                  Book a Partnership Meeting
-                </a>
+                <BookCallButton source={bookCallSource} label="Book a partnership call" />
                 <a
                   href="/case-studies"
                   title="See Client Success Stories"
@@ -215,14 +208,7 @@ export default function Partners() {
                 Schedule a meeting with our partnerships team to explore opportunities for collaboration and growth.
               </p>
               <div className="mt-[30px] flex flex-wrap justify-center gap-3.5">
-                <a
-                  href={calendarLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
-                >
-                  Schedule a free call
-                </a>
+                <BookCallButton source={bookCallSource} label="Book a partnership call" />
               </div>
             </div>
           </div>

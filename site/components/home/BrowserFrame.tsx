@@ -2,15 +2,18 @@ import type { ReactNode } from 'react'
 
 // The light browser window the homepage hero's showcase sits in (see
 // LandingHero's GUI mode): three muted dots, a centred mono URL pill, and an
-// optional "live at …" footer bar. Same colours, radii and shadow, so a real
-// portal screenshot framed with it reads as part of the same site.
+// optional "live at …" footer bar (with an optional link on its right). Same colours,
+// radii and shadow, so a real portal screenshot framed with it reads as part of the
+// same site.
 export default function BrowserFrame({
   url,
   footer,
+  footerAction,
   children,
 }: {
   url: string
   footer?: ReactNode
+  footerAction?: ReactNode
   children: ReactNode
 }) {
   return (
@@ -37,6 +40,7 @@ export default function BrowserFrame({
             aria-hidden="true"
           />
           <span className="truncate">{footer}</span>
+          {footerAction && <span className="ml-auto flex-shrink-0 pl-3">{footerAction}</span>}
         </div>
       )}
     </div>

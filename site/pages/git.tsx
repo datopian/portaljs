@@ -9,9 +9,10 @@ import { WhyGitAndPortalJS } from '@/components/git/WhyGitAndPortalJS'
 import { CommonUseCases } from '@/components/git/CommonUseCases'
 import { LiveExamples } from '@/components/git/LiveExamples'
 import { GitLFS } from '@/components/git/GitLFS'
+import BookCallButton from '@/components/BookCallButton'
 
 export default function Git() {
-  const calendarLink = "/book-a-demo?source=git";
+  const bookCallSource = "git";
   return (
     <Layout isHomePage={true}>
       <div className="flex justify-center">
@@ -120,22 +121,7 @@ export default function Git() {
                 Join hundreds of organizations worldwide that trust PortalJS Cloud for their data publishing needs.
               </p>
               <div className="mt-[30px] flex flex-wrap justify-center gap-3.5">
-                <a
-                  href={calendarLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
-                >
-                  Schedule a free call
-                </a>
-                <a
-                  href={calendarLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-[10px] border border-white/20 bg-white/[0.06] px-[18px] py-2.5 text-[14.5px] font-semibold text-white transition-all duration-150 hover:-translate-y-px hover:bg-white/[0.12]"
-                >
-                  Book a demo
-                </a>
+                <BookCallButton source={bookCallSource} />
               </div>
             </div>
           </div>

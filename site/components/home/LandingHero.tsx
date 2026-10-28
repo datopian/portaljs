@@ -33,6 +33,7 @@ const DOCS_URL = 'https://portaljs.com/docs'
 // load (po-76p) and captures the sign-up. Build/Enter navigates here carrying the
 // typed (or suggested) prompt so the funnel is: hero prompt → /build → email.
 const BUILD_ROUTE = '/build'
+const GOVERNMENT_ROUTE = '/government'
 const CMD = 'npm create portaljs@latest'
 
 // Rotating placeholder examples that seed intent in the "Describe your portal"
@@ -269,8 +270,11 @@ export default function LandingHero() {
       />
 
       <div className="grid items-center gap-12 pt-4 pb-14 sm:pt-6 sm:pb-16 lg:grid-cols-[1.02fr_1.12fr] lg:gap-14">
-        {/* LEFT: message + two ways to build (underline tabs → one mode card) */}
-        <div>
+        {/* LEFT: message + two ways to build (underline tabs → one mode card).
+            min-w-0 on both columns: grid items default to their min-content width, and
+            the showcase's nowrap lines otherwise widen the single phone column past the
+            viewport, so the section's overflow-hidden clipped the copy and cards. */}
+        <div className="min-w-0">
           <div
             className="mb-6 inline-flex items-center gap-2.5 rounded-full border px-3 py-1.5 text-[12.5px] font-medium text-blue-600"
             style={{ borderColor: 'rgba(37,99,235,0.24)', background: 'rgba(37,99,235,0.06)' }}
@@ -371,10 +375,52 @@ export default function LandingHero() {
               </>
             )}
           </div>
+
+          {/* Government path (da-55j.5). Public bodies don't build a portal from a prompt;
+              they want to see one running and talk to someone. This sends them to
+              /government, whose one action is booking a call. It sits under the builder
+              card, not in its place: the builder stays the primary action (po-80u). */}
+          <Link
+            href={GOVERNMENT_ROUTE}
+            onClick={() => track('hero_cta_link_clicked', { target: 'government' })}
+            className="group mt-4 flex items-center gap-3.5 rounded-xl border border-slate-200 bg-gradient-to-br from-white to-sky-50/70 px-4 py-3 transition-all duration-150 hover:-translate-y-px hover:border-blue-300 hover:shadow-[0_10px_24px_-14px_rgba(37,99,235,0.45)]"
+          >
+            <span className="grid h-9 w-9 flex-none place-items-center rounded-[9px] bg-gradient-to-br from-sky-400/20 to-blue-600/15 text-blue-700">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-[19px] w-[19px]"
+                aria-hidden="true"
+              >
+                <path d="M3 21h18M4 10h16M12 3 4 7v3h16V7l-8-4ZM6 10v8M10 10v8M14 10v8M18 10v8M4 18h16" />
+              </svg>
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[14px] font-semibold text-slate-900">
+                Government or public agency?
+              </span>
+              <span className="block text-[13px] text-slate-500">
+                See a prototype of your portal on your own data.
+              </span>
+            </span>
+            <span className="hidden flex-none items-center gap-1 whitespace-nowrap text-[13.5px] font-semibold text-blue-600 sm:inline-flex">
+              PortalJS for government
+              <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5">
+                →
+              </span>
+            </span>
+            <span aria-hidden="true" className="flex-none text-blue-600 sm:hidden">
+              →
+            </span>
+          </Link>
         </div>
 
         {/* RIGHT: animated showcase (no tab strip — the left tabs drive it) */}
-        <div className="relative flex flex-col">
+        <div className="relative flex min-w-0 flex-col">
           {isTerminal ? (
             <div style={{ border: '1px solid #0d1526', borderRadius: 14, overflow: 'hidden', background: '#0a0f1a', boxShadow: '0 34px 80px -34px rgba(15,23,42,0.45), 0 2px 8px rgba(15,23,42,0.08)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px', background: '#0d1424', borderBottom: '1px solid rgba(148,163,184,0.12)' }}>

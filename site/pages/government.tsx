@@ -2,7 +2,6 @@ import type { CSSProperties, ReactNode } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import { generateNextSeo } from 'next-seo/pages'
 import { BreadcrumbJsonLd } from 'next-seo'
 import Layout from '@/components/Layout'
@@ -11,6 +10,7 @@ import SectionHeader from '@/components/home/SectionHeader'
 import IconCard from '@/components/home/IconCard'
 import BrowserFrame from '@/components/home/BrowserFrame'
 import CtaBandShell from '@/components/home/CtaBandShell'
+import { useBookCallHref } from '@/components/BookCallButton'
 import { track } from '@/lib/track'
 
 // Government landing page (da-55j.5): the destination of the demo-and-call path.
@@ -28,34 +28,110 @@ import { track } from '@/lib/track'
 // from that case study's own keystats/features. The hero's screenshot stands in for the
 // 2-3 minute demo video (da-55j.4). Swap it in when the video exists.
 
-const BOOK_CALL = '/book-a-demo'
 const PAGE_URL = 'https://www.portaljs.com/government'
+const SANTA_MONICA_URL = 'https://datajs.santamonica.gov/'
 
-// Carry outreach attribution (?prospect=…, utm_*) through to /book-a-demo, which records
-// it on book_a_demo_redirect. The link from a cold email is then traceable to the call.
-function useBookCallHref(position: string) {
-  const { query } = useRouter()
-  const params = new URLSearchParams({ source: `government_${position}` })
-  for (const [k, v] of Object.entries(query)) {
-    if (typeof v === 'string' && (k === 'prospect' || k.startsWith('utm_'))) params.set(k, v)
-  }
-  return `${BOOK_CALL}?${params.toString()}`
+// A calendar tile reading "30 min": the call's length, shown the way a calendar shows a date.
+function CallTile({ className = '' }: { className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`flex flex-none flex-col overflow-hidden rounded-[10px] bg-white text-center shadow-[0_2px_6px_rgba(15,23,42,0.18)] ${className}`}
+    >
+      <span className="bg-blue-600 py-[3px] text-[8.5px] font-bold uppercase leading-none tracking-[0.12em] text-white">
+        Call
+      </span>
+      <span className="flex flex-1 items-baseline justify-center gap-px pt-[5px] text-[18px] font-bold leading-none text-blue-700">
+        30<span className="text-[9.5px] font-semibold">min</span>
+      </span>
+    </span>
+  )
 }
 
-// Same gradient button as the homepage's primary CTAs (CtaBand, hero).
-function BookCallButton({ position, label = 'Book a 30-minute call' }: { position: string; label?: string }) {
-  const href = useBookCallHref(position)
+// This page's one action, made specific to it. The site-wide BookCallButton says "Book a
+// call"; here the button also says what the call gets you, so it reads as an offer rather
+// than a generic contact button. Same /book-a-demo route and attribution as everywhere else.
+function GovBookCall({ position }: { position: string }) {
+  const href = useBookCallHref(`government_${position}`)
   return (
     <Link
       href={href}
       onClick={() => track('government_cta_clicked', { target: 'book_call', position })}
-      className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]"
+      className="group inline-flex items-center gap-3.5 rounded-[14px] bg-gradient-to-br from-sky-400 to-blue-600 py-2.5 pl-2.5 pr-5 text-left text-white shadow-[0_10px_30px_-10px_rgba(37,99,235,0.7)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_14px_36px_-10px_rgba(37,99,235,0.85)]"
     >
-      {label}
-      <span aria-hidden="true" className="text-[15px] leading-none">
+      <CallTile className="h-[46px] w-[46px]" />
+      <span className="flex flex-col">
+        <span className="text-[15.5px] font-semibold leading-tight">Book a 30-minute call</span>
+        <span className="mt-0.5 text-[12.5px] font-medium text-white/85">
+          See a prototype on your own data
+        </span>
+      </span>
+      <span
+        aria-hidden="true"
+        className="ml-1 text-lg leading-none transition-transform duration-150 group-hover:translate-x-0.5"
+      >
         →
       </span>
     </Link>
+  )
+}
+
+function Check({ className = 'text-emerald-600 dark:text-emerald-400' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" className={`h-4 w-4 flex-none ${className}`} aria-hidden="true">
+      <path
+        fillRule="evenodd"
+        d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.8 6.8-6.8a1 1 0 0 1 1.4 0Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  )
+}
+
+// What the call covers, as a calendar invite: the closing band shows the reader the meeting
+// they're about to book instead of only asking them to book one.
+const AGENDA = [
+  'Your portal today: what you publish, and who uses it',
+  'Your options: moving from Socrata, OpenDataSoft, ArcGIS Hub or CKAN',
+  'Next step: a prototype of your portal on your own data',
+]
+
+function CallInvite() {
+  return (
+    <div className="rounded-2xl bg-white p-5 text-left shadow-[0_30px_70px_-30px_rgba(2,6,23,0.8)] ring-1 ring-white/10 dark:bg-slate-900 sm:p-6">
+      <div className="flex items-center gap-3.5">
+        <CallTile className="h-[50px] w-[50px]" />
+        <div className="min-w-0">
+          <p className="text-[16px] font-semibold text-slate-900 dark:text-white">
+            PortalJS × your team
+          </p>
+          <p className="text-[13px] text-slate-500 dark:text-slate-400">Video call · 30 minutes</p>
+        </div>
+      </div>
+      <div className="mt-5 border-t border-slate-100 pt-4 dark:border-slate-800">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400">
+          What we’ll cover
+        </p>
+        <ol className="mt-3 space-y-2.5">
+          {AGENDA.map((item, i) => (
+            <li key={item} className="flex gap-3 text-[14px] leading-snug text-slate-700 dark:text-slate-300">
+              <span className="grid h-5 w-5 flex-none place-items-center rounded-full bg-blue-50 text-[11px] font-bold text-blue-700 dark:bg-blue-500/15 dark:text-blue-300">
+                {i + 1}
+              </span>
+              {item}
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-100 pt-4 text-[13px] text-slate-500 dark:border-slate-800 dark:text-slate-400">
+        <span className="inline-flex items-center gap-1.5">
+          <Check /> No preparation needed
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <Check /> No commitment
+        </span>
+      </div>
+    </div>
   )
 }
 
@@ -192,7 +268,7 @@ const COMPARE = [
 ]
 
 export default function GovernmentPage() {
-  const tenderHref = useBookCallHref('tender')
+  const tenderHref = useBookCallHref('government_tender')
   return (
     <Layout isHomePage={true}>
       <Head>
@@ -239,7 +315,7 @@ export default function GovernmentPage() {
           }}
         />
         <div className="mx-auto grid max-w-8xl items-center gap-12 px-4 pb-14 pt-4 sm:px-8 sm:pb-16 sm:pt-6 lg:grid-cols-[1fr_1.1fr] lg:gap-14 xl:px-12">
-          <div>
+          <div className="min-w-0">
             <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-blue-600/25 bg-blue-600/[0.06] px-3 py-1.5 text-[12.5px] font-medium text-blue-600 dark:text-blue-400">
               <span className="h-1.5 w-1.5 rounded-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.6)]" />
               PortalJS for government
@@ -262,7 +338,7 @@ export default function GovernmentPage() {
               </span>
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-              <BookCallButton position="hero" />
+              <GovBookCall position="hero" />
               <a
                 href="#case-studies"
                 onClick={() => track('government_cta_clicked', { target: 'case_studies', position: 'hero' })}
@@ -271,25 +347,85 @@ export default function GovernmentPage() {
                 See who uses it <span aria-hidden="true">↓</span>
               </a>
             </div>
+            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-[13.5px] text-slate-500 dark:text-slate-400">
+              <span className="inline-flex items-center gap-1.5">
+                <Check /> No preparation needed
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check /> No commitment
+              </span>
+            </div>
           </div>
 
-          {/* Demo video slot (da-55j.4): a real government portal until then. Cropped to
-              its top-left on phones so the portal stays legible at 390px. */}
-          <BrowserFrame
-            url="datajs.santamonica.gov"
-            footer="Santa Monica · 82 datasets on PortalJS Cloud"
-          >
-            <div className="relative aspect-[4/3] bg-slate-50 sm:aspect-[1568/897]">
+          {/* Demo video slot (da-55j.4): a real government portal until then. The screenshot
+              opens the live portal; the footer jumps to the case studies. On large screens a
+              real dataset card and the case study's headline number float over the frame.
+              Cropped to its top-left on phones so the portal stays legible at 390px. */}
+          <div className="relative min-w-0 lg:pl-6">
+            <BrowserFrame
+              url="datajs.santamonica.gov"
+              footer="Live · City of Santa Monica, on PortalJS Cloud"
+              footerAction={
+                <a
+                  href="#case-studies"
+                  onClick={() => track('government_cta_clicked', { target: 'case_studies', position: 'hero_frame' })}
+                  className="whitespace-nowrap font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                >
+                  More portals <span aria-hidden="true">↓</span>
+                </a>
+              }
+            >
+              <a
+                href={SANTA_MONICA_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => track('government_cta_clicked', { target: 'live_portal', position: 'hero' })}
+                className="group relative block aspect-[4/3] overflow-hidden bg-slate-50 focus-visible:outline-none sm:aspect-[16/11]"
+              >
+                <Image
+                  src="/images/casestudies/santa-monica-hero.webp"
+                  alt="The City of Santa Monica open data portal, running on PortalJS Cloud. Opens the live portal in a new tab."
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover object-left-top transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+                />
+                <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100" />
+                <span className="pointer-events-none absolute inset-x-0 bottom-5 flex justify-center">
+                  <span className="inline-flex translate-y-1 items-center gap-1.5 rounded-full bg-slate-900/90 px-4 py-2 text-[13.5px] font-semibold text-white opacity-0 shadow-lg backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+                    Explore the live portal <span aria-hidden="true">↗</span>
+                  </span>
+                </span>
+              </a>
+            </BrowserFrame>
+
+            {/* Case study headline, quoted from its keystats. */}
+            <div className="pointer-events-none absolute -right-4 top-[22%] hidden items-center gap-3 rounded-xl border border-slate-200/80 bg-white/95 px-4 py-3 shadow-[0_18px_40px_-18px_rgba(15,23,42,0.35)] backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 lg:flex">
+              <span className="text-[26px] font-bold leading-none tracking-tight text-blue-600 dark:text-blue-400">
+                115
+              </span>
+              <span className="text-[12.5px] leading-snug text-slate-600 dark:text-slate-300">
+                datasets migrated,
+                <br />
+                every link unchanged
+              </span>
+            </div>
+
+            {/* A real dataset card from the same portal, for depth. */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -left-2 bottom-[18%] hidden w-[42%] -rotate-2 overflow-hidden rounded-xl shadow-[0_24px_50px_-18px_rgba(15,23,42,0.45)] ring-1 ring-slate-900/5 lg:block"
+            >
               <Image
-                src="/images/casestudies/santa-monica-homepage.webp"
-                alt="The City of Santa Monica open data portal, running on PortalJS Cloud"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover object-left-top"
+                src="/images/casestudies/santa-monica-dataset-card.webp"
+                alt=""
+                width={640}
+                height={342}
+                sizes="20vw"
+                className="block h-auto w-full"
               />
             </div>
-          </BrowserFrame>
+          </div>
         </div>
       </section>
 
@@ -468,17 +604,24 @@ export default function GovernmentPage() {
         </div>
       </section>
 
-      {/* Closing CTA: the homepage's band, with this page's single action. */}
+      {/* Closing CTA: the homepage's band, with this page's single action next to the
+          meeting it books. */}
       <div className="pt-[58px]">
         <CtaBandShell>
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            See your portal on PortalJS.
-          </h2>
-          <p className="mx-auto mt-4 max-w-[48ch] text-[17px] text-[#b9c9e4]">
-            Tell us which portal you run today. We’ll come back with a prototype on your own data.
-          </p>
-          <div className="mt-[30px] flex justify-center">
-            <BookCallButton position="footer" />
+          <div className="grid items-center gap-10 text-left lg:grid-cols-[1fr_minmax(0,460px)] lg:gap-16">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                See your portal on PortalJS.
+              </h2>
+              <p className="mt-4 max-w-[46ch] text-[17px] text-[#b9c9e4]">
+                Tell us which portal you run today. We’ll come back with a prototype on your own
+                data.
+              </p>
+              <div className="mt-[30px]">
+                <GovBookCall position="footer" />
+              </div>
+            </div>
+            <CallInvite />
           </div>
         </CtaBandShell>
       </div>

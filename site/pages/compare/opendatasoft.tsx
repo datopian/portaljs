@@ -5,10 +5,12 @@ import { generateNextSeo } from 'next-seo/pages';
 import Head from 'next/head';
 import Image from 'next/image'
 import Link from 'next/link'
+import BookCallButton from '@/components/BookCallButton'
+import { track } from '@/lib/track'
 
 export default function PortalJSvsOpenDataSoft() {
-  // Calendar link for all CTAs
-  const calendarLink = "/book-a-demo?source=compare_opendatasoft";
+  // Recorded as `source` on book_a_demo_redirect by every call button on this page
+  const bookCallSource = "compare_opendatasoft";
 
   const testimonials = [
     {
@@ -221,9 +223,7 @@ export default function PortalJSvsOpenDataSoft() {
                 See how PortalJS delivers greater flexibility, modern technology, and no vendor lock-in.
               </p>
               <div className="mt-9 flex flex-wrap justify-center gap-3.5">
-                <a href={calendarLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]">
-                  Book a demo
-                </a>
+                <BookCallButton source={bookCallSource} />
                 <a href="https://cloud.portaljs.com/auth/signup" className="inline-flex items-center gap-1.5 rounded-[10px] border border-slate-300 bg-white px-[18px] py-2.5 text-[14.5px] font-semibold text-slate-700 transition-all duration-150 hover:-translate-y-px hover:border-blue-400 hover:text-blue-600">
                   Sign up for free
                 </a>
@@ -359,13 +359,22 @@ export default function PortalJSvsOpenDataSoft() {
               <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Ready to make the switch?</h2>
               <p className="mx-auto mt-4 max-w-[48ch] text-[17px] text-[#b9c9e4]">See how PortalJS delivers more flexibility, modern technology, and no vendor lock-in.</p>
               <div className="mt-[30px] flex flex-wrap justify-center gap-3.5">
-                <a href={calendarLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-br from-sky-400 to-blue-600 px-[18px] py-2.5 text-[14.5px] font-semibold text-white shadow-[0_6px_20px_-6px_rgba(37,99,235,0.55)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_10px_28px_-8px_rgba(37,99,235,0.7)]">
-                  Schedule a free call
-                </a>
-                <a href="https://cloud.portaljs.com/auth/signup" className="inline-flex items-center gap-2 rounded-[10px] border border-white/20 bg-white/[0.06] px-[18px] py-2.5 text-[14.5px] font-semibold text-white transition-all duration-150 hover:-translate-y-px hover:bg-white/[0.12]">
-                  Book a demo
+                <BookCallButton source={bookCallSource} />
+                <a
+                  href="https://cloud.portaljs.com/auth/signup"
+                  className="inline-flex items-center gap-2 rounded-[10px] border border-white/20 bg-white/[0.06] px-[18px] py-2.5 text-[14.5px] font-semibold text-white transition-all duration-150 hover:-translate-y-px hover:bg-white/[0.12]"
+                >
+                  Sign up for free
                 </a>
               </div>
+              <Link
+                href="/government"
+                onClick={() => track('compare_cta_clicked', { target: 'government', page: 'opendatasoft' })}
+                className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-medium text-[#9fb6da] transition-colors duration-150 hover:text-white"
+              >
+                Running a public portal? See PortalJS for government
+                <span aria-hidden="true">→</span>
+              </Link>
             </div>
           </div>
         </div>

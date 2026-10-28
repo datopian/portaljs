@@ -1,20 +1,16 @@
-import ButtonLink from '../ButtonLink'
+import BookCallButton from '../BookCallButton'
 import { H2, H3 } from '../custom/header'
 
 interface ScheduleProps {
-  calendar?: string;
+  source?: string;
   title?: string;
   subtitle?: string;
-  primaryLabel?: string;
-  secondaryLabel?: string;
 }
 
 export default function Schedule({
-  calendar = "/book-a-demo?source=schedule_cta",
+  source = "schedule_cta",
   title = "Ready to Launch Your Data Portal?",
   subtitle = "Join hundreds of organizations worldwide that trust PortalJS Arc for their data publishing needs.",
-  primaryLabel = "Schedule a free call",
-  secondaryLabel = "Book a demo",
 }: ScheduleProps) {
   return (
     <div className="!max-w-none ring-1 ring-slate-200 dark:ring-slate-800 py-24 bg-zinc-50 dark:bg-slate-800/75 mt-24 relative overflow-hidden ">
@@ -24,25 +20,7 @@ export default function Schedule({
           <H3>{subtitle}</H3>
         </div>
         <div className="flex justify-center py-8 max-w-lg mx-auto gap-6">
-          <ButtonLink
-            href={calendar}
-            title={primaryLabel}
-            className="text-sm"
-            target="_blank"
-          >
-            {primaryLabel}
-          </ButtonLink>
-          {secondaryLabel && (
-            <ButtonLink
-              href={calendar}
-              title={secondaryLabel}
-              style="secondary"
-              className="text-sm"
-              target="_blank"
-            >
-              {secondaryLabel}
-            </ButtonLink>
-          )}
+          <BookCallButton source={source} />
         </div>
         <div
           aria-hidden="true"

@@ -91,11 +91,11 @@ export default function Hero() {
                 </ButtonLink>
                 <ButtonLink
                   href="/book-a-demo?source=home_hero"
-                  title="Book a demo"
+                  title="Book a call"
                   style="secondary"
                   className="text-sm"
                 >
-                  Book a demo
+                  Book a call
                 </ButtonLink>
               </div>
             </div>

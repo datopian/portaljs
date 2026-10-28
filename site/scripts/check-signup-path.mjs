@@ -68,6 +68,7 @@ const BUILD = 'pages/build.tsx'
 const APP = 'pages/_app.tsx'
 const GOVERNMENT = 'pages/government.tsx'
 const BOOK_DEMO = 'pages/book-a-demo.tsx'
+const BOOK_CALL_BUTTON = 'components/BookCallButton.tsx'
 
 // A destination counts as signup-capable if it is the /build page (verified below to
 // still carry a working signup form) or a Cloud auth signup URL.
@@ -272,10 +273,20 @@ const gov = read(GOVERNMENT)
 if (gov) {
   const g = inlineConsts(gov)
   const dest = leadsToSignup(gov)
+  const direct = g.includes(`'${CALL_ROUTE}'`) || g.includes(`href="${CALL_ROUTE}`) || g.includes(`'${CALL_ROUTE}?`)
+  // Or through the site's shared call button (BookCallButton / useBookCallHref), as long as
+  // that component itself still builds its links on /book-a-demo.
+  const viaShared =
+    /from '@\/components\/BookCallButton'/.test(gov) &&
+    /useBookCallHref\(|<BookCallButton\b/.test(gov) &&
+    (() => {
+      const shared = read(BOOK_CALL_BUTTON)
+      return !!shared && /export function useBookCallHref/.test(shared) && inlineConsts(shared).includes(`'${CALL_ROUTE}'`)
+    })()
   check(
     '/government offers a book-a-call link',
-    g.includes(`'${CALL_ROUTE}'`) || g.includes(`href="${CALL_ROUTE}`) || g.includes(`'${CALL_ROUTE}?`),
-    `${GOVERNMENT} no longer links to ${CALL_ROUTE}. The government landing page then has no way to book the call it exists for.`,
+    direct || viaShared,
+    `${GOVERNMENT} no longer links to ${CALL_ROUTE}, directly or through ${BOOK_CALL_BUTTON}. The government landing page then has no way to book the call it exists for.`,
   )
   check(
     '/government CTAs report themselves to analytics',
